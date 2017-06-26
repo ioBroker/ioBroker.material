@@ -18,7 +18,7 @@ React and Material UI interface.
 - everything
 
 ## Changelog
-#### 0.1.0
+#### 0.5.0
 * (bluefox) edit of visibility
 
 ## License
