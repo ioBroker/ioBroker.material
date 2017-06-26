@@ -1,0 +1,41 @@
+{
+    "common": {
+        "name":                     "material",
+        "version": "0.1.0",
+        "news": {
+            "0.1.0": {
+                "en": "initial commit",
+                "de": "initial commit",
+                "ru": "initial commit"
+            }
+        },
+        "title":                    "Material UI",
+        "desc":                     {
+            "en": "Material UI based ioBroker user interface",
+            "de": "ioBroker GUI für mobile Geräte auf dem Basis von Material UI",
+            "ru": "ioBroker визуализация для мобильных устройств на Material UI"
+        },
+        "platform":                 "javascript/Node.js",
+        "onlyWWW":                  "true",
+        "loglevel":                 "info",
+        "dependencies":             ["web"],
+        "icon":                     "material.png",
+        "extIcon":                  "https://raw.githubusercontent.com/ioBroker/ioBroker.material/master/admin/material.png",
+        "keywords":                 ["user", "interface", "webapp", "jquerymobile", "ui"],
+        "readme":                   "https://github.com/ioBroker/ioBroker.material/blob/master/README.md",
+        "singleton":                true,
+        "preserveSettings":         "material",
+        "authors": [
+            "bluefox <dogafox@gmail.com>"
+        ],
+        "localLink":                "%web_protocol%://%ip%:%web_port%/material/index.html",
+        "type":                     "visualisation",
+        "license":                  "CC-BY-NC",
+        "noConfig":                 true,
+		"welcomeScreen": 			{"link": "material/index.html", "name": "material", "img": "material.admin/material.png", "color": "black", "order": 2}
+    },
+    "native": {
+    },
+    "objects": [
+    ]
+}
