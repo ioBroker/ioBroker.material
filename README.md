@@ -18,7 +18,17 @@ React and Material UI interface.
 - everything
 
 ## Changelog
-#### 0.5.0
+### 0.5.4 (2017.10.11)
+* (bluefox) fix undefined names
+* (bluefox) fix detection of switches
+
+### 0.5.3 (2017.08.11)
+* (bluefox) fix dimmer
+
+### 0.5.2 (2017.07.30)
+* (bluefox) fix action icons
+
+### 0.5.1
 * (bluefox) edit of visibility
 
 ## License
