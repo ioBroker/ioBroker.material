@@ -1,9 +1,24 @@
 {
     "common": {
         "name":                     "material",
-        "version": "0.5.0",
+        "version": "0.5.4",
         "news": {
-            "0.5.0": {
+            "0.5.4": {
+                "en": "fix undefined names",
+                "de": "Korrigiere undefinierte Namen",
+                "ru": "Поправлены неопределённые имена"
+            },
+            "0.5.3": {
+                "en": "fix dimmer",
+                "de": "Korrigiere Dimmer",
+                "ru": "Поправлены диммеры"
+            },
+            "0.5.2": {
+                "en": "fix action icons",
+                "de": "Korrigiere Zustandsbldchen",
+                "ru": "Поправлены иконки"
+            },
+            "0.5.1": {
                 "en": "initial commit",
                 "de": "initial commit",
                 "ru": "initial commit"
@@ -29,7 +44,7 @@
             "bluefox <dogafox@gmail.com>"
         ],
         "localLink":                "%web_protocol%://%ip%:%web_port%/material/index.html",
-        "type":                     "visualisation",
+        "type":                     "visualization",
         "license":                  "CC-BY-NC",
         "noConfig":                 true,
 		"welcomeScreen": 			{"link": "material/index.html", "name": "material", "img": "material.admin/material.png", "color": "black", "order": 2}
