@@ -1,7 +1,7 @@
 {
   "name": "iobroker.material",
-  "description": "jQuery Mobile based ioBroker user interface",
-  "version": "0.5.4",
+  "description": "React Material based ioBroker user interface",
+  "version": "0.5.6",
   "author": {
     "name": "bluefox",
     "email": "dogafox@gmail.com"

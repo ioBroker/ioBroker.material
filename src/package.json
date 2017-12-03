@@ -1,0 +1,31 @@
+{
+  "name": "test",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "material-ui": "^0.18.3",
+    "material-ui-icons": "^1.0.0-alpha.3",
+    "moment": "^2.18.1",
+    "moment-timezone": "^0.5.13",
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4",
+    "react-flexbox-grid": "^1.1.3",
+    "react-fontawesome": "^1.6.1",
+    "react-fullscreen": "^0.1.0",
+    "react-i18next": "^4.1.2",
+    "react-moment": "^0.2.4",
+    "react-native-i18n": "^2.0.1",
+    "react-scripts": "^1.0.7",
+    "react-tap-event-plugin": "^2.0.1"
+  },
+  "homepage": "./",
+  "devDependencies": {
+    "react-scripts": "1.0.7"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}

@@ -1,0 +1,195 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+.iob-icon {
+  display: inline-block;
+  width: 2em;
+  height: 1.8em;
+  border-radius: 0.4em;
+  text-align: center;
+  padding-top: 0.2em;
+  float: right;
+}
+
+.footer {
+  text-align: center;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
+@media (max-width: 600px) {
+  .container-fluid {
+    padding-left: 1em;
+    padding-right: 1em;
+  }
+}
+
+html {
+  height: calc(100% - 50px);
+}
+body, #root, #root>div{
+  height: 100%;
+}
+
+/* ----------------------- animations --------------------------- */
+@-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
+@-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
+@keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
+.rotate {
+  -webkit-animation: spin 4s linear infinite;
+  -moz-animation: spin 4s linear infinite;
+  animation: spin 4s linear infinite;
+}
+
+@-moz-keyframes bounce-up {
+  0%, 20%, 50%, 80%, 100% {
+    -moz-transform: translateY(0);
+    transform: translateY(0);
+  }
+  40% {
+    -moz-transform: translateY(-2px);
+    transform: translateY(-2px);
+  }
+  60% {
+    -moz-transform: translateY(-1px);
+    transform: translateY(-1px);
+  }
+}
+@-webkit-keyframes bounce-up {
+  0%, 20%, 50%, 80%, 100% {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+  40% {
+    -webkit-transform: translateY(-2px);
+    transform: translateY(-2px);
+  }
+  60% {
+    -webkit-transform: translateY(-1px);
+    transform: translateY(-1px);
+  }
+}
+@keyframes bounce-up {
+  0%, 20%, 50%, 80%, 100% {
+    -moz-transform: translateY(0);
+    -ms-transform: translateY(0);
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+  40% {
+    -moz-transform: translateY(-2px);
+    -ms-transform: translateY(-2px);
+    -webkit-transform: translateY(-2px);
+    transform: translateY(-2px);
+  }
+  60% {
+    -moz-transform: translateY(-1px);
+    -ms-transform: translateY(-1px);
+    -webkit-transform: translateY(-1px);
+    transform: translateY(-1px);
+  }
+}
+.flip-up {
+  -moz-animation:     bounce-up 2s infinite;
+  -webkit-animation:  bounce-up 2s infinite;
+  animation:          bounce-up 2s infinite;
+}
+
+@-moz-keyframes bounce-down {
+  0%, 20%, 50%, 80%, 100% {
+    -moz-transform: translateY(0);
+    transform: translateY(0);
+  }
+  40% {
+    -moz-transform: translateY(2px);
+    transform: translateY(2px);
+  }
+  60% {
+    -moz-transform: translateY(1px);
+    transform: translateY(1px);
+  }
+}
+@-webkit-keyframes bounce-down {
+  0%, 20%, 50%, 80%, 100% {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+  40% {
+    -webkit-transform: translateY(2px);
+    transform: translateY(2px);
+  }
+  60% {
+    -webkit-transform: translateY(1px);
+    transform: translateY(1px);
+  }
+}
+@keyframes bounce-down {
+  0%, 20%, 50%, 80%, 100% {
+    -moz-transform: translateY(0);
+    -ms-transform: translateY(0);
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+  40% {
+    -moz-transform: translateY(2px);
+    -ms-transform: translateY(2px);
+    -webkit-transform: translateY(2px);
+    transform: translateY(2px);
+  }
+  60% {
+    -moz-transform: translateY(1px);
+    -ms-transform: translateY(1px);
+    -webkit-transform: translateY(1px);
+    transform: translateY(1px);
+  }
+}
+.flip-down {
+  -moz-animation:     bounce-down 2s infinite;
+  -webkit-animation:  bounce-down 2s infinite;
+  animation:          bounce-down 2s infinite;
+}
+
+@keyframes blinker {
+  0%, 40%, 60%, 100% { opacity: 1.0; }
+  50% { opacity: 0.0; }
+}
+.blink {
+  -webkit-animation: blinker 2s linear infinite;
+  -moz-animation: blinker 2s linear infinite;
+  animation: blinker 2s linear infinite;
+}
+
+@keyframes blinker-0 {
+  0% { opacity: 0.0; }
+  20% { opacity: 0.0; }
+  30% { opacity: 1.0; }
+  70% { opacity: 1.0; }
+  80% { opacity: 0.0; }
+  100% { opacity: 0.0; }
+}
+.blinker-0 {
+  -webkit-animation: blinker-0 4s linear infinite;
+  -moz-animation: blinker-0 4s linear infinite;
+  animation: blinker-0 4s linear infinite;
+}
+
+@keyframes blinker-1 {
+  0% { opacity: 1.0; }
+  20% { opacity: 1.0; }
+  30% { opacity: 0.0; }
+  70% { opacity: 0.0; }
+  80% { opacity: 1.0; }
+  100% { opacity: 1.0; }
+}
+.blinker-1 {
+  -moz-transform: translateX(10px);
+  transform: translateX(10px);
+
+  -webkit-animation: blinker-1 4s linear infinite;
+  -moz-animation: blinker-1 4s linear infinite;
+  animation: blinker-1 4s linear infinite;
+}

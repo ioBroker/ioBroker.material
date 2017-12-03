@@ -1,9 +1,9 @@
 {
     "common": {
         "name":                     "material",
-        "version": "0.5.4",
+        "version": "0.5.6",
         "news": {
-            "0.5.4": {
+            "0.5.6": {
                 "en": "fix undefined names",
                 "de": "Korrigiere undefinierte Namen",
                 "ru": "Поправлены неопределённые имена"

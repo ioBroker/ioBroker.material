@@ -18,7 +18,7 @@ React and Material UI interface.
 - everything
 
 ## Changelog
-### 0.5.4 (2017.10.11)
+### 0.5.6 (2017.10.11)
 * (bluefox) fix undefined names
 * (bluefox) fix detection of switches
 
