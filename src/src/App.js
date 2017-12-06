@@ -30,19 +30,19 @@ class App extends Component {
         let path = window.location.hash.replace(/^#/, '');
 
         this.state = {
-            menuFixed: (typeof Storage !== 'undefined') ? window.localStorage.getItem('menuFixed') === '1' : false,
-            open: false,
-            objects: {},
-            isListening: false,
-            loading: true,
-            connected: false,
-            refresh: false,
-            errorShow: false,
-            fullScreen: false,
-            errorText: '',
-            masterPath: path ? 'enum.' + path.split('.').shift() : 'enum.rooms',
-            viewEnum: path ? 'enum.' + path : '',
-            width: '0'
+            menuFixed:      (typeof Storage !== 'undefined') ? window.localStorage.getItem('menuFixed') === '1' : false,
+            open:           false,
+            objects:        {},
+            isListening:    false,
+            loading:        true,
+            connected:      false,
+            refresh:        false,
+            errorShow:      false,
+            fullScreen:     false,
+            errorText:      '',
+            masterPath:     path ? 'enum.' + path.split('.').shift() : 'enum.rooms',
+            viewEnum:       path ? 'enum.' + path : '',
+            width:          '0'
         };
         this.state.open = this.state.menuFixed;
 

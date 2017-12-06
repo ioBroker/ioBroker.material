@@ -6,13 +6,15 @@ import Tile from './Tile';
 import CircularProgress from 'material-ui/CircularProgress';
 import Utils from './Utils';
 import Background from './assets/apartment.jpg';
+import iobTheme from './theme';
 
 const styles = {
     panel: {
-        backgroundImage: 'url(' + Background + ')',//'url(homekit.png)',
+        //backgroundImage: 'url(' + Background + ')',//'url(homekit.png)',
         backgroundSize: '100% auto',
-        paddingTop: 50,
+        paddingTop: iobTheme.appBar.height,
         minHeight: '100%',
+        background: '#000'//'#1b1b1b'
     }
 };
 
@@ -118,7 +120,7 @@ class StatesList extends Component {
                 index++;
                 if (index >= cols) index = 0;
             }
-            columns = columns.map((items, i) => <Col  key={'col' + i} xs={xWidth} sm={xWidth} md={xWidth} lg={xWidth}>{items}</Col>);
+            columns = columns.map((items, i) => <Col key={'col' + i} xs={xWidth} sm={xWidth} md={xWidth} lg={xWidth}>{items}</Col>);
         } else if (!this.props.loading) {
             // no connection
             columns.push((<Col xs={12} sm={6} md={4} lg={3} key="connection">
@@ -133,7 +135,6 @@ class StatesList extends Component {
 
         return(
             <div style={styles.panel} >
-                <Divider />
                 <Grid fluid style={{display: 'flex'}}>{columns}</Grid>
             </div>);
     }

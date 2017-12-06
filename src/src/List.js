@@ -5,7 +5,9 @@ import SubHeader from 'material-ui/Subheader';
 import Divider from 'material-ui/Divider';
 import Utils from './Utils';
 import FlatButton from 'material-ui/FlatButton';
-import IconRooms from 'material-ui-icons/Home';
+//import IconRooms from 'material-ui-icons/Home';
+import IconRooms from './icons/IconHome';
+
 import IconButton from 'material-ui/IconButton';
 import IconFunctions from 'material-ui-icons/LightbulbOutline'
 import IconFavorites from 'material-ui-icons/Favorite'
@@ -92,7 +94,7 @@ class MenuList extends React.Component {
                         name = name[0].toUpperCase() + name.substring(1).toLowerCase();
                     }
                     if (item === 'enum.rooms') {
-                        return (<IconButton key={item} style={item === this.props.root ? styles.iconsSelected : {}} tooltip={name}     onTouchTap={() => this.onRootChanged('enum.rooms')}><IconRooms /></IconButton>);
+                        return (<IconButton key={item} style={item === this.props.root ? styles.iconsSelected : {}} tooltip={name}     onTouchTap={() => this.onRootChanged('enum.rooms')}><IconRooms isOn={item === this.props.root}/></IconButton>);
                     } else if (item === 'enum.functions') {
                         return (<IconButton key={item} style={item === this.props.root ? styles.iconsSelected : {}} tooltip={name}     onTouchTap={() => this.onRootChanged('enum.functions')}><IconFunctions /></IconButton>);
                     } else if (item === 'enum.favorites') {

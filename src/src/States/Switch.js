@@ -4,11 +4,11 @@ import PropTypes from 'prop-types';
 import StateTypes from './Types';
 import ActionLightbulbOutline from 'material-ui/svg-icons/action/lightbulb-outline'
 import Toggle from 'material-ui/Toggle';
+import iobTheme from '../theme';
 
 const styles = {
     bulbOn: {
-        background: 'linear-gradient(135deg, #fff9c0 12%,#f1da36 100%)'
-
+        background: iobTheme.appBar.background//'linear-gradient(135deg, #fff9c0 12%,#f1da36 100%)'
     },
     toggle: {
         paddingTop: '0.4em',

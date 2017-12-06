@@ -9,6 +9,9 @@ const styles = {
         right: 0,
         top: 0,
         opacity: 0.8
+    },
+    colors: {
+        alarm: '#d60e4e'
     }
 };
 
@@ -32,19 +35,19 @@ const fontSize = '1.25em';
 
 const IndicatorProps = [
     {id: IndicatorTypes.invalid,     icon: null, label: 'invalid',     invert: false, bool: true},
-    {id: IndicatorTypes.fire,        icon: (<FontIcon style={{color: 'red', fontSize: fontSize}} className='material-icons'>smoking_rooms</FontIcon>), label: 'Fire',        invert: false, bool: true},
-    {id: IndicatorTypes.water,       icon: (<FontIcon style={{color: 'red', fontSize: fontSize}} className='material-icons'>settings</FontIcon>), label: 'Water',       invert: false, bool: true},
+    {id: IndicatorTypes.fire,        icon: (<FontIcon style={{color: styles.colors.alarm, fontSize: fontSize}} className='material-icons'>smoking_rooms</FontIcon>), label: 'Fire',        invert: false, bool: true},
+    {id: IndicatorTypes.water,       icon: (<FontIcon style={{color: styles.colors.alarm, fontSize: fontSize}} className='material-icons'>settings</FontIcon>), label: 'Water',       invert: false, bool: true},
     {id: IndicatorTypes.working,     icon: (<FontIcon style={{color: 'gray', fontSize: fontSize}} className='material-icons rotate'>settings</FontIcon>), label: 'Working',     invert: false, bool: true},
-    {id: IndicatorTypes.battery,     icon: (<FontIcon style={{color: 'red', fontSize: fontSize}} className='material-icons'>battery_alert</FontIcon>), label: 'Battery low', invert: false, bool: true},
+    {id: IndicatorTypes.battery,     icon: (<FontIcon style={{color: styles.colors.alarm, fontSize: fontSize}} className='material-icons'>battery_alert</FontIcon>), label: 'Battery low', invert: false, bool: true},
     {id: IndicatorTypes.direction,   icon: {
             down: (<FontIcon style={{color: 'blue', fontSize: fontSize}} className='material-icons flip-down'>file_download</FontIcon>),
             up:   (<FontIcon style={{color: 'blue', fontSize: fontSize}} className='material-icons flip-up'>file_upload</FontIcon>)
         },
         label: 'Direction',   invert: false, bool: false},
-    {id: IndicatorTypes.motion,      icon: (<FontIcon style={{color: 'red', fontSize: fontSize}} className='material-icons'>settings_remote</FontIcon>), label: 'Motion',      invert: false, bool: true},
+    {id: IndicatorTypes.motion,      icon: (<FontIcon style={{color: styles.colors.alarm, fontSize: fontSize}} className='material-icons'>settings_remote</FontIcon>), label: 'Motion',      invert: false, bool: true},
     {id: IndicatorTypes.error,       icon: (<FontIcon style={{color: 'orange', fontSize: fontSize}} className='material-icons'>error</FontIcon>), label: 'Error',       invert: false, bool: true},
     {id: IndicatorTypes.unreach,     icon: (<FontIcon style={{color: 'orange', fontSize: fontSize}} className='material-icons'>perm_scan_wifi</FontIcon>), label: 'Unreachable', invert: false, bool: true},
-    {id: IndicatorTypes.alarm,       icon: (<FontIcon style={{color: 'orange', fontSize: fontSize}} className='material-icons'>warning</FontIcon>), label: 'Alarm',       invert: false, bool: true},
+    {id: IndicatorTypes.alarm,       icon: (<FontIcon style={{color: styles.colors.alarm, fontSize: fontSize}} className='material-icons'>warning</FontIcon>), label: 'Alarm',       invert: false, bool: true},
     {id: IndicatorTypes.connected,   icon: (<FontIcon style={{color: 'orange', fontSize: fontSize}} className='material-icons'>perm_scan_wifi</FontIcon>), label: 'Connected',   invert: true, bool: true},
     {id: IndicatorTypes.updates,     icon: (<FontIcon style={{color: 'green', fontSize: fontSize}} className='material-icons'>build</FontIcon>), label: 'Updates',     invert: false, bool: true},
     {id: IndicatorTypes.maintenance, icon: (<FontIcon style={{color: 'green', fontSize: fontSize}} className='material-icons'>build</FontIcon>), label: 'Maintenance', invert: false, bool: true},

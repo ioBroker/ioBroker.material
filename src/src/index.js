@@ -4,13 +4,14 @@ import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 import './index.css';
 import injectTapEventPlugin from 'react-tap-event-plugin';
+import iobTheme from './theme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 const muiTheme = getMuiTheme({
     appBar: {
-        color: 'rgba(128, 128, 128, 0.8)',//''#337ab7',
-        height: 50
+        //color: 'rgba(128, 128, 128, 0.8)',//''#337ab7',
+        height: 48
     },
     refreshIndicator: {
         strokeColor: '#337ab7',
@@ -18,11 +19,10 @@ const muiTheme = getMuiTheme({
     },
 });
 
-
 injectTapEventPlugin();
 
 ReactDOM.render(
-    <MuiThemeProvider muiTheme={muiTheme}>
+    <MuiThemeProvider muiTheme={getMuiTheme(iobTheme)}>
         <App />
     </MuiThemeProvider>,
 

@@ -24,12 +24,12 @@ const styles = {
 
 class Generic extends Component {
     static propTypes = {
-        id:      PropTypes.string,
-        objects: PropTypes.object.isRequired,
-        states:  PropTypes.object.isRequired,
-        label:   PropTypes.string,
-        channelName: PropTypes.string,
-        enumName: PropTypes.string
+        id:             PropTypes.string,
+        objects:        PropTypes.object.isRequired,
+        states:         PropTypes.object.isRequired,
+        label:          PropTypes.string,
+        channelName:    PropTypes.string,
+        enumName:       PropTypes.string
     };
 
     constructor(props, noSubscribe) {

@@ -29,9 +29,16 @@ gulp.task('build', function () {
         stdout: true  // default = true, false means don't write stdout
     };
     console.log(options.cwd);
-    return gulp.src(__dirname + '/src/node_modules/react-scripts/scripts/build.js')
-        .pipe(exec('node <%= file.path %>', options))
-        .pipe(exec.reporter(reportOptions)).pipe(connect.reload());
+    if (fs.existsSync(__dirname + '/src/node_modules/react-scripts/scripts/build.js')) {
+        return gulp.src(__dirname + '/src/node_modules/react-scripts/scripts/build.js')
+            .pipe(exec('node <%= file.path %>', options))
+            .pipe(exec.reporter(reportOptions)).pipe(connect.reload());
+    } else {
+        return gulp.src(__dirname + '/node_modules/react-scripts/scripts/build.js')
+            .pipe(exec('node <%= file.path %>', options))
+            .pipe(exec.reporter(reportOptions)).pipe(connect.reload());
+
+    }
 });
 
 gulp.task('copy', function () {
