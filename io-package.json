@@ -40,6 +40,7 @@
         "readme":                   "https://github.com/ioBroker/ioBroker.material/blob/master/README.md",
         "singleton":                true,
         "preserveSettings":         "material",
+	    "nogit": true,
         "authors": [
             "bluefox <dogafox@gmail.com>"
         ],
