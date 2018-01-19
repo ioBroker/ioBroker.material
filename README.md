@@ -9,6 +9,10 @@
 
 React and Material UI interface.
 
+## Instllation
+**Important!**
+This adapter cannot be installed directly from github. Only from npm.
+
 ## Supported types
 
 ### Sliders:
@@ -34,6 +38,6 @@ React and Material UI interface.
 ## License
 CC-BY-NC
 
-Copyright (c) 2017 bluefox <dogafox@gmail.com>
+Copyright (c) 2017-2018 bluefox <dogafox@gmail.com>
 
 Commercial use is not allowed.
