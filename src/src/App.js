@@ -75,7 +75,7 @@ class App extends Component {
 
         this.conn.init({
             name:          'mobile.0',  // optional - default 'vis.0'
-            connLink:      (typeof socketUrl === 'undefined') ? 'http://localhost:8084' : undefined,  // optional URL of the socket.io adapter
+            connLink:      (typeof socketUrl === 'undefined') ? '/' : undefined,  // optional URL of the socket.io adapter
 //            socketSession: ''           // optional - used by authentication
         }, {
             onConnChange: isConnected => {

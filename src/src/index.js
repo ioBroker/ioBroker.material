@@ -16,7 +16,7 @@ const muiTheme = getMuiTheme({
     refreshIndicator: {
         strokeColor: '#337ab7',
         loadingStrokeColor: '#337ab7'
-    },
+    }
 });
 
 injectTapEventPlugin();

@@ -22,6 +22,9 @@ This adapter cannot be installed directly from github. Only from npm.
 - everything
 
 ## Changelog
+### 0.5.7 (2018.01.24)
+* (bluefox) Ready for cloud services
+
 ### 0.5.6 (2017.10.11)
 * (bluefox) fix undefined names
 * (bluefox) fix detection of switches

@@ -1,5 +1,4 @@
 gulpfile.js
-Gruntfile.js
 tasks
 node_modules
 nativeDroid2-master
@@ -9,3 +8,5 @@ nativeDroid2-master
 appveyor.yml
 test
 src
+iob_npm.done
+package-lock.json

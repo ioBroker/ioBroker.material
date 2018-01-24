@@ -1,8 +1,19 @@
 {
     "common": {
         "name":                     "material",
-        "version": "0.5.6",
+        "version": "0.5.7",
         "news": {
+            "0.5.7": {
+                "en": "Ready for cloud services",
+                "de": "Bereit für Cloud-Dienste",
+                "ru": "Готов к облачным сервисам",
+                "pt": "Pronto para serviços em nuvem",
+                "nl": "Klaar voor cloudservices",
+                "fr": "Prêt pour les services cloud",
+                "it": "Pronto per i servizi cloud",
+                "es": "Listo para servicios en la nube",
+                "pl": "Gotowy do usług w chmurze"
+            },
             "0.5.6": {
                 "en": "fix undefined names",
                 "de": "Korrigiere undefinierte Namen",
@@ -28,7 +39,13 @@
         "desc":                     {
             "en": "Material UI based ioBroker user interface",
             "de": "ioBroker GUI für mobile Geräte auf dem Basis von Material UI",
-            "ru": "ioBroker визуализация для мобильных устройств на Material UI"
+            "ru": "ioBroker визуализация для мобильных устройств на Material UI",
+            "pt": "Interface de usuário ioBroker baseada em UI de material",
+            "nl": "Materiaal UI gebaseerde gebruikersinterface van ioBroker",
+            "fr": "Interface utilisateur ioBroker basée sur l'interface utilisateur matérielle",
+            "it": "Interfaccia utente ioBroker basata su UI materiale",
+            "es": "Interfaz de usuario ioBroker basada en IU de material",
+            "pl": "Interfejs użytkownika ioBroker oparty na interfejsie użytkownika"
         },
         "platform":                 "javascript/Node.js",
         "onlyWWW":                  "true",
@@ -40,7 +57,7 @@
         "readme":                   "https://github.com/ioBroker/ioBroker.material/blob/master/README.md",
         "singleton":                true,
         "preserveSettings":         "material",
-	    "nogit": true,
+	    "nogit":                    true,
         "authors": [
             "bluefox <dogafox@gmail.com>"
         ],
