@@ -95,10 +95,10 @@ class App extends Component {
                                     }
                                 }
                             }
-                            var keys = Object.keys(objects);
+                            let keys = Object.keys(objects);
                             keys.sort();
-                            var result = {};
-                            for (var k = 0; k < keys.length; k++) {
+                            let result = {};
+                            for (let k = 0; k < keys.length; k++) {
                                 if (keys[k].match(/^system\./)) continue;
                                 result[keys[k]] = objects[keys[k]];
                             }

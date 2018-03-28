@@ -14,6 +14,10 @@ class Utils {
             if (!name && item.common.desc) {
                 return item.common.desc;
             }
+            if (typeof name === 'object') {
+                const lang = (objects['system.config'] && objects['system.config'].common && objects['system.config'].common.language) || 'en';
+                name = name[lang];
+            }
             name = name.replace(/_/g, ' ');
 
             if (name === name.toUpperCase()) {

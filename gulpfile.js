@@ -1,10 +1,10 @@
-const gulp = require('gulp');
-const install = require('gulp-install');
-const exec = require('gulp-exec');
-const fs = require('fs');
-const copy = require('gulp-copy');
-const connect = require('gulp-connect');
-const watch = require('gulp-watch');
+const gulp      = require('gulp');
+const install   = require('gulp-install');
+const exec      = require('gulp-exec');
+const fs        = require('fs');
+const copy      = require('gulp-copy');
+const connect   = require('gulp-connect');
+const watch     = require('gulp-watch');
 
 gulp.task('npm', function (done) {
     if (fs.existsSync(__dirname + '/src/node_modules')) {
@@ -18,10 +18,10 @@ gulp.task('npm', function (done) {
 
 gulp.task('build', function () {
     const options = {
-        continueOnError: false, // default = false, true means don't emit error event
-        pipeStdout: false, // default = false, true means stdout is written to file.contents
-        customTemplatingThing: 'build', // content passed to gutil.template()
-        cwd: __dirname + '/src/'
+        continueOnError:        false, // default = false, true means don't emit error event
+        pipeStdout:             false, // default = false, true means stdout is written to file.contents
+        customTemplatingThing:  'build', // content passed to gutil.template()
+        cwd:                    __dirname + '/src/'
     };
     const reportOptions = {
         err:    true, // default = true, false means don't write err
