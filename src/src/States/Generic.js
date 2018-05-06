@@ -73,11 +73,7 @@ class Generic extends Component {
 
             let item = objects[id];
             if (item && item.common && item.common.name) {
-                name = item.common.name;
-                if (!name && item.common.desc) {
-                    return item.common.desc;
-                }
-                name = name.replace(/[_.]/g, ' ');
+                name = Utils.getObjectName(objects, id);
 
                 if (enumName) {
                     let reg = new RegExp('\\b' + enumName + '\\b');

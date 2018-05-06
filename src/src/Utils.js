@@ -6,29 +6,31 @@ class Utils {
             .join(' ');
     }
 
-    static getObjectName(objects, id) {
+    static getObjectName(objects, id, isDesc) {
         let item = objects[id];
-        let name = id;
-        if (item && item.common && item.common.name) {
-            name = item.common.name;
-            if (!name && item.common.desc) {
-                return item.common.desc;
-            }
-            if (typeof name === 'object') {
-                const lang = (objects['system.config'] && objects['system.config'].common && objects['system.config'].common.language) || 'en';
-                name = name[lang];
-            }
-            name = name.replace(/_/g, ' ');
+        let text = id;
+        const attr = isDesc ? 'desc' : 'name';
 
-            if (name === name.toUpperCase()) {
-                name = name[0] + name.substring(1).toLowerCase();
+        if (item && item.common && item.common[attr]) {
+            text = item.common[attr];
+            if (attr !== 'desc' && !text && item.common.desc) {
+                text = item.common.desc;
+            }
+            if (typeof text === 'object') {
+                const lang = (objects['system.config'] && objects['system.config'].common && objects['system.config'].common.language) || 'en';
+                text = text[lang] || text.en;
+            }
+            text = text.replace(/[_.]/g, ' ');
+
+            if (text === text.toUpperCase()) {
+                text = text[0] + text.substring(1).toLowerCase();
             }
         } else {
             let pos = id.lastIndexOf('.');
-            name = id.substring(pos + 1).replace(/_/g, ' ');
-            name = Utils.CapitalWords(name);
+            text = id.substring(pos + 1).replace(/[_.]/g, ' ');
+            text = Utils.CapitalWords(text);
         }
-        return name.trim();
+        return text.trim();
     }
 }
 

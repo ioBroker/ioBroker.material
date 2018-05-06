@@ -88,11 +88,12 @@ class MenuList extends React.Component {
             return (<SubHeader>{
                 items.map(item => {
                     if (this.props.objects[item] && this.props.objects[item].common && this.props.objects[item].common.name) {
-                        name = this.props.objects[item].common.name;
+                        name = Utils.getObjectName(this.props.objects, item);
                     } else {
                         name = item.substring(5);
                         name = name[0].toUpperCase() + name.substring(1).toLowerCase();
                     }
+
                     if (item === 'enum.rooms') {
                         return (<IconButton key={item} style={item === this.props.root ? styles.iconsSelected : {}} tooltip={name}     onTouchTap={() => this.onRootChanged('enum.rooms')}><IconRooms isOn={item === this.props.root}/></IconButton>);
                     } else if (item === 'enum.functions') {

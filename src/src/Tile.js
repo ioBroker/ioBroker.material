@@ -4,6 +4,7 @@ import { Row } from 'react-flexbox-grid';
 import StateTypes from './States/Types';
 import Paper from 'material-ui/Paper';
 import IndicatorBar from './States/IndicatorBar';
+import Utils from './Utils';
 
 import StateSwitch from './States/Switch';
 import StateInfo from './States/Info';
@@ -158,7 +159,7 @@ class Tile extends Component {
             if (regEx.test(name)) {
                 return true;
             }
-            name = this.props.objects[enumId].common.name;
+            name = Utils.getObjectName(this.props.objects, enumId);
             return regEx.test(name);
         });
     }
