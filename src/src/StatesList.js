@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import Divider from 'material-ui/Divider';
+// import Divider from 'material-ui/Divider';
 import { Grid, Col } from 'react-flexbox-grid';
 import Tile from './Tile';
 import CircularProgress from 'material-ui/CircularProgress';
 import Utils from './Utils';
-import Background from './assets/apartment.jpg';
+// import Background from './assets/apartment.jpg';
 import iobTheme from './theme';
 
 const styles = {

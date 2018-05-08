@@ -1,7 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Generic from './Generic';
-import FontIcon from 'material-ui/FontIcon';
+//import FontIcon from 'material-ui/FontIcon';
+import IconSmokingRooms from 'react-icons/md/smoking-rooms';
+import IconSettings from 'react-icons/md/settings';
+import IconBatteryAlert from 'react-icons/md/battery-alert';
+import IconFileDownload from 'react-icons/md/file-download';
+import IconFileUpload from 'react-icons/md/file-upload';
+import IconSettingsRemote from 'react-icons/md/settings-remote';
+import IconError from 'react-icons/md/error';
+import IconWarning from 'react-icons/md/warning';
+import IconPermScanWifi from 'react-icons/md/perm-scan-wifi';
+import IconBuild from 'react-icons/md/build';
+import IconHelp from 'react-icons/md/help';
 
 const styles = {
     bar: {
@@ -35,23 +46,23 @@ const fontSize = '1.25em';
 
 const IndicatorProps = [
     {id: IndicatorTypes.invalid,     icon: null, label: 'invalid',     invert: false, bool: true},
-    {id: IndicatorTypes.fire,        icon: (<FontIcon style={{color: styles.colors.alarm, fontSize: fontSize}} className='material-icons'>smoking_rooms</FontIcon>), label: 'Fire',        invert: false, bool: true},
-    {id: IndicatorTypes.water,       icon: (<FontIcon style={{color: styles.colors.alarm, fontSize: fontSize}} className='material-icons'>settings</FontIcon>), label: 'Water',       invert: false, bool: true},
-    {id: IndicatorTypes.working,     icon: (<FontIcon style={{color: 'gray', fontSize: fontSize}} className='material-icons rotate'>settings</FontIcon>), label: 'Working',     invert: false, bool: true},
-    {id: IndicatorTypes.battery,     icon: (<FontIcon style={{color: styles.colors.alarm, fontSize: fontSize}} className='material-icons'>battery_alert</FontIcon>), label: 'Battery low', invert: false, bool: true},
+    {id: IndicatorTypes.fire,        icon: (<IconSmokingRooms size={fontSize} color={styles.colors.alarm} />), label: 'Fire',        invert: false, bool: true},
+    {id: IndicatorTypes.water,       icon: (<IconSettings size={fontSize} color={styles.colors.alarm} />), label: 'Water',       invert: false, bool: true},
+    {id: IndicatorTypes.working,     icon: (<IconSettings size={fontSize} color='gray' />), label: 'Working',     invert: false, bool: true},
+    {id: IndicatorTypes.battery,     icon: (<IconBatteryAlert size={fontSize} color={styles.colors.alarm} />), label: 'Battery low', invert: false, bool: true},
     {id: IndicatorTypes.direction,   icon: {
-            down: (<FontIcon style={{color: 'blue', fontSize: fontSize}} className='material-icons flip-down'>file_download</FontIcon>),
-            up:   (<FontIcon style={{color: 'blue', fontSize: fontSize}} className='material-icons flip-up'>file_upload</FontIcon>)
+            down: (<IconFileDownload size={fontSize} color='blue' className='flip-down'/>),
+            up:   (<IconFileUpload   size={fontSize} color='blue' className='flip-up'/>)
         },
         label: 'Direction',   invert: false, bool: false},
-    {id: IndicatorTypes.motion,      icon: (<FontIcon style={{color: styles.colors.alarm, fontSize: fontSize}} className='material-icons'>settings_remote</FontIcon>), label: 'Motion',      invert: false, bool: true},
-    {id: IndicatorTypes.error,       icon: (<FontIcon style={{color: 'orange', fontSize: fontSize}} className='material-icons'>error</FontIcon>), label: 'Error',       invert: false, bool: true},
-    {id: IndicatorTypes.unreach,     icon: (<FontIcon style={{color: 'orange', fontSize: fontSize}} className='material-icons'>perm_scan_wifi</FontIcon>), label: 'Unreachable', invert: false, bool: true},
-    {id: IndicatorTypes.alarm,       icon: (<FontIcon style={{color: styles.colors.alarm, fontSize: fontSize}} className='material-icons'>warning</FontIcon>), label: 'Alarm',       invert: false, bool: true},
-    {id: IndicatorTypes.connected,   icon: (<FontIcon style={{color: 'orange', fontSize: fontSize}} className='material-icons'>perm_scan_wifi</FontIcon>), label: 'Connected',   invert: true, bool: true},
-    {id: IndicatorTypes.updates,     icon: (<FontIcon style={{color: 'green', fontSize: fontSize}} className='material-icons'>build</FontIcon>), label: 'Updates',     invert: false, bool: true},
-    {id: IndicatorTypes.maintenance, icon: (<FontIcon style={{color: 'green', fontSize: fontSize}} className='material-icons'>build</FontIcon>), label: 'Maintenance', invert: false, bool: true},
-    {id: IndicatorTypes.unknown,     icon: (<FontIcon style={{color: 'green', fontSize: fontSize}} className='material-icons'>help</FontIcon>), label: 'Unknown',     invert: false, bool: true},
+    {id: IndicatorTypes.motion,      icon: (<IconSettingsRemote color={styles.colors.alarm} size={fontSize} />), label: 'Motion',      invert: false, bool: true},
+    {id: IndicatorTypes.error,       icon: (<IconError color='orange' size={fontSize}/>), label: 'Error',       invert: false, bool: true},
+    {id: IndicatorTypes.unreach,     icon: (<IconPermScanWifi color: 'orange' size={fontSize}/>), label: 'Unreachable', invert: false, bool: true},
+    {id: IndicatorTypes.alarm,       icon: (<IconWarning color={styles.colors.alarm} size={fontSize} />), label: 'Alarm',       invert: false, bool: true},
+    {id: IndicatorTypes.connected,   icon: (<IconPermScanWifi color='orange' size={fontSize} />), label: 'Connected',   invert: true, bool: true},
+    {id: IndicatorTypes.updates,     icon: (<IconBuild color='green' size={fontSize} />), label: 'Updates',     invert: false, bool: true},
+    {id: IndicatorTypes.maintenance, icon: (<IconBuild color='green' size={fontSize} />), label: 'Maintenance', invert: false, bool: true},
+    {id: IndicatorTypes.unknown,     icon: (<IconHelp color='green' size={fontSize} />), label: 'Unknown',     invert: false, bool: true},
 ];
 
 class IndicatorBar extends Generic {

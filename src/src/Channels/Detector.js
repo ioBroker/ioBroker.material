@@ -1,6 +1,8 @@
+import IconClose from 'material-ui-icons/Close';
+
 const patterns = {
     thermostat: [
-        {role: 'value.valve'}
+        {role: /level.temperature/, name: 'SET_TEMPERATURE', required: true, icon: }
     ]
 };
 

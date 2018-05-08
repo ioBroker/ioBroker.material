@@ -2,7 +2,7 @@ import React from 'react';
 import Generic from './Generic';
 import PropTypes from 'prop-types';
 import StateTypes from './Types';
-import ActionLightbulbOutline from 'material-ui/svg-icons/action/lightbulb-outline'
+import ActionLightbulbOutline from 'react-icons/md/lightbulb-outline'
 import Slider from 'material-ui/Slider';
 import iobTheme from '../theme';
 
