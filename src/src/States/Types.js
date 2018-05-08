@@ -11,7 +11,10 @@ const stateTypes = {
     lock: 10,
     button: 11,
     door: 12,
-    window: 13
+    window: 13,
+    media: 14,
+    thermostat: 15,
+    camera: 16
 };
 
 export default stateTypes;
