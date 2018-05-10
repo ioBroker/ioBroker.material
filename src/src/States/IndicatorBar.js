@@ -2,17 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Generic from './Generic';
 //import FontIcon from 'material-ui/FontIcon';
-import IconSmokingRooms from 'react-icons/md/smoking-rooms';
-import IconSettings from 'react-icons/md/settings';
-import IconBatteryAlert from 'react-icons/md/battery-alert';
-import IconFileDownload from 'react-icons/md/file-download';
-import IconFileUpload from 'react-icons/md/file-upload';
-import IconSettingsRemote from 'react-icons/md/settings-remote';
-import IconError from 'react-icons/md/error';
-import IconWarning from 'react-icons/md/warning';
-import IconPermScanWifi from 'react-icons/md/perm-scan-wifi';
-import IconBuild from 'react-icons/md/build';
-import IconHelp from 'react-icons/md/help';
+import IconSmokingRooms from 'react-icons/lib/md/smoking-rooms';
+import IconSettings from 'react-icons/lib/md/settings';
+import IconBatteryAlert from 'react-icons/lib/md/battery-alert';
+import IconFileDownload from 'react-icons/lib/md/file-download';
+import IconFileUpload from 'react-icons/lib/md/file-upload';
+import IconSettingsRemote from 'react-icons/lib/md/settings-remote';
+import IconError from 'react-icons/lib/md/error';
+import IconWarning from 'react-icons/lib/md/warning';
+import IconPermScanWifi from 'react-icons/lib/md/perm-scan-wifi';
+import IconBuild from 'react-icons/lib/md/build';
+import IconHelp from 'react-icons/lib/md/help';
+import Theme from '../theme';
 
 const styles = {
     bar: {
@@ -46,23 +47,23 @@ const fontSize = '1.25em';
 
 const IndicatorProps = [
     {id: IndicatorTypes.invalid,     icon: null, label: 'invalid',     invert: false, bool: true},
-    {id: IndicatorTypes.fire,        icon: (<IconSmokingRooms size={fontSize} color={styles.colors.alarm} />), label: 'Fire',        invert: false, bool: true},
-    {id: IndicatorTypes.water,       icon: (<IconSettings size={fontSize} color={styles.colors.alarm} />), label: 'Water',       invert: false, bool: true},
-    {id: IndicatorTypes.working,     icon: (<IconSettings size={fontSize} color='gray' />), label: 'Working',     invert: false, bool: true},
-    {id: IndicatorTypes.battery,     icon: (<IconBatteryAlert size={fontSize} color={styles.colors.alarm} />), label: 'Battery low', invert: false, bool: true},
+    {id: IndicatorTypes.fire,        icon: (<IconSmokingRooms   color={styles.colors.alarm} width={Theme.indicatorSize} height={Theme.indicatorSize} />), label: 'Fire',        invert: false, bool: true},
+    {id: IndicatorTypes.water,       icon: (<IconSettings       color={styles.colors.alarm} width={Theme.indicatorSize} height={Theme.indicatorSize} />), label: 'Water',       invert: false, bool: true},
+    {id: IndicatorTypes.working,     icon: (<IconSettings       color='gray'                width={Theme.indicatorSize} height={Theme.indicatorSize} />), label: 'Working',     invert: false, bool: true},
+    {id: IndicatorTypes.battery,     icon: (<IconBatteryAlert   color={styles.colors.alarm} width={Theme.indicatorSize} height={Theme.indicatorSize} />), label: 'Battery low', invert: false, bool: true},
     {id: IndicatorTypes.direction,   icon: {
             down: (<IconFileDownload size={fontSize} color='blue' className='flip-down'/>),
             up:   (<IconFileUpload   size={fontSize} color='blue' className='flip-up'/>)
         },
         label: 'Direction',   invert: false, bool: false},
-    {id: IndicatorTypes.motion,      icon: (<IconSettingsRemote color={styles.colors.alarm} size={fontSize} />), label: 'Motion',      invert: false, bool: true},
-    {id: IndicatorTypes.error,       icon: (<IconError color='orange' size={fontSize}/>), label: 'Error',       invert: false, bool: true},
-    {id: IndicatorTypes.unreach,     icon: (<IconPermScanWifi color: 'orange' size={fontSize}/>), label: 'Unreachable', invert: false, bool: true},
-    {id: IndicatorTypes.alarm,       icon: (<IconWarning color={styles.colors.alarm} size={fontSize} />), label: 'Alarm',       invert: false, bool: true},
-    {id: IndicatorTypes.connected,   icon: (<IconPermScanWifi color='orange' size={fontSize} />), label: 'Connected',   invert: true, bool: true},
-    {id: IndicatorTypes.updates,     icon: (<IconBuild color='green' size={fontSize} />), label: 'Updates',     invert: false, bool: true},
-    {id: IndicatorTypes.maintenance, icon: (<IconBuild color='green' size={fontSize} />), label: 'Maintenance', invert: false, bool: true},
-    {id: IndicatorTypes.unknown,     icon: (<IconHelp color='green' size={fontSize} />), label: 'Unknown',     invert: false, bool: true},
+    {id: IndicatorTypes.motion,      icon: (<IconSettingsRemote color={styles.colors.alarm} width={Theme.indicatorSize} height={Theme.indicatorSize} />), label: 'Motion',      invert: false, bool: true},
+    {id: IndicatorTypes.error,       icon: (<IconError          color='orange'              width={Theme.indicatorSize} height={Theme.indicatorSize} />), label: 'Error',       invert: false, bool: true},
+    {id: IndicatorTypes.unreach,     icon: (<IconPermScanWifi   color='orange'              width={Theme.indicatorSize} height={Theme.indicatorSize} />), label: 'Unreachable', invert: false, bool: true},
+    {id: IndicatorTypes.alarm,       icon: (<IconWarning        color={styles.colors.alarm} width={Theme.indicatorSize} height={Theme.indicatorSize} />), label: 'Alarm',       invert: false, bool: true},
+    {id: IndicatorTypes.connected,   icon: (<IconPermScanWifi   color='orange'              width={Theme.indicatorSize} height={Theme.indicatorSize} />), label: 'Connected',   invert: true,  bool: true},
+    {id: IndicatorTypes.updates,     icon: (<IconBuild          color='green'               width={Theme.indicatorSize} height={Theme.indicatorSize} />), label: 'Updates',     invert: false, bool: true},
+    {id: IndicatorTypes.maintenance, icon: (<IconBuild          color='green'               width={Theme.indicatorSize} height={Theme.indicatorSize} />), label: 'Maintenance', invert: false, bool: true},
+    {id: IndicatorTypes.unknown,     icon: (<IconHelp           color='green'               width={Theme.indicatorSize} height={Theme.indicatorSize} />), label: 'Unknown',     invert: false, bool: true},
 ];
 
 class IndicatorBar extends Generic {

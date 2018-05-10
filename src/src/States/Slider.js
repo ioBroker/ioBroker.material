@@ -2,13 +2,13 @@ import React from 'react';
 import Generic from './Generic';
 import PropTypes from 'prop-types';
 import StateTypes from './Types';
-import ActionLightbulbOutline from 'react-icons/md/lightbulb-outline'
+import ActionLightbulbOutline from 'react-icons/lib/md/lightbulb-outline'
 import Slider from 'material-ui/Slider';
-import iobTheme from '../theme';
+import Theme from '../theme';
 
 const styles = {
     bulbOn: {
-        background: iobTheme.appBar.background//'linear-gradient(135deg, #fff9c0 12%,#f1da36 100%)'
+        background: Theme.appBar.background//'linear-gradient(135deg, #fff9c0 12%,#f1da36 100%)'
 
     }
 };
@@ -41,9 +41,10 @@ class Dimmer extends Generic {
             case StateTypes.light:
                 return (
                     <div key={this.props.id + '.icon'} style={this.state.state ? styles.bulbOn : {}} className="iob-icon">
-                        <ActionLightbulbOutline />
+                        <ActionLightbulbOutline width={Theme.indicatorSize} height={Theme.indicatorSize}/>
                     </div>
                 );
+
             case StateTypes.blind:
                 let item = this.props.objects[this.props.id];
                 let min = 0;
@@ -59,9 +60,11 @@ class Dimmer extends Generic {
                 let value = ((parseFloat(this.state.state) || 0) - min) / (max - min);
                 value = Math.round(value / 10) * 10;
 
+                // will be used later to determine icon
+
                 return (
                     <div key={this.props.id + '.icon'} className="iob-icon">
-                        <ActionLightbulbOutline />
+                        <ActionLightbulbOutline  width={Theme.indicatorSize} height={Theme.indicatorSize}/>
                     </div>
                 );
 

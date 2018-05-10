@@ -2,13 +2,13 @@ import React from 'react';
 import Generic from './Generic';
 import PropTypes from 'prop-types';
 import StateTypes from './Types';
-import ActionLightbulbOutline from 'react-icons/md/lightbulb-outline'
+import ActionLightbulbOutline from 'react-icons/lib/md/lightbulb-outline'
 import Toggle from 'material-ui/Toggle';
-import iobTheme from '../theme';
+import Theme from '../theme';
 
 const styles = {
     bulbOn: {
-        background: iobTheme.appBar.background//'linear-gradient(135deg, #fff9c0 12%,#f1da36 100%)'
+        background: Theme.appBar.background//'linear-gradient(135deg, #fff9c0 12%,#f1da36 100%)'
     },
     toggle: {
         paddingTop: '0.4em',
@@ -38,7 +38,7 @@ class Switch extends Generic {
             case StateTypes.light:
                 return (
                     <div key={this.props.id + '.icon'} style={this.state.state ? styles.bulbOn : {}} className="iob-icon">
-                        <ActionLightbulbOutline />
+                        <ActionLightbulbOutline  width={Theme.indicatorSize} height={Theme.indicatorSize}/>
                     </div>
                 );
 

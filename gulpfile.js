@@ -5,8 +5,20 @@ const fs        = require('fs');
 const copy      = require('gulp-copy');
 const connect   = require('gulp-connect');
 const watch     = require('gulp-watch');
+const del       = require('del');
 
-gulp.task('npm', function (done) {
+gulp.task('clean', () => {
+    return del([
+        'src/node_modules/**/*',
+        'src/build/**/*',
+        'src/package-lock.json'
+    ]).then(del([
+        'src/node_modules',
+        'src/build'
+    ]));
+});
+
+gulp.task('npm', done => {
     if (fs.existsSync(__dirname + '/src/node_modules')) {
         done();
     } else {
@@ -16,7 +28,7 @@ gulp.task('npm', function (done) {
     }
 });
 
-gulp.task('build', function () {
+gulp.task('build', () => {
     const options = {
         continueOnError:        false, // default = false, true means don't emit error event
         pipeStdout:             false, // default = false, true means stdout is written to file.contents
@@ -41,21 +53,21 @@ gulp.task('build', function () {
     }
 });
 
-gulp.task('copy', function () {
+gulp.task('copy', () => {
     return gulp.src(['src/build/*/**', 'src/build/*'])
         .pipe(gulp.dest('www/'));
 });
 
-gulp.task('webserver', function() {
+gulp.task('webserver', () => {
     connect.server({
         root: 'src/build',
         livereload: true
     });
 });
 
-gulp.task('watch', ['webserver'], function () {
+gulp.task('watch', ['webserver'], () => {
     // Callback mode, useful if any plugin in the pipeline depends on the `end`/`flush` event
     return watch(['src/src/*/**', 'src/src/*'], { ignoreInitial: true }, ['build']);
 });
 
-gulp.task('default', ['npm', 'build', 'copy']);
+gulp.task('default', ['clean', 'npm', 'build', 'copy']);

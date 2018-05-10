@@ -142,7 +142,7 @@ class SpeechDialog extends Component {
             <FlatButton
                 label="Cancel"
                 primary={true}
-                onTouchTap={() => this.stopSpeechRecognition(true)}
+                onClick={() => this.stopSpeechRecognition(true)}
             />
         ];
 

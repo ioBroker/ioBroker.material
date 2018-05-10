@@ -121,12 +121,12 @@ class StatesList extends Component {
                 if (index >= cols) index = 0;
             }
             columns = columns.map((items, i) => <Col key={'col' + i} xs={xWidth} sm={xWidth} md={xWidth} lg={xWidth}>{items}</Col>);
-        } else if (!this.props.loading) {
+        } else if (this.props.loading) {
             // no connection
             columns.push((<Col xs={12} sm={6} md={4} lg={3} key="connection">
                 <CircularProgress size={60} thickness={7} color="#337ab7" style={{padding: 20}}/>
             </Col>));
-        } else {
+        } else  {
             // no items
             columns.push((<Col xs={12} sm={6} md={4} lg={3} key="no_items">
                 <Tile states={this.props.states} objects={this.props.objects} id=""/>

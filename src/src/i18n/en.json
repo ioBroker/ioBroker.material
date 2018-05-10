@@ -1,5 +1,6 @@
 {
   "Rooms":     "Rooms",
   "Functions": "Functions",
-  "Favorites": "Favorites"
+  "Favorites": "Favorites",
+  "SET_TEMPERATURE": "Set temperature"
 }

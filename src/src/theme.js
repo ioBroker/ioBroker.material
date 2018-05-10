@@ -44,4 +44,7 @@ export default {
         pickerHeaderColor:  fade(fullWhite, 0.12),
         clockCircleColor:   fade(fullWhite, 0.12),
     },
+    iconSize: '24px',
+    indicatorSize: '20px'
+
 };

@@ -5,17 +5,18 @@ import StatesList from './StatesList';
 import AppBar from 'material-ui/AppBar';
 import Drawer from 'material-ui/Drawer';
 import IconButton from 'material-ui/IconButton';
-import IconClose from 'react-icons/md/close';
-import IconEdit from 'react-icons/md/mode-edit';
-import IconSignalOff from 'react-icons/md/signal-wifi-off';
-import IconLock from 'react-icons/md/lock';
-import IconFullScreen from 'react-icons/md/fullscreen';
-import IconFullScreenExit from 'react-icons/md/fullscreen-exit';
-import IconMic from 'react-icons/md/mic';
+import IconClose from 'react-icons/lib/md/close';
+import IconEdit from 'react-icons/lib/md/mode-edit';
+import IconSignalOff from 'react-icons/lib/md/signal-wifi-off';
+import IconLock from 'react-icons/lib/md/lock';
+import IconFullScreen from 'react-icons/lib/md/fullscreen';
+import IconFullScreenExit from 'react-icons/lib/md/fullscreen-exit';
+import IconMic from 'react-icons/lib/md/mic';
 import Utils from './Utils';
 import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton';
 import SpeechDialog from './SpeechDialog';
+import Theme from './theme';
 
 const isKeyboardAvailbleOnFullScreen = (typeof Element !== 'undefined' && 'ALLOW_KEYBOARD_INPUT' in Element) && Element.ALLOW_KEYBOARD_INPUT;
 
@@ -358,31 +359,33 @@ class App extends Component {
         return (
             <div style={this.state.menuFixed ? {paddingLeft: 250}: {}}>
                 <AppBar
-                    style={{position: 'fixed', width: this.state.menuFixed ? 'calc(100% - 250px)' : '100%'}}
+                    style={{position: 'fixed', width: this.state.menuFixed ? 'calc(100% - 250px)' : '100%', color: Theme.palette.textColor}}
                     title={this.getTitle()}
                     showMenuIconButton={!this.state.menuFixed}
 
-                    iconElementRight={<div>
-                        {this.state.connected ? null : (<IconSignalOff/>)}
-                        <IconButton onTouchTap={() => this.showError('Not implemented')}><IconEdit /></IconButton>
-                        {SpeechDialog.isSpeechRecognitionSupported() ? <IconButton onTouchTap={() => this.onSpeech(true)}><IconMic /></IconButton> : null}
-                        {App.isFullScreenSupported() ?
-                        <IconButton onTouchTap={() => this.onToggleFullScreen()}>{this.state.fullScreen ? <IconFullScreenExit /> : <IconFullScreen />}</IconButton> : null}
+                    iconElementRight={
+                        <div style={{color: Theme.palette.textColor}}>
+                            {this.state.connected ? null : (<IconButton disabled={true}><IconSignalOff width={Theme.iconSize} height={Theme.iconSize}/></IconButton>)}
+                            <IconButton onClick={() => this.showError('Not implemented')} style={{color: Theme.palette.textColor}}><IconEdit width={Theme.iconSize} height={Theme.iconSize}/></IconButton>
+                            {SpeechDialog.isSpeechRecognitionSupported() ? <IconButton style={{color: Theme.palette.textColor}} onClick={() => this.onSpeech(true)}><IconMic width={Theme.iconSize} height={Theme.iconSize}/></IconButton> : null}
+                            {App.isFullScreenSupported() ?
+                                <IconButton style={{color: Theme.palette.textColor}} onClick={() => this.onToggleFullScreen()}>{this.state.fullScreen ? <IconFullScreenExit width={Theme.iconSize} height={Theme.iconSize} /> : <IconFullScreen width={Theme.iconSize} height={Theme.iconSize} />}</IconButton> : null}
                     </div>}
-                    onLeftIconButtonTouchTap={() => this.onToggleMenu()}
+                    onLeftIconButtonClick={() => this.onToggleMenu()}
                 />
 
                 <Drawer open={this.state.open} width={250}>
-                    <IconButton onClick={() => this.onToggleMenu()}>
-                        <IconClose />
+                    <IconButton onClick={() => this.onToggleMenu()} style={{color: Theme.palette.textColor}}>
+                        <IconClose width={Theme.iconSize} height={Theme.iconSize} />
                     </IconButton>
 
                     {this.state.width > 500 && !this.state.menuFixed ?
-                        (<IconButton onClick={() => this.onToggleLock()} style={{float: 'right', height: 40}}>
-                            <IconLock/>
+                        (<IconButton onClick={() => this.onToggleLock()} style={{float: 'right', height: 40,color: Theme.palette.textColor}}>
+                            <IconLock width={Theme.iconSize} height={Theme.iconSize}/>
                         </IconButton>)
                         : null
                     }
+
                     <MenuList
                         objects={this.state.objects}
                         selectedId={this.state.viewEnum}
@@ -405,7 +408,7 @@ class App extends Component {
                     actions={(<RaisedButton
                         label="Ok"
                         primary={true}
-                        onTouchTap={() => this.setState({errorShow: false})}
+                        onClick={() => this.setState({errorShow: false})}
                     />)}
                     modal={false}
                     open={this.state.errorShow}

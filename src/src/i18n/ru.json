@@ -1,5 +1,6 @@
 {
   "Rooms":     "Комнаты",
   "Functions": "Функции",
-  "Favorites": "Закладки"
+  "Favorites": "Закладки",
+  "SET_TEMPERATURE": "Желаемая температура"
 }

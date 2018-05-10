@@ -1,5 +1,6 @@
 {
   "Rooms":     "Räume",
   "Functions": "Funktionen",
-  "Favorites": "Favorite"
+  "Favorites": "Favorite",
+  "SET_TEMPERATURE": "Solltemperatur"
 }

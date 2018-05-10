@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+// import React, { Component } from 'react';
 //import I18n from 'react-native-i18n'
 
 class I18n {

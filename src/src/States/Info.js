@@ -1,7 +1,11 @@
 import React from 'react';
 import Generic from './Generic';
 import Utils from '../Utils';
-import FontAwesome from 'react-fontawesome';
+import IconSun from 'react-icons/lib/fa/sun-o';
+import IconTint from 'react-icons/lib/fa/tint';
+import IconMale from 'react-icons/lib/fa/male';
+import IconFemale from 'react-icons/lib/fa/female';
+import IconThermometer from 'react-icons/lib/ti/thermometer';
 import 'moment';
 import 'moment/locale/ru';
 import 'moment/locale/de';
@@ -9,8 +13,7 @@ import 'moment/locale/fr';
 import 'moment/locale/fr';
 import 'moment/locale/pt';
 import Moment from 'react-moment';
-
-const fontSize = '1.25em';
+import Theme from '../theme';
 
 const styles = {
     icons: {
@@ -24,20 +27,20 @@ const styles = {
 };
 
 const InfoTypes = {
-    'brightness':   (<FontAwesome name='sun-o'                        style={Object.assign({color: 'green'},  styles.icons)}/>),
-    'humidity':     (<FontAwesome name='tint'                         style={Object.assign({color: 'blue'},   styles.icons)}/>),
+    'brightness':   (<IconSun color='green' style={styles.icons} width={Theme.indicatorSize} height={Theme.indicatorSize}/>),
+    'humidity':     (<IconTint color='blue' style={styles.icons} width={Theme.indicatorSize} height={Theme.indicatorSize}/>),
     'motion-true':  (<span>
-                     <FontAwesome name='male'   className='blinker-0' style={Object.assign({color: 'green'},  styles.icons)}/>
-                     <FontAwesome name='female' className='blinker-1' style={Object.assign({color: 'green'},  styles.icons)}/>
+                     <IconMale className='blinker-0' color='green' style={styles.icons} width={Theme.indicatorSize} height={Theme.indicatorSize}/>
+                     <IconFemale className='blinker-1' color='green' style={styles.icons} width={Theme.indicatorSize} height={Theme.indicatorSize}/>
                      </span>),
-    'motion-false': (<FontAwesome name='male'                         style={Object.assign({opacity: 0.6},    styles.icons)}/>),
-    'temperature':  (<FontAwesome name='thermometer-three-quarters'   style={Object.assign({color: 'orange'}, styles.icons)}/>)
+    'motion-false': (<IconMale color='green' style={Object.assign({opacity: 0.6},    styles.icons)} width={Theme.indicatorSize} height={Theme.indicatorSize}/>),
+    'temperature':  (<IconThermometer color='orange' style={styles.icons} width={Theme.indicatorSize} height={Theme.indicatorSize}/>)
 };
 
 class Info extends Generic {
-    constructor(props) {
-        super(props);
-    }
+    // constructor(props) {
+    //     super(props);
+    // }
     updateState(id, state) {
         this.setState({
             state: state.val,

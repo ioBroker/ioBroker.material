@@ -5,17 +5,23 @@ import SubHeader from 'material-ui/Subheader';
 import Divider from 'material-ui/Divider';
 import Utils from './Utils';
 import FlatButton from 'material-ui/FlatButton';
-//import IconRooms from 'material-ui-icons/Home';
 import IconRooms from './icons/IconHome';
 
-import IconButton from 'material-ui/IconButton';
-import IconFunctions from 'material-ui-icons/LightbulbOutline'
-import IconFavorites from 'material-ui-icons/Favorite'
+import IconButton    from 'material-ui/IconButton';
+import IconFunctions from 'react-icons/lib/md/lightbulb-outline';
+import IconFavorites from 'react-icons/lib/md/favorite';
+import Theme from './theme';
+
 const styles = {
     iconsSelected: {
         backgroundColor: 'rgb(204, 204, 204)',
-        color: 'white'
-    }
+        color: 'white',
+        verticalAlign: 'top',
+    },
+    icons: {
+        verticalAlign: 'top',
+        color: 'gray'
+    },
 };
 
 let SelectableList = makeSelectable(List);
@@ -95,13 +101,13 @@ class MenuList extends React.Component {
                     }
 
                     if (item === 'enum.rooms') {
-                        return (<IconButton key={item} style={item === this.props.root ? styles.iconsSelected : {}} tooltip={name}     onTouchTap={() => this.onRootChanged('enum.rooms')}><IconRooms isOn={item === this.props.root}/></IconButton>);
+                        return (<IconButton key={item} style={item === this.props.root ? styles.iconsSelected : styles.icons} tooltip={name} onClick={() => this.onRootChanged('enum.rooms')}><IconRooms name="rooms" width={Theme.iconSize} height={Theme.iconSize} isOn={item === this.props.root}/></IconButton>);
                     } else if (item === 'enum.functions') {
-                        return (<IconButton key={item} style={item === this.props.root ? styles.iconsSelected : {}} tooltip={name}     onTouchTap={() => this.onRootChanged('enum.functions')}><IconFunctions /></IconButton>);
+                        return (<IconButton key={item} style={item === this.props.root ? styles.iconsSelected : styles.icons} tooltip={name} onClick={() => this.onRootChanged('enum.functions')}><IconFunctions width={Theme.iconSize} height={Theme.iconSize}/></IconButton>);
                     } else if (item === 'enum.favorites') {
-                        return (<IconButton key={item} style={item === this.props.root ? styles.iconsSelected : {}} tooltip={name}     onTouchTap={() => this.onRootChanged('enum.favorites')}><IconFavorites /></IconButton>);
+                        return (<IconButton key={item} style={item === this.props.root ? styles.iconsSelected : styles.icons} tooltip={name} onClick={() => this.onRootChanged('enum.favorites')}><IconFavorites width={Theme.iconSize} height={Theme.iconSize}/></IconButton>);
                     } else {
-                        return (<FlatButton key={item} onTouchTap={() => this.onRootChanged(item)}>{name}</FlatButton>);
+                        return (<FlatButton key={item} onClick={() => this.onRootChanged(item)}>{name}</FlatButton>);
                     }
                 })
             }</SubHeader>);

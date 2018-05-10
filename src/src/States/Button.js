@@ -9,13 +9,13 @@ class Button extends Generic {
         super(props, true)
     }
 
-    onTouchTap() {
+    onClick() {
         // default handler
         this.props.onControl(this.props.id, true);
     }
 
     render() {
-        return this.wrapContent(<RaisedButton label={this.getObjectName()} fullWidth={true} onTouchTap={() => this.onTouchTap()}/>);
+        return this.wrapContent(<RaisedButton label={this.getObjectName()} fullWidth={true} onClick={() => this.onClick()}/>);
     }
 }
 
