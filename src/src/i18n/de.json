@@ -2,5 +2,9 @@
   "Rooms":     "Räume",
   "Functions": "Funktionen",
   "Favorites": "Favorite",
+
+  "On":        "An",
+  "Off":       "Aus",
+
   "SET_TEMPERATURE": "Solltemperatur"
 }

@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Utils from '../Utils';
 import I18n from '../i18n';
+import Theme from '../theme';
 
 const styles = {
     header: {
@@ -19,28 +20,41 @@ const styles = {
         bottom: 0,
         left: '0.5em',
         whiteSpace: 'nowrap'
-    }
+    },
+    tile: Theme.tile
 };
 
 class Generic extends Component {
     static propTypes = {
-        id:             PropTypes.string,
         objects:        PropTypes.object.isRequired,
         states:         PropTypes.object.isRequired,
-        label:          PropTypes.string,
-        channelName:    PropTypes.string,
+        tile:           PropTypes.object.isRequired,
+        channelInfo:    PropTypes.object.isRequired,
         enumName:       PropTypes.string
     };
 
     constructor(props, noSubscribe) {
         super(props);
+        this.channelInfo = this.props.channelInfo;
+        this.subscribes = null;
+        this.width = Generic.styles.tile.width;
+        this.height = Generic.styles.tile.height;
 
         if (typeof noSubscribe !== 'boolean' || !noSubscribe) {
-            this.state = {
-                state: null
-            };
-            if (this.props.id && this.props.objects[this.props.id] && this.props.objects[this.props.id].type === 'state') {
-                this.onCollectIds(this.props.id, true);
+            this.state = {};
+
+            if (this.channelInfo.states) {
+                let ids = [];
+                this.channelInfo.states.forEach(state => {
+                    if (state.id && this.props.objects[state.id] && this.props.objects[state.id].type === 'state' && ids.indexOf(state.id) === -1) {
+                        ids.push(state.id);
+                    }
+                });
+                if (ids.length) {
+                    this.subscribes = ids;
+                    this.props.onCollectIds(this, ids, true);
+                    ids.forEach(id => this.state[id] = this.props.states[id] ? this.props.states[id].val : null);
+                }
             }
         }
     }
@@ -107,6 +121,15 @@ class Generic extends Component {
         return name.trim();
     }
 
+    static getChannelFromState(id) {
+        const pos = id.lastIndexOf('.');
+        if (pos !== -1) {
+            return id.substring(0, pos);
+        } else {
+            return id;
+        }
+    }
+
     getObjectName() {
         return Generic.getObjectNameSpan(this.props.objects, this.props.id, this.props.label, this.props.channelName, this.props.enumName);
     }
@@ -121,46 +144,23 @@ class Generic extends Component {
 
     }
 
-    onCollectIds(id, isMount) {
-        this.subscribed = this.subscribed || [];
+    // default handler
+    onTileClick() {
 
-        if (isMount) {
-            if (this.subscribed[id]) return;
-            this.subscribed[id] = this.subscribed[id] || 0;
-            this.subscribed[id]++;
+    }
 
-            if (this.subscribed[id] === 1 && this.props.onCollectIds) {
-                this.props.onCollectIds(this, typeof id === 'object' ? id : [id], true);
-            }
-        } else {
-            if (this.subscribed[id] !== undefined) {
-                this.subscribed[id]--;
-                if (this.subscribed[id] < 0) {
-                    console.error('Invalid subscribe state');
-                }
-                if (this.subscribed[id] <= 0) {
-                    delete this.subscribed[id];
-                    if (this.props.onCollectIds) {
-                        this.props.onCollectIds(this, typeof id === 'object' ? id : [id], false);
-                    }
-                }
-            } else {
-                console.error('Invalid unsubscribe state');
-            }
-        }
+    onClick() {
+        return this.onTileClick();
     }
 
     componentWillUnmount() {
         if (this.props.onCollectIds && this.subscribed) {
-            let ids = Object.keys(this.subscribed);
-            if (ids.length) {
-                this.props.onCollectIds(this, ids, false);
-            }
+            this.props.onCollectIds(this, this.subscribed, false);
         }
     }
 
     wrapContent(content) {
-        return (<div style={{paddingTop: this.props.label ? 0: '0.3em'}}>{content}</div>);
+        return (<div onClick={this.onClick.bind(this)} style={Object.assign(Theme.tile, this.state.state ? Theme.tileOn : Theme.tileOff)}>{content}</div>);
     }
 
     render() {

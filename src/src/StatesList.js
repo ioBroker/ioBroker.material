@@ -3,10 +3,12 @@ import PropTypes from 'prop-types';
 // import Divider from 'material-ui/Divider';
 import { Grid, Col } from 'react-flexbox-grid';
 import Tile from './Tile';
+import TileSmart from './TileSmart';
 import CircularProgress from 'material-ui/CircularProgress';
 import Utils from './Utils';
 // import Background from './assets/apartment.jpg';
 import iobTheme from './theme';
+import ChannelDetector from './Channels/Detector';
 
 const styles = {
     panel: {
@@ -29,11 +31,13 @@ class StatesList extends Component {
 
     constructor(props) {
         super(props);
-        this.enumFunctions = [];
+        this.enumFunctions = null;
+        this.detector = new ChannelDetector();
+        this.keys = null;
     }
 
     componentWillUpdate(nextProps, nextState) {
-        this.enumFunctions = this.getEnumFunctions(nextProps.objects);
+        this.enumFunctions = this.enumFunctions || this.getEnumFunctions(nextProps.objects);
     }
 
     getElementsToShow() {
@@ -61,7 +65,8 @@ class StatesList extends Component {
     }
 
     createControl(control, channelId, channelInfo) {
-        let Component = control;
+        let Component = control; // This will be used by rendering
+        //              ↓
         return (<Component
             key={channelId}
             id={channelId}
@@ -83,13 +88,23 @@ class StatesList extends Component {
             items = this.getElementsToShow(items);
         }
 
+        if (!this.keys) {
+            this.keys = Object.keys(this.props.objects);
+            this.keys.sort();
+        }
 
+        const that = this;
         return items.map(id => {
-            let channelInfo = Tile.getChannelInfo(this.props.objects, id);
-            if (!channelInfo || (channelInfo.main === undefined && (!channelInfo.states || !channelInfo.states.length))) {
-                return null;
+            let detected = that.detector.detect(this.props.objects, this.keys, id);
+            if (detected) {
+                return that.createControl(TileSmart, id, detected);
             } else {
-                return this.createControl(Tile, id, channelInfo)
+                let channelInfo = Tile.getChannelInfo(this.props.objects, id);
+                if (!channelInfo || (channelInfo.main === undefined && (!channelInfo.states || !channelInfo.states.length))) {
+                    return null;
+                } else {
+                    return this.createControl(Tile, id, channelInfo)
+                }
             }
         });
     }

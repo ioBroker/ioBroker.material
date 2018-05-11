@@ -43,8 +43,56 @@ export default {
         disabledColor:      fade(fullWhite, 0.3),
         pickerHeaderColor:  fade(fullWhite, 0.12),
         clockCircleColor:   fade(fullWhite, 0.12),
+        lampOn:             '#ffcc02'
     },
     iconSize: '24px',
-    indicatorSize: '20px'
+    indicatorSize: '20px',
 
+
+    tile: {
+        tile: {
+            borderRadius: '1em',
+            padding: '1em',
+            transition: 'all 0.2s',
+            width: '8em',
+            height: '8em',
+            position: 'relative',
+            fontSize: '1em',
+            fontWeight: 'bold',
+            color: 'black',
+            background: 'white'
+        },
+        tileOn: {
+            background: 'white',
+            opacity: 1
+        },
+        tileOff: {
+            background: 'white',
+            opacity: 0.2
+        },
+        tileIcon: {
+            width: '2.5em',
+            height: '2.5em',
+            position: 'absolute',
+            top: '0.9em',
+            left: '0.5em',
+            color: '#2f3440'
+        },
+        tileName: {
+            overflow: 'hidden',
+            width: '100%',
+            height: '2.3em'
+        },
+        tileText: {
+            marginTop: '2.8em',
+        },
+        tileState: {
+            marginTop: '0.2em'
+        },
+        tileStateOn: {
+            color: 'grey',
+        },
+        tileStateOff: {
+        }
+    }
 };

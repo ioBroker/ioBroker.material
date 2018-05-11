@@ -244,6 +244,13 @@ class App extends Component {
         });
     }
 
+    /**
+     *
+     * @param {object} elem React visual element
+     * @param {array} ids string or array of strings with IDs that must be subscribed or un-subscribed
+     * @param {boolean} isMount true if subscribe and false if un-sibscribe
+     */
+
     onCollectIds(elem, ids, isMount) {
         if (typeof ids !== 'object') {
             ids = [ids];

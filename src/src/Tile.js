@@ -305,8 +305,8 @@ class Tile extends Component {
     }
 
     createControl(control, id, label, channelName, type) {
-        let Component = control;
-
+        let Component = control; // This will be used by rendering
+        //              ↓
         return (<Component
             key={id}
             id={id}
