@@ -1,5 +1,6 @@
 import IconThermostat   from 'react-icons/lib/ti/thermometer';
 import IconLamp         from 'react-icons/lib/ti/lightbulb';
+import IconWorking      from 'react-icons/lib/ti/cog-outline';
 
 import Types from '../States/Types';
 
@@ -13,9 +14,18 @@ const patterns = {
         icon: IconThermostat,
         type: Types.thermostat
     },
+    dimmer: {
+        states: [
+            {role: /^level(\.dimmer)?$/, type: 'number', write: true, enums: roleOrEnumLight, name: 'LAMP_SET', required: true, icon: IconLamp, color: '#fffc03'},
+            {role: /^value(\.dimmer)?$/, type: 'number', enums: roleOrEnumLight, name: 'LAMP_ACT', required: false},
+            {role: /^indicator.working$/, name: 'WORKING', required: false, icon: IconWorking, color: '#fffc03'}
+        ],
+        icon: IconLamp,
+        type: Types.dimmer
+    },
     light: {
         states: [
-            {role: /^switch(\.light)?$|^state$/, enums: roleOrEnumLight, name: 'LAMP', required: true, icon: IconLamp, color: '#fffc03'}
+            {role: /^switch(\.light)?$|^state$/, type: 'boolean', write: true, enums: roleOrEnumLight, name: 'LAMP', required: true, icon: IconLamp, color: '#fffc03'}
         ],
         icon: IconLamp,
         type: Types.light
@@ -25,7 +35,7 @@ const patterns = {
 const lightWords = {
     en: [/lights?/i,    /lamps?/i,      /ceilings?/i],
     de: [/licht(er)?/i, /lampen?/i,     /beleuchtung(en)?/],
-    ru: [/свет/i,       /ламп[аы]/i,    /торшеры?/, /подсветк[аи]/i, /лампочк[аи]/i]
+    ru: [/свет/i,       /ламп[аы]/i,    /торшеры?/, /подсветк[аи]/i, /лампочк[аи]/i, /светильники?/i,]
 };
 
 function roleOrEnumLight(obj, enums) {
@@ -128,7 +138,7 @@ class ChannelDetector {
                 if (patterns.hasOwnProperty(pattern)) {
                     let allRequiredFound = true;
                     let result = null;
-                    if (id === 'hm-rpc.0.JEQ0049449.1') {
+                    if (id === 'hm-rpc.0.FEQ0082127.1') {
                         console.log('AAA');
                     }
 
@@ -137,6 +147,15 @@ class ChannelDetector {
                         channelStates.forEach(_id => {
                             if (objects[_id] && objects[_id].common) {
                                 if (state.role && !state.role.test(objects[_id].common.role)) {
+                                    return;
+                                }
+                                if (state.write !== undefined && state.write !== (objects[_id].common.write || false)) {
+                                    return;
+                                }
+                                if (state.read !== undefined && state.read !== (objects[_id].common.read === undefined ? true : objects[_id].common.read)) {
+                                    return;
+                                }
+                                if (state.type && state.type !== objects[_id].common.type) {
                                     return;
                                 }
                                 let enums = this.getEnumsForId(objects, _id);
@@ -164,7 +183,7 @@ class ChannelDetector {
                             return false;
                         }
                     });
-                    if (result) {
+                    if (result && !result.states.find(state => state.required && !state.id)) {
                         result.id = id;
                         this.cache[id] = result;
                         return result;

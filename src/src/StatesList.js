@@ -6,19 +6,8 @@ import Tile from './Tile';
 import TileSmart from './TileSmart';
 import CircularProgress from 'material-ui/CircularProgress';
 import Utils from './Utils';
-// import Background from './assets/apartment.jpg';
-import iobTheme from './theme';
+import Theme from './theme';
 import ChannelDetector from './Channels/Detector';
-
-const styles = {
-    panel: {
-        //backgroundImage: 'url(' + Background + ')',//'url(homekit.png)',
-        backgroundSize: '100% auto',
-        paddingTop: iobTheme.appBar.height,
-        minHeight: '100%',
-        background: '#000'//'#1b1b1b'
-    }
-};
 
 class StatesList extends Component {
 
@@ -149,7 +138,7 @@ class StatesList extends Component {
         }
 
         return(
-            <div style={styles.panel} >
+            <div style={Theme.mainPanel}>
                 <Grid fluid style={{display: 'flex'}}>{columns}</Grid>
             </div>);
     }

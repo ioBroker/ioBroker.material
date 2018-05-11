@@ -7,10 +7,20 @@ import I18n from '../i18n';
 class SmartLight extends SmartGeneric {
     constructor(props) {
         super(props);
-        this.id = this.subscribes[0];
+        if (this.channelInfo.states) {
+            const state = this.channelInfo.states.find(state => state.id && state.name === 'LAMP');
+            if (state) {
+                this.id = state.id;
+            } else {
+                this.id = '';
+            }
+        }
+
         this.props.tile.setState({
             isPointer: true
         });
+
+        this.props.registerHandler('onClick', this.onTileClick.bind(this));
     }
 
     updateState(id, state) {
@@ -26,9 +36,6 @@ class SmartLight extends SmartGeneric {
 
     toggle() {
         this.props.onControl(this.id, !this.state[this.id]);
-        /*this.props.tile.setState({
-            state: !this.state[this.id]
-        });*/
     }
 
     onTileClick() {

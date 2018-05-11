@@ -364,9 +364,9 @@ class App extends Component {
 
     render() {
         return (
-            <div style={this.state.menuFixed ? {paddingLeft: 250}: {}}>
+            <div style={this.state.menuFixed ? {paddingLeft: Theme.menu.width}: {}}>
                 <AppBar
-                    style={{position: 'fixed', width: this.state.menuFixed ? 'calc(100% - 250px)' : '100%', color: Theme.palette.textColor}}
+                    style={{position: 'fixed', width: this.state.menuFixed ? 'calc(100% - ' +  Theme.menu.width + ')' : '100%', color: Theme.palette.textColor}}
                     title={this.getTitle()}
                     showMenuIconButton={!this.state.menuFixed}
 

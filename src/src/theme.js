@@ -6,27 +6,34 @@ import {
     pinkA100, pinkA200, pinkA400,
     fullWhite,
 } from 'material-ui/styles/colors';
+
 import {fade} from 'material-ui/utils/colorManipulator';
 import spacing from 'material-ui/styles/spacing';
+import Background from './assets/homekit.png';
+
+const appBarHeight = 48;
 
 export default {
     spacing:        spacing,
-    fontFamily:     'Roboto, sans-serif',
-    borderRadius:   2,
-    lamps: {
-        background: blue600
-    },
+
     appBar: {
         //color: 'rgba(200, 200, 200, 0.8)',//''#337ab7',
         //background: 'rgb(39, 144, 222)',
-        height: 48
+        height: appBarHeight
+    },
+    mainPanel: {
+        backgroundImage: 'url(' + Background + ')',//'url(homekit.png)',
+        backgroundSize: '100% auto',
+        paddingTop: appBarHeight,
+        minHeight: '100%',
+        //background: '#000'//'#1b1b1b'
+    },
+    menu: {
+        width: '250px'
     },
     refreshIndicator: {
         strokeColor: '#337ab7',
         loadingStrokeColor: '#337ab7'
-    },
-    thumbOff: {
-        background: fullWhite
     },
     palette: {
         primary1Color:      blue700,
@@ -51,6 +58,7 @@ export default {
 
     tile: {
         tile: {
+            margin: '0.3em',
             borderRadius: '1em',
             padding: '1em',
             transition: 'all 0.2s',
@@ -67,8 +75,8 @@ export default {
             opacity: 1
         },
         tileOff: {
-            background: 'white',
-            opacity: 0.2
+            background: '#b7b6b6',
+            opacity: 0.7
         },
         tileIcon: {
             width: '2.5em',
@@ -76,15 +84,17 @@ export default {
             position: 'absolute',
             top: '0.9em',
             left: '0.5em',
-            color: '#2f3440'
+            color: '#2f3440',
+            pointerEvents: 'none'
         },
         tileName: {
             overflow: 'hidden',
             width: '100%',
-            height: '2.3em'
+            height: '2.3em',
         },
         tileText: {
             marginTop: '2.8em',
+            pointerEvents: 'none'
         },
         tileState: {
             marginTop: '0.2em'
@@ -93,6 +103,38 @@ export default {
             color: 'grey',
         },
         tileStateOff: {
+        }
+    },
+    dimmer: {
+        outter: {
+            width: 'calc(100% - 2em)',
+            height: 'calc(100% - 2em)',
+            border: '1px solid gray',
+            borderRadius: '10px',
+            position: 'absolute',
+            overflow: 'hidden'
+        },
+        innerVer: {
+            width: '100%',
+            background: '#ffcc02',
+            position: 'absolute',
+            bottom: 0,
+            left: '0.5px',
+            borderRradius: '0 0 10px 10px'
+        },
+        innerHor: {
+            height: '100%',
+            background: '#ffcc02',
+            position: 'absolute',
+            top: 0,
+            left: 0
+        },
+        value: {
+            position: 'absolute',
+            top: 'calc(50% - 10px)',
+            left: '0',
+            width: '100%',
+            textAlign: 'center'
         }
     }
 };

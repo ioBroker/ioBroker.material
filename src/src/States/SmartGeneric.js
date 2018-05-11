@@ -30,6 +30,7 @@ class Generic extends Component {
         states:         PropTypes.object.isRequired,
         tile:           PropTypes.object.isRequired,
         channelInfo:    PropTypes.object.isRequired,
+        // registerHandler
         enumName:       PropTypes.string
     };
 
@@ -144,15 +145,6 @@ class Generic extends Component {
 
     }
 
-    // default handler
-    onTileClick() {
-
-    }
-
-    onClick() {
-        return this.onTileClick();
-    }
-
     componentWillUnmount() {
         if (this.props.onCollectIds && this.subscribed) {
             this.props.onCollectIds(this, this.subscribed, false);
@@ -160,7 +152,7 @@ class Generic extends Component {
     }
 
     wrapContent(content) {
-        return (<div onClick={this.onClick.bind(this)} style={Object.assign(Theme.tile, this.state.state ? Theme.tileOn : Theme.tileOff)}>{content}</div>);
+        return (<div>{content}</div>);
     }
 
     render() {
