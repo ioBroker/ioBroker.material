@@ -14,6 +14,7 @@ class Tile extends Component {
         id:          PropTypes.string.isRequired,
         objects:     PropTypes.object.isRequired,
         states:      PropTypes.object.isRequired,
+        editMode:    PropTypes.bool.isRequired,
         enumName:    PropTypes.string,
         channelInfo: PropTypes.object
     };
@@ -48,10 +49,18 @@ class Tile extends Component {
         if (this.handlers.onClick) this.handlers.onClick(e);
     }
 
+    getTileStyle() {
+        let style = Object.assign({}, Theme.tile.tile, this.state.state ? Theme.tile.tileOn : Theme.tile.tileOff);
+        if (this.props.editMode) {
+            Object.assign(style, Theme.tile.editEnabled);
+        }
+        return style;
+    }
+
     wrapContent(content) {
         //<Col xs={12} sm={6} md={4} lg={3}>
         return (<Row style={{cursor: this.state.isPointer ? 'pointer' : 'none'}}>
-            <Paper style={Object.assign(Theme.tile.tile, this.state.state ? Theme.tile.tileOn : Theme.tile.tileOff)}
+            <Paper style={this.getTileStyle()}
                    zDepth={1}
                    onMouseDown={this.onMouseDown.bind(this)}
                    onTouchStart={this.onMouseDown.bind(this)}
@@ -65,7 +74,9 @@ class Tile extends Component {
     }
 
     registerHandler(eventName, handler) {
-        this.handlers[eventName] = handler;
+        if (!this.props.editMode) {
+            this.handlers[eventName] = handler;
+        }
     }
 
     createControl(control, channelInfo, tile) {
@@ -76,6 +87,7 @@ class Tile extends Component {
             enumName={this.props.enumName}
             channelInfo={channelInfo}
             tile={tile}
+            editMode={this.props.editMode}
             states={this.props.states}
             objects={this.props.objects}
             registerHandler={this.registerHandler.bind(this)}

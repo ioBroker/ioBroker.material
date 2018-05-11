@@ -73,7 +73,7 @@ class SmartLight extends SmartGeneric {
     }
 
     updateState(id, state) {
-        if (id === this.actualId && (this.id === this.actualId || state.ack)) {
+        if (id === this.actualId || (this.id === this.actualId && state.ack)) {
             const val = typeof state.val === 'number' ? state.val : parseFloat(state.val);
             if (!isNaN(val)) {
                 const newState = {};
@@ -181,7 +181,7 @@ class SmartLight extends SmartGeneric {
 
     getIcon() {
         return (
-            <div key={this.id + '.icon'} style={Object.assign({}, Theme.tile.tileIcon, this.state[this.id] !== this.min ? {color: Theme.palette.lampOn} : {})} className="tile-icon">
+            <div key={this.id + '.icon'} style={Object.assign({}, Theme.tile.tileIcon, this.state[this.actualId] !== this.min ? {color: Theme.palette.lampOn} : {})} className="tile-icon">
                 <Icon width={'100%'} height={'100%'}/>
             </div>
         );
@@ -195,21 +195,21 @@ class SmartLight extends SmartGeneric {
         }
     }
 
-    getObjectName() {
-        const channelId = SmartGeneric.getChannelFromState(this.id);
-        if (this.props.objects[channelId] && (this.props.objects[channelId].type === 'channel' || this.props.objects[channelId].type === 'device')) {
-            return SmartGeneric.getObjectName(this.props.objects, channelId, null, null, this.props.enumName) || '&nbsp;';
-        } else {
-            return SmartGeneric.getObjectName(this.props.objects, this.id, null, null, this.props.enumName) || '&nbsp;';
-        }
-    }
-
     render() {
+        if (this.props.editMode) {
+            return this.wrapContent([
+                (<div key={this.id + '.tile-icon'} className="tile-icon" style={{pointerEvents: 'none'}}>{this.getIcon()}</div>),
+                (<div key={this.id + '.tile-text'} className="tile-text" style={Theme.tile.tileText}>
+                    <div className="tile-channel-name" style={Theme.tile.tileName}>{this.getObjectNameCh()}</div>
+                    <div className="tile-state-text"  style={Object.assign({}, Theme.tile.tileState, this.state[this.id] ? Theme.tile.tileStateOn : Theme.tile.tileStateOff)}>{this.getStateText()}</div>
+                </div>)
+            ]);
+        } else
         if (!this.state.direction) {
             return this.wrapContent([
                 (<div key={this.id + '.tile-icon'} className="tile-icon" style={{pointerEvents: 'none'}}>{this.getIcon()}</div>),
                 (<div key={this.id + '.tile-text'} className="tile-text" style={Theme.tile.tileText}>
-                    <div className="tile-channel-name" style={Theme.tile.tileName}>{this.getObjectName()}</div>
+                    <div className="tile-channel-name" style={Theme.tile.tileName}>{this.getObjectNameCh()}</div>
                     <div className="tile-state-text"  style={Object.assign({}, Theme.tile.tileState, this.state[this.id] ? Theme.tile.tileStateOn : Theme.tile.tileStateOff)}>{this.getStateText()}</div>
                 </div>)
             ]);

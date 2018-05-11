@@ -40,6 +40,7 @@ class App extends Component {
             refresh:        false,
             errorShow:      false,
             fullScreen:     false,
+            editMode:       false,
             errorText:      '',
             masterPath:     path ? 'enum.' + path.split('.').shift() : 'enum.rooms',
             viewEnum:       path ? 'enum.' + path : '',
@@ -362,6 +363,10 @@ class App extends Component {
         return locale;
     }
 
+    toggleEditMode() {
+        this.setState({editMode: !this.state.editMode});
+    }
+
     render() {
         return (
             <div style={this.state.menuFixed ? {paddingLeft: Theme.menu.width}: {}}>
@@ -373,21 +378,21 @@ class App extends Component {
                     iconElementRight={
                         <div style={{color: Theme.palette.textColor}}>
                             {this.state.connected ? null : (<IconButton disabled={true}><IconSignalOff width={Theme.iconSize} height={Theme.iconSize}/></IconButton>)}
-                            <IconButton onClick={() => this.showError('Not implemented')} style={{color: Theme.palette.textColor}}><IconEdit width={Theme.iconSize} height={Theme.iconSize}/></IconButton>
+                            <IconButton onClick={this.toggleEditMode.bind(this)} style={{color: this.state.editMode ? Theme.palette.editActive: Theme.palette.textColor}}><IconEdit width={Theme.iconSize} height={Theme.iconSize}/></IconButton>
                             {SpeechDialog.isSpeechRecognitionSupported() ? <IconButton style={{color: Theme.palette.textColor}} onClick={() => this.onSpeech(true)}><IconMic width={Theme.iconSize} height={Theme.iconSize}/></IconButton> : null}
                             {App.isFullScreenSupported() ?
-                                <IconButton style={{color: Theme.palette.textColor}} onClick={() => this.onToggleFullScreen()}>{this.state.fullScreen ? <IconFullScreenExit width={Theme.iconSize} height={Theme.iconSize} /> : <IconFullScreen width={Theme.iconSize} height={Theme.iconSize} />}</IconButton> : null}
+                                <IconButton style={{color: Theme.palette.textColor}} onClick={this.onToggleFullScreen.bind(this)}>{this.state.fullScreen ? <IconFullScreenExit width={Theme.iconSize} height={Theme.iconSize} /> : <IconFullScreen width={Theme.iconSize} height={Theme.iconSize} />}</IconButton> : null}
                     </div>}
-                    onLeftIconButtonClick={() => this.onToggleMenu()}
+                    onLeftIconButtonClick={this.onToggleMenu.bind(this)}
                 />
 
                 <Drawer open={this.state.open} width={250}>
-                    <IconButton onClick={() => this.onToggleMenu()} style={{color: Theme.palette.textColor}}>
+                    <IconButton onClick={this.onToggleMenu.bind(this)} style={{color: Theme.palette.textColor}}>
                         <IconClose width={Theme.iconSize} height={Theme.iconSize} />
                     </IconButton>
 
                     {this.state.width > 500 && !this.state.menuFixed ?
-                        (<IconButton onClick={() => this.onToggleLock()} style={{float: 'right', height: 40,color: Theme.palette.textColor}}>
+                        (<IconButton onClick={this.onToggleLock.bind(this)} style={{float: 'right', height: 40,color: Theme.palette.textColor}}>
                             <IconLock width={Theme.iconSize} height={Theme.iconSize}/>
                         </IconButton>)
                         : null
@@ -396,6 +401,7 @@ class App extends Component {
                     <MenuList
                         objects={this.state.objects}
                         selectedId={this.state.viewEnum}
+                        editMode={this.state.editMode}
                         root={this.state.masterPath}
                         onRootChanged={(root, page) => this.onRootChanged(root, page)}
                         onSelectedItemChanged={(id) => this.onItemSelected(id)}
@@ -406,6 +412,7 @@ class App extends Component {
                     style={{paddingTop: 50}}
                     objects={this.state.objects}
                     states={this.states}
+                    editMode={this.state.editMode}
                     windowWidth={this.state.width}
                     enumID={this.state.viewEnum}
                     onControl={(id, val) => this.onControl(id, val)}

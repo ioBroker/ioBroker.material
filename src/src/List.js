@@ -30,6 +30,7 @@ function wrapState(ComposedComponent) {
     return class SelectableList extends Component {
         static propTypes = {
             children: PropTypes.node.isRequired,
+            editMode: PropTypes.bool.isRequired,
             defaultValue: PropTypes.string.isRequired,
         };
         constructor(props) {

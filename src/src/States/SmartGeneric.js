@@ -24,7 +24,7 @@ const styles = {
     tile: Theme.tile
 };
 
-class Generic extends Component {
+class SmartGeneric extends Component {
     static propTypes = {
         objects:        PropTypes.object.isRequired,
         states:         PropTypes.object.isRequired,
@@ -38,8 +38,8 @@ class Generic extends Component {
         super(props);
         this.channelInfo = this.props.channelInfo;
         this.subscribes = null;
-        this.width = Generic.styles.tile.width;
-        this.height = Generic.styles.tile.height;
+        this.width = SmartGeneric.styles.tile.width;
+        this.height = SmartGeneric.styles.tile.height;
 
         if (typeof noSubscribe !== 'boolean' || !noSubscribe) {
             this.state = {};
@@ -62,14 +62,14 @@ class Generic extends Component {
 
     static getObjectNameSpan(objects, id, label, channelName, enumName) {
         if (label && !id) {
-            return (<span style={styles.header}>{Generic.getObjectName(objects, id, label, channelName, enumName) || ''}</span>);
+            return (<span style={styles.header}>{SmartGeneric.getObjectName(objects, id, label, channelName, enumName) || ''}</span>);
         } else
         if (label && id) {
-            return (<div style={styles.header}>{Generic.getObjectName(objects, id, label, channelName, enumName) || ''}
-                <div style={styles.subHeader}>{Generic.getObjectName(objects, id, '', label, enumName) || ''}</div>
+            return (<div style={styles.header}>{SmartGeneric.getObjectName(objects, id, label, channelName, enumName) || ''}
+                <div style={styles.subHeader}>{SmartGeneric.getObjectName(objects, id, '', label, enumName) || ''}</div>
             </div>);
         } else {
-            return (<span>{Generic.getObjectName(objects, id, label, channelName, enumName)}</span>);
+            return (<span>{SmartGeneric.getObjectName(objects, id, label, channelName, enumName)}</span>);
         }
     }
 
@@ -84,7 +84,7 @@ class Generic extends Component {
             name = 'No elements';
         } else {
             if (objects[enumName]) {
-                enumName = Generic.getObjectName(objects, enumName);
+                enumName = SmartGeneric.getObjectName(objects, enumName);
             }
 
             let item = objects[id];
@@ -132,7 +132,16 @@ class Generic extends Component {
     }
 
     getObjectName() {
-        return Generic.getObjectNameSpan(this.props.objects, this.props.id, this.props.label, this.props.channelName, this.props.enumName);
+        return SmartGeneric.getObjectNameSpan(this.props.objects, this.props.id, this.props.label, this.props.channelName, this.props.enumName);
+    }
+
+    getObjectNameCh() {
+        const channelId = SmartGeneric.getChannelFromState(this.id);
+        if (this.props.objects[channelId] && (this.props.objects[channelId].type === 'channel' || this.props.objects[channelId].type === 'device')) {
+            return SmartGeneric.getObjectName(this.props.objects, channelId, null, null, this.props.enumName) || '&nbsp;';
+        } else {
+            return SmartGeneric.getObjectName(this.props.objects, this.id, null, null, this.props.enumName) || '&nbsp;';
+        }
     }
 
     // default handler
@@ -160,5 +169,5 @@ class Generic extends Component {
     }
 }
 
-export default Generic;
+export default SmartGeneric;
 

@@ -12,10 +12,11 @@ import ChannelDetector from './Channels/Detector';
 class StatesList extends Component {
 
     static propTypes = {
-        enumID:  PropTypes.string.isRequired,
-        objects: PropTypes.object.isRequired,
-        states:  PropTypes.object.isRequired,
-        loading: PropTypes.bool.isRequired
+        enumID:   PropTypes.string.isRequired,
+        objects:  PropTypes.object.isRequired,
+        editMode: PropTypes.bool.isRequired,
+        states:   PropTypes.object.isRequired,
+        loading:  PropTypes.bool.isRequired
     };
 
     constructor(props) {
@@ -61,6 +62,7 @@ class StatesList extends Component {
             id={channelId}
             enumName={Utils.getObjectName(this.props.objects, this.props.enumID)}
             enumFunctions={this.enumFunctions}
+            editMode={this.props.editMode}
             channelInfo={channelInfo}
             states={this.props.states}
             objects={this.props.objects}

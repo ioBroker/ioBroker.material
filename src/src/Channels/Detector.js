@@ -25,7 +25,8 @@ const patterns = {
     },
     light: {
         states: [
-            {role: /^switch(\.light)?$|^state$/, type: 'boolean', write: true, enums: roleOrEnumLight, name: 'LAMP', required: true, icon: IconLamp, color: '#fffc03'}
+            {role: /^switch(\.light)?$|^state$/, type: 'boolean', write: true, enums: roleOrEnumLight, name: 'LAMP_SET', required: true, icon: IconLamp, color: '#fffc03'},
+            {role: /^switch(\.light)?$|^state$/, type: 'boolean', write: true, enums: roleOrEnumLight, name: 'LAMP_ACT', required: true, icon: IconLamp, color: '#fffc03'}
         ],
         icon: IconLamp,
         type: Types.light

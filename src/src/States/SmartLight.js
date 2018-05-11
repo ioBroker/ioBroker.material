@@ -8,11 +8,23 @@ class SmartLight extends SmartGeneric {
     constructor(props) {
         super(props);
         if (this.channelInfo.states) {
-            const state = this.channelInfo.states.find(state => state.id && state.name === 'LAMP');
+            let state = this.channelInfo.states.find(state => state.id && state.name === 'LAMP_SET');
             if (state) {
                 this.id = state.id;
             } else {
                 this.id = '';
+            }
+            state = this.channelInfo.states.find(state => state.id && state.name === 'WORKING');
+            if (state) {
+                this.workingId = state.id;
+            } else {
+                this.workingId = '';
+            }
+            state = this.channelInfo.states.find(state => state.id && state.name === 'LAMP_ACT');
+            if (state) {
+                this.actualId = state.id;
+            } else {
+                this.actualId = this.id;
             }
         }
 
@@ -24,18 +36,24 @@ class SmartLight extends SmartGeneric {
     }
 
     updateState(id, state) {
-        const val = typeof state.val === 'number' ? !!state.val : state.val === true || state.val === 'true' || state.val === '1' || state.val === 'on'  || state.val === 'ON';
-        const newState = {};
-        newState[this.id] = val;
-        this.setState(newState);
+        if (id === this.actualId || (this.id === this.actualId && state.ack)) {
+            const val = typeof state.val === 'number' ? !!state.val : state.val === true || state.val === 'true' || state.val === '1' || state.val === 'on' || state.val === 'ON';
+            const newState = {};
+            newState[this.id] = val;
+            this.setState(newState);
 
-        this.props.tile.setState({
-            state: val
-        });
+            this.props.tile.setState({
+                state: val
+            });
+        } else if (id === this.workingId) {
+            const newState = {};
+            newState[id] = typeof state.val === 'number' ? !!state.val : state.val === true || state.val === 'true' || state.val === '1' || state.val === 'on'  || state.val === 'ON';
+            this.setState(newState);
+        }
     }
 
     toggle() {
-        this.props.onControl(this.id, !this.state[this.id]);
+        this.props.onControl(this.id, !this.state[this.actualId]);
     }
 
     onTileClick() {
@@ -44,7 +62,7 @@ class SmartLight extends SmartGeneric {
 
     getIcon() {
         return (
-            <div key={this.id + '.icon'} style={Object.assign({}, Theme.tile.tileIcon, this.state[this.id] ? {color: Theme.palette.lampOn} : {})} className="tile-icon">
+            <div key={this.id + '.icon'} style={Object.assign({}, Theme.tile.tileIcon, this.state[this.actualId] ? {color: Theme.palette.lampOn} : {})} className="tile-icon">
                 <Icon width={'100%'} height={'100%'}/>
             </div>
         );
@@ -54,21 +72,12 @@ class SmartLight extends SmartGeneric {
         return this.state[this.id] ? I18n.t('On') : I18n.t('Off')
     }
 
-    getObjectName() {
-        const channelId = SmartGeneric.getChannelFromState(this.id);
-        if (this.props.objects[channelId] && (this.props.objects[channelId].type === 'channel' || this.props.objects[channelId].type === 'device')) {
-            return SmartGeneric.getObjectName(this.props.objects, channelId, null, null, this.props.enumName) || '&nbsp;';
-        } else {
-            return SmartGeneric.getObjectName(this.props.objects, this.id, null, null, this.props.enumName) || '&nbsp;';
-        }
-    }
-
     render() {
         return this.wrapContent([
             (<div key={this.id + '.tile-icon'} className="tile-icon">{this.getIcon()}</div>),
             (<div key={this.id + '.tile-text'} className="tile-text" style={Theme.tile.tileText}>
-                <div className="tile-channel-name" style={Theme.tile.tileName}>{this.getObjectName()}</div>
-                <div className="tile-state-text"  style={Object.assign({}, Theme.tile.tileState, this.state[this.id] ? Theme.tile.tileStateOn : Theme.tile.tileStateOff)}>{this.getStateText()}</div>
+                <div className="tile-channel-name" style={Theme.tile.tileName}>{this.getObjectNameCh()}</div>
+                <div className="tile-state-text"  style={Object.assign({}, Theme.tile.tileState, this.state[this.actualId] ? Theme.tile.tileStateOn : Theme.tile.tileStateOff)}>{this.getStateText()}</div>
             </div>)
         ]
         );

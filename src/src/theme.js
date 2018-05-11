@@ -50,6 +50,7 @@ export default {
         disabledColor:      fade(fullWhite, 0.3),
         pickerHeaderColor:  fade(fullWhite, 0.12),
         clockCircleColor:   fade(fullWhite, 0.12),
+        editActive:         'red',
         lampOn:             '#ffcc02'
     },
     iconSize: '24px',
@@ -77,6 +78,14 @@ export default {
         tileOff: {
             background: '#b7b6b6',
             opacity: 0.7
+        },
+        editEnabled: {
+            background: 'white',
+            opacity: 1
+        },
+        editDisabled: {
+            background: 'white',
+            opacity: 0.5
         },
         tileIcon: {
             width: '2.5em',
