@@ -66,8 +66,9 @@ class StatesList extends Component {
             channelInfo={channelInfo}
             states={this.props.states}
             objects={this.props.objects}
-            onCollectIds={(element, ids, isMount) => this.props.onCollectIds && this.props.onCollectIds(element, ids, isMount)}
-            onControl={(id, val) => this.props.onControl && this.props.onControl(id, val)}
+            onSaveSettings={this.props.onSaveSettings}
+            onCollectIds={this.props.onCollectIds}
+            onControl={this.props.onControl}
         />);
     }
 

@@ -32,7 +32,8 @@ class SmartLight extends SmartGeneric {
             isPointer: true
         });
 
-        this.props.registerHandler('onClick', this.onTileClick.bind(this));
+        this.props.tile.registerHandler('onClick', this.onTileClick.bind(this));
+        this.componentReady();
     }
 
     updateState(id, state) {

@@ -81,6 +81,7 @@ class MenuList extends React.Component {
     static propTypes = {
         objects: PropTypes.object.isRequired,
         selectedId: PropTypes.string,
+        editMode: PropTypes.bool.isRequired,
         root: PropTypes.string.isRequired,
         onSelectedItemChanged: PropTypes.func.isRequired,
         onRootChanged: PropTypes.func.isRequired
@@ -203,7 +204,7 @@ class MenuList extends React.Component {
                     <Divider />
                     {this.getListHeader()}
                     <Divider />
-                    <SelectableList defaultValue={this.getSelectedItem(items)} >
+                    <SelectableList editMode={this.props.editMode} defaultValue={this.getSelectedItem(items)} >
                         {this.getListItems(items)}
                     </SelectableList>
                 </div>
@@ -214,7 +215,7 @@ class MenuList extends React.Component {
                     <Divider />
                     {this.getListHeader()}
                     <Divider />
-                    <SelectableList defaultValue="0" >
+                    <SelectableList editMode={this.props.editMode} defaultValue="0" >
                         <ListItem key="0" primaryText="No elements" value="0" />
                     </SelectableList>
                 </div>

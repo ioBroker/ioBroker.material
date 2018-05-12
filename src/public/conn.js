@@ -161,7 +161,8 @@ var servConn = {
     },
     reload: function () {
         if (window.location.host === 'iobroker.net' ||
-            window.location.host === 'iobroker.biz') {
+            window.location.host === 'iobroker.biz' ||
+            window.location.host === 'iobroker.pro') {
             window.location = '/';
         } else {
             window.location.reload();
@@ -222,12 +223,17 @@ var servConn = {
 
             var url;
             if (connLink) {
-                url = connLink;
                 if (typeof connLink !== 'undefined') {
                     if (connLink[0] === ':') connLink = location.protocol + '//' + location.hostname + connLink;
                 }
+                url = connLink;
             } else {
                 url = location.protocol + '//' + location.host;
+            }
+
+            // remove port if via cloud
+            if (url.match(/iobroker\.pro|iobroker\.net/)) {
+                url = url.replace(/:\d+/, '');
             }
 
             this._socket = io.connect(url, {
@@ -265,12 +271,17 @@ var servConn = {
                 that._socket.emit('name', connOptions.name);
                 console.log((new Date()).toISOString() + ' Connected => authenticate');
                 setTimeout(function () {
+                    var timeOut = 6000;
+                    // If online give more time
+                    if (window.location.href.indexOf('iobroker.') !== -1) {
+                        timeOut = 12000;
+                    }
                     that.waitConnect = setTimeout(function() {
                         console.error('No answer from server');
                         if (!that.authError) {
                             that.reload();
                         }
-                    }, 10000);
+                    }, timeOut);
 
                     that._socket.emit('authenticate', function (isOk, isSecure) {
                         if (that.waitConnect) {
@@ -499,7 +510,7 @@ var servConn = {
         } else {
             if (!this._checkConnection('readFile', arguments)) return;
 
-            if (!isRemote && typeof app !== 'undefined') {
+            if (!isRemote && typeof app !== 'undefined' && !app.settings.dontCache) {
                 app.readLocalFile(filename.replace(/^\/vis\.0\//, ''), callback);
             } else {
                 var adapter = this.namespace;
@@ -570,7 +581,7 @@ var servConn = {
 
         if (!this._checkConnection('readFile', arguments)) return;
 
-        if (!isRemote && typeof app !== 'undefined') {
+        if (!isRemote && typeof app !== 'undefined' && !app.settings.dontCache) {
             app.readLocalFile(filename.replace(/^\/vis\.0\//, ''), function (err, data, mimeType) {
                 setTimeout(function () {
                     if (data) {

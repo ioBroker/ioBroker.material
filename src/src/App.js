@@ -18,7 +18,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import SpeechDialog from './SpeechDialog';
 import Theme from './theme';
 
-const isKeyboardAvailbleOnFullScreen = (typeof Element !== 'undefined' && 'ALLOW_KEYBOARD_INPUT' in Element) && Element.ALLOW_KEYBOARD_INPUT;
+const isKeyboardAvailableOnFullScreen = (typeof Element !== 'undefined' && 'ALLOW_KEYBOARD_INPUT' in Element) && Element.ALLOW_KEYBOARD_INPUT;
 
 const text2CommandInstance = 0;
 
@@ -49,6 +49,7 @@ class App extends Component {
         this.state.open = this.state.menuFixed;
 
         this.states = {};
+        this.tasks = [];
 
         this.subscribes = {};
         this.requestStates = [];
@@ -68,12 +69,8 @@ class App extends Component {
         this.updateWindowDimensions();
         window.addEventListener('resize', this.updateWindowDimensions);
 
-        //window.moment.locale('ru');
-
         this.conn.namespace   = 'mobile.0';
         this.conn._useStorage = false;
-
-        let that = this;
 
         this.conn.init({
             name:          'mobile.0',  // optional - default 'vis.0'
@@ -82,13 +79,13 @@ class App extends Component {
         }, {
             onConnChange: isConnected => {
                 if (isConnected) {
-                    that.conn.getObjects(!that.state.refresh, function (err, objects) {
+                    this.conn.getObjects(!this.state.refresh, (err, objects) => {
                         if (err) {
-                            that.showError(err);
+                            this.showError(err);
                         } else {
                             let viewEnum;
-                            if (objects && !that.state.viewEnum) {
-                                let reg = new RegExp('^' + that.state.masterPath + '\\.');
+                            if (objects && !this.state.viewEnum) {
+                                let reg = new RegExp('^' + this.state.masterPath + '\\.');
                                 // get first room
                                 for (let id in objects) {
                                     if (objects.hasOwnProperty(id) && reg.test(id)) {
@@ -106,15 +103,15 @@ class App extends Component {
                             }
 
                             if (viewEnum) {
-                                that.setState({objects: result || {}, viewEnum: viewEnum, loading: false});
+                                this.setState({objects: result || {}, viewEnum: viewEnum, loading: false});
                             } else {
-                                that.setState({objects: result || {}, loading: false});
+                                this.setState({objects: result || {}, loading: false});
                             }
-                            that.conn.subscribe(['text2command.' + text2CommandInstance + '.response']);
+                            this.conn.subscribe(['text2command.' + text2CommandInstance + '.response']);
                         }
                     });
                 }
-                that.setState({connected: isConnected, loading: true});
+                this.setState({connected: isConnected, loading: true});
             },
             onRefresh: () => {
                 window.location.reload();
@@ -137,7 +134,7 @@ class App extends Component {
                 }, 0);
             },
             onError: err => {
-                that.showError(err);
+                this.showError(err);
             }
         }, false, false);
     }
@@ -158,7 +155,7 @@ class App extends Component {
 
     onToggleMenu () {
         if (this.state.menuFixed && typeof Storage !== 'undefined') {
-            window.localStorage.setItem('menuFixed', '0')
+            window.localStorage.setItem('menuFixed', '0');
         }
         this.setState({
             open: !this.state.open,
@@ -190,7 +187,7 @@ class App extends Component {
                 if (/Version\/[\d]{1,2}(\.[\d]{1,2}){1}(\.(\d){1,2}){0,1} Safari/.test(navigator.userAgent)) {
                     element.webkitRequestFullscreen();
                 } else {
-                    element.webkitRequestFullscreen(isKeyboardAvailbleOnFullScreen);
+                    element.webkitRequestFullscreen(isKeyboardAvailableOnFullScreen);
                 }
             } else if (element.msRequestFullscreen) {
                 element.msRequestFullscreen();
@@ -303,6 +300,41 @@ class App extends Component {
         this.conn.setState(id, val);
     }
 
+    processTasks() {
+        if (!this.tasks.length) {
+            return;
+        }
+
+        const task = this.tasks[0];
+
+        if (task.name === 'saveSettings') {
+            this.conn.getObject(task.id, (err, obj) => {
+                let settings = Utils.getSettings(obj);
+                if (JSON.stringify(settings) !== JSON.stringify(task.settings) && Utils.setSettings(obj, task.settings)) {
+                    this.conn._socket.emit('setObject', obj._id, obj, err => {
+                        this.tasks.shift();
+                        if (err) console.error('Cannot save: ' + obj._id);
+                        setTimeout(this.processTasks.bind(this), 0);
+                    });
+                } else {
+                    this.tasks.shift();
+                    console.log('Invalid object: ' + task.id);
+                    setTimeout(this.processTasks.bind(this), 0);
+                }
+            });
+        } else {
+            this.tasks.shift();
+            setTimeout(this.processTasks.bind(this), 0);
+        }
+    }
+
+    onSaveSettings(id, settings) {
+        this.tasks.push({name: 'saveSettings', id, settings});
+        if (this.tasks.length === 1) {
+            this.processTasks();
+        }
+    }
+
     getTitle () {
         if (!this.state.viewEnum || !this.state.objects) {
             return (<span>ioBroker</span>);
@@ -403,8 +435,9 @@ class App extends Component {
                         selectedId={this.state.viewEnum}
                         editMode={this.state.editMode}
                         root={this.state.masterPath}
-                        onRootChanged={(root, page) => this.onRootChanged(root, page)}
-                        onSelectedItemChanged={(id) => this.onItemSelected(id)}
+                        onSaveSettings={this.onSaveSettings.bind(this)}
+                        onRootChanged={this.onRootChanged.bind(this)}
+                        onSelectedItemChanged={this.onItemSelected.bind(this)}
                     />
                 </Drawer>
                 <StatesList
@@ -415,8 +448,9 @@ class App extends Component {
                     editMode={this.state.editMode}
                     windowWidth={this.state.width}
                     enumID={this.state.viewEnum}
-                    onControl={(id, val) => this.onControl(id, val)}
-                    onCollectIds={(elem, ids, isMount) => this.onCollectIds(elem, ids, isMount)}/>
+                    onSaveSettings={this.onSaveSettings.bind(this)}
+                    onControl={this.onControl.bind(this)}
+                    onCollectIds={this.onCollectIds.bind(this)}/>
 
                 <Dialog
                     actions={(<RaisedButton
@@ -430,7 +464,14 @@ class App extends Component {
                 >
                     {this.state.errorText}
                 </Dialog>
-                {SpeechDialog.isSpeechRecognitionSupported() ? <SpeechDialog objects={this.state.objects} isShow={this.state.isListening} locale={this.getLocale()} onSpeech={(text) => this.onSpeechRec(text)} onFinished={() => this.onSpeech(false)} /> : null}
+                {SpeechDialog.isSpeechRecognitionSupported() ?
+                    <SpeechDialog
+                        objects={this.state.objects}
+                        isShow={this.state.isListening}
+                        locale={this.getLocale()}
+                        onSpeech={this.onSpeechRec.bind(this)}
+                        onFinished={() => this.onSpeech(false)}
+                    /> : null}
             </div>
         );
     }

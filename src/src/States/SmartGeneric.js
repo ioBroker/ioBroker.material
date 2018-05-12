@@ -3,26 +3,10 @@ import PropTypes from 'prop-types';
 import Utils from '../Utils';
 import I18n from '../i18n';
 import Theme from '../theme';
+import IconCheck from 'react-icons/lib/md/check';
+import IconRemoved from 'react-icons/lib/md/remove';
+import IconEdit from 'react-icons/lib/md/edit';
 
-const styles = {
-    header: {
-        overflow: 'hidden',
-        fontWeight: 'bold',
-        height: '2em',
-        position: 'relative',
-        whiteSpace: 'nowrap'
-    },
-    subHeader:{
-        fontSize: '0.75em',
-        fontWeight: 'normal',
-        position: 'absolute',
-        lineHeight: '0.75em',
-        bottom: 0,
-        left: '0.5em',
-        whiteSpace: 'nowrap'
-    },
-    tile: Theme.tile
-};
 
 class SmartGeneric extends Component {
     static propTypes = {
@@ -30,7 +14,6 @@ class SmartGeneric extends Component {
         states:         PropTypes.object.isRequired,
         tile:           PropTypes.object.isRequired,
         channelInfo:    PropTypes.object.isRequired,
-        // registerHandler
         enumName:       PropTypes.string
     };
 
@@ -38,12 +21,16 @@ class SmartGeneric extends Component {
         super(props);
         this.channelInfo = this.props.channelInfo;
         this.subscribes = null;
-        this.width = SmartGeneric.styles.tile.width;
-        this.height = SmartGeneric.styles.tile.height;
+        this.width = Theme.tile.width;
+        this.height = Theme.tile.height;
+        this.stateRx = {settings: {}};
+        this.state = {
+            executing: false
+        };
+
+        this.editMode = this.props.editMode;
 
         if (typeof noSubscribe !== 'boolean' || !noSubscribe) {
-            this.state = {};
-
             if (this.channelInfo.states) {
                 let ids = [];
                 this.channelInfo.states.forEach(state => {
@@ -53,27 +40,37 @@ class SmartGeneric extends Component {
                 });
                 if (ids.length) {
                     this.subscribes = ids;
-                    this.props.onCollectIds(this, ids, true);
-                    ids.forEach(id => this.state[id] = this.props.states[id] ? this.props.states[id].val : null);
+
+                    // do not want to mutate via setState, because it is constructor
+                    ids.forEach(id => this.stateRx[id] = this.props.states[id] ? this.props.states[id].val : null);
                 }
             }
         }
+
+        // this.state = stateRx;
     }
 
-    static getObjectNameSpan(objects, id, label, channelName, enumName) {
-        if (label && !id) {
-            return (<span style={styles.header}>{SmartGeneric.getObjectName(objects, id, label, channelName, enumName) || ''}</span>);
-        } else
-        if (label && id) {
-            return (<div style={styles.header}>{SmartGeneric.getObjectName(objects, id, label, channelName, enumName) || ''}
-                <div style={styles.subHeader}>{SmartGeneric.getObjectName(objects, id, '', label, enumName) || ''}</div>
-            </div>);
-        } else {
-            return (<span>{SmartGeneric.getObjectName(objects, id, label, channelName, enumName)}</span>);
+    componentReady () {
+        if (this.id && this.props.objects[this.id]) {
+            if (this.props.objects[this.id].type === 'state') {
+                let channel = SmartGeneric.getChannelFromState(this.id);
+                if (this.props.objects[channel] && (this.props.objects[channel].type === 'channel' || this.props.objects[channel].type === 'device')) {
+                    this.settingsId = channel;
+                }
+            } else {
+                this.settingsId = this.id;
+            }
         }
-    }
 
-    static styles = styles;
+        this.stateRx.settings = Utils.getSettings(this.props.objects[this.settingsId]);
+
+        if (this.stateRx.settings.enabled && this.subscribes && !this.subscribed) {
+            this.subscribed = true;
+            this.props.onCollectIds(this, this.subscribes, true);
+        }
+        this.state = this.stateRx;
+        delete this.stateRx;
+    }
 
     static getObjectName(objects, id, label, channelName, enumName) {
         let name;
@@ -131,10 +128,6 @@ class SmartGeneric extends Component {
         }
     }
 
-    getObjectName() {
-        return SmartGeneric.getObjectNameSpan(this.props.objects, this.props.id, this.props.label, this.props.channelName, this.props.enumName);
-    }
-
     getObjectNameCh() {
         const channelId = SmartGeneric.getChannelFromState(this.id);
         if (this.props.objects[channelId] && (this.props.objects[channelId].type === 'channel' || this.props.objects[channelId].type === 'device')) {
@@ -157,15 +150,72 @@ class SmartGeneric extends Component {
     componentWillUnmount() {
         if (this.props.onCollectIds && this.subscribed) {
             this.props.onCollectIds(this, this.subscribed, false);
+            this.subscribed = null;
+        }
+    }
+
+    saveSettings() {
+        this.props.onSaveSettings && this.props.onSaveSettings(this.settingsId, this.state.settings);
+
+        // subscribe if enabled and was not subscribed
+        if (this.state.settings.enabled && !this.subscribed) {
+            this.subscribed = true;
+            this.props.onCollectIds(this, this.subscribes, true);
+        } else
+        // unsubscribe if disabled and was subscribed
+        if (!this.state.settings.enabled && this.subscribed) {
+            this.subscribed = false;
+            this.props.onCollectIds(this, this.subscribes, false);
+        }
+    }
+
+    toggleEnabled() {
+        let settings = JSON.parse(JSON.stringify(this.state.settings));
+        settings.enabled = !settings.enabled;
+
+        this.setState({settings});
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.editMode !== this.state.editMode) {
+            if (this.state.editMode) {
+                this.saveSettings();
+            }
+            this.setState({editMode: nextProps.editMode});
+            this.props.tile.setVisibility(nextProps.editMode || this.state.settings.enabled);
         }
     }
 
     wrapContent(content) {
-        return (<div>{content}</div>);
+        if (this.state.editMode) {
+            return (<div>
+                {this.state.settings.enabled ?
+                    [(<div onClick={this.toggleEnabled.bind(this)} key={this.id + '.icon-check'} style={Object.assign({}, Theme.tile.editMode.checkIcon)}>
+                            <IconCheck width={'100%'} height={'100%'}/>
+                    </div>),
+                    (<div key={this.id + '.icon-edit'} style={Object.assign({}, Theme.tile.editMode.editIcon)}>
+                        <IconEdit width={'100%'} height={'100%'}/>
+                        </div>
+                    )]
+                    :
+                    (<div onClick={this.toggleEnabled.bind(this)} key={this.id + '.icon-check'} style={Object.assign({}, Theme.tile.editMode.removeIcon)}>
+                        <IconRemoved width={'100%'} height={'100%'}/>
+                    </div>)
+                }
+                {content}</div>);
+        } else if (this.state.settings.enabled) {
+            return (<div>{content}</div>);
+        } else {
+            return null;
+        }
     }
 
     render() {
-        return this.wrapContent(this.getObjectName());
+        if (!this.state.editMode && !this.state.settings.enabled) {
+            return null;
+        } else {
+            return this.wrapContent(this.getObjectNameCh());
+        }
     }
 }
 

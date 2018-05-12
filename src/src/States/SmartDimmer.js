@@ -1,8 +1,9 @@
 import React from 'react';
+import {CircularProgress} from 'material-ui';
 import SmartGeneric from './SmartGeneric';
 import Icon from 'react-icons/lib/ti/lightbulb'
 import Theme from '../theme';
-import I18n from '../i18n';
+import Slider from './SmartDialogSlider';
 
 class SmartLight extends SmartGeneric {
     constructor(props) {
@@ -40,19 +41,19 @@ class SmartLight extends SmartGeneric {
             }
             this.min = parseFloat(this.min);
 
-
             this.props.tile.setState({
                 isPointer: true
             });
         }
-        this.state.direction = '';
-        this.state.setValue = 0;
-        this.mouseValue = 0;
-
-        this.onMouseMoveBind = this.onMouseMove.bind(this);
+        this.state.showSlider = false;
         this.onMouseUpBind = this.onMouseUp.bind(this);
 
-        this.props.registerHandler('onMouseDown', this.onTileMouseDown.bind(this));
+        this.props.tile.registerHandler('onMouseDown', this.onTileMouseDown.bind(this));
+
+        this.slider = null;
+        this.state.setValue = null;
+
+        this.componentReady();
     }
 
     realValueToPercent(val) {
@@ -73,10 +74,10 @@ class SmartLight extends SmartGeneric {
     }
 
     updateState(id, state) {
-        if (id === this.actualId || (this.id === this.actualId && state.ack)) {
+        if (this.actualId === id) {
             const val = typeof state.val === 'number' ? state.val : parseFloat(state.val);
+            let newState = {};
             if (!isNaN(val)) {
-                const newState = {};
                 newState[id] = this.realValueToPercent(val);
                 this.setState(newState);
 
@@ -84,7 +85,20 @@ class SmartLight extends SmartGeneric {
                     state: val !== this.min
                 });
             } else {
+                newState[id] = null;
+                this.setState(newState);
+                this.props.tile.setState({
+                    state: false
+                });
+            }
 
+            // hide desired value
+            if (this.state.setValue !== null && this.state.setValue === newState[id]) {
+                this.setState({setValue: null});
+            }
+
+            if (state.ack && this.state.executing) {
+                this.setState({executing: false});
             }
         } else if (id === this.workingId) {
             const newState = {};
@@ -104,85 +118,63 @@ class SmartLight extends SmartGeneric {
         }
 
         console.log('Control ' + this.percentToRealValue(percent));
+        this.setState({executing: true, setValue: percent});
         this.props.onControl(this.id, this.percentToRealValue(percent));
     }
 
-    onMouseMove(e) {
-        let direction = this.state.direction;
+    onLongClick() {
+        this.timer = null;
+        this.setState({showSlider: true});
+    }
 
-        const pageX = e.touches ? e.touches[e.touches.length - 1].pageX : e.pageX;
-        const pageY = e.touches ? e.touches[e.touches.length - 1].pageY : e.pageY;
+    onSliderClose() {
+        this.setState({showSlider: false});
+    }
 
-        if (direction === '') {
-            const x = Math.abs(this.startX - pageX);
-            const y = Math.abs(this.startY - pageY);
-            if (!x && !y) return;
-
-
-            if (false && x > y) {
-                direction = 'hor';
-            } else {
-                direction = 'ver';
-            }
-            this.setState({direction: direction});
-            // make tile white and not opacity
-            this.props.tile.setState({state: true});
-        }
-        if (direction === 'hor') {
-            this.mouseValue = (pageX - this.startX) / 2;
-        } else {
-            this.mouseValue = (this.startY - pageY) / 2;
-        }
-        let setValue = Math.round(this.startValue + this.mouseValue);
-        if (setValue > 100) {
-            setValue = 100;
-        } else if (setValue < 0) {
-            setValue = 0;
-        }
-        this.setState({setValue: setValue});
+    onValueChange(newValue) {
+        this.setValue(newValue);
     }
 
     onTileMouseDown(e) {
+        if (this.state.showSlider) return;
         e.preventDefault();
+        e.stopPropagation();
         this.mouseValue = 0;
+        this.timer = setTimeout(this.onLongClick.bind(this), 500);
+
         this.state.direction = '';
         this.startX = e.touches ? e.touches[0].pageX : e.pageX;
         this.startY = e.touches ? e.touches[0].pageY : e.pageY;
         this.startValue = this.realValueToPercent(this.state[this.actualId]) || 0;
-        console.log('Started ' + e.pageX  + ' - ' + e.pageY);
-        document.addEventListener('mousemove',  this.onMouseMoveBind,   true);
-        document.addEventListener('mouseup',    this.onMouseUpBind,     true);
-        document.addEventListener('touchmove',  this.onMouseMoveBind,   true);
-        document.addEventListener('touchend',   this.onMouseUpBind,     true);
+        console.log('Started ' + this.startX  + ' - ' + this.startY);
+        document.addEventListener('mouseup',    this.onMouseUpBind,     {passive: false, capture: true});
+        document.addEventListener('touchend',   this.onMouseUpBind,     {passive: false, capture: true});
     }
 
     onMouseUp() {
         let newValue;
-        console.log('Stopped');
-        document.removeEventListener('mousemove',   this.onMouseMoveBind,   true);
-        document.removeEventListener('mouseup',     this.onMouseUpBind,     true);
-        document.removeEventListener('touchmove',   this.onMouseMoveBind,   true);
-        document.removeEventListener('touchend',    this.onMouseUpBind,     true);
+        if (this.timer) {
+            clearTimeout(this.timer);
+            this.timer = null;
 
-        if (this.state.direction) {
-            this.setState({direction: ''});
-            newValue = this.state.setValue;
-        } else {
             const percent = this.realValueToPercent();
             if (percent) {
                 newValue = 0;
             } else {
                 newValue = this.lastNotNullPercent || 100;
             }
+            this.setValue(newValue);
         }
-
-        this.setValue(newValue);
+        console.log('Stopped');
+        document.removeEventListener('mouseup',     this.onMouseUpBind,     {passive: false, capture: true});
+        document.removeEventListener('touchend',    this.onMouseUpBind,     {passive: false, capture: true});
     }
 
     getIcon() {
         return (
             <div key={this.id + '.icon'} style={Object.assign({}, Theme.tile.tileIcon, this.state[this.actualId] !== this.min ? {color: Theme.palette.lampOn} : {})} className="tile-icon">
                 <Icon width={'100%'} height={'100%'}/>
+                {this.state.executing ? <CircularProgress style={{position: 'absolute', top: 0, left: 0}} size={Theme.tile.tileIcon.width}/> : null}
             </div>
         );
     }
@@ -195,39 +187,31 @@ class SmartLight extends SmartGeneric {
         }
     }
 
-    render() {
-        if (this.props.editMode) {
-            return this.wrapContent([
-                (<div key={this.id + '.tile-icon'} className="tile-icon" style={{pointerEvents: 'none'}}>{this.getIcon()}</div>),
-                (<div key={this.id + '.tile-text'} className="tile-text" style={Theme.tile.tileText}>
-                    <div className="tile-channel-name" style={Theme.tile.tileName}>{this.getObjectNameCh()}</div>
-                    <div className="tile-state-text"  style={Object.assign({}, Theme.tile.tileState, this.state[this.id] ? Theme.tile.tileStateOn : Theme.tile.tileStateOff)}>{this.getStateText()}</div>
-                </div>)
-            ]);
-        } else
-        if (!this.state.direction) {
-            return this.wrapContent([
-                (<div key={this.id + '.tile-icon'} className="tile-icon" style={{pointerEvents: 'none'}}>{this.getIcon()}</div>),
-                (<div key={this.id + '.tile-text'} className="tile-text" style={Theme.tile.tileText}>
-                    <div className="tile-channel-name" style={Theme.tile.tileName}>{this.getObjectNameCh()}</div>
-                    <div className="tile-state-text"  style={Object.assign({}, Theme.tile.tileState, this.state[this.id] ? Theme.tile.tileStateOn : Theme.tile.tileStateOff)}>{this.getStateText()}</div>
-                </div>)
-            ]);
-        } else if (this.state.direction === 'ver') {
-            return this.wrapContent([
-                (<div key={this.id + '.tile-outter'} style={Object.assign({}, Theme.dimmer.outter)}>
-                    <div key={this.id + '.tile-inner'} style={Object.assign({height: this.state.setValue + '%'}, Theme.dimmer.innerVer)}></div>
-                    <div key={this.id + '.tile-number'} style={Object.assign({}, Theme.dimmer.value)}>{this.state.setValue}%</div>
-                </div>)
-            ]);
-        } else if (this.state.direction === 'hor') {
-            return this.wrapContent([
-                (<div key={this.id + '.tile-outter'} style={Object.assign({}, Theme.dimmer.outter)}>
-                    <div key={this.id + '.tile-inner'} style={Object.assign({width: this.state.setValue + '%'}, Theme.dimmer.innerHor)}></div>
-                    <div key={this.id + '.tile-number'} style={Object.assign({}, Theme.dimmer.value)}>{this.state.setValue}%</div>
-                </div>)
-            ]);
+    getDesiredText() {
+        if (this.workingId && this.state[this.workingId] && this.state.setValue !== null) {
+            return ' → ' + this.state.setValue + '%';
+        } else {
+            return '';
         }
+    }
+
+    render() {
+        return this.wrapContent([
+            (<div key={this.id + '.tile-icon'} className="tile-icon"
+                  style={{pointerEvents: 'none'}}>{this.getIcon()}</div>),
+            (<div key={this.id + '.tile-text'} className="tile-text" style={Theme.tile.tileText}>
+                <div className="tile-channel-name" style={Theme.tile.tileName}>{this.getObjectNameCh()}</div>
+                <div className="tile-state-text"
+                     style={Object.assign({}, Theme.tile.tileState, this.state[this.id] ? Theme.tile.tileStateOn : Theme.tile.tileStateOff)}>{this.getStateText()}</div>
+            </div>),
+            this.state.showSlider ?
+                <Slider key={this.id + '.slider'}
+                    startValue={this.realValueToPercent()}
+                    onValueChange={this.onValueChange.bind(this)}
+                    onClose={this.onSliderClose.bind(this)}
+                    fromTop={false}
+                /> : null
+        ]);
     }
 }
 

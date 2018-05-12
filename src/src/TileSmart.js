@@ -24,7 +24,8 @@ class Tile extends Component {
         this.channelInfo = this.props.channelInfo;
         this.state = {
             state: false,
-            isPointer: false
+            isPointer: false,
+            visible: true
         };
         this.handlers = {
             onMouseDown: null,
@@ -38,28 +39,46 @@ class Tile extends Component {
     }
 
     onMouseDown(e) {
-        if (this.handlers.onMouseDown) this.handlers.onMouseDown(e);
+        if (this.handlers.onMouseDown && !this.props.editMode) {
+            e.preventDefault();
+            this.handlers.onMouseDown(e);
+        }
     }
 
     onMouseUp(e) {
-        if (this.handlers.onMouseUp) this.handlers.onMouseUp(e);
+        if (this.handlers.onMouseUp && !this.props.editMode) this.handlers.onMouseUp(e);
     }
 
     onClick(e) {
-        if (this.handlers.onClick) this.handlers.onClick(e);
+        if (this.handlers.onClick && !this.props.editMode) this.handlers.onClick(e);
     }
 
     getTileStyle() {
-        let style = Object.assign({}, Theme.tile.tile, this.state.state ? Theme.tile.tileOn : Theme.tile.tileOff);
+        let style;
         if (this.props.editMode) {
+            style = Object.assign({}, Theme.tile.tile, Theme.tile.tileOn, Theme.tile.editEnabled);
             Object.assign(style, Theme.tile.editEnabled);
+
+        } else {
+            style = Object.assign({}, Theme.tile.tile, this.state.state ? Theme.tile.tileOn : Theme.tile.tileOff);
         }
         return style;
     }
 
+    setVisibility(isVisible) {
+        if (this.state.visible !== isVisible) {
+            this.setState({visible: isVisible});
+        }
+    }
+
     wrapContent(content) {
+        let style = {cursor: this.state.isPointer ? 'pointer' : 'none'};
+        if (!this.state.visible) {
+            style.display = 'none';
+        }
+
         //<Col xs={12} sm={6} md={4} lg={3}>
-        return (<Row style={{cursor: this.state.isPointer ? 'pointer' : 'none'}}>
+        return (<Row style={style}>
             <Paper style={this.getTileStyle()}
                    zDepth={1}
                    onMouseDown={this.onMouseDown.bind(this)}
@@ -91,8 +110,9 @@ class Tile extends Component {
             states={this.props.states}
             objects={this.props.objects}
             registerHandler={this.registerHandler.bind(this)}
-            onCollectIds={(element, ids, isMount) => this.props.onCollectIds && this.props.onCollectIds(element, ids, isMount)}
-            onControl={(id, val) => this.props.onControl && this.props.onControl(id, val)}
+            onSaveSettings={this.props.onSaveSettings}
+            onCollectIds={this.props.onCollectIds}
+            onControl={this.props.onControl}
         />);
     }
 

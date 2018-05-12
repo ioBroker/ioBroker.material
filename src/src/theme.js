@@ -79,17 +79,9 @@ export default {
             background: '#b7b6b6',
             opacity: 0.7
         },
-        editEnabled: {
-            background: 'white',
-            opacity: 1
-        },
-        editDisabled: {
-            background: 'white',
-            opacity: 0.5
-        },
         tileIcon: {
-            width: '2.5em',
-            height: '2.5em',
+            width: 40, // 2.5em
+            height: 40,
             position: 'absolute',
             top: '0.9em',
             left: '0.5em',
@@ -112,6 +104,43 @@ export default {
             color: 'grey',
         },
         tileStateOff: {
+        },
+        editMode: {
+            checkIcon: {
+                position: 'absolute',
+                top: 0,
+                right: 0,
+                width: '50%',
+                height: '100%',
+                background: 'rgba(200,200,200,0.8)',
+                color: 'white'
+            },
+            editIcon: {
+                position: 'absolute',
+                top: 0,
+                right: '50%',
+                width: '50%',
+                height: '100%',
+                background: 'rgba(200,200,200,0.8)',
+                color: 'white'
+            },
+            removeIcon: {
+                position: 'absolute',
+                top: 0,
+                right: 0,
+                width: '100%',
+                height: '100%',
+                background: 'rgba(80,80,80,0.8)',
+                color: 'gray'
+            },
+            editEnabled: {
+                background: 'white',
+                opacity: 1
+            },
+            editDisabled: {
+                background: 'white',
+                opacity: 0.5
+            },
         }
     },
     dimmer: {

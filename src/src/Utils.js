@@ -32,6 +32,27 @@ class Utils {
         }
         return text.trim();
     }
+
+    static getSettings(obj, options) {
+        let settings;
+        if (obj && obj.common && obj.common.custom) {
+            settings = obj.common.custom || {};
+            settings = settings.material || {enabled: true};
+        } else {
+            settings = {enabled: true};
+        }
+        return settings;
+    }
+    static setSettings(obj, settings, options) {
+        if (obj) {
+            obj.common = obj.common || {};
+            obj.common.custom = obj.common.custom || {};
+            obj.common.custom.material = settings;
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
 
 export default Utils;
