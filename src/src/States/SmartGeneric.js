@@ -47,13 +47,14 @@ class SmartGeneric extends Component {
             }
         }
 
+        // will be done in componentReady
         // this.state = stateRx;
     }
 
     componentReady () {
         if (this.id && this.props.objects[this.id]) {
             if (this.props.objects[this.id].type === 'state') {
-                let channel = SmartGeneric.getChannelFromState(this.id);
+                let channel = SmartGeneric.getParentId(this.id);
                 if (this.props.objects[channel] && (this.props.objects[channel].type === 'channel' || this.props.objects[channel].type === 'device')) {
                     this.settingsId = channel;
                 }
@@ -119,7 +120,7 @@ class SmartGeneric extends Component {
         return name.trim();
     }
 
-    static getChannelFromState(id) {
+    static getParentId(id) {
         const pos = id.lastIndexOf('.');
         if (pos !== -1) {
             return id.substring(0, pos);
@@ -129,7 +130,7 @@ class SmartGeneric extends Component {
     }
 
     getObjectNameCh() {
-        const channelId = SmartGeneric.getChannelFromState(this.id);
+        const channelId = SmartGeneric.getParentId(this.id);
         if (this.props.objects[channelId] && (this.props.objects[channelId].type === 'channel' || this.props.objects[channelId].type === 'device')) {
             return SmartGeneric.getObjectName(this.props.objects, channelId, null, null, this.props.enumName) || '&nbsp;';
         } else {
@@ -186,15 +187,37 @@ class SmartGeneric extends Component {
         }
     }
 
+    // following indicators are supported
+    // indicator.working
+    // indicator.lowbat
+    // indicator.maintenance.lowbat
+    // indicator.maintenance.unreach
+    // indicator.maintenance
+    getIndicators() {
+        let result = [];
+        this.channelInfo.states.forEach(state =>  {
+            if (state.indicator && state.id && this.state[state.id]) {
+                const Icon = state.icon;
+                result.push((<Icon key={this.id + '.indicator-' + state.name.toLowerCase()} className={'indicator-' + state.name.toLowerCase()} style={Object.assign({}, Theme.tile.tileIndicator, {color: state.color})}/>));
+            }
+        });
+
+        if (result.length) {
+            return (<div style={Theme.tile.tileIndicators}>{result}</div>);
+        } else {
+            return null;
+        }
+    }
+
     wrapContent(content) {
         if (this.state.editMode) {
             return (<div>
                 {this.state.settings.enabled ?
                     [(<div onClick={this.toggleEnabled.bind(this)} key={this.id + '.icon-check'} style={Object.assign({}, Theme.tile.editMode.checkIcon)}>
-                            <IconCheck width={'100%'} height={'100%'}/>
+                            <IconCheck width={'100%'} height={'100%'} />
                     </div>),
                     (<div key={this.id + '.icon-edit'} style={Object.assign({}, Theme.tile.editMode.editIcon)}>
-                        <IconEdit width={'100%'} height={'100%'}/>
+                        <IconEdit width={'100%'} height={'100%'} style={{width: '80%', marginLeft: '20%'}}/>
                         </div>
                     )]
                     :
@@ -204,7 +227,7 @@ class SmartGeneric extends Component {
                 }
                 {content}</div>);
         } else if (this.state.settings.enabled) {
-            return (<div>{content}</div>);
+            return (<div>{this.getIndicators()} {content}</div>);
         } else {
             return null;
         }

@@ -93,15 +93,15 @@ class SmartLight extends SmartGeneric {
             }
 
             // hide desired value
-            if (this.state.setValue !== null && this.state.setValue === newState[id]) {
+            if (this.state.setValue === newState[id] && state.ack) {
                 this.setState({setValue: null});
             }
 
             if (state.ack && this.state.executing) {
                 this.setState({executing: false});
             }
-        } else if (id === this.workingId) {
-            const newState = {};
+        } else {
+            let newState = {};
             newState[id] = typeof state.val === 'number' ? !!state.val : state.val === true || state.val === 'true' || state.val === '1' || state.val === 'on'  || state.val === 'ON';
             this.setState(newState);
         }
@@ -117,7 +117,7 @@ class SmartLight extends SmartGeneric {
             }
         }
 
-        console.log('Control ' + this.percentToRealValue(percent));
+        console.log('Control ' + this.id + ' = ' + this.percentToRealValue(percent));
         this.setState({executing: true, setValue: percent});
         this.props.onControl(this.id, this.percentToRealValue(percent));
     }
@@ -183,15 +183,11 @@ class SmartLight extends SmartGeneric {
         if (this.state[this.actualId] === null || this.state[this.actualId] === undefined) {
             return '---';
         } else {
-            return this.realValueToPercent(this.state[this.id]) + '%';
-        }
-    }
-
-    getDesiredText() {
-        if (this.workingId && this.state[this.workingId] && this.state.setValue !== null) {
-            return ' → ' + this.state.setValue + '%';
-        } else {
-            return '';
+            if (this.workingId && this.state[this.workingId] && this.state.setValue !== null && this.state.setValue !== undefined) {
+                return this.realValueToPercent(this.state[this.id]) + '% → ' + this.state.setValue + '%';
+            } else {
+                return this.realValueToPercent(this.state[this.id]) + '%';
+            }
         }
     }
 
@@ -209,7 +205,7 @@ class SmartLight extends SmartGeneric {
                     startValue={this.realValueToPercent()}
                     onValueChange={this.onValueChange.bind(this)}
                     onClose={this.onSliderClose.bind(this)}
-                    fromTop={false}
+                    type={Slider.types.dimmer}
                 /> : null
         ]);
     }

@@ -9,7 +9,7 @@ import SmartLight from './States/SmartLight';
 import SmartDimmer from './States/SmartDimmer';
 import SmartGeneric from './States/SmartGeneric';
 
-class Tile extends Component {
+class TileSmart extends Component {
     static propTypes = {
         id:          PropTypes.string.isRequired,
         objects:     PropTypes.object.isRequired,
@@ -127,5 +127,5 @@ class Tile extends Component {
     }
 }
 
-export default Tile;
+export default TileSmart;
 

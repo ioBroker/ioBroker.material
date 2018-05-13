@@ -12,6 +12,8 @@ import spacing from 'material-ui/styles/spacing';
 import Background from './assets/homekit.png';
 
 const appBarHeight = 48;
+const tileBorderRadius = '1em';
+const tileIconWidth = 40;
 
 export default {
     spacing:        spacing,
@@ -60,7 +62,7 @@ export default {
     tile: {
         tile: {
             margin: '0.3em',
-            borderRadius: '1em',
+            borderRadius: tileBorderRadius,
             padding: '1em',
             transition: 'all 0.2s',
             width: '8em',
@@ -98,12 +100,30 @@ export default {
             pointerEvents: 'none'
         },
         tileState: {
-            marginTop: '0.2em'
+            marginTop: '0.2em',
+            whiteSpace: 'nowrap'
         },
         tileStateOn: {
             color: 'grey',
         },
         tileStateOff: {
+        },
+        tileIndicators: {
+            position: 'absolute',
+            top: '1em',
+            right: '1em',
+            width: 'calc(100% - ' + tileIconWidth + 'px)'
+        },
+        tileIndicator: {
+            width: '1em',
+            height: '1em',
+            float: 'right'
+        },
+        tileIndicatorsIcons: {
+            working:  '#808080',
+            unreach:  'orange',
+            lowbat:   'red',
+            maintain: 'orange',
         },
         editMode: {
             checkIcon: {
@@ -113,7 +133,8 @@ export default {
                 width: '50%',
                 height: '100%',
                 background: 'rgba(200,200,200,0.8)',
-                color: 'white'
+                color: 'white',
+                borderRadius: '0 ' + tileBorderRadius + ' ' + tileBorderRadius + ' 0'
             },
             editIcon: {
                 position: 'absolute',
@@ -122,7 +143,8 @@ export default {
                 width: '50%',
                 height: '100%',
                 background: 'rgba(200,200,200,0.8)',
-                color: 'white'
+                color: 'white',
+                borderRadius: tileBorderRadius + ' 0 0 ' + tileBorderRadius
             },
             removeIcon: {
                 position: 'absolute',
@@ -131,7 +153,8 @@ export default {
                 width: '100%',
                 height: '100%',
                 background: 'rgba(80,80,80,0.8)',
-                color: 'gray'
+                color: 'gray',
+                borderRadius: tileBorderRadius
             },
             editEnabled: {
                 background: 'white',
@@ -141,38 +164,6 @@ export default {
                 background: 'white',
                 opacity: 0.5
             },
-        }
-    },
-    dimmer: {
-        outter: {
-            width: 'calc(100% - 2em)',
-            height: 'calc(100% - 2em)',
-            border: '1px solid gray',
-            borderRadius: '10px',
-            position: 'absolute',
-            overflow: 'hidden'
-        },
-        innerVer: {
-            width: '100%',
-            background: '#ffcc02',
-            position: 'absolute',
-            bottom: 0,
-            left: '0.5px',
-            borderRradius: '0 0 10px 10px'
-        },
-        innerHor: {
-            height: '100%',
-            background: '#ffcc02',
-            position: 'absolute',
-            top: 0,
-            left: 0
-        },
-        value: {
-            position: 'absolute',
-            top: 'calc(50% - 10px)',
-            left: '0',
-            width: '100%',
-            textAlign: 'center'
         }
     }
 };

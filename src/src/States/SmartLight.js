@@ -1,6 +1,6 @@
 import React from 'react';
 import SmartGeneric from './SmartGeneric';
-import Icon from 'react-icons/lib/ti/lightbulb'
+import Icon from 'react-icons/lib/ti/lightbulb';
 import Theme from '../theme';
 import I18n from '../i18n';
 
@@ -47,7 +47,7 @@ class SmartLight extends SmartGeneric {
                 state: val
             });
         } else if (id === this.workingId) {
-            const newState = {};
+            let newState = {};
             newState[id] = typeof state.val === 'number' ? !!state.val : state.val === true || state.val === 'true' || state.val === '1' || state.val === 'on'  || state.val === 'ON';
             this.setState(newState);
         }
