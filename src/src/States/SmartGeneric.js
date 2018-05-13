@@ -65,12 +65,15 @@ class SmartGeneric extends Component {
 
         this.stateRx.settings = Utils.getSettings(this.props.objects[this.settingsId]);
 
-        if (this.stateRx.settings.enabled && this.subscribes && !this.subscribed) {
+        this.state = this.stateRx;
+        delete this.stateRx;
+    }
+
+    componentDidMount () {
+        if (this.state.settings.enabled && this.subscribes && !this.subscribed) {
             this.subscribed = true;
             this.props.onCollectIds(this, this.subscribes, true);
         }
-        this.state = this.stateRx;
-        delete this.stateRx;
     }
 
     static getObjectName(objects, id, label, channelName, enumName) {

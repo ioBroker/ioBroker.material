@@ -43,9 +43,11 @@ class SmartLight extends SmartGeneric {
             newState[this.id] = val;
             this.setState(newState);
 
-            this.props.tile.setState({
-                state: val
-            });
+            if (this.props.tile.state !== val) {
+                this.props.tile.setState({
+                    state: val
+                });
+            }
         } else if (id === this.workingId) {
             let newState = {};
             newState[id] = typeof state.val === 'number' ? !!state.val : state.val === true || state.val === 'true' || state.val === '1' || state.val === 'on'  || state.val === 'ON';

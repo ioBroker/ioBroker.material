@@ -81,9 +81,12 @@ class SmartLight extends SmartGeneric {
                 newState[id] = this.realValueToPercent(val);
                 this.setState(newState);
 
-                this.props.tile.setState({
-                    state: val !== this.min
-                });
+                const tileState = val !== this.min;
+                if (this.props.tile.state !== tileState) {
+                    this.props.tile.setState({
+                        state: tileState
+                    });
+                }
             } else {
                 newState[id] = null;
                 this.setState(newState);
