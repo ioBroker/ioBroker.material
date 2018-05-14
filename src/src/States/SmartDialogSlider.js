@@ -60,9 +60,17 @@ class SmartDialogSlider extends Component  {
         this.refSlider = React.createRef();
 
         this.type = this.props.type || SmartDialogSlider.types.dimmer;
+        this.step = this.props.step || 20;
+        this.button = {
+            time: 0,
+            name: '',
+            timer: null
+        }
     }
 
-    static onContextMenu() {
+    static onContextMenu(e) {
+        e.preventDefault();
+        console.log('Ignore context menu' + e);
         return false;
     }
 
@@ -164,17 +172,53 @@ class SmartDialogSlider extends Component  {
         this.mouseUpTime = Date.now();
     }
 
-    onButtonTop() {
-        let value = this.type === SmartDialogSlider.types.blinds ? 0 : 100;
-        this.setState({value});
-        this.props.onValueChange && this.props.onValueChange(value);
-        this.mouseUpTime = Date.now();
-    }
+    onButtonDown(buttonName) {
+        if (Date.now() - this.button.time < 50) return;
+        if (this.button.timer) {
+            clearTimeout(this.button.timer);
+        }
+        this.button = {
+            name: buttonName,
+            time: Date.now(),
+            timer: setTimeout(() => {
+                this.button.timer = null;
+                let value;
+                switch (this.button.name) {
+                    case 'top':
+                        value = this.type === SmartDialogSlider.types.blinds ? 0 : 100;
+                        break;
 
-    onButtonBottom() {
-        let value = this.type === SmartDialogSlider.types.blinds ? 100 : 0;
-        this.setState({value});
-        this.props.onValueChange && this.props.onValueChange(value);
+                    case 'bottom':
+                        value = this.type === SmartDialogSlider.types.blinds ? 100 : 0;
+                        break;
+                }
+                this.setState({value});
+                this.props.onValueChange && this.props.onValueChange(value);
+            }, 400)
+        };
+    }
+    onButtonUp() {
+        if (this.button.timer) {
+            clearTimeout(this.button.timer);
+            this.button.timer = null;
+            let value = this.state.value;
+            switch (this.button.name) {
+                case 'top':
+                    value += this.type === SmartDialogSlider.types.blinds ? -this.step : this.step;
+                    break;
+
+                case 'bottom':
+                    value += this.type === SmartDialogSlider.types.blinds ? this.step : -this.step;
+                    break;
+            }
+            if (value > 100) {
+                value = 100;
+            } else if (value < 0) {
+                value = 0;
+            }
+            this.setState({value});
+            this.props.onValueChange && this.props.onValueChange(value);
+        }
         this.mouseUpTime = Date.now();
     }
 
@@ -220,7 +264,11 @@ class SmartDialogSlider extends Component  {
                  onClick={this.onClose.bind(this)}
                  style={{width: '100%', height: '100%', zIndex: 2100, userSelect: 'none', position: 'fixed', top: 0, left: 0, background: 'rgba(255,255,255,0.8'}}>
                 <div style={{width: '16em', position: 'absolute', height: '100%', maxHeight: 600, left: 'calc(50% - 8em)'}}>
-                    <div onClick={this.onButtonTop.bind(this)} style={Object.assign({}, SmartDialogSlider.buttonStyle, {top: '1.3em'})} className="dimmer-button">{this.getTopButtonName()}</div>
+                    <div onTouchStart={() => this.onButtonDown('top')}
+                         onMouseDown={() => this.onButtonDown('top')}
+                         onTouchEnd={this.onButtonUp.bind(this)}
+                         onMouseUp={this.onButtonUp.bind(this)}
+                         style={Object.assign({}, SmartDialogSlider.buttonStyle, {top: '1.3em'})} className="dimmer-button">{this.getTopButtonName()}</div>
                     <div ref={this.refSlider}
                         onMouseDown={this.onMouseDown.bind(this)}
                         onTouchStart={this.onMouseDown.bind(this)}
@@ -245,7 +293,11 @@ class SmartDialogSlider extends Component  {
                             {this.state.value}%
                         </div>
                     </div>
-                    <div onClick={this.onButtonBottom.bind(this)} style={Object.assign({}, SmartDialogSlider.buttonStyle, {bottom: '1.8em'})} className="dimmer-button">{this.getBottomButtonName()}</div>
+                    <div onTouchStart={() => this.onButtonDown('bottom')}
+                         onMouseDown={() => this.onButtonDown('bottom')}
+                         onTouchEnd={this.onButtonUp.bind(this)}
+                         onMouseUp={this.onButtonUp.bind(this)}
+                         style={Object.assign({}, SmartDialogSlider.buttonStyle, {bottom: '1.8em'})} className="dimmer-button">{this.getBottomButtonName()}</div>
                     {this.props.type === SmartDialogSlider.types.color ?
                         <div style={SmartDialogSlider.buttonColorStyle} onClick={this.onColorDialog.bind(this)} className="dimmer-button"><img style={{width: '100%', height: '100%'}} src={IconColors}/></div>
                         : null}
