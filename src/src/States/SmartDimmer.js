@@ -208,7 +208,7 @@ class SmartLight extends SmartGeneric {
                     startValue={this.realValueToPercent()}
                     onValueChange={this.onValueChange.bind(this)}
                     onClose={this.onSliderClose.bind(this)}
-                    type={Slider.types.dimmer}
+                    type={Slider.types.color}
                 /> : null
         ]);
     }
