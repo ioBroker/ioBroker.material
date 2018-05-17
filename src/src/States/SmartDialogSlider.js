@@ -218,7 +218,8 @@ class SmartDialogSlider extends Component  {
             }
             this.colorLeft = this.refColor.current.offsetLeft;
             this.colorTop = this.refColor.current.offsetTop;
-            this.forceUpdate();
+            this.refColorCursor.current.style.top = this.refColor.current.offsetTop + 'px';
+            this.refColorCursor.current.style.left = this.refColor.current.offsetLeft + 'px';
         }
     }
     componentWillUnmount() {
