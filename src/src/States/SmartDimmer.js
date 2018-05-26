@@ -4,6 +4,7 @@ import SmartGeneric from './SmartGeneric';
 import Icon from 'react-icons/lib/ti/lightbulb'
 import Theme from '../theme';
 import Slider from './SmartDialogSlider';
+import CSlider from './SmartDialogColor';
 
 class SmartLight extends SmartGeneric {
     constructor(props) {
@@ -204,11 +205,11 @@ class SmartLight extends SmartGeneric {
                      style={Object.assign({}, Theme.tile.tileState, this.state[this.id] ? Theme.tile.tileStateOn : Theme.tile.tileStateOff)}>{this.getStateText()}</div>
             </div>),
             this.state.showSlider ?
-                <Slider key={this.id + '.slider'}
+                <CSlider key={this.id + '.slider'}
                     startValue={this.realValueToPercent()}
                     onValueChange={this.onValueChange.bind(this)}
                     onClose={this.onSliderClose.bind(this)}
-                    type={Slider.types.color}
+                    type={Slider.types.dimmer}
                 /> : null
         ]);
     }
