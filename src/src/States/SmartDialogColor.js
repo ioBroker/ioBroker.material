@@ -1,11 +1,6 @@
 import React, {Component} from 'react';
-import IconColors from '../assets/colors.png';
-import Theme from '../theme';
-import IconUp from 'react-icons/lib/fa/angle-double-up';
-import IconDown from 'react-icons/lib/fa/angle-double-down';
-import IconLamp from 'react-icons/lib/ti/lightbulb';
-import I18n from '../i18n';
-import {darken, decomposeColor} from 'material-ui/utils/colorManipulator';
+import ColorsImg from '../assets/rgb.png';
+import {decomposeColor} from 'material-ui/utils/colorManipulator';
 
 
 class SmartDialogColor extends Component  {
@@ -215,11 +210,11 @@ class SmartDialogColor extends Component  {
     componentDidUpdate() {
         if (!this.colorWidth) {
             const h = this.refColor.current.offsetHeight - 6 * 16;
-            if (h < this.refColor.current.offsetWidth) {
+           /* if (h < this.refColor.current.offsetWidth) {
                 this.colorWidth = h;
                 this.refColor.current.style.width = this.colorWidth + 'px';
                 this.refColor.current.style.left = 'calc(50% - ' + (this.colorWidth / 2) + 'px)';
-            }
+            }*/
             this.colorWidth = this.refColorImage.current.offsetWidth;
             this.colorLeft = this.refColorImage.current.offsetLeft;
             this.colorTop = this.refColorImage.current.offsetTop;
@@ -287,10 +282,10 @@ class SmartDialogColor extends Component  {
                     width: this.colorWidth || '20em',
                     position: 'absolute',
                     height: '100%',
-                    left: 'calc(50% - ' + (this.colorWidth ? this.colorWidth + 'px' : '20em') + ')'
+                    left: 'calc(50% - ' + (this.colorWidth ? (this.colorWidth / 2) + 'px' : '10em') + ')'
                   }}>
                 <img ref={this.refColorImage}
-                     src={this.rgb = this.rgb || SmartDialogColor.createRgb(600)}
+                     src={ColorsImg}//{this.rgb = this.rgb || SmartDialogColor.createRgb(600)}
                      onMouseDown={this.onMouseDown.bind(this)}
                      onTouchStart={this.onMouseDown.bind(this)}
                      style={{
