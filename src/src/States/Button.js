@@ -1,6 +1,6 @@
 import React from 'react';
 import Generic from './Generic';
-import RaisedButton from 'material-ui/RaisedButton';
+import RaisedButton from '@material-ui/core/Button';
 
 class Button extends Generic {
 

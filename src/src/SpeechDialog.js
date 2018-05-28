@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import Dialog from 'material-ui/Dialog';
-import FlatButton from 'material-ui/FlatButton';
+import Dialog from '@material-ui/core/Dialog';
+import Button from '@material-ui/core/Button';
 import I18n from './i18n';
 import PropTypes from 'prop-types';
 
@@ -139,7 +139,8 @@ class SpeechDialog extends Component {
 
     render() {
         const actions = [
-            <FlatButton
+            <Button
+                variant="outlined"
                 label="Cancel"
                 primary={true}
                 onClick={() => this.stopSpeechRecognition(true)}

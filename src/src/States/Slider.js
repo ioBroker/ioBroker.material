@@ -3,7 +3,7 @@ import Generic from './Generic';
 import PropTypes from 'prop-types';
 import StateTypes from './Types';
 import ActionLightbulbOutline from 'react-icons/lib/md/lightbulb-outline'
-import Slider from 'material-ui/Slider';
+import Slider from '@material-ui/lab/Slider';
 import Theme from '../theme';
 
 const styles = {

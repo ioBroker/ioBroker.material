@@ -3,7 +3,7 @@ import Generic from './Generic';
 import PropTypes from 'prop-types';
 import StateTypes from './Types';
 import ActionLightbulbOutline from 'react-icons/lib/md/lightbulb-outline'
-import Toggle from 'material-ui/Toggle';
+import Switch from '@material-ui/core/Switch';
 import Theme from '../theme';
 
 const styles = {
@@ -17,7 +17,7 @@ const styles = {
     },
 };
 
-class Switch extends Generic {
+class SwitchCustom extends Generic {
     static propTypes = {
         type: PropTypes.number.isRequired
     };
@@ -49,7 +49,7 @@ class Switch extends Generic {
 
     render() {
         return this.wrapContent([
-                (<Toggle
+                (<Switch
                     key={this.props.id}
                     label={this.getObjectName()}
                     labelStyle={{overflow: 'hidden', fontWeight: this.props.label ? 'bold' : ''}}
@@ -62,5 +62,5 @@ class Switch extends Generic {
     }
 }
 
-export default Switch;
+export default SwitchCustom;
 

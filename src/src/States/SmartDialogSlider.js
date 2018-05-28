@@ -5,7 +5,7 @@ import IconUp from 'react-icons/lib/fa/angle-double-up';
 import IconDown from 'react-icons/lib/fa/angle-double-down';
 import IconLamp from 'react-icons/lib/ti/lightbulb';
 import I18n from '../i18n';
-import {darken, decomposeColor} from 'material-ui/utils/colorManipulator';
+import {darken, decomposeColor} from '@material-ui/core/styles/colorManipulator';
 
 
 class SmartDialogSlider extends Component  {

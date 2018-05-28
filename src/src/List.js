@@ -1,13 +1,14 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {List, ListItem, makeSelectable} from 'material-ui/List';
-import SubHeader from 'material-ui/Subheader';
-import Divider from 'material-ui/Divider';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListSubheader from '@material-ui/core/ListSubheader';
+import Divider from '@material-ui/core/Divider';
 import Utils from './Utils';
-import FlatButton from 'material-ui/FlatButton';
+import Button from '@material-ui/core/Button';
 import IconRooms from './icons/IconHome';
 
-import IconButton    from 'material-ui/IconButton';
+import IconButton    from '@material-ui/core/IconButton';
 import IconFunctions from 'react-icons/lib/md/lightbulb-outline';
 import IconFavorites from 'react-icons/lib/md/favorite';
 import Theme from './theme';
@@ -24,7 +25,7 @@ const styles = {
     },
 };
 
-let SelectableList = makeSelectable(List);
+let SelectableList = List;
 
 function wrapState(ComposedComponent) {
     return class SelectableList extends Component {
@@ -93,7 +94,7 @@ class MenuList extends React.Component {
         let items = this.getElementsToShow('enum');
 
         if (name) {
-            return (<SubHeader>{
+            return (<ListSubheader>{
                 items.map(item => {
                     if (this.props.objects[item] && this.props.objects[item].common && this.props.objects[item].common.name) {
                         name = Utils.getObjectName(this.props.objects, item);
@@ -109,10 +110,10 @@ class MenuList extends React.Component {
                     } else if (item === 'enum.favorites') {
                         return (<IconButton key={item} style={item === this.props.root ? styles.iconsSelected : styles.icons} tooltip={name} onClick={() => this.onRootChanged('enum.favorites')}><IconFavorites width={Theme.iconSize} height={Theme.iconSize}/></IconButton>);
                     } else {
-                        return (<FlatButton key={item} onClick={() => this.onRootChanged(item)}>{name}</FlatButton>);
+                        return (<Button variant="outlined" key={item} onClick={() => this.onRootChanged(item)}>{name}</Button>);
                     }
                 })
-            }</SubHeader>);
+            }</ListSubheader>);
         } else {
             return '';
         }

@@ -1,5 +1,5 @@
 import React from 'react';
-import {CircularProgress} from 'material-ui';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import SmartGeneric from './SmartGeneric';
 import Icon from 'react-icons/lib/ti/lightbulb'
 import Theme from '../theme';

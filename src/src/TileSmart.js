@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import { Row } from 'react-flexbox-grid';
-import Paper from 'material-ui/Paper';
+import Paper from '@material-ui/core/Paper';
 import Theme from './theme';
 import Types from './States/Types';
 

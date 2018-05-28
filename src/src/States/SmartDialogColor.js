@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import ColorsImg from '../assets/rgb.png';
-import {decomposeColor} from 'material-ui/utils/colorManipulator';
+import {decomposeColor} from '@material-ui/core/styles/colorManipulator';
 
 
 class SmartDialogColor extends Component  {

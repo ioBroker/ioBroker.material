@@ -11,7 +11,7 @@ import {fade} from 'material-ui/utils/colorManipulator';
 import spacing from 'material-ui/styles/spacing';
 import Background from './assets/homekit.png';
 
-const appBarHeight = 48;
+const appBarHeight = 64;
 const tileBorderRadius = '1em';
 const tileIconWidth = 40;
 

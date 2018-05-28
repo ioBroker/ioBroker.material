@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import './App.css';
 import MenuList from './List.js';
 import StatesList from './StatesList';
-import AppBar from 'material-ui/AppBar';
-import Drawer from 'material-ui/Drawer';
-import IconButton from 'material-ui/IconButton';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import Drawer from '@material-ui/core/Drawer';
+import IconButton from '@material-ui/core/IconButton';
 import IconClose from 'react-icons/lib/md/close';
 import IconEdit from 'react-icons/lib/md/mode-edit';
 import IconSignalOff from 'react-icons/lib/md/signal-wifi-off';
@@ -13,14 +15,28 @@ import IconFullScreen from 'react-icons/lib/md/fullscreen';
 import IconFullScreenExit from 'react-icons/lib/md/fullscreen-exit';
 import IconMic from 'react-icons/lib/md/mic';
 import Utils from './Utils';
-import Dialog from 'material-ui/Dialog';
-import RaisedButton from 'material-ui/RaisedButton';
+import Dialog from '@material-ui/core/Dialog';
+import RaisedButton from '@material-ui/core/Button';
 import SpeechDialog from './SpeechDialog';
 import Theme from './theme';
+import MenuIcon from 'react-icons/lib/md/menu';
 
 const isKeyboardAvailableOnFullScreen = (typeof Element !== 'undefined' && 'ALLOW_KEYBOARD_INPUT' in Element) && Element.ALLOW_KEYBOARD_INPUT;
 
 const text2CommandInstance = 0;
+
+const styles = {
+    root: {
+        flexGrow: 1,
+    },
+    flex: {
+        flex: 1,
+    },
+    menuButton: {
+        marginLeft: -12,
+        marginRight: 20,
+    },
+};
 
 class App extends Component {
     // ensure ALLOW_KEYBOARD_INPUT is available and enabled
@@ -403,20 +419,26 @@ class App extends Component {
         return (
             <div style={this.state.menuFixed ? {paddingLeft: Theme.menu.width}: {}}>
                 <AppBar
-                    style={{position: 'fixed', width: this.state.menuFixed ? 'calc(100% - ' +  Theme.menu.width + ')' : '100%', color: Theme.palette.textColor}}
-                    title={this.getTitle()}
-                    showMenuIconButton={!this.state.menuFixed}
-
-                    iconElementRight={
+                    position="fixed"
+                    style={{width: this.state.menuFixed ? 'calc(100% - ' +  Theme.menu.width + ')' : '100%', color: Theme.palette.textColor}}
+                >
+                    <Toolbar>
+                        {!this.state.menuFixed &&
+                            (<IconButton color="inherit" aria-label="Menu" onClick={this.onToggleMenu.bind(this)} >
+                                <MenuIcon/>
+                            </IconButton>)}
+                        <Typography variant="title" color="inherit" style={{flex: 1}}>
+                            {this.getTitle()}
+                        </Typography>
                         <div style={{color: Theme.palette.textColor}}>
                             {this.state.connected ? null : (<IconButton disabled={true}><IconSignalOff width={Theme.iconSize} height={Theme.iconSize}/></IconButton>)}
                             <IconButton onClick={this.toggleEditMode.bind(this)} style={{color: this.state.editMode ? Theme.palette.editActive: Theme.palette.textColor}}><IconEdit width={Theme.iconSize} height={Theme.iconSize}/></IconButton>
                             {SpeechDialog.isSpeechRecognitionSupported() ? <IconButton style={{color: Theme.palette.textColor}} onClick={() => this.onSpeech(true)}><IconMic width={Theme.iconSize} height={Theme.iconSize}/></IconButton> : null}
                             {App.isFullScreenSupported() ?
                                 <IconButton style={{color: Theme.palette.textColor}} onClick={this.onToggleFullScreen.bind(this)}>{this.state.fullScreen ? <IconFullScreenExit width={Theme.iconSize} height={Theme.iconSize} /> : <IconFullScreen width={Theme.iconSize} height={Theme.iconSize} />}</IconButton> : null}
-                    </div>}
-                    onLeftIconButtonClick={this.onToggleMenu.bind(this)}
-                />
+                        </div>
+                    </Toolbar>
+                </AppBar>
 
                 <Drawer open={this.state.open} width={250}>
                     <IconButton onClick={this.onToggleMenu.bind(this)} style={{color: Theme.palette.textColor}}>
@@ -442,7 +464,6 @@ class App extends Component {
                 </Drawer>
                 <StatesList
                     loading={this.state.loading}
-                    style={{paddingTop: 50}}
                     objects={this.state.objects}
                     states={this.states}
                     editMode={this.state.editMode}

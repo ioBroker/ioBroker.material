@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Grid, Col } from 'react-flexbox-grid';
 import Tile from './Tile';
 import TileSmart from './TileSmart';
-import CircularProgress from 'material-ui/CircularProgress';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Utils from './Utils';
 import Theme from './theme';
 import ChannelDetector from './Channels/Detector';
