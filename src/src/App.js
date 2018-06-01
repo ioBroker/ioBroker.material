@@ -100,30 +100,36 @@ class App extends Component {
                             this.showError(err);
                         } else {
                             let viewEnum;
-                            if (objects && !this.state.viewEnum) {
-                                let reg = new RegExp('^' + this.state.masterPath + '\\.');
-                                // get first room
-                                for (let id in objects) {
-                                    if (objects.hasOwnProperty(id) && reg.test(id)) {
-                                        viewEnum = id;
-                                        break;
+                            this.conn.getObject('system.config', (err, config) => {
+                                if (objects && !this.state.viewEnum) {
+                                    let reg = new RegExp('^' + this.state.masterPath + '\\.');
+                                    // get first room
+                                    for (let id in objects) {
+                                        if (objects.hasOwnProperty(id) && reg.test(id)) {
+                                            viewEnum = id;
+                                            break;
+                                        }
                                     }
                                 }
-                            }
-                            let keys = Object.keys(objects);
-                            keys.sort();
-                            let result = {};
-                            for (let k = 0; k < keys.length; k++) {
-                                if (keys[k].match(/^system\./)) continue;
-                                result[keys[k]] = objects[keys[k]];
-                            }
+                                objects['system.config'] = config;
+                                let keys = Object.keys(objects);
+                                keys.sort();
+                                let result = {};
+                                for (let k = 0; k < keys.length; k++) {
+                                    if (keys[k].match(/^system\./) && keys[k] !== 'system.config') continue;
+                                    result[keys[k]] = {
+                                        common: objects[keys[k]].common,
+                                        type: objects[keys[k]].type
+                                    };
+                                }
 
-                            if (viewEnum) {
-                                this.setState({objects: result || {}, viewEnum: viewEnum, loading: false});
-                            } else {
-                                this.setState({objects: result || {}, loading: false});
-                            }
-                            this.conn.subscribe(['text2command.' + text2CommandInstance + '.response']);
+                                if (viewEnum) {
+                                    this.setState({objects: result || {}, viewEnum: viewEnum, loading: false});
+                                } else {
+                                    this.setState({objects: result || {}, loading: false});
+                                }
+                                this.conn.subscribe(['text2command.' + text2CommandInstance + '.response']);
+                            });
                         }
                     });
                 }
@@ -417,10 +423,14 @@ class App extends Component {
 
     render() {
         return (
-            <div style={this.state.menuFixed ? {paddingLeft: Theme.menu.width}: {}}>
+            <div>
                 <AppBar
                     position="fixed"
-                    style={{width: this.state.menuFixed ? 'calc(100% - ' +  Theme.menu.width + ')' : '100%', color: Theme.palette.textColor}}
+                    style={{
+                        width: this.state.menuFixed ? 'calc(100% - ' +  Theme.menu.width + 'px)' : '100%',
+                        color: Theme.palette.textColor,
+                        marginLeft: this.state.menuFixed ? Theme.menu.width : 0
+                    }}
                 >
                     <Toolbar>
                         {!this.state.menuFixed &&
@@ -440,19 +450,26 @@ class App extends Component {
                     </Toolbar>
                 </AppBar>
 
-                <Drawer open={this.state.open} width={250}>
-                    <IconButton onClick={this.onToggleMenu.bind(this)} style={{color: Theme.palette.textColor}}>
-                        <IconClose width={Theme.iconSize} height={Theme.iconSize} />
-                    </IconButton>
+                <Drawer
+                    variant={this.state.menuFixed ? 'permanent' : 'temporary'}
+                    open={this.state.open} style={{width: Theme.menu.width}}>
+                    <Toolbar>
+                        <IconButton onClick={this.onToggleMenu.bind(this)} style={{color: Theme.palette.textColor}}>
+                            <IconClose width={Theme.iconSize} height={Theme.iconSize} />
+                        </IconButton>
 
-                    {this.state.width > 500 && !this.state.menuFixed ?
-                        (<IconButton onClick={this.onToggleLock.bind(this)} style={{float: 'right', height: 40,color: Theme.palette.textColor}}>
-                            <IconLock width={Theme.iconSize} height={Theme.iconSize}/>
-                        </IconButton>)
-                        : null
-                    }
+                        <div style={{flex: 1}}>
+                        </div>
 
+                        {this.state.width > 500 && !this.state.menuFixed ?
+                            (<IconButton onClick={this.onToggleLock.bind(this)} style={{float: 'right', color: Theme.palette.textColor}}>
+                                <IconLock width={Theme.iconSize} height={Theme.iconSize}/>
+                            </IconButton>)
+                            : null
+                        }
+                    </Toolbar>
                     <MenuList
+                        width={Theme.menu.width}
                         objects={this.state.objects}
                         selectedId={this.state.viewEnum}
                         editMode={this.state.editMode}
@@ -468,6 +485,7 @@ class App extends Component {
                     states={this.states}
                     editMode={this.state.editMode}
                     windowWidth={this.state.width}
+                    marginLeft={this.state.menuFixed ? Theme.menu.width : 0}
                     enumID={this.state.viewEnum}
                     onSaveSettings={this.onSaveSettings.bind(this)}
                     onControl={this.onControl.bind(this)}

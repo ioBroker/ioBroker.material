@@ -52,9 +52,8 @@ class SwitchCustom extends Generic {
                 (<Switch
                     key={this.props.id}
                     label={this.getObjectName()}
-                    labelStyle={{overflow: 'hidden', fontWeight: this.props.label ? 'bold' : ''}}
                     onToggle={(obj, toggled) => this.handleChange(toggled)}
-                    defaultToggled={this.state.state === 'on' || this.state.state === 'ON' || this.state.state === 1 || this.state.state === '1' || this.state.state === true || this.state.state === 'true'}
+                    checked={this.state.state === 'on' || this.state.state === 'ON' || this.state.state === 1 || this.state.state === '1' || this.state.state === true || this.state.state === 'true'}
                     style={styles.toggle}
             />),
             this.getIcon()]

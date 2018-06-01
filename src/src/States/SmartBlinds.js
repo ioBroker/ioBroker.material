@@ -1,15 +1,32 @@
 import React from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import SmartGeneric from './SmartGeneric';
-import Icon from 'react-icons/lib/ti/lightbulb'
+import Icon from '../icons/jalousie.svg'
 import Theme from '../theme';
 import Slider from './SmartDialogSlider';
 
-class SmartLight extends SmartGeneric {
+class SmartBlinds extends SmartGeneric {
+    // props = {
+    //    inverted: false,
+    //    objects: OBJECT
+    //    tile: parentDiv
+    //    states: STATES
+    //    onControl: function
+    // };
+
+    static buttonStopStyle = {
+        position: 'absolute',
+        left: 'calc(50% + 7em)',
+        bottom: '4em',
+        height: '2.5em',
+        width: '2.5em',
+        cursor: 'pointer'
+    };
+
     constructor(props) {
         super(props);
         if (this.channelInfo.states) {
-            let state = this.channelInfo.states.find(state => state.id && state.name === 'LAMP_SET');
+            let state = this.channelInfo.states.find(state => state.id && state.name === 'BLIND_SET');
             if (state && this.props.objects[state.id]&& this.props.objects[state.id].common) {
                 this.id = state.id;
             } else {
@@ -21,11 +38,17 @@ class SmartLight extends SmartGeneric {
             } else {
                 this.workingId = '';
             }
-            state = this.channelInfo.states.find(state => state.id && state.name === 'LAMP_ACT');
+            state = this.channelInfo.states.find(state => state.id && state.name === 'BLIND_ACT');
             if (state) {
                 this.actualId = state.id;
             } else {
                 this.actualId = this.id;
+            }
+            state = this.channelInfo.states.find(state => state.id && state.name === 'BLIND_STOP');
+            if (state) {
+                this.stopId = state.id;
+            } else {
+                this.stopId = '';
             }
         }
         if (this.id) {
@@ -45,6 +68,9 @@ class SmartLight extends SmartGeneric {
                 isPointer: true
             });
         }
+        this.props.tile.setState({
+            state: true
+        });
         this.state.showSlider = false;
         this.onMouseUpBind = this.onMouseUp.bind(this);
 
@@ -65,11 +91,18 @@ class SmartLight extends SmartGeneric {
             }
         }
         val = parseFloat(val);
-        return Math.round((val - this.min) / (this.max - this.min) * 100);
+        val = Math.round((val - this.min) / (this.max - this.min) * 100);
+        if (!this.props.inverted) {
+            val = 100 - val;
+        }
+        return val;
     }
 
     percentToRealValue(percent) {
         percent = parseFloat(percent);
+        if (!this.props.inverted) {
+            percent = 100 - percent;
+        }
         return Math.round((this.max - this.min) * percent / 100);
     }
 
@@ -80,19 +113,10 @@ class SmartLight extends SmartGeneric {
             if (!isNaN(val)) {
                 newState[id] = this.realValueToPercent(val);
                 this.setState(newState);
-
-                const tileState = val !== this.min;
-                if (this.props.tile.state !== tileState) {
-                    this.props.tile.setState({
-                        state: tileState
-                    });
-                }
             } else {
                 newState[id] = null;
                 this.setState(newState);
-                this.props.tile.setState({
-                    state: false
-                });
+
             }
 
             // hide desired value
@@ -125,6 +149,10 @@ class SmartLight extends SmartGeneric {
         this.props.onControl(this.id, this.percentToRealValue(percent));
     }
 
+    onStop() {
+        this.stopId && this.props.onControl && this.props.onControl(this.stopId, true);
+    }
+
     onLongClick() {
         this.timer = null;
         this.setState({showSlider: true});
@@ -142,7 +170,6 @@ class SmartLight extends SmartGeneric {
         if (this.state.showSlider) return;
         e.preventDefault();
         e.stopPropagation();
-        this.mouseValue = 0;
         this.timer = setTimeout(this.onLongClick.bind(this), 500);
 
         this.state.direction = '';
@@ -176,8 +203,20 @@ class SmartLight extends SmartGeneric {
     getIcon() {
         return (
             <div key={this.id + '.icon'} style={Object.assign({}, Theme.tile.tileIcon, this.state[this.actualId] !== this.min ? {color: Theme.palette.lampOn} : {})} className="tile-icon">
-                <Icon width={'100%'} height={'100%'}/>
-                {this.state.executing ? <CircularProgress style={{position: 'absolute', top: 0, left: 0}} size={Theme.tile.tileIcon.width}/> : null}
+                <img width={'100%'} height={'100%'} src={Icon} style={{zIndex: 1}}/>
+                {this.state.executing ? <CircularProgress style={{zIndex: 3, position: 'absolute', top: 0, left: 0}} size={Theme.tile.tileIcon.width}/> : null}
+                <div style={{
+                    zIndex: 2,
+                    position: 'absolute',
+                    bottom: 0,
+                    left: 0,
+                    opacity: 0.9,
+                    background: '#FFF',
+                    width: '100%',
+                    height: this.realValueToPercent(this.state[this.id]) + '%'
+                }}>
+
+                </div>
             </div>
         );
     }
@@ -207,12 +246,13 @@ class SmartLight extends SmartGeneric {
                 <Slider key={this.id + '.slider'}
                     startValue={this.realValueToPercent()}
                     onValueChange={this.onValueChange.bind(this)}
+                    onStop={this.stopId ? this.onStop.bind(this) : null}
                     onClose={this.onSliderClose.bind(this)}
-                    type={Slider.types.dimmer}
+                    type={Slider.types.blinds}
                 /> : null
         ]);
     }
 }
 
-export default SmartLight;
+export default SmartBlinds;
 

@@ -6,6 +6,7 @@ import IconWorking      from 'react-icons/lib/ti/cog-outline';
 import IconUnreach      from 'react-icons/lib/md/perm-scan-wifi';
 import IconMaintain     from 'react-icons/lib/md/priority-high';
 import IconLowbat       from 'react-icons/lib/md/battery-alert';
+import IconBlind        from '../icons/jalousie.svg';
 
 import Types from '../States/Types';
 
@@ -27,6 +28,19 @@ const patterns = {
         ],
         icon: IconThermostat,
         type: Types.thermostat
+    },
+    blinds: {
+        states: [
+            {role: /^level(\.blind)?$/,                   indicator: false, type: 'number',  write: true, enums: roleOrEnumBlind, name: 'BLIND_SET',           required: true,  icon: IconBlind,       color: '#fffc03'},
+            {role: /^value(\.blind)?$/,                   indicator: false, type: 'number',               enums: roleOrEnumBlind, name: 'BLIND_ACT',           required: false},
+            {role: /^button\.stop$|^action\.stop$/,       indicator: false, type: 'boolean', write: true, enums: roleOrEnumBlind, name: 'BLIND_STOP',          required: false},
+            patternWorking,
+            patternUnreach,
+            patternLowbat,
+            patternMaintain
+        ],
+        icon: IconBlind,
+        type: Types.blind
     },
     dimmer: {
         states: [
@@ -57,7 +71,13 @@ const patterns = {
 const lightWords = {
     en: [/lights?/i,    /lamps?/i,      /ceilings?/i],
     de: [/licht(er)?/i, /lampen?/i,     /beleuchtung(en)?/],
-    ru: [/свет/i,       /ламп[аы]/i,    /торшеры?/, /подсветк[аи]/i, /лампочк[аи]/i, /светильники?/i,]
+    ru: [/свет/i,       /ламп[аы]/i,    /торшеры?/, /подсветк[аи]/i, /лампочк[аи]/i, /светильники?/i]
+};
+
+const blindWords = {
+    en: [/blinds?/i,    /windows?/i,    /shutters?/i],
+    de: [/rollladen?/i, /fenstern?/i,   /beschattung(en)?/],
+    ru: [/ставни/i,     /рольставни/i,  /окна|окно/, /жалюзи/i]
 };
 
 function roleOrEnumLight(obj, enums) {
@@ -73,6 +93,28 @@ function roleOrEnumLight(obj, enums) {
         for (let lang in lightWords) {
             if (lightWords.hasOwnProperty(lang)) {
                 if (lightWords[lang].find(reg => reg.test(en))) {
+                    found = true;
+                    return false;
+                }
+            }
+        }
+    });
+    return found;
+}
+
+function roleOrEnumBlind(obj, enums) {
+    if (obj.common.role === 'blind') {
+        return true;
+    }
+    let found = false;
+    enums.forEach(en => {
+        const pos = en.lastIndexOf('.');
+        if (pos !== -1) {
+            en = en.substring(pos + 1);
+        }
+        for (let lang in blindWords) {
+            if (blindWords.hasOwnProperty(lang)) {
+                if (blindWords[lang].find(reg => reg.test(en))) {
                     found = true;
                     return false;
                 }
@@ -193,7 +235,7 @@ class ChannelDetector {
             for (let pattern in patterns) {
                 if (patterns.hasOwnProperty(pattern)) {
                     let result = null;
-                    if (id === 'hm-rpc.0.FEQ0082127.1') {
+                    if (id.indexOf('hm-rpc.0.HEQ0066171') !== -1) {
                         console.log('AAA');
                     }
 
@@ -246,6 +288,9 @@ class ChannelDetector {
                                     });
                                 });
                             }
+                        }
+                        if (pattern === 'blinds') {
+                            console.log('AAAA');
                         }
 
                         return result;

@@ -2,16 +2,22 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import Divider from '@material-ui/core/Divider';
 import Utils from './Utils';
 import Button from '@material-ui/core/Button';
 import IconRooms from './icons/IconHome';
+import Collapse from '@material-ui/core/Collapse';
+import I18n from './i18n'
 
 import IconButton    from '@material-ui/core/IconButton';
 import IconFunctions from 'react-icons/lib/md/lightbulb-outline';
 import IconFavorites from 'react-icons/lib/md/favorite';
 import Theme from './theme';
+import ExpandLess from 'react-icons/lib/md/expand-less';
+import ExpandMore from 'react-icons/lib/md/expand-more';
 
 const styles = {
     iconsSelected: {
@@ -25,60 +31,7 @@ const styles = {
     },
 };
 
-let SelectableList = List;
-
-function wrapState(ComposedComponent) {
-    return class SelectableList extends Component {
-        static propTypes = {
-            children: PropTypes.node.isRequired,
-            editMode: PropTypes.bool.isRequired,
-            defaultValue: PropTypes.string.isRequired,
-        };
-        constructor(props) {
-            super(props);
-            this.state = {
-                selectedIndex: this.props.defaultValue
-            };
-            this.defaultValue = this.props.defaultValue;
-        }
-
-        componentDidUpdate () {
-            if (this.defaultValue !== this.props.defaultValue) {
-                this.defaultValue = this.props.defaultValue;
-                this.setState({
-                    selectedIndex: this.props.defaultValue,
-                });
-            }
-        }
-
-        componentWillMount() {
-            this.setState({
-                selectedIndex: this.props.defaultValue,
-            });
-        }
-
-        handleRequestChange = (event, index) => {
-            this.setState({
-                selectedIndex: index,
-            });
-        };
-
-        render() {
-            return (
-                <ComposedComponent
-                    value={this.state.selectedIndex}
-                    onChange={this.handleRequestChange}
-                >
-                    {this.props.children}
-                </ComposedComponent>
-            );
-        }
-    };
-}
-
-SelectableList = wrapState(SelectableList);
-
-class MenuList extends React.Component {
+class MenuList extends Component {
     static propTypes = {
         objects: PropTypes.object.isRequired,
         selectedId: PropTypes.string,
@@ -88,13 +41,20 @@ class MenuList extends React.Component {
         onRootChanged: PropTypes.func.isRequired
     };
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            selectedIndex: this.props.defaultValue
+        };
+    }
+
     getListHeader() {
         let name = Utils.getObjectName(this.props.objects, this.props.root);
 
         let items = this.getElementsToShow('enum');
 
         if (name) {
-            return (<ListSubheader>{
+            return (<ListSubheader style={{background: 'white', borderBottom: '1px solid rgba(0, 0, 0, 0.12)'}}>{
                 items.map(item => {
                     if (this.props.objects[item] && this.props.objects[item].common && this.props.objects[item].common.name) {
                         name = Utils.getObjectName(this.props.objects, item);
@@ -157,7 +117,15 @@ class MenuList extends React.Component {
         return items;
     }
 
-    static isOpened (path, id) {
+    static getObjectIcon(objects, id) {
+        if (objects && objects[id] && objects[id].common && objects[id].common.icon) {
+            return null;
+        } else {
+            return null;
+        }
+    }
+
+    static isOpened(path, id) {
         if (id === path.substring(0, id.length)) return true;
         return undefined;
     }
@@ -169,18 +137,29 @@ class MenuList extends React.Component {
         if (typeof items !== 'object') {
             items = this.getElementsToShow(items);
         }
-        //let objects = this.prop.objects;
 
-        return items.map(id => (
-            <ListItem
-                key={id}
-                value={id}
-                open={MenuList.isOpened(this.props.selectedId, id)}
-                primaryText={Utils.getObjectName(this.props.objects, id)}
-                onClick={(el) => this.onSelected(id, el)}
-                nestedItems={this.getListItems(id)}
-            />
-        ))
+        return items.map(id => {
+            const icon = MenuList.getObjectIcon(this.props.objects, id);
+            const children = this.getListItems(id);
+            return [(<ListItem
+                    button
+                    className={this.props.selectedId === id ? 'selected' : ''}
+                    key={id}
+                    onClick={(el) => this.onSelected(id, el)}
+                >
+                    {icon && <ListItemIcon>{icon}</ListItemIcon>}
+                    <ListItemText
+                        primary={Utils.getObjectName(this.props.objects, id)}
+                    />
+                    {children && children.length ? (MenuList.isOpened(this.props.selectedId, id) ? <ExpandLess /> : <ExpandMore />) : ''}
+                </ListItem>),
+                children && children.length ? (<Collapse key={'sub_' + id} in={MenuList.isOpened(this.props.selectedId, id)} timeout="auto" unmountOnExit>
+                    <List component="div" disablePadding>
+                        {children}
+                    </List>
+                </Collapse>) : null
+            ]
+        })
     }
 
     onSelected(id, el) {
@@ -201,24 +180,25 @@ class MenuList extends React.Component {
         let items = this.getElementsToShow();
         if (items && items.length) {
             return (
-                <div>
+                <div style={{width: this.props.width}}>
                     <Divider />
                     {this.getListHeader()}
-                    <Divider />
-                    <SelectableList editMode={this.props.editMode} defaultValue={this.getSelectedItem(items)} >
+                    <List>
                         {this.getListItems(items)}
-                    </SelectableList>
+                    </List>
                 </div>
             );
         } else {
             return (
-                <div>
+                <div style={{width: this.props.width}}>
                     <Divider />
                     {this.getListHeader()}
                     <Divider />
-                    <SelectableList editMode={this.props.editMode} defaultValue="0" >
-                        <ListItem key="0" primaryText="No elements" value="0" />
-                    </SelectableList>
+                    <List>
+                        <ListItem key="0" value="0">
+                            <ListItemText>{I18n.t('No elements')}</ListItemText>
+                        </ListItem>
+                    </List>
                 </div>
             );
         }

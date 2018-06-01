@@ -6,5 +6,9 @@
   "On":        "On",
   "Off":       "Off",
 
+  "sent":      "sent",
+
+  "No elements": "No elements",
+
   "SET_TEMPERATURE": "Set temperature"
 }

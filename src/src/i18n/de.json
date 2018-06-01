@@ -6,5 +6,9 @@
   "On":        "An",
   "Off":       "Aus",
 
+  "sent":      "gesendet",
+
+  "No elements": "Keine Elemente",
+
   "SET_TEMPERATURE": "Solltemperatur"
 }

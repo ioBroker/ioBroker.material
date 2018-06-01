@@ -1,5 +1,6 @@
 import {
-    blue700,blue600,
+    blue700,
+    blue600,
     cyan700,
     grey600,
     grey100, grey400, grey500,
@@ -27,18 +28,22 @@ export default {
         backgroundImage: 'url(' + Background + ')',//'url(homekit.png)',
         backgroundSize: '100% auto',
         paddingTop: appBarHeight,
-        minHeight: '100%',
+        minHeight: 'calc(100% - 14px)', // I have no idea, why this 14px are here
         //background: '#000'//'#1b1b1b'
     },
     menu: {
-        width: '250px'
+        width: 250,
+        selected: {
+            color: '#2196f3'
+        }
+
     },
     refreshIndicator: {
         strokeColor: '#337ab7',
         loadingStrokeColor: '#337ab7'
     },
     palette: {
-        primary1Color:      blue700,
+        /*primary1Color:      blue700,
         primary2Color:      blue600,
         primary3Color:      grey600,
         accent1Color:       grey500,
@@ -51,13 +56,15 @@ export default {
         borderColor:        fade(fullWhite, 0.3),
         disabledColor:      fade(fullWhite, 0.3),
         pickerHeaderColor:  fade(fullWhite, 0.12),
-        clockCircleColor:   fade(fullWhite, 0.12),
+        clockCircleColor:   fade(fullWhite, 0.12),*/
         editActive:         'red',
         lampOn:             '#ffcc02'
     },
     iconSize: '24px',
     indicatorSize: '20px',
-
+    slider: {
+        background: 'grey'
+    },
 
     tile: {
         tile: {
@@ -71,7 +78,8 @@ export default {
             fontSize: '1em',
             fontWeight: 'bold',
             color: 'black',
-            background: 'white'
+            background: 'white',
+            boxSizing: 'border-box'
         },
         tileOn: {
             background: 'white',

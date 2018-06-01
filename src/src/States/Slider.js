@@ -108,7 +108,6 @@ class Dimmer extends Generic {
             (<Slider
                 key={this.props.id}
                 style={{width: icon ? 'calc(100% - 6em)' : 'calc(100% - 4em)', display: 'inline-block', marginTop: icon ? 8: 0}}
-                sliderStyle={{margin: 0}}
                 min={min}
                 max={max}
                 step={step}

@@ -131,7 +131,7 @@ class StatesList extends Component {
         } else if (this.props.loading) {
             // no connection
             columns.push((<Col xs={12} sm={6} md={4} lg={3} key="connection">
-                <CircularProgress size={60} thickness={7} color="#337ab7" style={{padding: 20}}/>
+                <CircularProgress size={60} thickness={7} color="primary" style={{padding: 20}}/>
             </Col>));
         } else  {
             // no items
@@ -141,7 +141,7 @@ class StatesList extends Component {
         }
 
         return(
-            <div style={Theme.mainPanel}>
+            <div style={Object.assign({marginLeft: this.props.marginLeft}, Theme.mainPanel)}>
                 <Grid fluid style={{display: 'flex'}}>{columns}</Grid>
             </div>);
     }

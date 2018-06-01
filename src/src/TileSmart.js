@@ -7,6 +7,7 @@ import Types from './States/Types';
 
 import SmartLight from './States/SmartLight';
 import SmartDimmer from './States/SmartDimmer';
+import SmartBlinds from './States/SmartBlinds';
 import SmartGeneric from './States/SmartGeneric';
 
 class TileSmart extends Component {
@@ -80,7 +81,6 @@ class TileSmart extends Component {
         //<Col xs={12} sm={6} md={4} lg={3}>
         return (<Row style={style}>
             <Paper style={this.getTileStyle()}
-                   zDepth={1}
                    onMouseDown={this.onMouseDown.bind(this)}
                    onTouchStart={this.onMouseDown.bind(this)}
                    onMouseUp={this.onMouseUp.bind(this)}
@@ -121,6 +121,8 @@ class TileSmart extends Component {
             return this.wrapContent(this.createControl(SmartLight, this.channelInfo, this));
         } else if (this.channelInfo.type === Types.dimmer) {
             return this.wrapContent(this.createControl(SmartDimmer, this.channelInfo, this));
+        } else if (this.channelInfo.type === Types.blind) {
+            return this.wrapContent(this.createControl(SmartBlinds, this.channelInfo, this));
         } else {
             return null;
         }
