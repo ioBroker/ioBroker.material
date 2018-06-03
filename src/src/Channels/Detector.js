@@ -137,7 +137,7 @@ function roleOrEnum(obj, enums, roles, words) {
 // -------------- LIGHT -----------------------------------------
 const lightWords = {
     en: [/lights?/i,    /lamps?/i,      /ceilings?/i],
-    de: [/licht(er)?/i, /lampen?/i,     /beleuchtung(en)?/],
+    de: [/licht(er)?/i, /lampen?/i,     /beleuchtung(en)?/i],
     ru: [/свет/i,       /ламп[аы]/i,    /торшеры?/, /подсветк[аи]/i, /лампочк[аи]/i, /светильники?/i]
 };
 const lightRoles = ['switch.light', 'dimmer', 'value.dimmer', 'level.dimmer', 'sensor.light', 'state.light'];
@@ -148,7 +148,7 @@ function roleOrEnumLight(obj, enums) {
 // -------------- BLINDS -----------------------------------------
 const blindWords = {
     en: [/blinds?/i,    /windows?/i,    /shutters?/i],
-    de: [/rollladen?/i, /fenstern?/i,   /beschattung(en)?/],
+    de: [/rollladen?/i, /fenstern?/i,   /beschattung(en)?/i],
     ru: [/ставни/i,     /рольставни/i,  /окна|окно/, /жалюзи/i]
 };
 
@@ -166,7 +166,7 @@ function roleOrEnumWindow(obj, enums) {
 // -------------- DOORS -----------------------------------------
 const doorsWords = {
     en: [/doors?/i,      /gates?/i,      /wickets?/i,        /entry|entries/i],
-    de: [/türe?/i,       /tuere?/i,      /tore?/,            /einfahrte?/,      /pforte?/],
+    de: [/türe?/i,       /tuere?/i,      /tore?/i,           /einfahrt(en)?/i,  /pforten?/i],
     ru: [/двери|дверь/i, /ворота/i,      /калитка|калитки/,  /въезды?/i,        /входы?/i]
 };
 
