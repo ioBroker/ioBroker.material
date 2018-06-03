@@ -19,7 +19,8 @@ This adapter cannot be installed directly from github. Only from npm.
 
 
 ## ToDO:
-- everything
+- try smaller font to write the name of device
+- show last change state
 
 ## Changelog
 ### 0.5.7 (2018.01.24)

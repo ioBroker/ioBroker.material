@@ -34,7 +34,11 @@ class SmartGeneric extends Component {
             if (this.channelInfo.states) {
                 let ids = [];
                 this.channelInfo.states.forEach(state => {
-                    if (state.id && this.props.objects[state.id] && this.props.objects[state.id].type === 'state' && ids.indexOf(state.id) === -1) {
+                    if (state.id &&
+                        !state.noSubscribe &&
+                        this.props.objects[state.id] &&
+                        this.props.objects[state.id].type === 'state' &&
+                        ids.indexOf(state.id) === -1) {
                         ids.push(state.id);
                     }
                 });
@@ -44,6 +48,28 @@ class SmartGeneric extends Component {
                     // do not want to mutate via setState, because it is constructor
                     ids.forEach(id => this.stateRx[id] = this.props.states[id] ? this.props.states[id].val : null);
                 }
+            }
+        }
+
+        if (this.channelInfo && this.channelInfo.states) {
+            this.indicators = {};
+            let state = this.channelInfo.states.find(state => state.id && state.name === 'WORKING');
+            this.indicators.workingId = state && state.id;
+
+            state = this.channelInfo.states.find(state => state.id && state.name === 'UNREACH');
+            this.indicators.unreachId = state && state.id;
+
+            state = this.channelInfo.states.find(state => state.id && state.name === 'LOWBAT');
+            this.indicators.lowbatId = state && state.id;
+
+            state = this.channelInfo.states.find(state => state.id && state.name === 'MAINTAIN');
+            this.indicators.maintainId = state && state.id;
+
+            state = this.channelInfo.states.find(state => state.id && state.name === 'ERROR');
+            this.indicators.errorId = state && state.id;
+
+            if (this.indicators.errorId) {
+                this.errorText = '';
             }
         }
 
@@ -143,7 +169,35 @@ class SmartGeneric extends Component {
 
     // default handler
     updateState(id, state) {
-
+        // update indicators
+        let val;
+        if (this.indicators && id === this.indicators.errorId) {
+            if (typeof state.val === 'string' ) {
+                let i = parseInt(state.val.trim(), 10);
+                if (i.toString() === state.val.trim()) {
+                    val = i;
+                } else {
+                    val = state.val === 'true' || state.val === 'on' || state.val === 'ON';
+                }
+            } else {
+                val = typeof state.val === 'number' ? state.val : state.val === true || state.val === 'true' || state.val === 'on' || state.val === 'ON';
+            }
+            const obj = this.props.objects[id];
+            if (obj && obj.common) {
+                if (obj.common.min !== undefined && obj.common.min === val) {
+                    val = false;
+                    this.errorText = '';
+                } else if (obj.common.states && obj.common.states[val] !== undefined)  {
+                    this.errorText = I18n.t(obj.common.states[val]);
+                    val = true;
+                }
+            }
+        } else {
+            val = typeof state.val === 'number' ? !!state.val : state.val === true || state.val === 'true' || state.val === '1' || state.val === 'on' || state.val === 'ON';
+        }
+        const newState = {};
+        newState[id] = val;
+        this.setState(newState);
     }
 
     // default handler
@@ -196,6 +250,7 @@ class SmartGeneric extends Component {
     // indicator.maintenance.lowbat
     // indicator.maintenance.unreach
     // indicator.maintenance
+    // indicator.error
     getIndicators() {
         let result = [];
         this.channelInfo.states.forEach(state =>  {
@@ -206,7 +261,7 @@ class SmartGeneric extends Component {
         });
 
         if (result.length) {
-            return (<div style={Theme.tile.tileIndicators}>{result}</div>);
+            return (<div style={Theme.tile.tileIndicators} title={this.errorText || ''}>{result}</div>);
         } else {
             return null;
         }

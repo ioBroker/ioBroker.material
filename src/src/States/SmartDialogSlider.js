@@ -197,61 +197,69 @@ class SmartDialogSlider extends Component  {
         if (this.button.timer) {
             clearTimeout(this.button.timer);
         }
-        this.button = {
-            name: buttonName,
-            time: Date.now(),
-            timer: setTimeout(() => {
-                this.button.timer = null;
-                let value;
-                switch (this.button.name) {
-                    case 'top':
-                        value = this.type === SmartDialogSlider.types.blinds ? 0 : 100;
-                        break;
-
-                    case 'bottom':
-                        value = this.type === SmartDialogSlider.types.blinds ? 100 : 0;
-                        break;
-                    default:
-                        break;
-                }
-                this.setState({value});
-                this.props.onValueChange && this.props.onValueChange(value);
-            }, 400)
-        };
-    }
-    onButtonUp() {
-        if (this.button.timer) {
-            clearTimeout(this.button.timer);
+        this.button.name = buttonName;
+        this.button.time = Date.now();
+        this.button.timer = setTimeout(() => {
             this.button.timer = null;
-            let value = this.state.value;
+            let value;
             switch (this.button.name) {
                 case 'top':
-                    if (value % this.step === 0) {
-                        value += this.type === SmartDialogSlider.types.blinds ? -this.step : this.step;
-                    } else{
-                        value += this.type === SmartDialogSlider.types.blinds ? -(value % this.step) : this.step - value % this.step;
-                    }
+                    value = this.type === SmartDialogSlider.types.blinds ? 0 : 100;
                     break;
 
                 case 'bottom':
-                    if (value % this.step === 0) {
-                        value += this.type === SmartDialogSlider.types.blinds ? this.step : -this.step;
-                    } else {
-                        value += this.type === SmartDialogSlider.types.blinds ? this.step - value % this.step : -(value % this.step);
-                    }
+                    value = this.type === SmartDialogSlider.types.blinds ? 100 : 0;
                     break;
                 default:
                     break;
             }
-            if (value > 100) {
-                value = 100;
-            } else if (value < 0) {
-                value = 0;
-            }
             this.setState({value});
             this.props.onValueChange && this.props.onValueChange(value);
+        }, 400);
+    }
+    onButtonUp() {
+        if (Date.now() - this.button.timeUp < 100) {
+            if (this.button.timer) {
+                clearTimeout(this.button.timer);
+                this.button.timer = null;
+            }
+        } else{
+            console.log('on Button UP: ' + (Date.now() - this.button.timeUp));
+            this.button.timeUp = Date.now();
+
+            if (this.button.timer) {
+                clearTimeout(this.button.timer);
+                this.button.timer = null;
+                let value = this.state.value;
+                switch (this.button.name) {
+                    case 'top':
+                        if (value % this.step === 0) {
+                            value += this.type === SmartDialogSlider.types.blinds ? -this.step : this.step;
+                        } else{
+                            value += this.type === SmartDialogSlider.types.blinds ? -(value % this.step) : this.step - value % this.step;
+                        }
+                        break;
+
+                    case 'bottom':
+                        if (value % this.step === 0) {
+                            value += this.type === SmartDialogSlider.types.blinds ? this.step : -this.step;
+                        } else {
+                            value += this.type === SmartDialogSlider.types.blinds ? this.step - value % this.step : -(value % this.step);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+                if (value > 100) {
+                    value = 100;
+                } else if (value < 0) {
+                    value = 0;
+                }
+                this.setState({value});
+                this.props.onValueChange && this.props.onValueChange(value);
+            }
+            this.mouseUpTime = Date.now();
         }
-        this.mouseUpTime = Date.now();
     }
 
     getSliderColor() {

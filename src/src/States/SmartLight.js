@@ -8,24 +8,15 @@ class SmartLight extends SmartGeneric {
     constructor(props) {
         super(props);
         if (this.channelInfo.states) {
-            let state = this.channelInfo.states.find(state => state.id && state.name === 'LAMP_SET');
+            let state = this.channelInfo.states.find(state => state.id && state.name === 'SET');
             if (state) {
                 this.id = state.id;
             } else {
                 this.id = '';
             }
-            state = this.channelInfo.states.find(state => state.id && state.name === 'WORKING');
-            if (state) {
-                this.workingId = state.id;
-            } else {
-                this.workingId = '';
-            }
-            state = this.channelInfo.states.find(state => state.id && state.name === 'LAMP_ACT');
-            if (state) {
-                this.actualId = state.id;
-            } else {
-                this.actualId = this.id;
-            }
+
+            state = this.channelInfo.states.find(state => state.id && state.name === 'ACTUAL');
+            this.actualId = state ? state.id : this.id;
         }
 
         this.props.tile.setState({
@@ -37,21 +28,22 @@ class SmartLight extends SmartGeneric {
     }
 
     updateState(id, state) {
-        if (id === this.actualId || (this.id === this.actualId && state.ack)) {
-            const val = typeof state.val === 'number' ? !!state.val : state.val === true || state.val === 'true' || state.val === '1' || state.val === 'on' || state.val === 'ON';
-            const newState = {};
-            newState[this.id] = val;
-            this.setState(newState);
+        const newState = {};
+        const val = typeof state.val === 'number' ? !!state.val : state.val === true || state.val === 'true' || state.val === '1' || state.val === 'on' || state.val === 'ON';
+        newState[id] = val;
+        this.setState(newState);
 
+        if (id === this.actualId || (this.id === this.actualId && state.ack)) {
             if (this.props.tile.state !== val) {
                 this.props.tile.setState({
                     state: val
                 });
             }
-        } else if (id === this.workingId) {
-            let newState = {};
-            newState[id] = typeof state.val === 'number' ? !!state.val : state.val === true || state.val === 'true' || state.val === '1' || state.val === 'on'  || state.val === 'ON';
+        } else if (id === this.id) {
+            newState[id] = val;
             this.setState(newState);
+        } else {
+            super.updateState(id, state);
         }
     }
 

@@ -6,6 +6,16 @@
   "On":        "An",
   "Off":       "Aus",
 
+  "opened":    "auf",
+  "closed":    "zu",
+  "fire":      "Feuer",
+  "-":         "-",
+
+  "Listening...": "Höre...",
+  "Speech recognition running...": "Spracherkennung läuft...",
+
+  "SABOTAGE":  "Sabotage",
+
   "sent":      "gesendet",
 
   "No elements": "Keine Elemente",

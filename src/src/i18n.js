@@ -2,13 +2,29 @@
 //import I18n from 'react-native-i18n'
 
 class I18n {
-    translations = {
+    static translations = {
         'en': require('./i18n/en'),
         'ru': require('./i18n/ru'),
         'de': require('./i18n/de'),
     };
-    static t (word) {
-        return word;
+
+    static lang = 'en';
+
+    static setLanguage(lang) {
+        if (lang) I18n.lang = lang;
+    }
+    static t(word) {
+        if (I18n.translations[I18n.lang]) {
+            const w = I18n.translations[I18n.lang][word];
+            if (w) {
+                return w;
+            } else {
+                console.log(`Translate: "${word}"`);
+                return word;
+            }
+        } else {
+            return word;
+        }
     }
 }
 

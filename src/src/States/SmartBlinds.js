@@ -26,31 +26,19 @@ class SmartBlinds extends SmartGeneric {
     constructor(props) {
         super(props);
         if (this.channelInfo.states) {
-            let state = this.channelInfo.states.find(state => state.id && state.name === 'BLIND_SET');
+            let state = this.channelInfo.states.find(state => state.id && state.name === 'SET');
             if (state && this.props.objects[state.id]&& this.props.objects[state.id].common) {
                 this.id = state.id;
             } else {
                 this.id = '';
             }
-            state = this.channelInfo.states.find(state => state.id && state.name === 'WORKING');
-            if (state) {
-                this.workingId = state.id;
-            } else {
-                this.workingId = '';
-            }
-            state = this.channelInfo.states.find(state => state.id && state.name === 'BLIND_ACT');
-            if (state) {
-                this.actualId = state.id;
-            } else {
-                this.actualId = this.id;
-            }
-            state = this.channelInfo.states.find(state => state.id && state.name === 'BLIND_STOP');
-            if (state) {
-                this.stopId = state.id;
-            } else {
-                this.stopId = '';
-            }
+            state = this.channelInfo.states.find(state => state.id && state.name === 'ACTUAL');
+            this.actualId = state ? state.id : this.id;
+
+            state = this.channelInfo.states.find(state => state.id && state.name === 'STOP');
+            this.stopId = state && state.id;
         }
+
         if (this.id) {
             this.max = this.props.objects[this.actualId].common.max;
             if (this.max === undefined) {
@@ -107,9 +95,9 @@ class SmartBlinds extends SmartGeneric {
     }
 
     updateState(id, state) {
-        if (this.actualId === id) {
-            const val = typeof state.val === 'number' ? state.val : parseFloat(state.val);
-            let newState = {};
+        let newState = {};
+        const val = typeof state.val === 'number' ? state.val : parseFloat(state.val);
+        if (this.actualId === id || (this.id === this.actualId && state.ack)) {
             if (!isNaN(val)) {
                 newState[id] = this.realValueToPercent(val);
                 this.setState(newState);
@@ -127,29 +115,22 @@ class SmartBlinds extends SmartGeneric {
             if (state.ack && this.state.executing) {
                 this.setState({executing: false});
             }
-        } else {
-            let newState = {};
-            newState[id] = typeof state.val === 'number' ? !!state.val : state.val === true || state.val === 'true' || state.val === '1' || state.val === 'on'  || state.val === 'ON';
+        } else if (id === this.id) {
+            newState[id] = val;
             this.setState(newState);
+        } else {
+            super.updateState(id, state);
         }
     }
 
     setValue(percent) {
-        if (percent) {
-            this.lastNotNullPercent = percent;
-        } else {
-            const p = this.realValueToPercent();
-            if (p) {
-                this.lastNotNullPercent = p;
-            }
-        }
-
         console.log('Control ' + this.id + ' = ' + this.percentToRealValue(percent));
         this.setState({executing: true, setValue: percent});
         this.props.onControl(this.id, this.percentToRealValue(percent));
     }
 
     onStop() {
+        this.setState({executing: false});
         this.stopId && this.props.onControl && this.props.onControl(this.stopId, true);
     }
 
@@ -191,7 +172,7 @@ class SmartBlinds extends SmartGeneric {
             if (percent) {
                 newValue = 0;
             } else {
-                newValue = this.lastNotNullPercent || 100;
+                newValue = 100;
             }
             this.setValue(newValue);
         }

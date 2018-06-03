@@ -20,6 +20,7 @@ import RaisedButton from '@material-ui/core/Button';
 import SpeechDialog from './SpeechDialog';
 import Theme from './theme';
 import MenuIcon from 'react-icons/lib/md/menu';
+import I18n from "./i18n";
 
 const isKeyboardAvailableOnFullScreen = (typeof Element !== 'undefined' && 'ALLOW_KEYBOARD_INPUT' in Element) && Element.ALLOW_KEYBOARD_INPUT;
 
@@ -112,6 +113,9 @@ class App extends Component {
                                     }
                                 }
                                 objects['system.config'] = config;
+
+                                I18n.setLanguage(config && config.common && config.common.language);
+
                                 let keys = Object.keys(objects);
                                 keys.sort();
                                 let result = {};
@@ -253,7 +257,7 @@ class App extends Component {
         this.requestStates = [];
 
         this.conn.getStates(_ids, (err, states) => {
-            Object.keys(states).forEach((id) => {
+            Object.keys(states).forEach(id => {
                 this.states[id] = states[id];
                 if (!this.states[id]) delete this.states[id];
 

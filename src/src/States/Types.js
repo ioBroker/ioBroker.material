@@ -12,9 +12,14 @@ const stateTypes = {
     button: 11,
     door: 12,
     window: 13,
-    media: 14,
-    thermostat: 15,
-    camera: 16
+    windowTile: 14,
+    media: 15,
+    thermostat: 16,
+    camera: 17,
+    motion: 18,
+    fireAlarm: 19,
+    floodAlarm: 20,
+    gate: 21,
 };
 
 export default stateTypes;

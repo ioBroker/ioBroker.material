@@ -79,8 +79,9 @@ export default {
             fontWeight: 'bold',
             color: 'black',
             background: 'white',
-            boxSizing: 'border-box'
-        },
+            boxSizing: 'border-box',
+            userSelect: 'none'
+},
         tileOn: {
             background: 'white',
             opacity: 1
@@ -132,6 +133,7 @@ export default {
             unreach:  'orange',
             lowbat:   'red',
             maintain: 'orange',
+            error:    'red',
         },
         editMode: {
             checkIcon: {
