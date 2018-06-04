@@ -12,7 +12,7 @@ const stateTypes = {
     button: 11,
     door: 12,
     window: 13,
-    windowTile: 14,
+    windowTilt: 14,
     media: 15,
     thermostat: 16,
     camera: 17,

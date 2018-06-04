@@ -51,15 +51,15 @@ const patterns = {
         ],
         type: Types.window
     },
-    windowTile: {
+    windowTilt: {
         states: [
-            {role: /^value(\.window)?$/,                                      indicator: false, type: 'number',  enums: roleOrEnumWindow, name: 'ACTUAL',     required: true},
+            {role: /^state?$|^value(\.window)?$/,                             indicator: false, type: 'number',  enums: roleOrEnumWindow, name: 'ACTUAL',     required: true},
             patternUnreach,
             patternLowbat,
             patternMaintain,
             patternError
         ],
-        type: Types.windowTile
+        type: Types.windowTilt
     },
     fireAlarm: {
         states: [
@@ -73,7 +73,7 @@ const patterns = {
     },
     door: {
         states: [
-            {role: /^state(\.door)?$|^sensor(\.door)?/,                       indicator: false, type: 'boolean', write: false, enums: roleOrEnumDoor, name: 'ACTUAL',     required: true},
+            {role: /^state?$|^state(\.door)?$|^sensor(\.door)?/,              indicator: false, type: 'boolean', write: false, enums: roleOrEnumDoor, name: 'ACTUAL',     required: true},
             patternUnreach,
             patternLowbat,
             patternMaintain,

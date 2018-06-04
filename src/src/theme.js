@@ -36,7 +36,6 @@ export default {
         selected: {
             color: '#2196f3'
         }
-
     },
     refreshIndicator: {
         strokeColor: '#337ab7',
@@ -113,9 +112,12 @@ export default {
             whiteSpace: 'nowrap'
         },
         tileStateOn: {
-            color: 'grey',
+            color: '#515151',
+            fontSize: 14
         },
         tileStateOff: {
+            color: '#515151',
+            fontSize: 14
         },
         tileIndicators: {
             position: 'absolute',

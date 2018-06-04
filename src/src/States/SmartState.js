@@ -2,14 +2,15 @@ import React from 'react';
 import SmartGeneric from './SmartGeneric';
 import IconWindowOpened from '../icons/windowOpened.svg';
 import IconWindowClosed from '../icons/windowClosed.svg';
-import IconMotionOn from '../icons/windowClosed.svg';
-import IconMotionOff from '../icons/windowClosed.svg';
+import IconMotionOn from '../icons/motionOn.svg';
+import IconMotionOff from '../icons/motionOff.svg';
 import IconFireOn from '../icons/fireOn.svg';
 import IconFireOff from '../icons/fireOff.svg';
 import IconFloodOn from '../icons/floodOn.svg';
 import IconFloodOff from '../icons/floodOff.svg';
-import IconDoorOpened from '../icons/floodOn.svg';
-import IconDoorClosed from '../icons/floodOff.svg';
+import IconDoorOpened from '../icons/doorOpened.svg';
+import IconDoorClosed from '../icons/doorClosed.svg';
+
 import Theme from '../theme';
 import I18n from '../i18n';
 import Types from '../States/Types';
@@ -31,13 +32,20 @@ class SmartState extends SmartGeneric {
             this.iconOff = IconWindowClosed;
             this.textOn = 'opened';
             this.textOff = 'closed';
-            this.left = '1em';
+            this.style = {
+                width: 60,
+                height: 60,
+                top: '0.2em',
+                left: '0.2em'
+            };
         } if (this.channelInfo.type === Types.door) {
             this.iconOn = IconDoorOpened;
             this.iconOff = IconDoorClosed;
             this.textOn = 'opened';
             this.textOff = 'closed';
-            this.left = '1em';
+            this.style = {
+                left: '1em'
+            };
         } else if (this.channelInfo.type === Types.motion) {
             this.iconOn = IconMotionOn;
             this.iconOff = IconMotionOff;
@@ -72,12 +80,12 @@ class SmartState extends SmartGeneric {
     }
 
     updateState(id, state) {
-        const val = typeof state.val === 'number' ? !!state.val : state.val === true || state.val === 'true' || state.val === '1' || state.val === 'on' || state.val === 'ON';
-        const newState = {};
-        newState[id] = val;
-        this.setState(newState);
         if (id === this.id) {
-            if (this.props.tile.state !== val) {
+            const val = typeof state.val === 'number' ? !!state.val : state.val === true || state.val === 'true' || state.val === '1' || state.val === 'on' || state.val === 'ON';
+            const newState = {};
+            newState[id] = val;
+            this.setState(newState);
+            if (this.props.tile.state.state !== val) {
                 this.props.tile.setState({
                     state: val
                 });
@@ -103,7 +111,9 @@ class SmartState extends SmartGeneric {
         const Icon = isOn ? this.iconOn : this.iconOff;
         const color = isOn ? this.iconColorOn : this.iconColorOff;
         let style = color ? {color} : {};
-        style.left = this.left;
+        if (this.style) {
+            style = Object.assign(style, this.style);
+        }
 
         return (
             <div key={this.id + '.icon'} style={Object.assign({}, Theme.tile.tileIcon, style)} className="tile-icon">

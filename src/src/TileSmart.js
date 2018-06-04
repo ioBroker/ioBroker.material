@@ -9,7 +9,8 @@ import SmartLight from './States/SmartLight';
 import SmartDimmer from './States/SmartDimmer';
 import SmartBlinds from './States/SmartBlinds';
 import SmartGeneric from './States/SmartGeneric';
-import SmartState from "./States/SmartState";
+import SmartState from './States/SmartState';
+import SmartWindowTilt from './States/SmartWindowTilt';
 
 class TileSmart extends Component {
     static propTypes = {
@@ -124,6 +125,8 @@ class TileSmart extends Component {
             return this.wrapContent(this.createControl(SmartDimmer, this.channelInfo, this));
         } else if (this.channelInfo.type === Types.blind) {
             return this.wrapContent(this.createControl(SmartBlinds, this.channelInfo, this));
+        } else if (this.channelInfo.type === Types.windowTilt) {
+            return this.wrapContent(this.createControl(SmartWindowTilt, this.channelInfo, this));
         } else if (this.channelInfo.type === Types.window ||
             this.channelInfo.type === Types.fireAlarm ||
             this.channelInfo.type === Types.door) {

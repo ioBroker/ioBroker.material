@@ -3,11 +3,13 @@
   "Functions": "Funktionen",
   "Favorites": "Favorite",
 
-  "On":        "An",
-  "Off":       "Aus",
+  "On":        "an",
+  "Off":       "aus",
 
   "opened":    "auf",
   "closed":    "zu",
+  "tilted":    "gekippt",
+
   "fire":      "Feuer",
   "-":         "-",
 

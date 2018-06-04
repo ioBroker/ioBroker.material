@@ -8,6 +8,8 @@
 
   "opened":    "opened",
   "closed":    "closed",
+  "tilted":    "tilted",
+
   "fire":      "fire",
   "-":         "-",
 

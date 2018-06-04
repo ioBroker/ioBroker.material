@@ -75,7 +75,7 @@ class SmartLight extends SmartGeneric {
                 this.setState(newState);
 
                 const tileState = val !== this.min;
-                if (this.props.tile.state !== tileState) {
+                if (this.props.tile.state.state !== tileState) {
                     this.props.tile.setState({
                         state: tileState
                     });

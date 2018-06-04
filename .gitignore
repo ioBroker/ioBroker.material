@@ -25,3 +25,4 @@ yarn-error.log*
 node_modules
 iob_npm.done
 package-lock.json
+/src/public/_socket/info.js
