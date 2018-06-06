@@ -1,10 +1,12 @@
 import React from 'react';
 import SmartGeneric from './SmartGeneric';
-import Icon from 'react-icons/lib/ti/lightbulb';
+import IconLight from 'react-icons/lib/ti/lightbulb';
+import IconSwitch from '../icons/socket.svg';
+import Types from './Types';
 import Theme from '../theme';
 import I18n from '../i18n';
 
-class SmartLight extends SmartGeneric {
+class SmartSwitch extends SmartGeneric {
     constructor(props) {
         super(props);
         if (this.channelInfo.states) {
@@ -18,6 +20,28 @@ class SmartLight extends SmartGeneric {
             state = this.channelInfo.states.find(state => state.id && state.name === 'ACTUAL');
             this.actualId = state ? state.id : this.id;
         }
+        if (this.channelInfo) {
+            switch (this.channelInfo.type) {
+                case Types.light:
+                    this.iconOn = IconLight;
+                    this.iconOff = IconLight;
+                    this.colorOn = Theme.palette.lampOn;
+                    this.colorOff = 'inherit';
+                    this.style = {};
+                    break;
+
+                case Types.socket:
+                default:
+                    this.iconOn = IconSwitch;
+                    this.iconOff = IconSwitch;
+                    this.colorOn = Theme.palette.lampOn;
+                    this.colorOff = 'inherit';
+                    this.backOn = Theme.palette.lampOn;
+                    this.backOff = 'gray';
+                    this.style = {left: '1em'};
+                    break;
+            }
+        }
 
         this.props.tile.setState({
             isPointer: true
@@ -30,14 +54,12 @@ class SmartLight extends SmartGeneric {
     updateState(id, state) {
         const newState = {};
         const val = typeof state.val === 'number' ? !!state.val : state.val === true || state.val === 'true' || state.val === '1' || state.val === 'on' || state.val === 'ON';
-        if (id === this.actualId || (this.id === this.actualId && state.ack)) {
+        if (id === this.actualId || (this.id === id && this.id === this.actualId && state.ack)) {
             newState[id] = val;
             this.setState(newState);
-            if (this.props.tile.state.state !== val) {
-                this.props.tile.setState({
-                    state: val
-                });
-            }
+            this.props.tile.setState({
+                state: val
+            });
         } else if (id === this.id) {
             newState[id] = val;
             this.setState(newState);
@@ -55,9 +77,14 @@ class SmartLight extends SmartGeneric {
     }
 
     getIcon() {
+        const Icon = this.state[this.actualId] ? this.iconOn : this.iconOff;
+        let style = this.state[this.actualId] ? {color: this.colorOn, background: this.backOn} : {color: this.colorOff, background: this.backOff};
+        if (this.style) {
+            style = Object.assign(style, this.style);
+        }
         return (
-            <div key={this.id + '.icon'} style={Object.assign({}, Theme.tile.tileIcon, this.state[this.actualId] ? {color: Theme.palette.lampOn} : {})} className="tile-icon">
-                <Icon width={'100%'} height={'100%'}/>
+            <div key={this.id + '.icon'} style={Object.assign({}, Theme.tile.tileIcon, style)} className="tile-icon">
+                {typeof Icon !== 'string' ? (<Icon width={'100%'} height={'100%'}/>) : (<img src={Icon} width={'100%'} height={'100%'} />)}
             </div>
         );
     }
@@ -78,5 +105,5 @@ class SmartLight extends SmartGeneric {
     }
 }
 
-export default SmartLight;
+export default SmartSwitch;
 

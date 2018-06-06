@@ -96,7 +96,7 @@ const patterns = {
     light: {
         states: [
             {role: /^switch(\.light)?$|^state$/,           indicator: false, type: 'boolean', write: true,       enums: roleOrEnumLight, name: 'SET',         required: true},
-            {role: /^switch(\.light)?$|^state$/,           indicator: false, type: 'boolean', write: true,       enums: roleOrEnumLight, name: 'ACTUAL',      required: true},
+            {role: /^switch(\.light)?$|^state$/,           indicator: false, type: 'boolean',                    enums: roleOrEnumLight, name: 'ACTUAL',      required: false},
             patternWorking,
             patternUnreach,
             patternLowbat,
@@ -104,6 +104,18 @@ const patterns = {
             patternError
         ],
         type: Types.light
+    },
+    socket: {
+        states: [
+            {role: /^switch$|^state$/,           indicator: false, type: 'boolean', write: true,       name: 'SET',         required: true},
+            {role: /^switch$|^state$/,           indicator: false, type: 'boolean',                    name: 'ACTUAL',      required: false},
+            patternWorking,
+            patternUnreach,
+            patternLowbat,
+            patternMaintain,
+            patternError
+        ],
+        type: Types.socket
     }
 };
 
@@ -300,13 +312,17 @@ class ChannelDetector {
                 channelStates = ChannelDetector.getAllStatesInChannel(keys, id);
             }
 
-            if (id.indexOf('FEQ0082127') !== -1) {
+            if (id.indexOf('LEQ0182479') !== -1) {
                 console.log('a');
             }
 
             for (let pattern in patterns) {
                 if (patterns.hasOwnProperty(pattern)) {
                     let result = null;
+
+                    if (pattern === 'socket') {
+                        console.log('S');
+                    }
 
                     patterns[pattern].states.forEach((state, i) => {
                         let found = false;
@@ -329,7 +345,9 @@ class ChannelDetector {
                                         }
                                     });
                                 }
-                                result.states[i].id = _id;
+                                if (!result.states.find(e => e.id === _id)) {
+                                    result.states[i].id = _id;
+                                }
                                 found = true;
                             }
                         });

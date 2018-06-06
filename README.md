@@ -15,7 +15,12 @@ This adapter cannot be installed directly from github. Only from npm.
 
 ## Supported types
 
-### Sliders:
+* Window (opened/closed)
+* Window (opened/closed/tilted)
+* Door (opened/closed)
+
+
+
 
 
 ## ToDO:

@@ -85,11 +85,9 @@ class SmartState extends SmartGeneric {
             const newState = {};
             newState[id] = val;
             this.setState(newState);
-            if (this.props.tile.state.state !== val) {
-                this.props.tile.setState({
-                    state: val
-                });
-            }
+            this.props.tile.setState({
+                state: val
+            });
         } else {
             super.updateState(id, state);
         }

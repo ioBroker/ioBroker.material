@@ -97,7 +97,7 @@ class SmartBlinds extends SmartGeneric {
     updateState(id, state) {
         let newState = {};
         const val = typeof state.val === 'number' ? state.val : parseFloat(state.val);
-        if (this.actualId === id || (this.id === this.actualId && state.ack)) {
+        if (this.actualId === id || (this.id === id && this.id === this.actualId && state.ack)) {
             if (!isNaN(val)) {
                 newState[id] = this.realValueToPercent(val);
                 this.setState(newState);

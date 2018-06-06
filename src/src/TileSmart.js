@@ -5,7 +5,7 @@ import Paper from '@material-ui/core/Paper';
 import Theme from './theme';
 import Types from './States/Types';
 
-import SmartLight from './States/SmartLight';
+import SmartSwitch from './States/SmartSwitch';
 import SmartDimmer from './States/SmartDimmer';
 import SmartBlinds from './States/SmartBlinds';
 import SmartGeneric from './States/SmartGeneric';
@@ -119,8 +119,8 @@ class TileSmart extends Component {
     }
 
     render() {
-        if (this.channelInfo.type === Types.light) {
-            return this.wrapContent(this.createControl(SmartLight, this.channelInfo, this));
+        if (this.channelInfo.type === Types.light || this.channelInfo.type === Types.socket) {
+            return this.wrapContent(this.createControl(SmartSwitch, this.channelInfo, this));
         } else if (this.channelInfo.type === Types.dimmer) {
             return this.wrapContent(this.createControl(SmartDimmer, this.channelInfo, this));
         } else if (this.channelInfo.type === Types.blind) {

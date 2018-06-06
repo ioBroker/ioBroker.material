@@ -69,17 +69,15 @@ class SmartLight extends SmartGeneric {
         let newState = {};
         const val = typeof state.val === 'number' ? state.val : parseFloat(state.val);
 
-        if (this.actualId === id || (this.id === this.actualId && state.ack)) {
+        if (this.actualId === id || (this.id === id && this.id === this.actualId && state.ack)) {
             if (!isNaN(val)) {
                 newState[id] = this.realValueToPercent(val);
                 this.setState(newState);
 
                 const tileState = val !== this.min;
-                if (this.props.tile.state.state !== tileState) {
-                    this.props.tile.setState({
-                        state: tileState
-                    });
-                }
+                this.props.tile.setState({
+                    state: tileState
+                });
             } else {
                 newState[id] = null;
                 this.setState(newState);
