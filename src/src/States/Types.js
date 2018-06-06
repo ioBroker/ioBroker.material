@@ -20,6 +20,7 @@ const stateTypes = {
     fireAlarm: 19,
     floodAlarm: 20,
     gate: 21,
+    info: 22
 };
 
 export default stateTypes;

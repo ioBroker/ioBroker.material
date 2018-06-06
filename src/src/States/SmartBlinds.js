@@ -218,8 +218,8 @@ class SmartBlinds extends SmartGeneric {
         return this.wrapContent([
             (<div key={this.id + '.tile-icon'} className="tile-icon"
                   style={{pointerEvents: 'none'}}>{this.getIcon()}</div>),
-            (<div key={this.id + '.tile-text'} className="tile-text" style={Theme.tile.tileText}>
-                <div className="tile-channel-name" style={Theme.tile.tileName}>{this.getObjectNameCh()}</div>
+            (<div key={this.id + '.tile-text'} className="tile-text" style={Object.assign({}, Theme.tile.tileText, this.nameStyle)}>
+                <div className="tile-channel-name" style={Theme.tile.tileName}>{this.name}</div>
                 <div className="tile-state-text"
                      style={Object.assign({}, Theme.tile.tileState, this.state[this.id] ? Theme.tile.tileStateOn : Theme.tile.tileStateOff)}>{this.getStateText()}</div>
             </div>),

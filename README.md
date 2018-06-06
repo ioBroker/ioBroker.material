@@ -15,13 +15,11 @@ This adapter cannot be installed directly from github. Only from npm.
 
 ## Supported types
 
-* Window (opened/closed)
-* Window (opened/closed/tilted)
-* Door (opened/closed)
-
-
-
-
+* Direction indicator
+* Lock
+* Info
+* Edit names, colors, icons
+* Thermometer
 
 ## ToDO:
 - try smaller font to write the name of device

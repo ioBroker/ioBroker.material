@@ -23,10 +23,11 @@ class SmartGeneric extends Component {
         this.subscribes = null;
         this.width = Theme.tile.width;
         this.height = Theme.tile.height;
-        this.stateRx = {settings: {}};
-        this.state = {
-            executing: false
+        this.stateRx = {
+            executing: false,
+            settings: {}
         };
+        this.defaultEnabling = true; // overload this property to hide element by default
 
         this.editMode = this.props.editMode;
 
@@ -78,6 +79,9 @@ class SmartGeneric extends Component {
     }
 
     componentReady () {
+        this.name = this.getObjectNameCh();
+        this.nameStyle = {fontSize: SmartGeneric.getNameFontSize(this.name)};
+
         if (this.id && this.props.objects[this.id]) {
             if (this.props.objects[this.id].type === 'state') {
                 let channel = SmartGeneric.getParentId(this.id);
@@ -89,7 +93,7 @@ class SmartGeneric extends Component {
             }
         }
 
-        this.stateRx.settings = Utils.getSettings(this.props.objects[this.settingsId]);
+        this.stateRx.settings = Utils.getSettings(this.props.objects[this.settingsId], null, this.defaultEnabling);
 
         this.state = this.stateRx;
         delete this.stateRx;
@@ -289,6 +293,10 @@ class SmartGeneric extends Component {
         } else {
             return null;
         }
+    }
+
+    static getNameFontSize(name) {
+        return name.length >= 15 ? 12 : (name.length > 10 ? 14 : 16);
     }
 
     render() {

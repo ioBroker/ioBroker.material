@@ -13,6 +13,9 @@ class I18n {
     static setLanguage(lang) {
         if (lang) I18n.lang = lang;
     }
+    static getLanguage() {
+        return I18n.lang;
+    }
     static t(word) {
         if (I18n.translations[I18n.lang]) {
             const w = I18n.translations[I18n.lang][word];

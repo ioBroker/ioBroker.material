@@ -5,7 +5,8 @@
   "dependencies": {
     "@material-ui/core": "^1.1.0",
     "@material-ui/lab": "^1.0.0-alpha.3",
-    "moment": "^2.22.1",
+    "material-ui-slider-label": "https://github.com/tariqwest/material-ui-slider-label/tarball/master",
+    "moment": "^2.22.2",
     "moment-timezone": "^0.5.17",
     "react": "^16.4.0",
     "react-dom": "^16.4.0",
@@ -16,8 +17,7 @@
     "react-moment": "^0.7.0",
     "react-native-i18n": "^2.0.12",
     "react-scripts": "^1.1.4",
-    "react-tap-event-plugin": "^3.0.2",
-    "material-ui-slider-label": "https://github.com/tariqwest/material-ui-slider-label/tarball/master"
+    "react-tap-event-plugin": "^3.0.2"
   },
   "homepage": "./",
   "scripts": {

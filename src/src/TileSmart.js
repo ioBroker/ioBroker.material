@@ -11,6 +11,8 @@ import SmartBlinds from './States/SmartBlinds';
 import SmartGeneric from './States/SmartGeneric';
 import SmartState from './States/SmartState';
 import SmartWindowTilt from './States/SmartWindowTilt';
+import SmartButton from './States/SmartButton';
+import SmartThermometer from "./States/SmartThermometer";
 
 class TileSmart extends Component {
     static propTypes = {
@@ -127,11 +129,24 @@ class TileSmart extends Component {
             return this.wrapContent(this.createControl(SmartBlinds, this.channelInfo, this));
         } else if (this.channelInfo.type === Types.windowTilt) {
             return this.wrapContent(this.createControl(SmartWindowTilt, this.channelInfo, this));
+        } else if (this.channelInfo.type === Types.button) {
+            return this.wrapContent(this.createControl(SmartButton, this.channelInfo, this));
+        } else if (this.channelInfo.type === Types.temperature) {
+            return this.wrapContent(this.createControl(SmartThermometer, this.channelInfo, this));
         } else if (this.channelInfo.type === Types.window ||
             this.channelInfo.type === Types.fireAlarm ||
-            this.channelInfo.type === Types.door) {
+            this.channelInfo.type === Types.door ||
+            this.channelInfo.type === Types.motion) {
             return this.wrapContent(this.createControl(SmartState, this.channelInfo, this));
         }else {
+            let name = this.channelInfo.type;
+            Object.keys(Types).forEach(e => {
+                if (Types[e] === this.channelInfo.type) {
+                    name = e;
+                    return false;
+                }
+            });
+            console.error(`${name} not implemented!`);
             return null;
         }
     }

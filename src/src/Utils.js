@@ -33,13 +33,17 @@ class Utils {
         return text.trim();
     }
 
-    static getSettings(obj, options) {
+    static getSettings(obj, options, defaultEnabling) {
+        if (typeof options === 'boolean') {
+            defaultEnabling = options;
+            options = null;
+        }
         let settings;
         if (obj && obj.common && obj.common.custom) {
             settings = obj.common.custom || {};
             settings = settings.material || {enabled: true};
         } else {
-            settings = {enabled: true};
+            settings = {enabled: defaultEnabling === undefined ? true : defaultEnabling};
         }
         return settings;
     }

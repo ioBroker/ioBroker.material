@@ -105,11 +105,15 @@ export default {
         },
         tileText: {
             marginTop: '2.8em',
-            pointerEvents: 'none'
+            pointerEvents: 'none',
+            position: 'relative'
         },
         tileState: {
             marginTop: '0.2em',
-            whiteSpace: 'nowrap'
+            whiteSpace: 'nowrap',
+            width: '100%',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis'
         },
         tileStateOn: {
             color: '#515151',
@@ -131,11 +135,29 @@ export default {
             float: 'right'
         },
         tileIndicatorsIcons: {
-            working:  '#808080',
-            unreach:  'orange',
-            lowbat:   'red',
-            maintain: 'orange',
-            error:    'red',
+            working:   '#808080',
+            unreach:   'orange',
+            lowbat:    'red',
+            maintain:  'orange',
+            error:     'red',
+            direction: 'green'
+        },
+        secondary: {
+            icon: {
+                display: 'inline-block',
+                width: 12,
+                height: 12
+            },
+            text: {
+                display: 'inline-block',
+                fontSize: 14,
+                paddingLeft: 3
+            },
+            div: {
+                position: 'absolute',
+                top: '2em',
+                right: '1em'
+            }
         },
         editMode: {
             checkIcon: {

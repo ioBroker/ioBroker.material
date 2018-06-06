@@ -8,11 +8,12 @@ import IconError        from 'react-icons/lib/md/error';
 
 import Types from '../States/Types';
 
-const patternWorking  = {role: /^indicator\.working$/,                 indicator: true,                                            name: 'WORKING',            required: false, icon: IconWorking,    color: Theme.tile.tileIndicatorsIcons.working};
-const patternUnreach  = {role: /^indicator(\.maintenance)?\.unreach$/, indicator: true,  type: 'boolean',                          name: 'UNREACH',            required: false, icon: IconUnreach,    color: Theme.tile.tileIndicatorsIcons.unreach};
-const patternLowbat   = {role: /^indicator(\.maintenance)?\.lowbat$|^indicator(\.maintenance)?\.battery/,  indicator: true,  type: 'boolean',  name: 'LOWBAT', required: false, icon: IconLowbat,     color: Theme.tile.tileIndicatorsIcons.lowbat};
-const patternMaintain = {role: /^indicator\.maintenance$/,             indicator: true,  type: 'boolean',                          name: 'MAINTAIN',           required: false, icon: IconMaintain,   color: Theme.tile.tileIndicatorsIcons.maintain};
-const patternError    = {role: /^indicator\.error$/,                   indicator: true,                                            name: 'ERROR',              required: false, icon: IconError,      color: Theme.tile.tileIndicatorsIcons.error};
+const patternWorking   = {role: /^indicator\.working$/,                 indicator: true,                                            name: 'WORKING',            required: false, icon: IconWorking,    color: Theme.tile.tileIndicatorsIcons.working};
+const patternUnreach   = {role: /^indicator(\.maintenance)?\.unreach$/, indicator: true,  type: 'boolean',                          name: 'UNREACH',            required: false, icon: IconUnreach,    color: Theme.tile.tileIndicatorsIcons.unreach};
+const patternLowbat    = {role: /^indicator(\.maintenance)?\.lowbat$|^indicator(\.maintenance)?\.battery/,  indicator: true,  type: 'boolean',  name: 'LOWBAT', required: false, icon: IconLowbat,     color: Theme.tile.tileIndicatorsIcons.lowbat};
+const patternMaintain  = {role: /^indicator\.maintenance$/,             indicator: true,  type: 'boolean',                          name: 'MAINTAIN',           required: false, icon: IconMaintain,   color: Theme.tile.tileIndicatorsIcons.maintain};
+const patternError     = {role: /^indicator\.error$/,                   indicator: true,                                            name: 'ERROR',              required: false, icon: IconError,      color: Theme.tile.tileIndicatorsIcons.error};
+const patternDirection = {role: /^indicator\.direction$/,               indicator: true,                                            name: 'DIR',                required: false,                       color: Theme.tile.tileIndicatorsIcons.direction};
 
 const patterns = {
     thermostat: {
@@ -33,6 +34,7 @@ const patterns = {
             {role: /^level(\.blind)?$/,                   indicator: false, type: 'number',  write: true, enums: roleOrEnumBlind, name: 'SET',                 required: true},
             {role: /^value(\.blind)?$/,                   indicator: false, type: 'number',               enums: roleOrEnumBlind, name: 'ACTUAL',              required: false},
             {role: /^button\.stop$|^action\.stop$/,       indicator: false, type: 'boolean', write: true, enums: roleOrEnumBlind, name: 'STOP',                required: false, noSubscribe: true},
+            patternDirection,
             patternWorking,
             patternUnreach,
             patternLowbat,
@@ -40,6 +42,17 @@ const patterns = {
             patternError
         ],
         type: Types.blind
+    },
+    motion: {
+        states: [
+            {role: /^state\.motion$|^sensor\.motion$/,                   indicator: false, type: 'boolean', name: 'ACTUAL',     required: true},
+            {role: /brightness$/,                                        indicator: false, type: 'number',  name: 'SECOND',     required: false},
+            patternUnreach,
+            patternLowbat,
+            patternMaintain,
+            patternError
+        ],
+        type: Types.motion
     },
     window: {
         states: [
@@ -84,7 +97,7 @@ const patterns = {
     dimmer: {
         states: [
             {role: /^level(\.dimmer)?$/,                   indicator: false, type: 'number',  write: true,       enums: roleOrEnumLight, name: 'SET',         required: true},
-            {role: /^value(\.dimmer)?$/,                   indicator: false, type: 'number',                     enums: roleOrEnumLight, name: 'ACTUAL',      required: false},
+            {role: /^value(\.dimmer)?$/,                   indicator: false, type: 'number',  write: false,      enums: roleOrEnumLight, name: 'ACTUAL',      required: false},
             patternWorking,
             patternUnreach,
             patternLowbat,
@@ -96,7 +109,7 @@ const patterns = {
     light: {
         states: [
             {role: /^switch(\.light)?$|^state$/,           indicator: false, type: 'boolean', write: true,       enums: roleOrEnumLight, name: 'SET',         required: true},
-            {role: /^switch(\.light)?$|^state$/,           indicator: false, type: 'boolean',                    enums: roleOrEnumLight, name: 'ACTUAL',      required: false},
+            {role: /^switch(\.light)?$|^state$/,           indicator: false, type: 'boolean', write: false,      enums: roleOrEnumLight, name: 'ACTUAL',      required: false},
             patternWorking,
             patternUnreach,
             patternLowbat,
@@ -108,7 +121,7 @@ const patterns = {
     socket: {
         states: [
             {role: /^switch$|^state$/,           indicator: false, type: 'boolean', write: true,       name: 'SET',         required: true},
-            {role: /^switch$|^state$/,           indicator: false, type: 'boolean',                    name: 'ACTUAL',      required: false},
+            {role: /^switch$|^state$/,           indicator: false, type: 'boolean', write: false,      name: 'ACTUAL',      required: false},
             patternWorking,
             patternUnreach,
             patternLowbat,
@@ -116,6 +129,38 @@ const patterns = {
             patternError
         ],
         type: Types.socket
+    },
+    button: {
+        states: [
+            {role: /^button(\.[.\w]+)?$|^action(\.[.\w]+)?$/,           indicator: false, type: 'boolean', read: false, write: true,       name: 'SET',         required: true, noSubscribe: true},
+            patternUnreach,
+            patternLowbat,
+            patternMaintain,
+            patternError
+        ],
+        type: Types.button
+    },
+    temperature: {
+        states: [
+            {role: /temperature$/,             indicator: false, write: false, type: 'number',  name: 'ACTUAL',     required: true},
+            {role: /humidity$/,                indicator: false, write: false, type: 'number',  name: 'SECOND',     required: false},
+            patternUnreach,
+            patternLowbat,
+            patternMaintain,
+            patternError
+        ],
+        type: Types.temperature
+    },
+    info: {
+        states: [
+            {role: /^state(\.[.\w]+)?$|^sensor(\.[.\w]+)?$/,             indicator: false, write: false,                                  name: 'INFO',         required: true, multiple: true},
+            patternWorking,
+            patternUnreach,
+            patternLowbat,
+            patternMaintain,
+            patternError
+        ],
+        type: Types.info
     }
 };
 
@@ -249,6 +294,10 @@ class ChannelDetector {
                 }
             }
             if (role === false) {
+                return;
+            }
+
+            if (statePattern.state && !statePattern.state.test(id.split('.').pop())) {
                 return;
             }
 
