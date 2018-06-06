@@ -1,16 +1,16 @@
 import React from 'react';
 import Moment from 'react-moment';
 import SmartGeneric from './SmartGeneric';
-import IconWindowOpened from '../icons/windowOpened.svg';
-import IconWindowClosed from '../icons/windowClosed.svg';
-import IconMotionOn from '../icons/motionOn.svg';
-import IconMotionOff from '../icons/motionOff.svg';
-import IconFireOn from '../icons/fireOn.svg';
-import IconFireOff from '../icons/fireOff.svg';
-import IconFloodOn from '../icons/floodOn.svg';
-import IconFloodOff from '../icons/floodOff.svg';
-import IconDoorOpened from '../icons/doorOpened.svg';
-import IconDoorClosed from '../icons/doorClosed.svg';
+import IconWindowOpened from '../icons/WindowOpened';
+import IconWindowClosed from '../icons/WindowClosed';
+import IconMotionOn from '../icons/MotionOn';
+import IconMotionOff from '../icons/MotionOff';
+import IconFireOn from '../icons/FireOn';
+import IconFireOff from '../icons/FireOff';
+import IconFloodOn from '../icons/FloodOn';
+import IconFloodOff from '../icons/FloodOff';
+import IconDoorOpened from '../icons/DoorOpened';
+import IconDoorClosed from '../icons/DoorClosed';
 import IconSun1 from 'react-icons/lib/md/brightness-1';
 import IconSun2 from 'react-icons/lib/md/brightness-2';
 import IconSun3 from 'react-icons/lib/md/brightness-3';
@@ -176,7 +176,7 @@ class SmartState extends SmartGeneric {
 
         return (
             <div key={this.id + '.icon'} style={Object.assign({}, Theme.tile.tileIcon, style)} className="tile-icon">
-                <img src={Icon} style={{zIndex: 1}} width={'100%'} height={'100%'}/>
+                <Icon style={{zIndex: 1}} width={'100%'} height={'100%'}/>
             </div>
         );
     }

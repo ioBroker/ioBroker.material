@@ -6,7 +6,9 @@ import Theme from '../theme';
 import IconCheck from 'react-icons/lib/md/check';
 import IconRemoved from 'react-icons/lib/md/remove';
 import IconEdit from 'react-icons/lib/md/edit';
-
+import IconDirectionUp from 'react-icons/lib/md/arrow-upward';
+import IconDirectionDown from 'react-icons/lib/md/arrow-downward';
+import IconDirection from 'react-icons/lib/md/swap-vert';
 
 class SmartGeneric extends Component {
     static propTypes = {
@@ -68,6 +70,36 @@ class SmartGeneric extends Component {
 
             state = this.channelInfo.states.find(state => state.id && state.name === 'ERROR');
             this.indicators.errorId = state && state.id;
+
+            state = this.channelInfo.states.find(state => state.id && state.name === 'DIRECTION');
+            this.indicators.directionId = state && state.id;
+
+            if (this.indicators.directionId) {
+                this.direction = {
+                    undef: true,
+                    up: 'unused',
+                    down: 'unused'
+                };
+                const obj = this.props.objects[this.indicators.directionId];
+                if (obj && obj.common) {
+                    if (obj.common.type === 'number') {
+                        if (obj.common.states) {
+                            for (const index in obj.common.states) {
+                                if (!obj.common.states.hasOwnProperty(index)) continue;
+                                if (obj.common.states[index].match(/up/i)) {
+                                    this.direction.up = index.toString();
+                                } else if (obj.common.states[index].match(/down/i)) {
+                                    this.direction.down = index.toString();
+                                } else if (obj.common.states[index].match(/undef/i)) {
+                                    this.direction.undef = index.toString();
+                                }
+                            }
+                        } else {
+                            this.direction.undef = 1;
+                        }
+                    }
+                }
+            }
 
             if (this.indicators.errorId) {
                 this.errorText = '';
@@ -175,7 +207,9 @@ class SmartGeneric extends Component {
     updateState(id, state) {
         // update indicators
         let val;
-        if (this.indicators && id === this.indicators.errorId) {
+        if (this.indicators && id === this.indicators.directionId) {
+            val = (state.val !== null && state.val !== undefined) ? state.val.toString() : '';
+        } else if (this.indicators && id === this.indicators.errorId) {
             if (typeof state.val === 'string' ) {
                 let i = parseInt(state.val.trim(), 10);
                 if (i.toString() === state.val.trim()) {
@@ -257,10 +291,25 @@ class SmartGeneric extends Component {
     // indicator.error
     getIndicators() {
         let result = [];
+        const that = this;
         this.channelInfo.states.forEach(state =>  {
-            if (state.indicator && state.id && this.state[state.id]) {
-                const Icon = state.icon;
-                result.push((<Icon key={this.id + '.indicator-' + state.name.toLowerCase()} className={'indicator-' + state.name.toLowerCase()} style={Object.assign({}, Theme.tile.tileIndicator, {color: state.color})}/>));
+            if (state.indicator && state.id) {
+                let Icon = state.icon;
+                if (state.id === that.indicators.directionId) {
+                    const strVal = that.state[state.id];
+                    if (strVal === that.direction.up) {
+                        Icon = IconDirectionUp;
+                    } else if (strVal === that.direction.down) {
+                        Icon = IconDirectionDown;
+                    } else if (strVal === that.direction.undef) {
+                        Icon = IconDirection;
+                    } else {
+                        return;
+                    }
+                } else if (!that.state[state.id]) {
+                    return;
+                }
+                result.push((<Icon key={that.id + '.indicator-' + state.name.toLowerCase()} className={'indicator-' + state.name.toLowerCase()} style={Object.assign({}, Theme.tile.tileIndicator, {color: state.color})}/>));
             }
         });
 

@@ -1,8 +1,8 @@
 import React from 'react';
 import SmartGeneric from './SmartGeneric';
-import IconWindowOpened from '../icons/windowOpened.svg';
-import IconWindowClosed from '../icons/windowClosed.svg';
-import IconWindowTilted from '../icons/windowTilted.svg';
+import IconWindowOpened from '../icons/WindowOpened';
+import IconWindowClosed from '../icons/WindowClosed';
+import IconWindowTilted from '../icons/WindowTilted';
 import Theme from '../theme';
 import I18n from '../i18n';
 
@@ -140,7 +140,7 @@ class SmartWindowTilt extends SmartGeneric {
 
         return (
             <div key={this.id + '.icon'} style={Object.assign({}, Theme.tile.tileIcon, iconStyle)} className="tile-icon">
-                <img src={Icon} style={{zIndex: 1}} width={'100%'} height={'100%'}/>
+                <Icon style={{zIndex: 1}} width={'100%'} height={'100%'}/>
             </div>
         );
     }

@@ -1,7 +1,7 @@
-import React from 'react';
+import React, {Component} from 'react';
 import SmartGeneric from './SmartGeneric';
-import IconThermometer from '../icons/thermometer.svg';
-import IconHydro from '../icons/humidity.svg';
+import IconThermometer from '../icons/Thermometer';
+import IconHydro from '../icons/Humidity';
 
 import Theme from '../theme';
 import I18n from '../i18n';
@@ -77,7 +77,7 @@ class SmartThermometer extends SmartGeneric {
     getIcon() {
         return (
             <div key={this.id + '.icon'} style={Object.assign({}, Theme.tile.tileIcon, {})} className="tile-icon">
-                <img src={IconThermometer} style={{zIndex: 1}} width={'100%'} height={'100%'}/>
+                <IconThermometer style={{zIndex: 1}} width={'100%'} height={'100%'}/>
             </div>
         );
     }
@@ -97,7 +97,7 @@ class SmartThermometer extends SmartGeneric {
             val = Math.round(val * 100) / 100;
         }
         return (<div key={this.id + '.tile-secondary'} className="tile-text-second" style={Theme.tile.secondary.div} title={this.secondary.title}>
-            {Icon ? (<img src={Icon} style={Object.assign({}, Theme.tile.secondary.icon, this.secondary.iconStyle)} />) : null}
+            {Icon ? (<Icon style={Object.assign({}, Theme.tile.secondary.icon, this.secondary.iconStyle)} />) : null}
             <span style={Theme.tile.secondary.text}>{val + this.secondary.unit}</span>
         </div>);
     }

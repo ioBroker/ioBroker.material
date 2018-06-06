@@ -13,7 +13,7 @@ const patternUnreach   = {role: /^indicator(\.maintenance)?\.unreach$/, indicato
 const patternLowbat    = {role: /^indicator(\.maintenance)?\.lowbat$|^indicator(\.maintenance)?\.battery/,  indicator: true,  type: 'boolean',  name: 'LOWBAT', required: false, icon: IconLowbat,     color: Theme.tile.tileIndicatorsIcons.lowbat};
 const patternMaintain  = {role: /^indicator\.maintenance$/,             indicator: true,  type: 'boolean',                          name: 'MAINTAIN',           required: false, icon: IconMaintain,   color: Theme.tile.tileIndicatorsIcons.maintain};
 const patternError     = {role: /^indicator\.error$/,                   indicator: true,                                            name: 'ERROR',              required: false, icon: IconError,      color: Theme.tile.tileIndicatorsIcons.error};
-const patternDirection = {role: /^indicator\.direction$/,               indicator: true,                                            name: 'DIR',                required: false,                       color: Theme.tile.tileIndicatorsIcons.direction};
+const patternDirection = {role: /^indicator\.direction$/,               indicator: true,                                            name: 'DIRECTION',          required: false,                       color: Theme.tile.tileIndicatorsIcons.direction};
 
 const patterns = {
     thermostat: {

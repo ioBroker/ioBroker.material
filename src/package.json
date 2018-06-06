@@ -17,13 +17,15 @@
     "react-moment": "^0.7.0",
     "react-native-i18n": "^2.0.12",
     "react-scripts": "^1.1.4",
-    "react-tap-event-plugin": "^3.0.2"
+    "react-tap-event-plugin": "^3.0.2",
+    "svgr": "^1.10.0"
   },
   "homepage": "./",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "svgr": "node node_modules/svgr/bin/svgr --no-semi -d ./src/icons/ ./src/icons/"
   }
 }

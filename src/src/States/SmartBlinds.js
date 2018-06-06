@@ -1,7 +1,7 @@
 import React from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import SmartGeneric from './SmartGeneric';
-import Icon from '../icons/jalousie.svg'
+import Icon from '../icons/Jalousie'
 import Theme from '../theme';
 import Slider from './SmartDialogSlider';
 
@@ -13,15 +13,6 @@ class SmartBlinds extends SmartGeneric {
     //    states: STATES
     //    onControl: function
     // };
-
-    static buttonStopStyle = {
-        position: 'absolute',
-        left: 'calc(50% + 7em)',
-        bottom: '4em',
-        height: '2.5em',
-        width: '2.5em',
-        cursor: 'pointer'
-    };
 
     constructor(props) {
         super(props);
@@ -59,13 +50,13 @@ class SmartBlinds extends SmartGeneric {
         this.props.tile.setState({
             state: true
         });
-        this.state.showSlider = false;
+        this.stateRx.showSlider = false;
         this.onMouseUpBind = this.onMouseUp.bind(this);
 
         this.props.tile.registerHandler('onMouseDown', this.onTileMouseDown.bind(this));
 
         this.slider = null;
-        this.state.setValue = null;
+        this.stateRx.setValue = null;
 
         this.componentReady();
     }
@@ -184,7 +175,7 @@ class SmartBlinds extends SmartGeneric {
     getIcon() {
         return (
             <div key={this.id + '.icon'} style={Object.assign({}, Theme.tile.tileIcon, this.state[this.actualId] !== this.min ? {color: Theme.palette.lampOn} : {})} className="tile-icon">
-                <img width={'100%'} height={'100%'} src={Icon} style={{zIndex: 1}}/>
+                <Icon width={'100%'} height={'100%'} style={{zIndex: 1}}/>
                 {this.state.executing ? <CircularProgress style={{zIndex: 3, position: 'absolute', top: 0, left: 0}} size={Theme.tile.tileIcon.width}/> : null}
                 <div style={{
                     zIndex: 2,
