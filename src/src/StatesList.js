@@ -86,8 +86,9 @@ class StatesList extends Component {
         }
 
         const that = this;
+        const usedIds = [];
         return items.map(id => {
-            let detected = that.detector.detect(this.props.objects, this.keys, id);
+            let detected = that.detector.detect(this.props.objects, this.keys, id, usedIds);
             if (detected) {
                 return that.createControl(TileSmart, id, detected);
             } else {

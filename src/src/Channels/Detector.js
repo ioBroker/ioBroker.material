@@ -153,7 +153,7 @@ const patterns = {
     },
     info: {
         states: [
-            {role: /^state(\.[.\w]+)?$|^sensor(\.[.\w]+)?$/,             indicator: false, write: false,                                  name: 'INFO',         required: true, multiple: true},
+            {/*role: /^value(\.[.\w]+)|^sensor(\.[.\w]+)|^state(\.[.\w]+)$/,*/                                  indicator: false, write: false,                                 name: 'ACTUAL',         required: true, multiple: true, noDeviceDetection: true},
             patternWorking,
             patternUnreach,
             patternLowbat,
@@ -278,8 +278,11 @@ class ChannelDetector {
     _applyPattern(objects, id, statePattern) {
         if (objects[id] && objects[id].common) {
             let role = null;
+            if (!statePattern) {
+                debugger;
+            }
             if (statePattern.role) {
-                role = statePattern.role.test(objects[id].common.role);
+                role = statePattern.role.test(objects[id].common.role || '');
 
                 if (role && statePattern.channelRole) {
                     const channelId = ChannelDetector.getParentId(id);
@@ -288,12 +291,13 @@ class ChannelDetector {
                     } else {
                         role = false;
                     }
-                    if (role) {
-                        console.log('A');
-                    }
                 }
             }
             if (role === false) {
+                return;
+            }
+
+            if (statePattern.indicator === false && (objects[id].common.role || '').match(/^indicator(\.[.\w]+)?$/)) {
                 return;
             }
 
@@ -310,11 +314,14 @@ class ChannelDetector {
             if (statePattern.type && statePattern.type !== objects[id].common.type) {
                 return;
             }
-            let enums = this.getEnumsForId(objects, id);
 
-            if (statePattern.enums && typeof statePattern.enums === 'function' && (!enums || !enums.length || !statePattern.enums(objects[id], enums))) {
-                return;
+            if (statePattern.enums && typeof statePattern.enums === 'function') {
+                let enums = this.getEnumsForId(objects, id);
+                if (!enums || !enums.length || !statePattern.enums(objects[id], enums)) {
+                    return;
+                }
             }
+
             return true;
         } else {
             return false;
@@ -343,10 +350,32 @@ class ChannelDetector {
         return result.length ? result : null;
     }
 
-    detect(objects, keys, id) {
+    static copyState(oldState, newState) {
+        if (!newState) {
+            newState = JSON.parse(JSON.stringify(oldState));
+        }
+        newState.original = oldState.original || oldState;
+        if (oldState.enums) {
+            newState.enums = oldState.enums;
+        }
+        if (oldState.role) {
+            newState.role = oldState.role;
+        }
+        if (oldState.channelRole) {
+            newState.channelRole = oldState.channelRole;
+        }
+        if (oldState.icon) {
+            newState.icon = oldState.icon;
+        }
+        return newState;
+    }
+
+    detect(objects, keys, id, usedIds) {
         if (this.cache[id]) {
             return this.cache[id];
         }
+
+        usedIds = usedIds || [];
 
         if (!keys) {
             keys = Object.keys(objects);
@@ -361,87 +390,101 @@ class ChannelDetector {
                 channelStates = ChannelDetector.getAllStatesInChannel(keys, id);
             }
 
-            if (id.indexOf('LEQ0182479') !== -1) {
-                console.log('a');
+            if (id.indexOf('hm-rpc.0.JEQ0061825.1') !== -1) {
+                console.log('aaa');
             }
 
             for (let pattern in patterns) {
-                if (patterns.hasOwnProperty(pattern)) {
-                    let result = null;
+                if (!patterns.hasOwnProperty(pattern)) continue;
+                let result = null;
 
-                    if (pattern === 'socket') {
-                        console.log('S');
-                    }
+                if (pattern === 'info') {
+                    console.log(pattern);
+                }
 
-                    patterns[pattern].states.forEach((state, i) => {
-                        let found = false;
-                        channelStates.forEach(_id => {
-                            if (this._applyPattern(objects, _id, state)) {
-                                if (!result) {
-                                    result = JSON.parse(JSON.stringify(patterns[pattern]));
-                                    result.states.forEach((state, j) => {
-                                        if (patterns[pattern].states[j].enums) {
-                                            state.enums = patterns[pattern].states[j].enums;
-                                        }
-                                        if (patterns[pattern].states[j].role) {
-                                            state.role = patterns[pattern].states[j].role;
-                                        }
-                                        if (patterns[pattern].states[j].channelRole) {
-                                            state.channelRole = patterns[pattern].states[j].channelRole;
-                                        }
-                                        if (patterns[pattern].states[j].icon) {
-                                            state.icon = patterns[pattern].states[j].icon;
-                                        }
-                                    });
-                                }
-                                if (!result.states.find(e => e.id === _id)) {
-                                    result.states[i].id = _id;
-                                }
-                                found = true;
-                            }
-                        });
-                        if (state.required && !found) {
-                            result = null;
-                            return false;
+                patterns[pattern].states.forEach((state, i) => {
+                    let found = false;
+                    channelStates.forEach(_id => {
+                        if (_id === 'hm-rpc.0.JEQ0061825.1.ERROR' && pattern === 'info') {
+                            console.log('AAA');
                         }
-                    });
-
-                    if (result && !result.states.find(state => state.required && !state.id)) {
-                        // result.id = id;
-                        this.cache[id] = result;
-                        let deviceStates;
-
-                        // looking for indicators
-                        if (objects[id].type !== 'device') {
-                            // get device name
-                            const deviceId = ChannelDetector.getParentId(id);
-                            deviceStates = ChannelDetector.getAllStatesInDevice(keys, deviceId);
-                            if (deviceStates) {
-                                deviceStates.forEach(_id => {
-                                    result.states.forEach((state, i) => {
-                                        if (!state.id && state.indicator) {
-                                            if (this._applyPattern(objects, _id, patterns[pattern].states[i])) {
-                                                result.states[i].id = _id;
-                                            }
+                        if ((state.indicator || usedIds.indexOf(_id) === -1) && this._applyPattern(objects, _id, state)) {
+                            if (!state.indicator){
+                                usedIds.push(_id);
+                            }
+                            if (!result) {
+                                result = JSON.parse(JSON.stringify(patterns[pattern]));
+                                result.states.forEach((state, j) => ChannelDetector.copyState(patterns[pattern].states[j], state));
+                            }
+                            if (!result.states.find(e => e.id === _id)) {
+                                result.states[i].id = _id;
+                            }
+                            found = true;
+                            if (state.multiple && channelStates.length > 1) {
+                                // execute this rule for every state in this channel
+                                let index = i + 1;
+                                channelStates.forEach(cid => {
+                                    if (cid === _id) return;
+                                    if ((state.indicator || usedIds.indexOf(cid) === -1) && this._applyPattern(objects, cid, state)) {
+                                        if (!state.indicator){
+                                            usedIds.push(cid);
                                         }
-                                    });
+                                        const newState = ChannelDetector.copyState(state);
+                                        newState.id = cid;
+                                        result.states.splice(index++, 0, newState);
+                                    }
                                 });
                             }
                         }
-                        result.states.forEach((state, j) => {
-                            if (state.role) {
-                                delete state.role;
-                            }
-                            if (state.enums) {
-                                delete state.enums;
-                            }
-                            if (patterns[pattern].states[j].icon) {
-                                state.icon = patterns[pattern].states[j].icon;
-                            }
-                        });
-
-                        return result;
+                    });
+                    if (state.required && !found) {
+                        result = null;
+                        return false;
                     }
+                });
+
+                if (result && !result.states.find(state => state.required && !state.id)) {
+                    // result.id = id;
+                    this.cache[id] = result;
+                    let deviceStates;
+
+                    if (pattern === 'info') {
+                        console.log('AA');
+                    }
+
+                    // looking for indicators
+                    if (objects[id].type !== 'device') {
+                        // get device name
+                        const deviceId = ChannelDetector.getParentId(id);
+                        deviceStates = ChannelDetector.getAllStatesInDevice(keys, deviceId);
+                        if (deviceStates) {
+                            deviceStates.forEach(_id => {
+                                result.states.forEach((state, i) => {
+                                    if (!state.id && state.indicator && !state.noDeviceDetection) {
+                                        if (this._applyPattern(objects, _id, state.original)) {
+                                            result.states[i].id = _id;
+                                        }
+                                    }
+                                });
+                            });
+                        }
+                    }
+                    result.states.forEach((state, j) => {
+                        if (state.role) {
+                            delete state.role;
+                        }
+                        if (state.enums) {
+                            delete state.enums;
+                        }
+                        if (state.original) {
+                            if (state.original.icon) {
+                                state.icon = state.original.icon;
+                            }
+                            delete state.original;
+                        }
+                    });
+
+                    return result;
                 }
             }
         }

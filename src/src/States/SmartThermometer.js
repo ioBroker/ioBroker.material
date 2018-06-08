@@ -53,8 +53,6 @@ class SmartThermometer extends SmartGeneric {
             isPointer: false
         });
 
-        this.stateRx.interval = null;
-
         //this.props.tile.registerHandler('onClick', this.onTileClick.bind(this));
         this.componentReady();
     }

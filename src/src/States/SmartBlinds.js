@@ -50,7 +50,7 @@ class SmartBlinds extends SmartGeneric {
         this.props.tile.setState({
             state: true
         });
-        this.stateRx.showSlider = false;
+        this.stateRx.showDialog = false;
         this.onMouseUpBind = this.onMouseUp.bind(this);
 
         this.props.tile.registerHandler('onMouseDown', this.onTileMouseDown.bind(this));
@@ -127,11 +127,11 @@ class SmartBlinds extends SmartGeneric {
 
     onLongClick() {
         this.timer = null;
-        this.setState({showSlider: true});
+        this.setState({showDialog: true});
     }
 
-    onSliderClose() {
-        this.setState({showSlider: false});
+    onDialogClose() {
+        this.setState({showDialog: false});
     }
 
     onValueChange(newValue) {
@@ -139,16 +139,10 @@ class SmartBlinds extends SmartGeneric {
     }
 
     onTileMouseDown(e) {
-        if (this.state.showSlider) return;
+        if (this.state.showDialog) return;
         e.preventDefault();
         e.stopPropagation();
         this.timer = setTimeout(this.onLongClick.bind(this), 500);
-
-        this.state.direction = '';
-        this.startX = e.touches ? e.touches[0].pageX : e.pageX;
-        this.startY = e.touches ? e.touches[0].pageY : e.pageY;
-        this.startValue = this.realValueToPercent(this.state[this.actualId]) || 0;
-        console.log('Started ' + this.startX  + ' - ' + this.startY);
         document.addEventListener('mouseup',    this.onMouseUpBind,     {passive: false, capture: true});
         document.addEventListener('touchend',   this.onMouseUpBind,     {passive: false, capture: true});
     }
@@ -214,12 +208,12 @@ class SmartBlinds extends SmartGeneric {
                 <div className="tile-state-text"
                      style={Object.assign({}, Theme.tile.tileState, this.state[this.id] ? Theme.tile.tileStateOn : Theme.tile.tileStateOff)}>{this.getStateText()}</div>
             </div>),
-            this.state.showSlider ?
+            this.state.showDialog ?
                 <Slider key={this.id + '.slider'}
                     startValue={this.realValueToPercent()}
                     onValueChange={this.onValueChange.bind(this)}
                     onStop={this.stopId ? this.onStop.bind(this) : null}
-                    onClose={this.onSliderClose.bind(this)}
+                    onClose={this.onDialogClose.bind(this)}
                     type={Slider.types.blinds}
                 /> : null
         ]);

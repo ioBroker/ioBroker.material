@@ -12,7 +12,8 @@ import SmartGeneric from './States/SmartGeneric';
 import SmartState from './States/SmartState';
 import SmartWindowTilt from './States/SmartWindowTilt';
 import SmartButton from './States/SmartButton';
-import SmartThermometer from "./States/SmartThermometer";
+import SmartThermometer from './States/SmartThermometer';
+import SmartInfo from './States/SmartInfo';
 
 class TileSmart extends Component {
     static propTypes = {
@@ -133,6 +134,8 @@ class TileSmart extends Component {
             return this.wrapContent(this.createControl(SmartButton, this.channelInfo, this));
         } else if (this.channelInfo.type === Types.temperature) {
             return this.wrapContent(this.createControl(SmartThermometer, this.channelInfo, this));
+        } else if (this.channelInfo.type === Types.info) {
+            return this.wrapContent(this.createControl(SmartInfo, this.channelInfo, this));
         } else if (this.channelInfo.type === Types.window ||
             this.channelInfo.type === Types.fireAlarm ||
             this.channelInfo.type === Types.door ||

@@ -108,6 +108,19 @@ export default {
             pointerEvents: 'none',
             position: 'relative'
         },
+        tileNumber: {
+            position: 'absolute',
+            bottom: 10,
+            right: 10,
+            borderRadius: 20,
+            background: 'rgb(45, 116, 249)',
+            opacity: 0.6,
+            minWidth: 20,
+            height: 19,
+            paddingTop: 1,
+            color: 'white',
+            textAlign: 'center'
+        },
         tileState: {
             marginTop: '0.2em',
             whiteSpace: 'nowrap',

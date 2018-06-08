@@ -16,18 +16,26 @@ class I18n {
     static getLanguage() {
         return I18n.lang;
     }
-    static t(word) {
+    static t(word, arg1, arg2, arg3) {
         if (I18n.translations[I18n.lang]) {
             const w = I18n.translations[I18n.lang][word];
             if (w) {
-                return w;
+                word = w;
             } else {
                 console.log(`Translate: "${word}"`);
-                return word;
             }
-        } else {
-            return word;
         }
+        if (arg1 !== undefined) {
+            word = word.replace('%s', arg1);
+            if (arg2 !== undefined) {
+                word = word.replace('%s', arg2);
+                if (arg3 !== undefined) {
+                    word = word.replace('%s', arg3);
+
+                }
+            }
+        }
+        return word;
     }
 }
 

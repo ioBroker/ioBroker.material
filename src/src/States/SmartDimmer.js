@@ -4,6 +4,7 @@ import SmartGeneric from './SmartGeneric';
 import Icon from 'react-icons/lib/ti/lightbulb'
 import Theme from '../theme';
 import Slider from './SmartDialogSlider';
+import I18n from '../i18n';
 
 class SmartLight extends SmartGeneric {
     constructor(props) {
@@ -37,13 +38,13 @@ class SmartLight extends SmartGeneric {
                 isPointer: true
             });
         }
-        this.state.showSlider = false;
+        this.stateRx.showDialog = false;
         this.onMouseUpBind = this.onMouseUp.bind(this);
 
         this.props.tile.registerHandler('onMouseDown', this.onTileMouseDown.bind(this));
 
         this.slider = null;
-        this.state.setValue = null;
+        this.stateRx.setValue = null;
 
         this.componentReady();
     }
@@ -119,11 +120,11 @@ class SmartLight extends SmartGeneric {
 
     onLongClick() {
         this.timer = null;
-        this.setState({showSlider: true});
+        this.setState({showDialog: true});
     }
 
-    onSliderClose() {
-        this.setState({showSlider: false});
+    onDialogClose() {
+        this.setState({showDialog: false});
     }
 
     onValueChange(newValue) {
@@ -131,17 +132,10 @@ class SmartLight extends SmartGeneric {
     }
 
     onTileMouseDown(e) {
-        if (this.state.showSlider) return;
+        if (this.state.showDialog) return;
         e.preventDefault();
         e.stopPropagation();
-        this.mouseValue = 0;
         this.timer = setTimeout(this.onLongClick.bind(this), 500);
-
-        this.state.direction = '';
-        this.startX = e.touches ? e.touches[0].pageX : e.pageX;
-        this.startY = e.touches ? e.touches[0].pageY : e.pageY;
-        this.startValue = this.realValueToPercent(this.state[this.actualId]) || 0;
-        console.log('Started ' + this.startX  + ' - ' + this.startY);
         document.addEventListener('mouseup',    this.onMouseUpBind,     {passive: false, capture: true});
         document.addEventListener('touchend',   this.onMouseUpBind,     {passive: false, capture: true});
     }
@@ -195,11 +189,11 @@ class SmartLight extends SmartGeneric {
                 <div className="tile-state-text"
                      style={Object.assign({}, Theme.tile.tileState, this.state[this.id] ? Theme.tile.tileStateOn : Theme.tile.tileStateOff)}>{this.getStateText()}</div>
             </div>),
-            this.state.showSlider ?
+            this.state.showDialog ?
                 <Slider key={this.id + '.slider'}
                     startValue={this.realValueToPercent()}
                     onValueChange={this.onValueChange.bind(this)}
-                    onClose={this.onSliderClose.bind(this)}
+                    onClose={this.onDialogClose.bind(this)}
                     type={Slider.types.dimmer}
                 /> : null
         ]);
