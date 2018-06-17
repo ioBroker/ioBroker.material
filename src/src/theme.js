@@ -64,10 +64,26 @@ export default {
     slider: {
         background: 'grey'
     },
+    list: {
+        title: {
+            //background: 'rgba(210, 210, 210, 0.8)',
+            fontSize: 20,
+            color: 'white',
+            margin: '0.5em',
+            padding: '0 0 0 1em',
+            //padding: '0.5em 0 0.5em 2em',
+            //borderRadius: '0.5em'
+        },
+        row: {
+            width: 'calc(100% - 2em)',
+            paddingLeft: '1em',
+            paddingRight: '1em'
+        }
 
+    },
     tile: {
         tile: {
-            margin: '0.3em',
+            margin: '0.5em',
             borderRadius: tileBorderRadius,
             padding: '1em',
             transition: 'all 0.2s',
@@ -79,8 +95,10 @@ export default {
             color: 'black',
             background: 'white',
             boxSizing: 'border-box',
-            userSelect: 'none'
-},
+            userSelect: 'none',
+            display: 'inline-block',
+            overflow: 'hidden'
+        },
         tileOn: {
             background: 'white',
             opacity: 1

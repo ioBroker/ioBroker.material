@@ -170,12 +170,12 @@ class Tile extends Component {
 
     wrapContent(content) {
         //<Col xs={12} sm={6} md={4} lg={3}>
-        return (<Row>
+        return (
             <Paper style={style}>
                 <span style={{display: 'none'}}>{this.props.id}</span>
                 {content}
             </Paper>
-        </Row>);
+        );
     }
 
     getItemType(id) {

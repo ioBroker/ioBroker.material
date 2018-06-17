@@ -74,6 +74,7 @@ class TileSmart extends Component {
     setVisibility(isVisible) {
         if (this.state.visible !== isVisible) {
             this.setState({visible: isVisible});
+            this.props.onVisibilityControl(this.props.id, isVisible);
         }
     }
 
@@ -83,9 +84,8 @@ class TileSmart extends Component {
             style.display = 'none';
         }
 
-        //<Col xs={12} sm={6} md={4} lg={3}>
-        return (<Row style={style}>
-            <Paper style={this.getTileStyle()}
+        return (
+            <Paper style={Object.assign(this.getTileStyle(), style)}
                    onMouseDown={this.onMouseDown.bind(this)}
                    onTouchStart={this.onMouseDown.bind(this)}
                    onMouseUp={this.onMouseUp.bind(this)}
@@ -94,7 +94,7 @@ class TileSmart extends Component {
                 <span style={{display: 'none'}}>{this.props.id}</span>
                 {content}
             </Paper>
-        </Row>);
+        );
     }
 
     registerHandler(eventName, handler) {

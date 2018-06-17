@@ -8,6 +8,8 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Utils from './Utils';
 import Theme from './theme';
 import ChannelDetector from './Channels/Detector';
+import I18n from './i18n';
+import StatesSubList from './StatesSubList';
 
 class StatesList extends Component {
 
@@ -21,13 +23,14 @@ class StatesList extends Component {
 
     constructor(props) {
         super(props);
-        this.enumFunctions = null;
-        this.detector = new ChannelDetector();
+        this.enumFunctions = [];
         this.keys = null;
     }
 
     componentWillUpdate(nextProps, nextState) {
-        this.enumFunctions = this.enumFunctions || this.getEnumFunctions(nextProps.objects);
+        if (!this.enumFunctions.length) {
+            this.getEnumFunctions(nextProps.objects).forEach(function (e) {this.enumFunctions.push(e)});
+        }
     }
 
     getElementsToShow() {
@@ -36,7 +39,7 @@ class StatesList extends Component {
         return _enum && _enum.common ? _enum.common.members || [] : [];
     }
 
-    getEnumFunctions(objects) {
+    getEnums(objects, enums) {
         objects = objects || this.props.objects;
         let result = [];
 
@@ -46,7 +49,7 @@ class StatesList extends Component {
                 objects[id].common &&
                 objects[id].common.members &&
                 objects[id].common.members.length &&
-                id.match(/^enum\.functions\./)
+                id.startsWith(enums)
             ) {
                 result.push(id);
             }
@@ -54,97 +57,103 @@ class StatesList extends Component {
         return result;
     }
 
-    createControl(control, channelId, channelInfo) {
-        let Component = control; // This will be used by rendering
-        //              ↓
-        return (<Component
-            key={channelId}
-            id={channelId}
-            enumName={Utils.getObjectName(this.props.objects, this.props.enumID)}
-            enumFunctions={this.enumFunctions}
-            editMode={this.props.editMode}
-            channelInfo={channelInfo}
-            states={this.props.states}
-            objects={this.props.objects}
-            onSaveSettings={this.props.onSaveSettings}
-            onCollectIds={this.props.onCollectIds}
-            onControl={this.props.onControl}
-        />);
-    }
-
-    getListItems(items) {
-        if (!items) {
-            items = this.getElementsToShow();
-        } else
-        if (typeof items !== 'object') {
-            items = this.getElementsToShow(items);
-        }
-
-        if (!this.keys) {
-            this.keys = Object.keys(this.props.objects);
-            this.keys.sort();
-        }
-
-        const that = this;
-        const usedIds = [];
-        return items.map(id => {
-            let detected = that.detector.detect(this.props.objects, this.keys, id, usedIds);
-            if (detected) {
-                return that.createControl(TileSmart, id, detected);
-            } else {
-                let channelInfo = Tile.getChannelInfo(this.props.objects, id);
-                if (!channelInfo || (channelInfo.main === undefined && (!channelInfo.states || !channelInfo.states.length))) {
-                    return null;
-                } else {
-                    return this.createControl(Tile, id, channelInfo)
-                }
-            }
-        });
+    getEnumFunctions(objects) {
+        return this.getEnums('enum.functions.');
     }
 
     render() {
         let items = this.getElementsToShow();
         let columns = [];
-        if (!this.props.loading && items && items.length) {
-            let cols   = 4;
-            let xWidth = 3;
-            if (this.props.windowWidth < 500) {
-                cols = 1;
-                xWidth = 12;
-            } else if (this.props.windowWidth < 800) {
-                cols = 2;
-                xWidth = 6;
-            } else
-            if (this.props.windowWidth < 1200) {
-                cols = 3;
-                xWidth = 4;
-            }
-            let rxItems = this.getListItems(items);
-            let index = 0;
-            for (let i = 0; i < rxItems.length; i++) {
-                if (!rxItems[i]) continue;
-                columns[index] = columns[index] || [];
-                columns[index].push(rxItems[i]);
-                index++;
-                if (index >= cols) index = 0;
-            }
-            columns = columns.map((items, i) => <Col key={'col' + i} xs={xWidth} sm={xWidth} md={xWidth} lg={xWidth}>{items}</Col>);
-        } else if (this.props.loading) {
-            // no connection
-            columns.push((<Col xs={12} sm={6} md={4} lg={3} key="connection">
-                <CircularProgress size={60} thickness={7} color="primary" style={{padding: 20}}/>
-            </Col>));
-        } else  {
-            // no items
-            columns.push((<Col xs={12} sm={6} md={4} lg={3} key="no_items">
-                <Tile states={this.props.states} objects={this.props.objects} id=""/>
-            </Col>));
+
+        if (!this.keys || !this.keys.length) {
+            this.keys = Object.keys(this.props.objects);
+            this.keys.sort();
+        }
+        if (!this.enumFunctions.length) {
+            this.getEnumFunctions(this.props.objects).forEach(function (e) {this.enumFunctions.push(e)});
         }
 
-        return(
-            <div style={Object.assign({marginLeft: this.props.marginLeft}, Theme.mainPanel)}>
-                <Grid fluid style={{display: 'flex'}}>{columns}</Grid>
-            </div>);
+        if (!this.props.loading && items && items.length) {
+            //let rxItems = this.getListItems(items);
+            let orderEnums;
+            if (this.props.enumID.startsWith('enum.rooms.')) {
+                orderEnums = 'enum.functions.';
+            } else
+            if (this.props.enumID.startsWith('enum.functions.')) {
+                orderEnums = 'enum.rooms.';
+            } else {
+                orderEnums = 'enum.functions.';
+            }
+
+            let enums = this.getEnums(this.props.objects, orderEnums);
+            let used = [];
+            enums.forEach(id => {
+                const obj = this.props.objects[id];
+                let column = [];
+                if (obj && obj.common && obj.common.members && obj.common.members.length) {
+                    column = obj.common.members.filter(item => {
+                        return used.indexOf(item) === -1 && items.indexOf(item) !== -1;
+                    });
+                }
+
+                if (column.length) {
+                    console.log('Add to ' + id + ': ' + column.join(', '));
+                    columns.push(<StatesSubList
+                            key={id}
+                            objects={this.props.objects}
+                            states={this.props.states}
+                            items={column}
+                            editMode={this.props.editMode}
+                            windowWidth={this.props.width}
+                            enumFunctions={this.enumFunctions}
+                            enumID={id}
+                            keys={this.keys}
+                            onSaveSettings={this.props.onSaveSettings}
+                            onControl={this.props.onControl}
+                            onCollectIds={this.props.onCollectIds}/>);
+                    column.forEach(id => used.push(id));
+                }
+            });
+
+            // collect others
+            let column = [];
+            items.forEach(item => {
+                if (used.indexOf(item) === -1) {
+                    column.push(item);
+                }
+            });
+
+            if (column.length) {
+                console.log('Add to others: ' + column.join(', '));
+                columns.push(<StatesSubList
+                    key={'others'}
+                    objects={this.props.objects}
+                    states={this.props.states}
+                    items={column}
+                    editMode={this.props.editMode}
+                    windowWidth={this.props.width}
+                    enumFunctions={this.enumFunctions}
+                    enumID={''}
+                    keys={this.keys}
+                    onSaveSettings={this.props.onSaveSettings}
+                    onControl={this.props.onControl}
+                    onCollectIds={this.props.onCollectIds}/>);
+            }
+
+            // sort items
+            // If functions => by rooms
+            // If rooms => by functions
+            // else => by functions
+            //columns = columns.map((items, i) => <Col key={'col' + i} style={{width: '9em'}}>{items}</Col>);
+        } else if (this.props.loading) {
+            // no connection
+            columns.push((<CircularProgress key="wait-circle" size={60} thickness={7} color="primary" style={{padding: 20}}/>));
+        } else  {
+            // no items
+            columns.push((<Tile key="nothing"  states={this.props.states} objects={this.props.objects} id=""/>));
+        }
+
+        return (<div style={Object.assign({marginLeft: this.props.marginLeft}, Theme.mainPanel)}>{columns}</div>);
     }
 }
 
