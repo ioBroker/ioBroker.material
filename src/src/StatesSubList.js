@@ -63,12 +63,18 @@ class StatesSubList extends Component {
         const that = this;
         const usedIds = [];
         return items.map(id => {
+            if (!this.state[id]) return null;
+            
             let detected = that.detector.detect(that.props.objects, that.props.keys, id, usedIds);
             if (detected) {
                 return that.createControl(TileSmart, id, detected);
             } else {
                 let channelInfo = Tile.getChannelInfo(that.props.objects, id);
                 if (!channelInfo || (channelInfo.main === undefined && (!channelInfo.states || !channelInfo.states.length))) {
+                    console.log('Nothing found for ' + id);
+                    const newState = {};
+                    newState[id] = false;
+                    this.setState(newState);
                     return null;
                 } else {
                     return this.createControl(Tile, id, channelInfo)
@@ -82,7 +88,7 @@ class StatesSubList extends Component {
             console.log('Add to ' + (this.props.enumID || 'others') + ': ' + this.props.items.join(', '));
             return (<div key={(this.props.enumID || 'others').replace(/[^\w\d]/g, '_') + '-title'} style={Theme.list.row}><h3
                 style={Theme.list.title}>{
-                    this.props.enumID ? Utils.getObjectName(this.props.objects, this.props.enumID) : I18n._('Others')
+                    this.props.enumID ? Utils.getObjectName(this.props.objects, this.props.enumID) : I18n.t('Others')
                 }</h3>
                 <div style={{width: '100%'}}>{this.getListItems(this.props.items)}</div>
             </div>);

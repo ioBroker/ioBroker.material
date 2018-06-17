@@ -1,8 +1,8 @@
 class Utils {
     static CapitalWords(name) {
         return name.split(/[\s_]/)
-            .map(word => word[0].toUpperCase() + word.substring(1).toLowerCase())
             .filter(item => item)
+            .map(word => word[0].toUpperCase() + word.substring(1).toLowerCase())
             .join(' ');
     }
 
