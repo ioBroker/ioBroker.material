@@ -1,5 +1,4 @@
 const gulp      = require('gulp');
-const install   = require('gulp-install');
 const exec      = require('gulp-exec');
 const fs        = require('fs');
 const copy      = require('gulp-copy');
@@ -18,13 +17,39 @@ gulp.task('clean', () => {
     ]));
 });
 
+function npmInstall() {
+    return new Promise((resolve, reject) => {
+        // Install node modules
+        const cwd = __dirname.replace(/\\/g, '/') + '/src/';
+
+        const cmd = `npm install`;
+        console.log(`"${cmd} in ${cwd}`);
+
+        // System call used for update of js-controller itself,
+        // because during installation npm packet will be deleted too, but some files must be loaded even during the install process.
+        const exec = require('child_process').exec;
+        const child = exec(cmd, {cwd});
+
+        child.stderr.pipe(process.stderr);
+        child.stdout.pipe(process.stdout);
+
+        child.on('exit', (code /* , signal */) => {
+            // code 1 is strange error that cannot be explained. Everything is installed but error :(
+            if (code && code !== 1) {
+                reject('Cannot install: ' + code);
+            }
+            // command succeeded
+            resolve();
+        });
+    });
+}
+
+
 gulp.task('npm', done => {
     if (fs.existsSync(__dirname + '/src/node_modules')) {
-        done();
+        return Promise.resolve();
     } else {
-        gulp.src([__dirname + '/src/package.json'])
-            .pipe(gulp.dest(__dirname + '/src/'))
-            .pipe(install()).on('end', done);
+        return npmInstall();
     }
 });
 
