@@ -367,7 +367,7 @@ class SmartDialogSlider extends Component  {
     render() {
         return (<div ref={this.refDialog}
              onClick={this.onClose.bind(this)}
-             style={{width: '100%', height: '100%', zIndex: 2100, userSelect: 'none', position: 'fixed', top: 0, left: 0, background: 'rgba(255,255,255,0.8'}}>
+             style={Theme.dialog.back}>
             {this.generateSlider()}
         </div>);
     }

@@ -51,6 +51,7 @@ class SmartInfo extends SmartGeneric {
         });
 
         this.props.tile.registerHandler('onMouseDown', this.onTileMouseDown.bind(this));
+        this.onMouseUpBind = this.onMouseUp.bind(this);
         this.componentReady();
     }
 
@@ -137,9 +138,9 @@ class SmartInfo extends SmartGeneric {
         if (this.state.showDialog) return;
         e.preventDefault();
         e.stopPropagation();
-        this.timer = setTimeout(this.onLongClick.bind(this), 500);
         document.addEventListener('mouseup',    this.onMouseUpBind,     {passive: false, capture: true});
         document.addEventListener('touchend',   this.onMouseUpBind,     {passive: false, capture: true});
+        this.timer = setTimeout(this.onLongClick.bind(this), 500);
     }
 
     onMouseUp() {
@@ -147,7 +148,6 @@ class SmartInfo extends SmartGeneric {
             clearTimeout(this.timer);
             this.timer = null;
         }
-        console.log('Stopped');
         document.removeEventListener('mouseup',     this.onMouseUpBind,     {passive: false, capture: true});
         document.removeEventListener('touchend',    this.onMouseUpBind,     {passive: false, capture: true});
     }

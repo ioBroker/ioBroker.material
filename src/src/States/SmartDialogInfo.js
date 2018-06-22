@@ -1,13 +1,12 @@
 import React, {Component} from 'react';
 import Theme from '../theme';
-import IconUp from 'react-icons/lib/fa/angle-double-up';
-import IconDown from 'react-icons/lib/fa/angle-double-down';
-import IconLamp from 'react-icons/lib/ti/lightbulb';
-import IconStop from 'react-icons/lib/md/stop'
 import I18n from '../i18n';
-import {darken} from '@material-ui/core/styles/colorManipulator';
-import Button from '@material-ui/core/Button';
-import Snackbar from '@material-ui/core/Snackbar';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import Moment from 'react-moment';
 
 class SmartDialogInfo extends Component  {
 
@@ -55,19 +54,25 @@ class SmartDialogInfo extends Component  {
     }
 
     generatePoints() {
-        const result = this.props.points.map(e =>
-            (<li><span>{e.name}:</span><span>{this.props.states[e.id] ? this.props.states[e.id].val : '?'}</span><span>{e.unit}</span></li>)
-        );
-
-
-        return (<ul>{result}</ul>);
+        const result = this.props.points.map(e => {
+            const Icon = e.icon;
+            return (<ListItem key={e.id + '_info'} style={Theme.dialog.point}>
+                {false && Icon ? (<ListItemIcon><Icon /></ListItemIcon>) : null}
+                <ListItemText primary={e.name} secondary={this.props.states[e.id] ? (<Moment style={{fontSize: 12}} date={this.props.states[e.id].ts} interval={15} fromNow locale={I18n.getLanguage()}/>) : '?'} />
+                <ListItemSecondaryAction>
+                    <span style={Theme.dialog.value}>{this.props.states[e.id] ? this.props.states[e.id].val : '?'}</span>
+                    <span style={Theme.dialog.unit}>{e.unit}</span>
+                </ListItemSecondaryAction>
+            </ListItem>);
+        });
+        return (<List style={Theme.dialog.list}>{result}</List>);
     }
 
     render() {
-        return (<div ref={this.refDialog}
+        return (<div key={this.props.points[0].id + '_dialog'} ref={this.refDialog}
              onClick={this.onClose.bind(this)}
-             style={{width: '100%', height: '100%', zIndex: 2100, userSelect: 'none', position: 'fixed', top: 0, left: 0, background: 'rgba(255,255,255,0.8'}}>
-            {this.generatePoints()}
+             style={Theme.dialog.back}>
+            <div style={Theme.dialog.inner}>{this.generatePoints()}</div>
         </div>);
     }
 }

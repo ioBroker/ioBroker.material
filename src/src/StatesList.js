@@ -1,14 +1,8 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-// import Divider from 'material-ui/Divider';
-import { Grid, Col } from 'react-flexbox-grid';
 import Tile from './Tile';
-import TileSmart from './TileSmart';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import Utils from './Utils';
 import Theme from './theme';
-import ChannelDetector from './Channels/Detector';
-import I18n from './i18n';
 import StatesSubList from './StatesSubList';
 
 class StatesList extends Component {

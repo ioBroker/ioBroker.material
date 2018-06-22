@@ -41,6 +41,43 @@ export default {
         strokeColor: '#337ab7',
         loadingStrokeColor: '#337ab7'
     },
+    dialog: {
+        inner: {
+            height: 'calc(100% - 2em)',
+            position: 'absolute',
+            top: '1em',
+            left: 'calc(50% - 200px)',
+            width: 400,
+            background: '#cacaca',
+            borderRadius: '1em',
+            padding: '1em'
+        },
+        back:  {
+            width: '100%',
+            height: '100%',
+            zIndex: 2100,
+            userSelect: 'none',
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            background: 'rgba(238,238,238,0.8'
+        },
+        list:{
+
+        },
+        point: {
+
+        },
+        name: {
+
+        },
+        value: {
+            fontWeight: 'bold'
+        },
+        unit: {
+
+        }
+    },
     palette: {
         /*primary1Color:      blue700,
         primary2Color:      blue600,

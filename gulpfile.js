@@ -65,7 +65,9 @@ gulp.task('build', () => {
         stderr: true, // default = true, false means don't write stderr
         stdout: true  // default = true, false means don't write stdout
     };
+
     console.log(options.cwd);
+
     if (fs.existsSync(__dirname + '/src/node_modules/react-scripts/scripts/build.js')) {
         return gulp.src(__dirname + '/src/node_modules/react-scripts/scripts/build.js')
             .pipe(exec('node <%= file.path %>', options))
@@ -79,7 +81,12 @@ gulp.task('build', () => {
 });
 
 gulp.task('copy', () => {
-    return gulp.src(['src/build/*/**', 'src/build/*'])
+    return gulp.src([
+        'src/build/*/**',
+        'src/build/*',
+        '!src/build/_socket',
+        '!src/build/_socket/info.js'
+    ])
         .pipe(gulp.dest('www/'));
 });
 

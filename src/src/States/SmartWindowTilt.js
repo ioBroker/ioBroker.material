@@ -146,7 +146,11 @@ class SmartWindowTilt extends SmartGeneric {
     }
 
     getStateText() {
-        return I18n.t(this.state[this.id]);
+        if (this.state[this.id]){
+            return I18n.t(this.state[this.id]);
+        } else {
+            return I18n.t('unknown');
+        }
     }
 
     render() {

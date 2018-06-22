@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import Utils from './Utils';
 import Theme from './theme';
 import I18n from './i18n';
-import Tile from "./Tile";
-import TileSmart from "./TileSmart";
+import Tile from './Tile';
+import TileSmart from './TileSmart';
 import ChannelDetector from "./Channels/Detector";
 
 class StatesSubList extends Component {
@@ -63,7 +63,7 @@ class StatesSubList extends Component {
         const that = this;
         const usedIds = [];
         return items.map(id => {
-            if (!this.state[id]) return null;
+            if (!that.state[id]) return null;
             
             let detected = that.detector.detect(that.props.objects, that.props.keys, id, usedIds);
             if (detected) {
@@ -74,10 +74,10 @@ class StatesSubList extends Component {
                     console.log('Nothing found for ' + id);
                     const newState = {};
                     newState[id] = false;
-                    this.setState(newState);
+                    that.setState(newState);
                     return null;
                 } else {
-                    return this.createControl(Tile, id, channelInfo)
+                    return that.createControl(Tile, id, channelInfo)
                 }
             }
         });
