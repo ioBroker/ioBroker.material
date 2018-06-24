@@ -1,6 +1,7 @@
 'use strict';
 
 const React = require('react');
+const PropTypes = require('prop-types');
 
 class Thermostat extends React.Component {
   getStyles() {
@@ -90,6 +91,15 @@ class Thermostat extends React.Component {
     return isNaN(point) ? point : point * scale;
   }
 
+  // iob
+  roundValue(value, round) {
+      value = Math.round(value / round) * round;
+      if (round !== 1) {
+          value = value.toFixed(1);
+      }
+      return value;
+  }
+
   render() {
     const _self = this;
 
@@ -153,7 +163,10 @@ class Thermostat extends React.Component {
     // The styles change based on state.
     const styles = this.getStyles();
 
-    // Piece it all together to form the thermostat display.
+    const roundTarget = this.props.roundTarget || 1; //iob
+    const roundAmbient = this.props.roundAmbient || 1; //iob
+
+      // Piece it all together to form the thermostat display.
     return React.createElement(
       'svg',
       { width: this.props.width, height: this.props.height, style: styles.dial,
@@ -168,12 +181,12 @@ class Thermostat extends React.Component {
       React.createElement(
         'text',
         { x: radius, y: radius, style: styles.target },
-        Math.round(this.props.targetTemperature)
+          this.roundValue(this.props.targetTemperature, roundTarget) + this.props.unit //iob
       ),
       React.createElement(
         'text',
         { x: ambientPosition[0], y: ambientPosition[1], style: styles.ambient },
-        Math.round(this.props.ambientTemperature)
+          this.roundValue(this.props.ambientTemperature, roundAmbient) + this.props.unit //iob
       ),
       React.createElement(
         'text',
@@ -189,25 +202,31 @@ class Thermostat extends React.Component {
 
 Thermostat.propTypes = {
   /* Height of the thermostat (ex: 50% or 400px) */
-  height: React.PropTypes.string,
+  height: PropTypes.string,
   /* Width of the thermostat (ex: 50% or 400px) */
-  width: React.PropTypes.string,
+  width: PropTypes.string,
   /* Total number of ticks that will be rendered on the thermostat wheel */
-  numTicks: React.PropTypes.number,
+  numTicks: PropTypes.number,
   /* Lowest temperature able to be displayed on the thermostat */
-  minValue: React.PropTypes.number,
+  minValue: PropTypes.number,
   /* Highest temperature able to be displayed on the thermostat */
-  maxValue: React.PropTypes.number,
+  maxValue: PropTypes.number,
   /* Indicates whether or not the thermostat is in "away mode" */
-  away: React.PropTypes.bool,
+  away: PropTypes.bool,
   /* Indicates whether or not the thermostat is in "energy savings mode" */
-  leaf: React.PropTypes.bool,
+  leaf: PropTypes.bool,
   /* Actual temperature detected by the thermostat */
-  ambientTemperature: React.PropTypes.number,
+  ambientTemperature: PropTypes.number,
   /* Desired temperature that the thermostat attempts to reach */
-  targetTemperature: React.PropTypes.number,
+  targetTemperature: PropTypes.number,
   /* Current state of operations within the thermostat */
-  hvacMode: React.PropTypes.oneOf(['off', 'heating', 'cooling'])
+  hvacMode: PropTypes.oneOf(['off', 'heating', 'cooling']),
+  /* Unit */
+  unit: PropTypes.string,
+  /* Round => 0.5 or 1 */
+  roundTarget: PropTypes.number,
+  /* Round => 0.5 or 1 */
+  roundAmbient: PropTypes.number
 };
 
 Thermostat.defaultProps = {
@@ -218,6 +237,9 @@ Thermostat.defaultProps = {
   maxValue: 85,
   away: false,
   leaf: false,
+  unit: '°', // iob
+  roundTarget: 0.5, //iob
+  roundAmbient: 0.1, //iob
   ambientTemperature: 74,
   targetTemperature: 68,
   hvacMode: 'off'

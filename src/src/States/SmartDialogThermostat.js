@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import Theme from '../theme';
 import I18n from '../i18n';
-import ThermostatControl from 'react-nest-thermostat';
+import ThermostatControl from '../react-nest-thermostat/dist/react-nest-thermostat';
 import SmartDialogColor from "./SmartDialogColor";
 
 class SmartDialogThermostat extends Component  {
