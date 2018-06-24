@@ -1,4 +1,4 @@
-import React from "react"
+import React from "react";
 
 const Socket = props => (
   <svg
@@ -15,6 +15,6 @@ const Socket = props => (
       fill="currentColor"
     />
   </svg>
-)
+);
 
-export default Socket
+export default Socket;

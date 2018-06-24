@@ -43,14 +43,17 @@ export default {
     },
     dialog: {
         inner: {
-            height: 'calc(100% - 2em)',
+            height: 'calc(100% - 4em)',
             position: 'absolute',
             top: '1em',
             left: 'calc(50% - 200px)',
             width: 400,
             background: '#cacaca',
             borderRadius: '1em',
-            padding: '1em'
+            padding: '1em',
+            boxShadow: 'rgba(0, 0, 0, 0.2) 0px 3px 5px -1px, rgba(0, 0, 0, 0.14) 0px 6px 10px 0px, rgba(0, 0, 0, 0.12) 0px 1px 18px 0px',
+            overflowX: 'hidden',
+            overflowY: 'auto'
         },
         back:  {
             width: '100%',
@@ -60,13 +63,12 @@ export default {
             position: 'fixed',
             top: 0,
             left: 0,
-            background: 'rgba(238,238,238,0.8'
+            background: 'rgba(238,238,238,0.8)'
         },
         list:{
 
         },
         point: {
-
         },
         name: {
 
@@ -76,6 +78,17 @@ export default {
         },
         unit: {
 
+        },
+        divider: {
+            paddingTop: 0,
+            paddingBottom: 0,
+            height: 1,
+            background: 'linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 13%,rgba(255,255,255,1) 83%,rgba(255,255,255,0) 100%)'
+        },
+        header: {
+            fontSize: 20,
+            textAlign: 'center',
+            color: 'white'
         }
     },
     palette: {
@@ -112,9 +125,14 @@ export default {
             //borderRadius: '0.5em'
         },
         row: {
-            width: 'calc(100% - 2em)',
+            //width: 'calc(100% - 4em)',
             paddingLeft: '1em',
-            paddingRight: '1em'
+            paddingRight: '1em',
+            display: 'inline-block',
+            //background: '#ffffff57', // experimental
+            borderRadius: '2em',
+            border: '1px dashed #c7c7c7',
+            margin: '0.5em'
         }
 
     },
@@ -134,7 +152,21 @@ export default {
             boxSizing: 'border-box',
             userSelect: 'none',
             display: 'inline-block',
-            overflow: 'hidden'
+            overflow: 'hidden',
+            boxShadow: 'rgba(0, 0, 0, 0.2) 0px 3px 5px -1px, rgba(0, 0, 0, 0.14) 0px 6px 10px 0px, rgba(0, 0, 0, 0.12) 0px 1px 18px 0px'
+        },
+        tileCorner: {
+            position: 'absolute',
+            top: 0,
+            right: 0,
+            borderWidth: '0 16px 16px 0',
+            borderStyle: 'solid',
+            borderColor: 'rgba(173, 173, 173, 1) rgba(173, 173, 173, 1) rgb(212, 212, 212) rgb(193, 193, 193)',
+            background: 'rgba(173, 173, 173, 1)',
+            boxShadow: '0 1px 1px rgba(0,0,0,0.3), -1px 1px 1px rgba(0,0,0,0.2)',
+            borderRadius: '0 0 0 10px',
+            transition: 'border-width 0.1s ease-in-out',
+            zIndex: 2
         },
         tileOn: {
             background: 'white',

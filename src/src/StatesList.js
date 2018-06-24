@@ -91,9 +91,9 @@ class StatesList extends Component {
                 }
 
                 if (column.length) {
-                    console.log('Add to ' + id + ': ' + column.join(', '));
-                    columns.push(<StatesSubList
-                            key={id}
+                    console.log('Add to ' + this.props.enumID + '_' + id + ': ' + column.join(', '));
+                    columns.push((<StatesSubList
+                            key={this.props.enumID + '_' + id}
                             objects={this.props.objects}
                             states={this.props.states}
                             items={column}
@@ -104,7 +104,7 @@ class StatesList extends Component {
                             keys={this.keys}
                             onSaveSettings={this.props.onSaveSettings}
                             onControl={this.props.onControl}
-                            onCollectIds={this.props.onCollectIds}/>);
+                            onCollectIds={this.props.onCollectIds}/>));
                     column.forEach(id => used.push(id));
                 }
             });

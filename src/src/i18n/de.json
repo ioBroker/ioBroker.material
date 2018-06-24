@@ -9,6 +9,7 @@
   "opened":    "auf",
   "closed":    "zu",
   "tilted":    "gekippt",
+  "unknown":   "unbekannt",
 
   "Show %s values": "Zeige %s Werte",
 

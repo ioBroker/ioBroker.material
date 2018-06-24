@@ -336,15 +336,23 @@ class App extends Component {
         if (task.name === 'saveSettings') {
             this.conn.getObject(task.id, (err, obj) => {
                 let settings = Utils.getSettings(obj);
-                if (JSON.stringify(settings) !== JSON.stringify(task.settings) && Utils.setSettings(obj, task.settings)) {
-                    this.conn._socket.emit('setObject', obj._id, obj, err => {
+                if (JSON.stringify(settings) !== JSON.stringify(task.settings)) {
+                    if (Utils.setSettings(obj, task.settings)) {
+                        this.conn._socket.emit('setObject', obj._id, obj, err => {
+                            if (!err) {
+                                this.state.objects[obj._id] = obj;
+                            }
+                            this.tasks.shift();
+                            if (err) console.error('Cannot save: ' + obj._id);
+                            setTimeout(this.processTasks.bind(this), 0);
+                        });
+                    } else {
+                        console.log('Invalid object: ' + task.id);
                         this.tasks.shift();
-                        if (err) console.error('Cannot save: ' + obj._id);
                         setTimeout(this.processTasks.bind(this), 0);
-                    });
+                    }
                 } else {
                     this.tasks.shift();
-                    console.log('Invalid object: ' + task.id);
                     setTimeout(this.processTasks.bind(this), 0);
                 }
             });

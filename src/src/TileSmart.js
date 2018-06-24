@@ -14,6 +14,7 @@ import SmartWindowTilt from './States/SmartWindowTilt';
 import SmartButton from './States/SmartButton';
 import SmartThermometer from './States/SmartThermometer';
 import SmartInfo from './States/SmartInfo';
+import SmartThermostat from "./States/SmartThermostat";
 
 class TileSmart extends Component {
     static propTypes = {
@@ -56,7 +57,9 @@ class TileSmart extends Component {
     }
 
     onClick(e) {
-        if (this.handlers.onClick && !this.props.editMode) this.handlers.onClick(e);
+        if (this.handlers.onClick && !this.props.editMode) {
+            this.handlers.onClick(e);
+        }
     }
 
     getTileStyle() {
@@ -80,7 +83,7 @@ class TileSmart extends Component {
 
     wrapContent(content) {
         let style = {cursor: this.state.isPointer ? 'pointer' : 'inherit'};
-        if (!this.state.visible) {
+        if (!this.props.editMode && !this.state.visible) {
             style.display = 'none';
         }
 
@@ -122,26 +125,45 @@ class TileSmart extends Component {
     }
 
     render() {
-        if (this.channelInfo.type === Types.light || this.channelInfo.type === Types.socket) {
-            return this.wrapContent(this.createControl(SmartSwitch, this.channelInfo, this));
-        } else if (this.channelInfo.type === Types.dimmer) {
-            return this.wrapContent(this.createControl(SmartDimmer, this.channelInfo, this));
-        } else if (this.channelInfo.type === Types.blind) {
-            return this.wrapContent(this.createControl(SmartBlinds, this.channelInfo, this));
-        } else if (this.channelInfo.type === Types.windowTilt) {
-            return this.wrapContent(this.createControl(SmartWindowTilt, this.channelInfo, this));
-        } else if (this.channelInfo.type === Types.button) {
-            return this.wrapContent(this.createControl(SmartButton, this.channelInfo, this));
-        } else if (this.channelInfo.type === Types.temperature) {
-            return this.wrapContent(this.createControl(SmartThermometer, this.channelInfo, this));
-        } else if (this.channelInfo.type === Types.info) {
-            return this.wrapContent(this.createControl(SmartInfo, this.channelInfo, this));
-        } else if (this.channelInfo.type === Types.window ||
-            this.channelInfo.type === Types.fireAlarm ||
-            this.channelInfo.type === Types.door ||
-            this.channelInfo.type === Types.motion) {
-            return this.wrapContent(this.createControl(SmartState, this.channelInfo, this));
-        }else {
+        let Control;
+
+        switch (this.channelInfo.type) {
+            case Types.light:
+            case Types.socket:
+                Control = SmartSwitch;
+                break;
+            case Types.dimmer:
+                Control = SmartDimmer;
+                break;
+            case Types.blind:
+                Control = SmartBlinds;
+                break;
+            case Types.windowTilt:
+                Control = SmartWindowTilt;
+                break;
+            case Types.button:
+                Control = SmartButton;
+                break;
+            case Types.temperature:
+                Control = SmartThermometer;
+                break;
+            case Types.info:
+                Control = SmartInfo;
+                break;
+            case Types.thermostat:
+                Control = SmartThermostat;
+                break;
+            case Types.window:
+            case Types.fireAlarm:
+            case Types.door:
+            case Types.motion:
+                Control = SmartState;
+                break;
+            default:
+                break;
+        }
+
+        if (!Control) {
             let name = this.channelInfo.type;
             Object.keys(Types).forEach(e => {
                 if (Types[e] === this.channelInfo.type) {
@@ -151,6 +173,8 @@ class TileSmart extends Component {
             });
             console.error(`${name} not implemented!`);
             return null;
+        } else {
+            return this.wrapContent(this.createControl(Control, this.channelInfo, this));
         }
     }
 }

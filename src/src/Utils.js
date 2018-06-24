@@ -41,7 +41,7 @@ class Utils {
         let settings;
         if (obj && obj.common && obj.common.custom) {
             settings = obj.common.custom || {};
-            settings = settings.material || {enabled: true};
+            settings = settings.material ? JSON.parse(JSON.stringify(settings.material)) : {enabled: true};
         } else {
             settings = {enabled: defaultEnabling === undefined ? true : defaultEnabling};
         }

@@ -1,4 +1,4 @@
-import React from "react"
+import React from "react";
 
 const Home = props => (
   <svg width={170} height={170} viewBox="-20 -20 190 190" {...props}>
@@ -8,6 +8,6 @@ const Home = props => (
       fill="none"
     />
   </svg>
-)
+);
 
-export default Home
+export default Home;

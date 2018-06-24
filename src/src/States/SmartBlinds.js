@@ -3,7 +3,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import SmartGeneric from './SmartGeneric';
 import Icon from '../icons/Jalousie'
 import Theme from '../theme';
-import Slider from './SmartDialogSlider';
+import Dialog from './SmartDialogSlider';
 
 class SmartBlinds extends SmartGeneric {
     // props = {
@@ -43,19 +43,11 @@ class SmartBlinds extends SmartGeneric {
             }
             this.min = parseFloat(this.min);
 
-            this.props.tile.setState({
-                isPointer: true
-            });
+            this.props.tile.setState({isPointer: true});
         }
-        this.props.tile.setState({
-            state: true
-        });
-        this.stateRx.showDialog = false;
-        this.onMouseUpBind = this.onMouseUp.bind(this);
+        this.props.tile.setState({state: true});
 
-        this.props.tile.registerHandler('onMouseDown', this.onTileMouseDown.bind(this));
-
-        this.slider = null;
+        this.stateRx.showDialog = false; // support dialog in this tile used in generic class)
         this.stateRx.setValue = null;
 
         this.componentReady();
@@ -125,45 +117,15 @@ class SmartBlinds extends SmartGeneric {
         this.stopId && this.props.onControl && this.props.onControl(this.stopId, true);
     }
 
-    onLongClick() {
-        this.timer = null;
-        this.setState({showDialog: true});
-    }
-
-    onDialogClose() {
-        this.setState({showDialog: false});
-    }
-
-    onValueChange(newValue) {
-        this.setValue(newValue);
-    }
-
-    onTileMouseDown(e) {
-        if (this.state.showDialog) return;
-        e.preventDefault();
-        e.stopPropagation();
-        this.timer = setTimeout(this.onLongClick.bind(this), 500);
-        document.addEventListener('mouseup',    this.onMouseUpBind,     {passive: false, capture: true});
-        document.addEventListener('touchend',   this.onMouseUpBind,     {passive: false, capture: true});
-    }
-
-    onMouseUp() {
+    onToggleValue() {
         let newValue;
-        if (this.timer) {
-            clearTimeout(this.timer);
-            this.timer = null;
-
-            const percent = this.realValueToPercent();
-            if (percent) {
-                newValue = 0;
-            } else {
-                newValue = 100;
-            }
-            this.setValue(newValue);
+        const percent = this.realValueToPercent();
+        if (percent) {
+            newValue = 0;
+        } else {
+            newValue = 100;
         }
-        console.log('Stopped');
-        document.removeEventListener('mouseup',     this.onMouseUpBind,     {passive: false, capture: true});
-        document.removeEventListener('touchend',    this.onMouseUpBind,     {passive: false, capture: true});
+        this.setValue(newValue);
     }
 
     getIcon() {
@@ -209,12 +171,12 @@ class SmartBlinds extends SmartGeneric {
                      style={Object.assign({}, Theme.tile.tileState, this.state[this.id] ? Theme.tile.tileStateOn : Theme.tile.tileStateOff)}>{this.getStateText()}</div>
             </div>),
             this.state.showDialog ?
-                <Slider key={this.id + '.slider'}
+                <Dialog key={this.id + '.slider'}
                     startValue={this.realValueToPercent()}
-                    onValueChange={this.onValueChange.bind(this)}
+                    onValueChange={this.setValue.bind(this)}
                     onStop={this.stopId ? this.onStop.bind(this) : null}
                     onClose={this.onDialogClose.bind(this)}
-                    type={Slider.types.blinds}
+                    type={Dialog.types.blinds}
                 /> : null
         ]);
     }

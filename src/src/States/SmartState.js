@@ -156,12 +156,10 @@ class SmartState extends SmartGeneric {
             let someIndicator = false;
             if (this.indicators) {
                 const ids = Object.keys(this.indicators).filter(_id => this.indicators[_id]);
-                someIndicator = ids.find(_id => this.state[this.indicators[_id]]);
+                someIndicator = !!ids.find(_id => this.state[this.indicators[_id]]);
             }
 
-            this.props.tile.setState({
-                visible: this.state[this.id] || someIndicator
-            });
+            this.props.tile.setVisibility(this.state[this.id] || someIndicator);
         }
     }
 

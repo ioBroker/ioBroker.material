@@ -27,7 +27,7 @@ class StatesSubList extends Component {
 
     isVisible() {
         for (const id in this.state) {
-            if (this.state.hasOwnProperty(id) && this.state[id]) {
+            if (this.props.editMode || (this.state.hasOwnProperty(id) && this.state[id])) {
                 return true;
             }
         }
@@ -36,8 +36,11 @@ class StatesSubList extends Component {
 
     onVisibilityControl(id, visible) {
         const newState = {};
-        newState[id] = visible;
-        this.setState(newState);
+        if (this.state[id] !== visible) {
+            newState[id] = visible;
+            this.setState(newState);
+        }
+        // console.log(`Set ${id} to ${visible} and ${this.props.enumID} => ${this.isVisible()}`);
     }
 
     createControl(control, channelId, channelInfo) {
@@ -63,18 +66,25 @@ class StatesSubList extends Component {
         const that = this;
         const usedIds = [];
         return items.map(id => {
-            if (!that.state[id]) return null;
+            if (that.state[id] === undefined) {
+                debugger;
+            }
+
+            if (!that.props.editMode && that.state[id] === false) {
+//                console.log('Tile ' + id + ' is invisible');
+//                const ids = Object.keys(that.state).map(id => `${id} => ${that.state[id]}`);
+//                console.log(ids.join('; '));
+                return null;
+            }
             
             let detected = that.detector.detect(that.props.objects, that.props.keys, id, usedIds);
             if (detected) {
+                // console.log('Create smart ' + id);
                 return that.createControl(TileSmart, id, detected);
             } else {
                 let channelInfo = Tile.getChannelInfo(that.props.objects, id);
                 if (!channelInfo || (channelInfo.main === undefined && (!channelInfo.states || !channelInfo.states.length))) {
-                    console.log('Nothing found for ' + id);
-                    const newState = {};
-                    newState[id] = false;
-                    that.setState(newState);
+                    //console.log('Nothing found for ' + id);
                     return null;
                 } else {
                     return that.createControl(Tile, id, channelInfo)
@@ -84,14 +94,22 @@ class StatesSubList extends Component {
     }
 
     render() {
-        if (this.props.items && this.props.items.length && this.isVisible()) {
-            console.log('Add to ' + (this.props.enumID || 'others') + ': ' + this.props.items.join(', '));
-            return (<div key={(this.props.enumID || 'others').replace(/[^\w\d]/g, '_') + '-title'} style={Theme.list.row}><h3
-                style={Theme.list.title}>{
+        if (this.props.items && this.props.items.length && (this.isVisible() || this.props.editMode)) {
+            //console.log('Add to ' + (this.props.enumID || 'others') + ': ' + this.props.items.join(', '));
+
+            let items = this.getListItems(this.props.items);
+            items = items.filter(e => e);
+            if (items.length) {
+                return (<div key={(this.props.enumID || 'others').replace(/[^\w\d]/g, '_') + '-title'} style={Theme.list.row}><h3
+                    style={Theme.list.title}>{
                     this.props.enumID ? Utils.getObjectName(this.props.objects, this.props.enumID) : I18n.t('Others')
                 }</h3>
-                <div style={{width: '100%'}}>{this.getListItems(this.props.items)}</div>
-            </div>);
+                    <div style={{width: '100%'}}>{items}</div>
+                </div>);
+            } else {
+                // console.log('NO one element for ' + this.props.enumID + ': ' + this.props.items.join(', '));
+                return null;
+            }
         } else {
             return null;
         }

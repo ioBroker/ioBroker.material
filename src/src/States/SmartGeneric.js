@@ -25,9 +25,11 @@ class SmartGeneric extends Component {
         this.subscribes = null;
         this.width = Theme.tile.width;
         this.height = Theme.tile.height;
+        this.showCorner = false; // set it to true to show the corner
         this.stateRx = {
             executing: false,
-            settings: {}
+            settings: {},
+            editMode: null
         };
         this.defaultEnabling = true; // overload this property to hide element by default
 
@@ -123,6 +125,11 @@ class SmartGeneric extends Component {
             } else {
                 this.settingsId = this.id;
             }
+        }
+        if (this.stateRx.showDialog !== undefined) {
+            this.showCorner = true;
+            this.onMouseUpBind = this.onMouseUp.bind(this);
+            this.props.tile.registerHandler('onMouseDown', this.onTileMouseDown.bind(this));
         }
 
         this.stateRx.settings = Utils.getSettings(this.props.objects[this.settingsId], null, this.defaultEnabling);
@@ -243,14 +250,59 @@ class SmartGeneric extends Component {
 
     }
 
+    // default handler
+    onLongClick(e) {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        if (this.timer) {
+            clearTimeout(this.timer);
+            this.timer = null;
+        }
+        this.setState({showDialog: true});
+    }
+
+    onDialogClose() {
+        this.setState({showDialog: false});
+    }
+
+    onMouseUp() {
+        document.removeEventListener('mouseup',     this.onMouseUpBind,     {passive: false, capture: true});
+        document.removeEventListener('touchend',    this.onMouseUpBind,     {passive: false, capture: true});
+
+
+        if (this.timer) {
+            clearTimeout(this.timer);
+            this.timer = null;
+            this.onToggleValue && this.onToggleValue();
+        }
+        console.log('Stopped');
+    }
+
+    onTileMouseDown(e) {
+        if (this.state.showDialog) return;
+        e.preventDefault();
+        e.stopPropagation();
+
+        this.timer = setTimeout(this.onLongClick.bind(this), 500);
+
+        document.addEventListener('mouseup',    this.onMouseUpBind,     {passive: false, capture: true});
+        document.addEventListener('touchend',   this.onMouseUpBind,     {passive: false, capture: true});
+    }
+
     componentWillUnmount() {
         if (this.props.onCollectIds && this.subscribed) {
-            this.props.onCollectIds(this, this.subscribed, false);
+            this.props.onCollectIds(this, this.subscribes, false);
             this.subscribed = null;
         }
     }
 
     saveSettings() {
+        if (this.id.indexOf('hm-rpc.0.LEQ0725777.1') !== -1) {
+            console.log('asa');
+        }
+
         this.props.onSaveSettings && this.props.onSaveSettings(this.settingsId, this.state.settings);
 
         // subscribe if enabled and was not subscribed
@@ -269,14 +321,11 @@ class SmartGeneric extends Component {
         let settings = JSON.parse(JSON.stringify(this.state.settings));
         settings.enabled = !settings.enabled;
 
-        this.setState({settings});
+        this.setState({settings}, () => this.saveSettings());
     }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.editMode !== this.state.editMode) {
-            if (this.state.editMode) {
-                this.saveSettings();
-            }
             this.setState({editMode: nextProps.editMode});
             this.props.tile.setVisibility(nextProps.editMode || this.state.settings.enabled);
         }
@@ -314,7 +363,7 @@ class SmartGeneric extends Component {
         });
 
         if (result.length) {
-            return (<div style={Theme.tile.tileIndicators} title={this.errorText || ''}>{result}</div>);
+            return (<div key={this.id + '-indicators'} style={Theme.tile.tileIndicators} title={this.errorText || ''}>{result}</div>);
         } else {
             return null;
         }
@@ -322,7 +371,7 @@ class SmartGeneric extends Component {
 
     wrapContent(content) {
         if (this.state.editMode) {
-            return (<div>
+            return (<div key={this.id} >
                 {this.state.settings.enabled ?
                     [(<div onClick={this.toggleEnabled.bind(this)} key={this.id + '.icon-check'} style={Object.assign({}, Theme.tile.editMode.checkIcon)}>
                             <IconCheck width={'100%'} height={'100%'} />
@@ -338,7 +387,13 @@ class SmartGeneric extends Component {
                 }
                 {content}</div>);
         } else if (this.state.settings.enabled) {
-            return (<div>{this.getIndicators()} {content}</div>);
+            return (
+                <div key={this.id} >
+                    {this.showCorner ? (<div key={this.id + '-corner'}  onMouseDown={this.onLongClick.bind(this)} className="corner" style={Theme.tile.tileCorner}></div>) : null}
+                    {this.getIndicators()}
+                    {content}
+                </div>
+            );
         } else {
             return null;
         }

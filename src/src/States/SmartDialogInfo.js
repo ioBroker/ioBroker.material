@@ -54,18 +54,24 @@ class SmartDialogInfo extends Component  {
     }
 
     generatePoints() {
-        const result = this.props.points.map(e => {
+        const result = this.props.points.map((e, i) => {
             const Icon = e.icon;
-            return (<ListItem key={e.id + '_info'} style={Theme.dialog.point}>
+            const state = this.props.states[e.id];
+            return [(<ListItem key={e.id + '_info'} style={Theme.dialog.point}>
                 {false && Icon ? (<ListItemIcon><Icon /></ListItemIcon>) : null}
-                <ListItemText primary={e.name} secondary={this.props.states[e.id] ? (<Moment style={{fontSize: 12}} date={this.props.states[e.id].ts} interval={15} fromNow locale={I18n.getLanguage()}/>) : '?'} />
+                <ListItemText primary={e.name} secondary={state && state.ts ? (<Moment style={{fontSize: 12}} date={state.ts} interval={15} fromNow locale={I18n.getLanguage()}/>) : '?'} />
                 <ListItemSecondaryAction>
-                    <span style={Theme.dialog.value}>{this.props.states[e.id] ? this.props.states[e.id].val : '?'}</span>
+                    <span style={Theme.dialog.value}>{state ? state.val : '?'}</span>
                     <span style={Theme.dialog.unit}>{e.unit}</span>
                 </ListItemSecondaryAction>
-            </ListItem>);
+            </ListItem>),
+                i !== this.props.points.length - 1 ? (<ListItem key={e.id + '_div'} style={Theme.dialog.divider}/>) : null
+            ];
         });
-        return (<List style={Theme.dialog.list}>{result}</List>);
+        return [
+            (<h4   key={this.props.points[0].id + '_header'} style={Theme.dialog.header}>{this.props.name}</h4>),
+            (<List key={this.props.points[0].id + '_list'} style={Theme.dialog.list}>{result}</List>)
+        ];
     }
 
     render() {

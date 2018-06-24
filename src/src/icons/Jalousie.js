@@ -1,4 +1,4 @@
-import React from "react"
+import React from "react";
 
 const Jalousie = props => (
   <svg viewBox="0 0 508.16 508.16" {...props}>
@@ -11,6 +11,6 @@ const Jalousie = props => (
       fill="currentColor"
     />
   </svg>
-)
+);
 
-export default Jalousie
+export default Jalousie;

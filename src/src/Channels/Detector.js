@@ -18,9 +18,10 @@ const patternDirection = {role: /^indicator\.direction$/,               indicato
 const patterns = {
     thermostat: {
         states: [
-            {role: /^level\.temperature(\..*)?$/,          indicator: false,                                                       name: 'SET',                required: true},
-            {role: /^value\.temperature(\..*)?$/,          indicator: false,                                                       name: 'ACTUAL',             required: false},
-            {role: /^switch\.boost(\..*)?$/,               indicator: false,                                                       name: 'BOOST',              required: false},
+            {role: /temperature(\..*)?$/,          indicator: false,     write: true,  type: 'number',                                                    name: 'SET',                required: true},
+            {role: /temperature(\..*)?$/,          indicator: false,     write: false, type: 'number',    searchInParent: true,                           name: 'ACTUAL',             required: false},
+            {role: /humidity(\..*)?$/,             indicator: false,     write: false, type: 'number',    searchInParent: true,                           name: 'HUMIDITY',           required: false},
+            {role: /^switch\.boost(\..*)?$/,       indicator: false,     write: true,  type: 'number',    searchInParent: true,                           name: 'BOOST',              required: false},
             patternWorking,
             patternUnreach,
             patternLowbat,
@@ -390,7 +391,7 @@ class ChannelDetector {
                 channelStates = ChannelDetector.getAllStatesInChannel(keys, id);
             }
 
-            if (id.indexOf('hm-rpc.0.JEQ0061825.1') !== -1) {
+            if (id.indexOf('hm-rpc.0.xxx.1') !== -1) {
                 console.log('aaa');
             }
 
@@ -398,16 +399,13 @@ class ChannelDetector {
                 if (!patterns.hasOwnProperty(pattern)) continue;
                 let result = null;
 
-                if (pattern === 'info') {
+                if (pattern === 'temperature') {
                     console.log(pattern);
                 }
 
                 patterns[pattern].states.forEach((state, i) => {
                     let found = false;
                     channelStates.forEach(_id => {
-                        if (_id === 'hm-rpc.0.JEQ0061825.1.ERROR' && pattern === 'info') {
-                            console.log('AAA');
-                        }
                         if ((state.indicator || usedIds.indexOf(_id) === -1) && this._applyPattern(objects, _id, state)) {
                             if (!state.indicator){
                                 usedIds.push(_id);
@@ -452,21 +450,23 @@ class ChannelDetector {
                         console.log('AA');
                     }
 
-                    // looking for indicators
+                    // looking for indicators and special states
                     if (objects[id].type !== 'device') {
                         // get device name
                         const deviceId = ChannelDetector.getParentId(id);
-                        deviceStates = ChannelDetector.getAllStatesInDevice(keys, deviceId);
-                        if (deviceStates) {
-                            deviceStates.forEach(_id => {
-                                result.states.forEach((state, i) => {
-                                    if (!state.id && state.indicator && !state.noDeviceDetection) {
-                                        if (this._applyPattern(objects, _id, state.original)) {
-                                            result.states[i].id = _id;
+                        if (objects[deviceId].type === 'channel' || objects[deviceId].type === 'device') {
+                            deviceStates = ChannelDetector.getAllStatesInDevice(keys, deviceId);
+                            if (deviceStates) {
+                                deviceStates.forEach(_id => {
+                                    result.states.forEach((state, i) => {
+                                        if (!state.id && (state.indicator || state.searchInParent) && !state.noDeviceDetection) {
+                                            if (this._applyPattern(objects, _id, state.original)) {
+                                                result.states[i].id = _id;
+                                            }
                                         }
-                                    }
+                                    });
                                 });
-                            });
+                            }
                         }
                     }
                     result.states.forEach((state, j) => {

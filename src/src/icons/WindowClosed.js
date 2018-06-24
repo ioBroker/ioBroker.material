@@ -1,4 +1,4 @@
-import React from "react"
+import React from "react";
 
 const WindowClosed = props => (
   <svg width={361} height={361} viewBox="0 0 361 361" {...props}>
@@ -21,6 +21,6 @@ const WindowClosed = props => (
       strokeMiterlimit={10}
     />
   </svg>
-)
+);
 
-export default WindowClosed
+export default WindowClosed;

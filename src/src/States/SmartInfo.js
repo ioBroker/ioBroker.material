@@ -1,17 +1,16 @@
 import React, {Component} from 'react';
 import SmartGeneric from './SmartGeneric';
-import IconThermometer from '../icons/Thermometer';
+import IconThermometer from '../icons/ThermometerSimple';
 import IconHydro from '../icons/Humidity';
 import IconInfo from 'react-icons/lib/md/info';
 
 import Theme from '../theme';
 import I18n from '../i18n';
-import DialogInfo from "./SmartDialogInfo";
+import Dialog from './SmartDialogInfo';
 
 class SmartInfo extends SmartGeneric {
     constructor(props) {
         super(props);
-        this.stateRx.showDialog = false;
         if (this.channelInfo.states) {
             let infoIDs = this.channelInfo.states.filter(state => state.id && state.name === 'ACTUAL').map(state => state.id);
             // place numbers first
@@ -40,30 +39,34 @@ class SmartInfo extends SmartGeneric {
                     id: infoIDs[1]
                 };
             }
-            this.infos = infoIDs.map(id => SmartInfo.getObjectAttributes(this.props.objects, id));
+            const name = this.getObjectNameCh();
+            this.infos = infoIDs.map(id => SmartInfo.getObjectAttributes(this.props.objects, id, name));
         }
 
         // make tile with opacity 1
         this.props.tile.state.state = true;
 
+        if (this.infos && this.infos.length > 2) {
+            this.stateRx.showDialog = false; // support dialog in this tile (used in generic class)
+        }
+
         this.props.tile.setState({
-            isPointer: (this.infos && this.infos.length > 2)
+            isPointer: this.showCorner
         });
 
-        this.props.tile.registerHandler('onMouseDown', this.onTileMouseDown.bind(this));
-        this.onMouseUpBind = this.onMouseUp.bind(this);
         this.componentReady();
     }
 
-    static getObjectAttributes(objects, id) {
+    static getObjectAttributes(objects, id, channelName) {
         if (!objects[id] || !objects[id].common) return null;
         const role = objects[id].common.role || '';
         const unit = objects[id].common.unit || '';
-        let title = objects[id].common.name || id.split('.').pop();
+        let  title = objects[id].common.name || id.split('.').pop();
         if (typeof title === 'object') {
             title = title[I18n.getLanguage()] || title.en || id.split('.').pop();
         }
-        title = title.replace(/_/g, ' ');
+        title = title.replace(/[._]/g, ' ');
+        title = title.replace(channelName, '').trim();
         title = title[0].toUpperCase() + title.substring(1).toLowerCase();
 
         if (role.match(/humidity/i)) {
@@ -126,35 +129,10 @@ class SmartInfo extends SmartGeneric {
             <span style={Theme.tile.secondary.text}>{val + this.infos[1].unit}</span>
         </div>);
     }
+
     getNumberOfValuesIndicator() {
         if (this.infos.length <= 2) return null;
         return (<div style={Theme.tile.tileNumber} title={I18n.t('Show %s values', this.infos.length)}>{this.infos.length}</div>);
-    }
-    onDialogClose() {
-        this.setState({showDialog: false});
-    }
-
-    onTileMouseDown(e) {
-        if (this.state.showDialog) return;
-        e.preventDefault();
-        e.stopPropagation();
-        document.addEventListener('mouseup',    this.onMouseUpBind,     {passive: false, capture: true});
-        document.addEventListener('touchend',   this.onMouseUpBind,     {passive: false, capture: true});
-        this.timer = setTimeout(this.onLongClick.bind(this), 500);
-    }
-
-    onMouseUp() {
-        if (this.timer) {
-            clearTimeout(this.timer);
-            this.timer = null;
-        }
-        document.removeEventListener('mouseup',     this.onMouseUpBind,     {passive: false, capture: true});
-        document.removeEventListener('touchend',    this.onMouseUpBind,     {passive: false, capture: true});
-    }
-
-    onLongClick() {
-        this.timer = null;
-        this.setState({showDialog: true});
     }
 
     render() {
@@ -167,8 +145,9 @@ class SmartInfo extends SmartGeneric {
                 <div className="tile-state-text"  style={Object.assign({}, Theme.tile.tileState, this.state[this.actualId] ? Theme.tile.tileStateOn : Theme.tile.tileStateOff, {fontSize: 18})}>{this.getStateText()}</div>
             </div>),
             this.state.showDialog ?
-                <DialogInfo key={this.id + '.dialog'}
+                <Dialog key={this.id + '.dialog'}
                             points={this.infos}
+                            name={this.name}
                             //onValueChange={this.onValueChange.bind(this)}
                             onClose={this.onDialogClose.bind(this)}
                             objects={this.props.objects}

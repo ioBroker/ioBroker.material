@@ -1,4 +1,4 @@
-import React from "react"
+import React from "react";
 
 const WindowTilted = props => (
   <svg width={361} height={361} viewBox="0 0 361 361" {...props}>
@@ -21,6 +21,6 @@ const WindowTilted = props => (
       fill="currentColor"
     />
   </svg>
-)
+);
 
-export default WindowTilted
+export default WindowTilted;

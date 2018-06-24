@@ -3,8 +3,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import SmartGeneric from './SmartGeneric';
 import Icon from 'react-icons/lib/ti/lightbulb'
 import Theme from '../theme';
-import Slider from './SmartDialogSlider';
-import I18n from '../i18n';
+import Dialog from './SmartDialogSlider';
 
 class SmartLight extends SmartGeneric {
     constructor(props) {
@@ -38,12 +37,8 @@ class SmartLight extends SmartGeneric {
                 isPointer: true
             });
         }
-        this.stateRx.showDialog = false;
-        this.onMouseUpBind = this.onMouseUp.bind(this);
 
-        this.props.tile.registerHandler('onMouseDown', this.onTileMouseDown.bind(this));
-
-        this.slider = null;
+        this.stateRx.showDialog = false; // support dialog in this tile used in generic class)
         this.stateRx.setValue = null;
 
         this.componentReady();
@@ -118,45 +113,15 @@ class SmartLight extends SmartGeneric {
         this.props.onControl(this.id, this.percentToRealValue(percent));
     }
 
-    onLongClick() {
-        this.timer = null;
-        this.setState({showDialog: true});
-    }
-
-    onDialogClose() {
-        this.setState({showDialog: false});
-    }
-
-    onValueChange(newValue) {
-        this.setValue(newValue);
-    }
-
-    onTileMouseDown(e) {
-        if (this.state.showDialog) return;
-        e.preventDefault();
-        e.stopPropagation();
-        this.timer = setTimeout(this.onLongClick.bind(this), 500);
-        document.addEventListener('mouseup',    this.onMouseUpBind,     {passive: false, capture: true});
-        document.addEventListener('touchend',   this.onMouseUpBind,     {passive: false, capture: true});
-    }
-
-    onMouseUp() {
+    onToggleValue() {
+        const percent = this.realValueToPercent();
         let newValue;
-        if (this.timer) {
-            clearTimeout(this.timer);
-            this.timer = null;
-
-            const percent = this.realValueToPercent();
-            if (percent) {
-                newValue = 0;
-            } else {
-                newValue = this.lastNotNullPercent || 100;
-            }
-            this.setValue(newValue);
+        if (percent) {
+            newValue = 0;
+        } else {
+            newValue = this.lastNotNullPercent || 100;
         }
-        console.log('Stopped');
-        document.removeEventListener('mouseup',     this.onMouseUpBind,     {passive: false, capture: true});
-        document.removeEventListener('touchend',    this.onMouseUpBind,     {passive: false, capture: true});
+        this.setValue(newValue);
     }
 
     getIcon() {
@@ -190,11 +155,11 @@ class SmartLight extends SmartGeneric {
                      style={Object.assign({}, Theme.tile.tileState, this.state[this.id] ? Theme.tile.tileStateOn : Theme.tile.tileStateOff)}>{this.getStateText()}</div>
             </div>),
             this.state.showDialog ?
-                <Slider key={this.id + '.slider'}
+                <Dialog key={this.id + '.slider'}
                     startValue={this.realValueToPercent()}
-                    onValueChange={this.onValueChange.bind(this)}
+                    onValueChange={this.setValue.bind(this)}
                     onClose={this.onDialogClose.bind(this)}
-                    type={Slider.types.dimmer}
+                    type={Dialog.types.dimmer}
                 /> : null
         ]);
     }

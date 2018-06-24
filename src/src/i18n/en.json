@@ -9,6 +9,7 @@
   "opened":    "opened",
   "closed":    "closed",
   "tilted":    "tilted",
+  "unknown":   "unknown",
 
   "Show %s values": "Show %s values",
 
