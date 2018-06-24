@@ -62,6 +62,7 @@ class SmartDialogThermostat extends Component  {
         this.svgHeight = this.svgControl.clientHeight;
         this.svgCenterX = this.svgWidth / 2;
         this.svgCenterY = this.svgHeight / 2;
+        this.svgRadius = this.svgCenterX > this.svgCenterY ? this.svgCenterY : this.svgCenterX;
         this.rect = this.svgControl.getBoundingClientRect();
 
         this.svgControl.addEventListener('mousedown', this.onMouseDownBind, {passive: false, capture: true});
@@ -72,6 +73,10 @@ class SmartDialogThermostat extends Component  {
         this.savedParent.appendChild(this.refDialog.current);
     }
 
+    static roundValue(value, round) {
+        round = round || 0.5;
+        return Math.round(value / round) * round;
+    }
     posToTemp(x, y) {
         let h;
         if (x < 0) {
@@ -102,13 +107,24 @@ class SmartDialogThermostat extends Component  {
         }
         h -= 120;
         h /= 360 - 60;
-        return (this.max - this.min) * h + this.min;
+        return SmartDialogThermostat.roundValue((this.max - this.min) * h + this.min);
     }
 
-    eventToValue(e) {
-        let pageY = e.touches ? e.touches[e.touches.length - 1].pageY : e.pageY;
-        let pageX = e.touches ? e.touches[e.touches.length - 1].pageX : e.pageX;
-        this.setState({value: this.posToTemp(pageX - this.rect.left - this.svgCenterX, pageY - this.rect.top - this.svgCenterY)});
+    eventToValue(e, checkRadius) {
+        let pageY = e.touches ? e.touches[e.touches.length - 1].clientY : e.pageY;
+        let pageX = e.touches ? e.touches[e.touches.length - 1].clientX : e.pageX;
+        const x = pageX - this.rect.left - this.svgCenterX;
+        const y = pageY - this.rect.top - this.svgCenterY;
+        if (checkRadius) {
+            const radius = Math.sqrt(x * x + y * y);
+            if (radius > this.svgRadius * 1.1) {
+                return false;
+            }
+        }
+
+        this.setState({value: this.posToTemp(x, y)});
+
+        return true;
     }
 
     onMouseMove(e) {
@@ -121,19 +137,20 @@ class SmartDialogThermostat extends Component  {
         e.preventDefault();
         e.stopPropagation();
 
-        this.eventToValue(e);
-
-        document.addEventListener('mousemove',  this.onMouseMoveBind,   {passive: false, capture: true});
-        document.addEventListener('mouseup',    this.onMouseUpBind,     {passive: false, capture: true});
-        document.addEventListener('touchmove',  this.onMouseMoveBind,   {passive: false, capture: true});
-        document.addEventListener('touchend',   this.onMouseUpBind,     {passive: false, capture: true});
+        if (this.eventToValue(e, true)) {
+            document.addEventListener('mousemove',  this.onMouseMoveBind,   {passive: false, capture: true});
+            document.addEventListener('mouseup',    this.onMouseUpBind,     {passive: false, capture: true});
+            document.addEventListener('touchmove',  this.onMouseMoveBind,   {passive: false, capture: true});
+            document.addEventListener('touchend',   this.onMouseUpBind,     {passive: false, capture: true});
+        } else {
+            this.onClose();
+        }
     }
 
     onMouseUp(e) {
         e.preventDefault();
         e.stopPropagation();
         this.mouseUpTime = Date.now();
-        console.log('Stopped');
         document.removeEventListener('mousemove',   this.onMouseMoveBind,   {passive: false, capture: true});
         document.removeEventListener('mouseup',     this.onMouseUpBind,     {passive: false, capture: true});
         document.removeEventListener('touchmove',   this.onMouseMoveBind,   {passive: false, capture: true});

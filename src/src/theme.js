@@ -43,17 +43,19 @@ export default {
     },
     dialog: {
         inner: {
-            height: 'calc(100% - 4em)',
+            height: 'calc(100% - 2em)',
             position: 'absolute',
             top: '1em',
-            left: 'calc(50% - 200px)',
-            width: 400,
+            left: 'calc(50% - 180px)',
+            maxWidth: 360,
+            width: '100%',
             background: '#cacaca',
             borderRadius: '1em',
             padding: '1em',
             boxShadow: 'rgba(0, 0, 0, 0.2) 0px 3px 5px -1px, rgba(0, 0, 0, 0.14) 0px 6px 10px 0px, rgba(0, 0, 0, 0.12) 0px 1px 18px 0px',
             overflowX: 'hidden',
-            overflowY: 'auto'
+            overflowY: 'auto',
+            boxSizing: 'border-box'
         },
         back:  {
             width: '100%',
