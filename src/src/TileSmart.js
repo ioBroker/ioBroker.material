@@ -47,7 +47,8 @@ class TileSmart extends Component {
 
     onMouseDown(e) {
         if (this.handlers.onMouseDown && !this.props.editMode) {
-            e.preventDefault();
+            //e.preventDefault();
+            e.stopPropagation();
             this.handlers.onMouseDown(e);
         }
     }

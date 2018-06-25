@@ -282,7 +282,7 @@ class SmartGeneric extends Component {
 
     onTileMouseDown(e) {
         if (this.state.showDialog) return;
-        e.preventDefault();
+        //e.preventDefault();
         e.stopPropagation();
 
         this.timer = setTimeout(this.onLongClick.bind(this), 500);

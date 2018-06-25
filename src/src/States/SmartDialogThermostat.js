@@ -2,10 +2,23 @@ import React, {Component} from 'react';
 import Theme from '../theme';
 import I18n from '../i18n';
 import ThermostatControl from '../react-nest-thermostat/dist/react-nest-thermostat';
-import SmartDialogColor from "./SmartDialogColor";
+import Button from '@material-ui/core/Button';
 
 class SmartDialogThermostat extends Component  {
-
+    static buttonBoostStyle = {
+        position: 'absolute',
+        left: 'calc(50% - 2em)',
+        height: '1.3em',
+        width: '4em',
+        borderRadius: '1em',
+        background: 'white',
+        border: '1px solid #b5b5b5',
+        paddingTop: '0.1em',
+        fontSize: '2em',
+        textAlign: 'center',
+        cursor: 'pointer',
+        boxShadow: '0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 6px 10px 0px rgba(0, 0, 0, 0.14), 0px 1px 18px 0px rgba(0, 0, 0, 0.12)'
+    };
     // expected:
     // startValue
     // actualValue
@@ -17,6 +30,7 @@ class SmartDialogThermostat extends Component  {
         super(props);
         this.state = {
             value: this.props.startValue || 0,
+            boostValue: this.props.boostValue,
             toast: ''
         };
         this.min = this.props.min;
@@ -36,7 +50,7 @@ class SmartDialogThermostat extends Component  {
 
         this.mouseUpTime = 0;
         this.onMouseMoveBind = this.onMouseMove.bind(this);
-        this.onMouseUpBind = this.onMouseUp.bind(this);
+        this.onMouseUpBind   = this.onMouseUp.bind(this);
         this.onMouseDownBind = this.onMouseDown.bind(this);
 
         // disable context menu after long click
@@ -162,7 +176,7 @@ class SmartDialogThermostat extends Component  {
 
     onClose() {
         if (!this.mouseUpTime || Date.now() - this.mouseUpTime > 100) {
-            window.removeEventListener('contextmenu', SmartDialogColor.onContextMenu, false);
+            window.removeEventListener('contextmenu', SmartDialogThermostat.onContextMenu, false);
             this.props.onClose && this.props.onClose();
         }
     }
@@ -171,11 +185,23 @@ class SmartDialogThermostat extends Component  {
         this.setState({toast: ''});
     }
 
+    onBoostMode() {
+        this.props.onBoostToggle && this.props.onBoostToggle(!this.state.boostValue);
+        this.setState({boostValue: !this.state.boostValue});
+    }
+
     render() {
         return (<div key={'thermo_dialog'} ref={this.refDialog}
              onClick={this.onClose.bind(this)}
              style={Theme.dialog.back}>
             <div style={Object.assign({}, Theme.dialog.inner, {overflowY: 'hidden'})} ref={this.refPanel}>
+                {this.state.boostValue !== null && this.state.boostValue !== undefined ?
+                    (<Button variant="contained" color={this.state.boostValue ? 'secondary' : ''} onClick={this.onBoostMode.bind(this)}
+                          style={{top: '1.3em'}}
+                          className="boost-button">{I18n.t('Boost')}
+                    </Button>) : null
+                }
+
                 <ThermostatControl
                     minValue={this.min}
                     maxValue={this.max}

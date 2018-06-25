@@ -27,6 +27,9 @@ class SmartThermostat extends SmartGeneric {
             state = this.channelInfo.states.find(state => state.id && state.name === 'ACTUAL');
             this.actualId = state ? state.id : this.id;
 
+            state = this.channelInfo.states.find(state => state.id && state.name === 'BOOST');
+            this.boostId = state && state.id;
+
             state = this.channelInfo.states.find(state => state.id && state.name === 'HUMIDITY');
             this.humidityId = state && state.id;
         }
@@ -136,6 +139,16 @@ class SmartThermostat extends SmartGeneric {
             </div>);
     }
 
+    onBoostToggle(boostOn) {
+        if (boostOn === undefined) {
+            boostOn = !this.state[this.boostId];
+        }
+        const newValue = {};
+        newValue[this.boostId] = boostOn;
+        this.setState(newValue);
+        this.props.onControl(this.boostId, boostOn);
+    }
+
     render() {
         return this.wrapContent([
             (<div key={this.id + '.tile-icon'} className="tile-icon" style={{pointerEvents: 'none'}}>{this.getIcon()}</div>),
@@ -149,6 +162,8 @@ class SmartThermostat extends SmartGeneric {
                 <Dialog key={this.id + '.thermo'}
                     startValue={this.state[this.id]}
                     actualValue={this.state[this.actualId]}
+                    boostValue={this.boostId ? this.state[this.boostId] : null}
+                    onBoostToggle={this.onBoostToggle.bind(this)}
                     min={this.min}
                     max={this.max}
                     onValueChange={this.setValue.bind(this)}
