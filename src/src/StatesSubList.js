@@ -76,19 +76,27 @@ class StatesSubList extends Component {
 //                console.log(ids.join('; '));
                 return null;
             }
-            
-            let detected = that.detector.detect(that.props.objects, that.props.keys, id, usedIds);
-            if (detected) {
-                // console.log('Create smart ' + id);
-                return that.createControl(TileSmart, id, detected);
-            } else {
+            let detected;
+            let someDetected = false;
+            let controls = [];
+            while((detected = that.detector.detect(that.props.objects, that.props.keys, id, usedIds))) {
+                someDetected = true;
+                controls.push(that.createControl(TileSmart, id, detected));
+            }
+            if (!someDetected) {
                 let channelInfo = Tile.getChannelInfo(that.props.objects, id);
                 if (!channelInfo || (channelInfo.main === undefined && (!channelInfo.states || !channelInfo.states.length))) {
                     //console.log('Nothing found for ' + id);
-                    return null;
                 } else {
-                    return that.createControl(Tile, id, channelInfo)
+                    controls.push(that.createControl(Tile, id, channelInfo));
                 }
+            }
+            if (!controls.length) {
+                return null;
+            } else if (controls.length === 1) {
+                return controls[0];
+            } else {
+                return controls;
             }
         });
     }

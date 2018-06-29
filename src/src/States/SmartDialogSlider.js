@@ -175,7 +175,11 @@ class SmartDialogSlider extends Component  {
                 return <IconLamp style={{color: Theme.palette.lampOn}} />;
 
             default:
-                return I18n.t('ON');
+                if (this.props.max !== undefined) {
+                    return this.props.max + (this.props.unit || '');
+                } else {
+                    return I18n.t('ON');
+                }
         }
     }
 
@@ -188,8 +192,13 @@ class SmartDialogSlider extends Component  {
                 return <IconLamp style={{color: 'black'}} />;
 
             default:
+
+                if (this.props.min !== undefined) {
+                    return this.props.min + (this.props.unit || '');
+                } else {
                 return I18n.t('OFF');
         }
+    }
     }
 
     onButtonDown(buttonName) {
@@ -285,6 +294,18 @@ class SmartDialogSlider extends Component  {
         this.setState({toast: ''});
     }
 
+    getValueText() {
+        let unit = '%';
+        if (this.props.type !== SmartDialogSlider.types.blinds && this.props.type !== SmartDialogSlider.types.dimmer) {
+            unit = (this.props.unit || '');
+        }
+        if (this.props.min !== undefined && this.props.max !== undefined) {
+            return (this.state.value * (this.props.max - this.props.min) / 100 + this.props.min).toFixed() + unit;
+        } else {
+            return this.state.value + unit;
+        }
+    }
+
     generateSlider() {
         let sliderStyle = {
             position: 'absolute',
@@ -334,7 +355,7 @@ class SmartDialogSlider extends Component  {
                     </div>
                     <div style={{position: 'absolute', top: 'calc(50% - 0.55em)', userSelect: 'none', width: '100%',
                         textAlign: 'center', fontSize: '2em'}}>
-                        {this.state.value}%
+                        {this.getValueText()}
                     </div>
                 </div>
                 <div onTouchStart={() => this.onButtonDown('bottom')}

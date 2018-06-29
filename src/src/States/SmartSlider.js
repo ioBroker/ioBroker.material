@@ -104,9 +104,9 @@ class SmartSlider extends SmartGeneric {
             return '---';
         } else {
             if (this.workingId && this.state[this.workingId] && this.state.setValue !== null && this.state.setValue !== undefined) {
-                return this.realValueToPercent(this.state[this.id]) + this.unit + ' → ' + this.state.setValue + this.unit;
+                return this.state[this.id] + this.unit + ' → ' + this.state.setValue + this.unit;
             } else {
-                return this.realValueToPercent(this.state[this.id]) + this.unit;
+                return this.state[this.id] + this.unit;
             }
         }
     }
@@ -123,6 +123,9 @@ class SmartSlider extends SmartGeneric {
             this.state.showDialog ?
                 <Dialog key={this.id + '.slider'}
                     startValue={this.state[this.id]}
+                    min={this.min}
+                    max={this.max}
+                    unit={this.unit}
                     onValueChange={this.setValue.bind(this)}
                     onClose={this.onDialogClose.bind(this)}
                     type={Dialog.types.value}

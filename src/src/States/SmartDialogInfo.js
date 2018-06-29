@@ -143,7 +143,7 @@ class SmartDialogInfo extends Component  {
                             id={e.id}
                             label={e.name}
                             value={state ? state.val : ''}
-                            onChange={this.handleChange('name')}
+                            onChange={() => this.handleChange('name')}
                             margin="normal"
                         />),
                         (<Button key={e.id + '_set'} click={() => this.handleInputSet(e.id)} variant="contained">{e.name}</Button>)];

@@ -166,7 +166,7 @@ const patterns = {
     },
     info: {
         states: [
-            {/*role: /^value(\.[.\w]+)|^sensor(\.[.\w]+)|^state(\.[.\w]+)$/,*/                                  indicator: false, write: false,                                 name: 'ACTUAL',         required: true, multiple: true, noDeviceDetection: true},
+            {/*role: /^value(\.[.\w]+)|^sensor(\.[.\w]+)|^state(\.[.\w]+)$/,*/                                  indicator: false,                                 name: 'ACTUAL',         required: true, multiple: true, noDeviceDetection: true},
             patternWorking,
             patternUnreach,
             patternLowbat,
@@ -422,12 +422,13 @@ class ChannelDetector {
                     console.log(pattern);
                 }
 
+                let _usedIds = [];
                 patterns[pattern].states.forEach((state, i) => {
                     let found = false;
                     channelStates.forEach(_id => {
-                        if ((state.indicator || usedIds.indexOf(_id) === -1) && this._applyPattern(objects, _id, state)) {
+                        if ((state.indicator || (usedIds.indexOf(_id) === -1 && _usedIds.indexOf(_id) === -1)) && this._applyPattern(objects, _id, state)) {
                             if (!state.indicator){
-                                usedIds.push(_id);
+                                _usedIds.push(_id);
                             }
                             if (!result) {
                                 result = JSON.parse(JSON.stringify(patterns[pattern]));
@@ -442,9 +443,9 @@ class ChannelDetector {
                                 let index = i + 1;
                                 channelStates.forEach(cid => {
                                     if (cid === _id) return;
-                                    if ((state.indicator || usedIds.indexOf(cid) === -1) && this._applyPattern(objects, cid, state)) {
+                                    if ((state.indicator || (usedIds.indexOf(cid) === -1 && _usedIds.indexOf(cid) === -1)) && this._applyPattern(objects, cid, state)) {
                                         if (!state.indicator){
-                                            usedIds.push(cid);
+                                            _usedIds.push(cid);
                                         }
                                         const newState = ChannelDetector.copyState(state);
                                         newState.id = cid;
@@ -452,7 +453,7 @@ class ChannelDetector {
                                     }
                                 });
                             }
-                            return false; // stop iteraition
+                            return false; // stop iteration
                         }
                     });
                     if (state.required && !found) {
@@ -462,8 +463,9 @@ class ChannelDetector {
                 });
 
                 if (result && !result.states.find(state => state.required && !state.id)) {
+                    _usedIds.forEach(id => usedIds.push(id));
                     // result.id = id;
-                    this.cache[id] = result;
+                    //this.cache[id] = result;
                     let deviceStates;
 
                     if (pattern === 'info') {
@@ -489,7 +491,7 @@ class ChannelDetector {
                             }
                         }
                     }
-                    result.states.forEach((state, j) => {
+                    result.states.forEach(state => {
                         if (state.role) {
                             delete state.role;
                         }

@@ -5,6 +5,7 @@ import IconSwitch from '../icons/Socket';
 import Types from './Types';
 import Theme from '../theme';
 import I18n from '../i18n';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 class SmartSwitch extends SmartGeneric {
     constructor(props) {
@@ -57,6 +58,11 @@ class SmartSwitch extends SmartGeneric {
         if (id === this.actualId || (this.id === id && this.id === this.actualId && state.ack)) {
             newState[id] = val;
             this.setState(newState);
+
+            if (state.ack && this.state.executing) {
+                this.setState({executing: false});
+            }
+
             this.props.tile.setState({
                 state: val
             });
@@ -69,6 +75,9 @@ class SmartSwitch extends SmartGeneric {
     }
 
     toggle() {
+        if (this.actualId !== this.id) {
+            this.setState({executing: true});
+        }
         this.props.onControl(this.id, !this.state[this.actualId]);
     }
 
@@ -85,6 +94,7 @@ class SmartSwitch extends SmartGeneric {
         return (
             <div key={this.id + '.icon'} style={Object.assign({}, Theme.tile.tileIcon, style)} className="tile-icon">
                 <Icon width={'100%'} height={'100%'}/>
+                {this.state.executing ? <CircularProgress style={{zIndex: 3, position: 'absolute', top: 0, left: 0}} size={Theme.tile.tileIcon.width}/> : null}
             </div>
         );
     }
