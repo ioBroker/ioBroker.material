@@ -119,6 +119,18 @@ const patterns = {
         ],
         type: Types.light
     },
+    levelSlider: {
+        states: [
+            {role: /^level(\..*)?$/,                   indicator: false, type: 'number',  min: 'number', max: 'number', write: true,       name: 'SET',         required: true},
+            {role: /^value(\..*)?$/,                   indicator: false, type: 'number',  min: 'number', max: 'number', write: false,      name: 'ACTUAL',      required: false},
+            patternWorking,
+            patternUnreach,
+            patternLowbat,
+            patternMaintain,
+            patternError
+        ],
+        type: Types.value
+    },
     socket: {
         states: [
             {role: /^switch$|^state$/,           indicator: false, type: 'boolean', write: true,       name: 'SET',         required: true},
@@ -309,6 +321,13 @@ class ChannelDetector {
             if (statePattern.write !== undefined && statePattern.write !== (objects[id].common.write || false)) {
                 return;
             }
+            if (statePattern.min === 'number' && typeof objects[id].common.min !== 'number') {
+                return;
+            }
+            if (statePattern.max === 'number' && typeof objects[id].common.max !== 'number') {
+                return;
+            }
+
             if (statePattern.read !== undefined && statePattern.read !== (objects[id].common.read === undefined ? true : objects[id].common.read)) {
                 return;
             }
@@ -318,7 +337,7 @@ class ChannelDetector {
 
             if (statePattern.enums && typeof statePattern.enums === 'function') {
                 let enums = this.getEnumsForId(objects, id);
-                if (!enums || !enums.length || !statePattern.enums(objects[id], enums)) {
+                if (!statePattern.enums(objects[id], enums)) {
                     return;
                 }
             }
@@ -391,7 +410,7 @@ class ChannelDetector {
                 channelStates = ChannelDetector.getAllStatesInChannel(keys, id);
             }
 
-            if (id.indexOf('hm-rpc.0.xxx.1') !== -1) {
+            if (id.indexOf('javascript.0.devices.sensorComplex') !== -1) {
                 console.log('aaa');
             }
 
@@ -433,6 +452,7 @@ class ChannelDetector {
                                     }
                                 });
                             }
+                            return false; // stop iteraition
                         }
                     });
                     if (state.required && !found) {
@@ -454,7 +474,7 @@ class ChannelDetector {
                     if (objects[id].type !== 'device') {
                         // get device name
                         const deviceId = ChannelDetector.getParentId(id);
-                        if (objects[deviceId].type === 'channel' || objects[deviceId].type === 'device') {
+                        if (objects[deviceId] && (objects[deviceId].type === 'channel' || objects[deviceId].type === 'device')) {
                             deviceStates = ChannelDetector.getAllStatesInDevice(keys, deviceId);
                             if (deviceStates) {
                                 deviceStates.forEach(_id => {

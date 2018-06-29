@@ -5,16 +5,17 @@ import Paper from '@material-ui/core/Paper';
 import Theme from './theme';
 import Types from './States/Types';
 
-import SmartSwitch from './States/SmartSwitch';
-import SmartDimmer from './States/SmartDimmer';
 import SmartBlinds from './States/SmartBlinds';
-import SmartGeneric from './States/SmartGeneric';
-import SmartState from './States/SmartState';
-import SmartWindowTilt from './States/SmartWindowTilt';
 import SmartButton from './States/SmartButton';
-import SmartThermometer from './States/SmartThermometer';
+import SmartDimmer from './States/SmartDimmer';
+import SmartGeneric from './States/SmartGeneric';
 import SmartInfo from './States/SmartInfo';
+import SmartSlider from './States/SmartSlider';
+import SmartState from './States/SmartState';
+import SmartSwitch from './States/SmartSwitch';
+import SmartThermometer from './States/SmartThermometer';
 import SmartThermostat from "./States/SmartThermostat";
+import SmartWindowTilt from './States/SmartWindowTilt';
 
 class TileSmart extends Component {
     static propTypes = {
@@ -153,6 +154,9 @@ class TileSmart extends Component {
                 break;
             case Types.thermostat:
                 Control = SmartThermostat;
+                break;
+            case Types.value:
+                Control = SmartSlider;
                 break;
             case Types.window:
             case Types.fireAlarm:

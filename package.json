@@ -1,49 +1,31 @@
 {
-  "name": "iobroker.material",
-  "description": "React Material based ioBroker user interface",
-  "version": "0.6.0",
-  "author": {
-    "name": "bluefox",
-    "email": "dogafox@gmail.com"
+  "name": "test",
+  "version": "0.2.2",
+  "private": true,
+  "dependencies": {
+    "@material-ui/core": "^1.3.0",
+    "@material-ui/lab": "^1.0.0-alpha.5",
+    "material-ui-slider-label": "https://github.com/tariqwest/material-ui-slider-label/tarball/master",
+    "moment": "^2.22.2",
+    "moment-timezone": "^0.5.17",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1",
+    "react-flexbox-grid": "^2.1.2",
+    "react-fullscreen": "^0.1.0",
+    "react-i18next": "^7.7.0",
+    "react-icons": "^2.2.7",
+    "react-moment": "^0.7.7",
+    "react-native-i18n": "^2.0.12",
+    "react-scripts": "^1.1.4",
+    "react-tap-event-plugin": "^3.0.3",
+    "svgr": "^1.10.0"
   },
-  "contributors": [
-    "bluefox <dogafox@gmail.com>"
-  ],
-  "homepage": "https://github.com/ioBroker/ioBroker.material",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/ioBroker/ioBroker.material"
-  },
-  "licenses": [
-    {
-      "type": "CC-BY-NC-4.0",
-      "url": "https://github.com/ioBroker/ioBroker.material/blob/master/LICENSE"
-    }
-  ],
-  "keywords": [
-    "ioBroker",
-    "GUI",
-    "web interface",
-    "home automation",
-    "material"
-  ],
-  "devDependencies": {
-    "chai": "^4.1.2",
-    "del": "^3.0.0",
-    "gulp": "^3.9.1",
-    "gulp-connect": "^5.5.0",
-    "gulp-copy": "^1.1.0",
-    "gulp-exec": "^3.0.1",
-    "gulp-watch": "^5.0.0",
-    "mocha": "^5.2.0"
-  },
-  "bugs": {
-    "url": "https://github.com/ioBroker/ioBroker.material/issues"
-  },
-  "main": "www/index.html",
+  "homepage": "./",
   "scripts": {
-    "test": "echo \"No test specified\" && exit 0",
-    "build": "node node_modules/gulp/bin/gulp.js"
-  },
-  "license": "CC-BY-NC-4.0"
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "svgr": "node node_modules/svgr/bin/svgr --no-semi -d ./src/icons/ ./src/icons/"
+  }
 }

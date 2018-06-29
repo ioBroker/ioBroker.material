@@ -105,7 +105,7 @@ class SmartDialogSlider extends Component  {
         const pageY = e.touches ? e.touches[e.touches.length - 1].clientY : e.pageY;
 
         let value = Math.round((pageY - this.top) / this.height * 100);
-        if (this.props.type !== SmartDialogSlider.types.blinds) {
+        if (this.props.type === SmartDialogSlider.types.blinds) {
             value = 100 - value;
         }
 
@@ -204,11 +204,11 @@ class SmartDialogSlider extends Component  {
             let value;
             switch (this.button.name) {
                 case 'top':
-                    value = this.type === SmartDialogSlider.types.blinds ? 0 : 100;
+                    value = 100;
                     break;
 
                 case 'bottom':
-                    value = this.type === SmartDialogSlider.types.blinds ? 100 : 0;
+                    value = 0;
                     break;
                 default:
                     break;
@@ -217,6 +217,7 @@ class SmartDialogSlider extends Component  {
             this.props.onValueChange && this.props.onValueChange(value);
         }, 400);
     }
+
     onButtonUp() {
         if (Date.now() - this.button.timeUp < 100) {
             if (this.button.timer) {
@@ -234,17 +235,17 @@ class SmartDialogSlider extends Component  {
                 switch (this.button.name) {
                     case 'top':
                         if (value % this.step === 0) {
-                            value += this.type === SmartDialogSlider.types.blinds ? -this.step : this.step;
+                            value += this.step;
                         } else{
-                            value += this.type === SmartDialogSlider.types.blinds ? -(value % this.step) : this.step - value % this.step;
+                            value += this.step - (value % this.step);
                         }
                         break;
 
                     case 'bottom':
                         if (value % this.step === 0) {
-                            value += this.type === SmartDialogSlider.types.blinds ? this.step : -this.step;
+                            value -= this.step;
                         } else {
-                            value += this.type === SmartDialogSlider.types.blinds ? this.step - value % this.step : -(value % this.step);
+                            value -= value % this.step;
                         }
                         break;
                     default:
@@ -289,7 +290,7 @@ class SmartDialogSlider extends Component  {
             position: 'absolute',
             width: '100%',
             left: 0,
-            height: this.state.value + '%',
+            height: (this.props.type === SmartDialogSlider.types.blinds ? 100 - this.state.value : this.state.value) + '%',
             background: this.props.background || this.getSliderColor()
         };
         if (true || !this.mouseDown) {
@@ -333,7 +334,7 @@ class SmartDialogSlider extends Component  {
                     </div>
                     <div style={{position: 'absolute', top: 'calc(50% - 0.55em)', userSelect: 'none', width: '100%',
                         textAlign: 'center', fontSize: '2em'}}>
-                        {this.props.type === SmartDialogSlider.types.blinds ? 100 - this.state.value : this.state.value}%
+                        {this.state.value}%
                     </div>
                 </div>
                 <div onTouchStart={() => this.onButtonDown('bottom')}

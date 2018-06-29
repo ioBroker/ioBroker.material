@@ -7,7 +7,6 @@ import Dialog from './SmartDialogSlider';
 
 class SmartBlinds extends SmartGeneric {
     // props = {
-    //    inverted: false,
     //    objects: OBJECT
     //    tile: parentDiv
     //    states: STATES
@@ -16,6 +15,8 @@ class SmartBlinds extends SmartGeneric {
 
     constructor(props) {
         super(props);
+        this.inverted = this.props.inverted || true;
+
         if (this.channelInfo.states) {
             let state = this.channelInfo.states.find(state => state.id && state.name === 'SET');
             if (state && this.props.objects[state.id]&& this.props.objects[state.id].common) {
@@ -63,7 +64,7 @@ class SmartBlinds extends SmartGeneric {
         }
         val = parseFloat(val);
         val = Math.round((val - this.min) / (this.max - this.min) * 100);
-        if (!this.props.inverted) {
+        if (this.inverted) {
             val = 100 - val;
         }
         return val;
@@ -71,7 +72,7 @@ class SmartBlinds extends SmartGeneric {
 
     percentToRealValue(percent) {
         percent = parseFloat(percent);
-        if (!this.props.inverted) {
+        if (this.inverted) {
             percent = 100 - percent;
         }
         return Math.round((this.max - this.min) * percent / 100);
@@ -82,7 +83,7 @@ class SmartBlinds extends SmartGeneric {
         const val = typeof state.val === 'number' ? state.val : parseFloat(state.val);
         if (this.actualId === id || (this.id === id && this.id === this.actualId && state.ack)) {
             if (!isNaN(val)) {
-                newState[id] = this.realValueToPercent(val);
+                newState[id] = val;
                 this.setState(newState);
             } else {
                 newState[id] = null;
@@ -154,9 +155,9 @@ class SmartBlinds extends SmartGeneric {
             return '---';
         } else {
             if (this.workingId && this.state[this.workingId] && this.state.setValue !== null && this.state.setValue !== undefined) {
-                return this.realValueToPercent(this.state[this.id]) + '% → ' + this.state.setValue + '%';
+                return this.realValueToPercent() + '% → ' + this.state.setValue + '%';
             } else {
-                return this.realValueToPercent(this.state[this.id]) + '%';
+                return this.realValueToPercent() + '%';
             }
         }
     }

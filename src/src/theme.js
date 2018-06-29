@@ -1,15 +1,7 @@
 import {
-    blue700,
-    blue600,
-    cyan700,
-    grey600,
-    grey100, grey400, grey500,
-    pinkA100, pinkA200, pinkA400,
-    fullWhite,
-} from 'material-ui/styles/colors';
+    grey,
+} from '@material-ui/core/colors';
 
-import {fade} from 'material-ui/utils/colorManipulator';
-import spacing from 'material-ui/styles/spacing';
 import Background from './assets/homekit.png';
 
 const appBarHeight = 64;
@@ -17,8 +9,6 @@ const tileBorderRadius = '1em';
 const tileIconWidth = 40;
 
 export default {
-    spacing:        spacing,
-
     appBar: {
         //color: 'rgba(200, 200, 200, 0.8)',//''#337ab7',
         //background: 'rgb(39, 144, 222)',
@@ -168,6 +158,7 @@ export default {
             boxShadow: '0 1px 1px rgba(0,0,0,0.3), -1px 1px 1px rgba(0,0,0,0.2)',
             borderRadius: '0 0 0 10px',
             transition: 'border-width 0.1s ease-in-out',
+            cursor: 'pointer',
             zIndex: 2
         },
         tileOn: {

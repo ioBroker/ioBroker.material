@@ -45,7 +45,7 @@ class App extends Component {
     constructor(props) {
         super(props);
 
-        let path = window.location.hash.replace(/^#/, '');
+        let path = decodeURIComponent(window.location.hash).replace(/^#/, '');
 
         this.state = {
             menuFixed:      (typeof Storage !== 'undefined') ? window.localStorage.getItem('menuFixed') === '1' : false,
@@ -238,13 +238,13 @@ class App extends Component {
     }
 
     onItemSelected(id) {
-        window.location.hash = id.replace(/^enum\./, '');
+        window.location.hash = encodeURIComponent(id.replace(/^enum\./, ''));
         this.setState({viewEnum: id, open: this.state.menuFixed});
     }
 
     onRootChanged(root, page) {
         if (page) {
-            window.location.hash = page.replace(/^enum\./, '');
+            window.location.hash = encodeURIComponent(page.replace(/^enum\./, ''));
             this.setState({masterPath: root, viewEnum: page});
         } else {
             this.setState({masterPath: root});

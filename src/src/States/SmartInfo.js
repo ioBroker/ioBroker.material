@@ -27,7 +27,6 @@ class SmartInfo extends SmartGeneric {
                     return 0;
                 });
             }
-            let state = this.channelInfo.states.find(state => state.id && state.name === 'ACTUAL');
             if (infoIDs[0]) {
                 this.id = infoIDs[0];
             } else {
@@ -75,7 +74,8 @@ class SmartInfo extends SmartGeneric {
                 icon: IconHydro,
                 iconStyle: {color: '#0056c3'},
                 unit: unit ? ' ' + unit : ' %',
-                name: title
+                name: title,
+                common: objects[id].common
             }
         } else if (role.match(/temperature/i)) {
             return {
@@ -83,13 +83,15 @@ class SmartInfo extends SmartGeneric {
                 icon: IconThermometer,
                 iconStyle: {color: '#e54100'},
                 unit: unit ? ' ' + unit : '°',
-                name: title
+                name: title,
+                common: objects[id].common
             }
         } else {
             return {
                 id: id,
                 unit: unit ? ' ' + unit : '',
-                name: title
+                name: title,
+                common: objects[id].common
             }
         }
     }
@@ -132,7 +134,7 @@ class SmartInfo extends SmartGeneric {
 
     getNumberOfValuesIndicator() {
         if (this.infos.length <= 2) return null;
-        return (<div style={Theme.tile.tileNumber} title={I18n.t('Show %s values', this.infos.length)}>{this.infos.length}</div>);
+        return (<div key={this.id + '.tile-number'} style={Theme.tile.tileNumber} title={I18n.t('Show %s values', this.infos.length)}>{this.infos.length}</div>);
     }
 
     render() {

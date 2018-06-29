@@ -78,7 +78,7 @@ class SmartSwitch extends SmartGeneric {
 
     getIcon() {
         const Icon = this.state[this.actualId] ? this.iconOn : this.iconOff;
-        let style = this.state[this.actualId] ? {color: this.colorOn, background: this.backOn} : {color: this.colorOff, background: this.backOff};
+        let style = this.state[this.actualId] ? {color: this.colorOn} : {color: this.colorOff};
         if (this.style) {
             style = Object.assign(style, this.style);
         }

@@ -134,6 +134,7 @@ class SmartGeneric extends Component {
 
         this.stateRx.settings = Utils.getSettings(this.props.objects[this.settingsId], null, this.defaultEnabling);
 
+        //    ↓ ignore error here
         this.state = this.stateRx;
         delete this.stateRx;
     }

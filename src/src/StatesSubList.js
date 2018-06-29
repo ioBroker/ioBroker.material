@@ -5,7 +5,7 @@ import Theme from './theme';
 import I18n from './i18n';
 import Tile from './Tile';
 import TileSmart from './TileSmart';
-import ChannelDetector from "./Channels/Detector";
+import SmartDetector from './States/SmartDetector';
 
 class StatesSubList extends Component {
 
@@ -19,7 +19,7 @@ class StatesSubList extends Component {
 
     constructor(props) {
         super(props);
-        this.detector = new ChannelDetector();
+        this.detector = new SmartDetector();
         const state = {};
         this.props.items.forEach(id => state[id] = true);
         this.state = state;
