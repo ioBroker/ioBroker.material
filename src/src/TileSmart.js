@@ -33,8 +33,9 @@ class TileSmart extends Component {
         this.state = {
             state: false,
             isPointer: false,
-            visible: true
+            visible: null
         };
+        this.stateId = this.channelInfo.states.find(state => state.id).id;
         this.handlers = {
             onMouseDown: null,
             onMouseUp: null,
@@ -43,7 +44,7 @@ class TileSmart extends Component {
     }
 
     getObjectName(channelName) {
-        return SmartGeneric.getObjectName(this.props.objects, this.props.id, null, channelName, this.props.enumName);
+        return SmartGeneric.getObjectName(this.props.objects, this.stateId, null, channelName, this.props.enumName);
     }
 
     onMouseDown(e) {
@@ -69,7 +70,6 @@ class TileSmart extends Component {
         if (this.props.editMode) {
             style = Object.assign({}, Theme.tile.tile, Theme.tile.tileOn, Theme.tile.editEnabled);
             Object.assign(style, Theme.tile.editEnabled);
-
         } else {
             style = Object.assign({}, Theme.tile.tile, this.state.state ? Theme.tile.tileOn : Theme.tile.tileOff);
         }
@@ -79,7 +79,7 @@ class TileSmart extends Component {
     setVisibility(isVisible) {
         if (this.state.visible !== isVisible) {
             this.setState({visible: isVisible});
-            this.props.onVisibilityControl(this.props.id, isVisible);
+            this.props.onVisibilityControl(this.stateId, isVisible);
         }
     }
 
@@ -96,7 +96,7 @@ class TileSmart extends Component {
                    onMouseUp={this.onMouseUp.bind(this)}
                    onTouchEnd={this.onMouseUp.bind(this)}
                    onClick={this.onClick.bind(this)}>
-                <span style={{display: 'none'}}>{this.props.id}</span>
+                <span style={{display: 'none'}}>{this.channelInfo.states.find(state => state.id).id}</span>
                 {content}
             </Paper>
         );
@@ -112,7 +112,7 @@ class TileSmart extends Component {
         let Component = control; // This will be used by rendering
         //              ↓
         return (<Component
-            key={channelInfo.id}
+            key={channelInfo.id + '-tile-' + Component.name}
             enumName={this.props.enumName}
             channelInfo={channelInfo}
             tile={tile}

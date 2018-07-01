@@ -38,6 +38,8 @@ class SmartLight extends SmartGeneric {
             });
         }
 
+        this.key = 'smart-dimmer-' + this.id + '-';
+
         this.stateRx.showDialog = false; // support dialog in this tile used in generic class)
         this.stateRx.setValue = null;
 
@@ -126,7 +128,7 @@ class SmartLight extends SmartGeneric {
 
     getIcon() {
         return (
-            <div key={this.id + '.icon'} style={Object.assign({}, Theme.tile.tileIcon, this.state[this.actualId] !== this.min ? {color: Theme.palette.lampOn} : {})} className="tile-icon">
+            <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, this.state[this.actualId] !== this.min ? {color: Theme.palette.lampOn} : {})} className="tile-icon">
                 <Icon width={'100%'} height={'100%'}/>
                 {this.state.executing ? <CircularProgress style={{position: 'absolute', top: 0, left: 0}} size={Theme.tile.tileIcon.width}/> : null}
             </div>
@@ -147,15 +149,15 @@ class SmartLight extends SmartGeneric {
 
     render() {
         return this.wrapContent([
-            (<div key={this.id + '.tile-icon'} className="tile-icon"
+            (<div key={this.key + 'tile-icon'} className="tile-icon"
                   style={{pointerEvents: 'none'}}>{this.getIcon()}</div>),
-            (<div key={this.id + '.tile-text'} className="tile-text" style={Theme.tile.tileText}>
+            (<div key={this.key + 'tile-text'} className="tile-text" style={Theme.tile.tileText}>
                 <div className="tile-channel-name" style={Object.assign({}, Theme.tile.tileName, this.nameStyle)}>{this.name}</div>
                 <div className="tile-state-text"
                      style={Object.assign({}, Theme.tile.tileState, this.state[this.id] ? Theme.tile.tileStateOn : Theme.tile.tileStateOff)}>{this.getStateText()}</div>
             </div>),
             this.state.showDialog ?
-                <Dialog key={this.id + '.slider'}
+                <Dialog key={this.key + 'dialog'}
                     startValue={this.realValueToPercent()}
                     onValueChange={this.setValue.bind(this)}
                     onClose={this.onDialogClose.bind(this)}

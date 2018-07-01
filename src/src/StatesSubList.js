@@ -20,14 +20,15 @@ class StatesSubList extends Component {
     constructor(props) {
         super(props);
         this.detector = new SmartDetector();
-        const state = {};
-        this.props.items.forEach(id => state[id] = true);
-        this.state = state;
+        this.state = {
+            visible: false
+        };
     }
 
     isVisible() {
         for (const id in this.state) {
-            if (this.props.editMode || (this.state.hasOwnProperty(id) && this.state[id])) {
+            if (!this.state.hasOwnProperty(id)) continue;
+            if (this.props.editMode || this.state[id]) {
                 return true;
             }
         }
@@ -38,16 +39,30 @@ class StatesSubList extends Component {
         const newState = {};
         if (this.state[id] !== visible) {
             newState[id] = visible;
+            let commonVisible = visible;
+            if (!commonVisible) {
+                for (const _id in this.state) {
+                    if (this.state.hasOwnProperty(_id) && _id !== 'visible' && this.state[_id] ) {
+                        commonVisible = true;
+                        break;
+                    }
+                }
+            }
+            if (this.state.visible !== commonVisible) {
+                newState.visible = commonVisible;
+            }
+
             this.setState(newState);
         }
-        // console.log(`Set ${id} to ${visible} and ${this.props.enumID} => ${this.isVisible()}`);
     }
 
-    createControl(control, channelId, channelInfo) {
+    createControl(control, channelId, channelInfo, i) {
+        const state = channelInfo.states.find(state => state.id);
+
         let Component = control; // This will be used by rendering
         //              ↓
         return (<Component
-            key={channelId}
+            key={state.id + '-sublist-' + Component.name + '-' + i}
             id={channelId}
             enumName={Utils.getObjectName(this.props.objects, this.props.enumID)}
             enumFunctions={this.props.enumFunctions}
@@ -65,30 +80,27 @@ class StatesSubList extends Component {
     getListItems(items) {
         const that = this;
         const usedIds = [];
-        return items.map(id => {
+        return items.map((id, i) => {
             if (that.state[id] === undefined) {
-                debugger;
+                //debugger;
             }
 
-            if (!that.props.editMode && that.state[id] === false) {
-//                console.log('Tile ' + id + ' is invisible');
-//                const ids = Object.keys(that.state).map(id => `${id} => ${that.state[id]}`);
-//                console.log(ids.join('; '));
+            /*if (!that.props.editMode && that.state[id] === false) {
                 return null;
-            }
+            }*/
             let detected;
             let someDetected = false;
             let controls = [];
             while((detected = that.detector.detect(that.props.objects, that.props.keys, id, usedIds))) {
                 someDetected = true;
-                controls.push(that.createControl(TileSmart, id, detected));
+                controls.push(that.createControl(TileSmart, id, detected, i));
             }
             if (!someDetected) {
                 let channelInfo = Tile.getChannelInfo(that.props.objects, id);
                 if (!channelInfo || (channelInfo.main === undefined && (!channelInfo.states || !channelInfo.states.length))) {
                     //console.log('Nothing found for ' + id);
                 } else {
-                    controls.push(that.createControl(Tile, id, channelInfo));
+                    controls.push(that.createControl(Tile, id, channelInfo, i));
                 }
             }
             if (!controls.length) {
@@ -102,13 +114,13 @@ class StatesSubList extends Component {
     }
 
     render() {
-        if (this.props.items && this.props.items.length && (this.isVisible() || this.props.editMode)) {
-            //console.log('Add to ' + (this.props.enumID || 'others') + ': ' + this.props.items.join(', '));
-
+        if (this.props.items && this.props.items.length) {
             let items = this.getListItems(this.props.items);
             items = items.filter(e => e);
             if (items.length) {
-                return (<div key={(this.props.enumID || 'others').replace(/[^\w\d]/g, '_') + '-title'} style={Theme.list.row}><h3
+                const visible = this.state.visible || this.props.editMode;
+
+                return (<div key={(this.props.enumID || 'others').replace(/[^\w\d]/g, '_') + '-title'} style={Object.assign({}, Theme.list.row, !visible ? {display: 'none'} : {})}><h3
                     style={Theme.list.title}>{
                     this.props.enumID ? Utils.getObjectName(this.props.objects, this.props.enumID) : I18n.t('Others')
                 }</h3>

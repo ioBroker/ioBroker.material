@@ -166,7 +166,7 @@ const patterns = {
     },
     info: {
         states: [
-            {/*role: /^value(\.[.\w]+)|^sensor(\.[.\w]+)|^state(\.[.\w]+)$/,*/                                  indicator: false,                                 name: 'ACTUAL',         required: true, multiple: true, noDeviceDetection: true},
+            {/*role: /^value(\.[.\w]+)|^sensor(\.[.\w]+)|^state(\.[.\w]+)$/,*/                                  indicator: false,                                 name: 'ACTUAL',         required: true, multiple: true, noDeviceDetection: true, ignoreRole: /\.inhibit$/},
             patternWorking,
             patternUnreach,
             patternLowbat,
@@ -310,6 +310,10 @@ class ChannelDetector {
                 return;
             }
 
+            if (statePattern.ignoreRole && statePattern.ignoreRole.test(objects[id].common.role)) {
+                return;
+            }
+
             if (statePattern.indicator === false && (objects[id].common.role || '').match(/^indicator(\.[.\w]+)?$/)) {
                 return;
             }
@@ -411,7 +415,7 @@ class ChannelDetector {
             }
 
             if (id.indexOf('javascript.0.devices.sensorComplex') !== -1) {
-                console.log('aaa');
+                //console.log('aaa');
             }
 
             for (let pattern in patterns) {
@@ -419,7 +423,7 @@ class ChannelDetector {
                 let result = null;
 
                 if (pattern === 'temperature') {
-                    console.log(pattern);
+                    //console.log(pattern);
                 }
 
                 let _usedIds = [];
@@ -469,7 +473,7 @@ class ChannelDetector {
                     let deviceStates;
 
                     if (pattern === 'info') {
-                        console.log('AA');
+                        //console.log('AA');
                     }
 
                     // looking for indicators and special states

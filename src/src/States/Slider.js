@@ -40,7 +40,7 @@ class Dimmer extends Generic {
         switch (this.props.type) {
             case StateTypes.light:
                 return (
-                    <div key={this.props.id + '.icon'} style={this.state.state ? styles.bulbOn : {}} className="iob-icon">
+                    <div key={this.props.id + '.2icon'} style={this.state.state ? styles.bulbOn : {}} className="iob-icon">
                         <ActionLightbulbOutline width={Theme.indicatorSize} height={Theme.indicatorSize}/>
                     </div>
                 );
@@ -63,7 +63,7 @@ class Dimmer extends Generic {
                 // will be used later to determine icon
 
                 return (
-                    <div key={this.props.id + '.icon'} className="iob-icon">
+                    <div key={this.props.id + '.3icon'} className="iob-icon">
                         <ActionLightbulbOutline  width={Theme.indicatorSize} height={Theme.indicatorSize}/>
                     </div>
                 );
@@ -75,9 +75,9 @@ class Dimmer extends Generic {
 
     getValue(isIcon) {
         if (typeof this.state.state === 'boolean') {
-            return (<span key={this.props.id + '.value'} style={{float: 'right', minWidth: '3em', textAlign: 'right', marginTop: isIcon ? 8 : 0}}>{this.state.state ? 'true' : 'false'}</span>);
+            return (<span key={this.props.id + '.4value'} style={{float: 'right', minWidth: '3em', textAlign: 'right', marginTop: isIcon ? 8 : 0}}>{this.state.state ? 'true' : 'false'}</span>);
         } else {
-            return (<span key={this.props.id + '.value'} style={{float: 'right', minWidth: '3em', textAlign: 'right', marginTop: isIcon ? 8 : 0}}>{this.state.state}{this.getUnit()}</span>);
+            return (<span key={this.props.id + '.5value'} style={{float: 'right', minWidth: '3em', textAlign: 'right', marginTop: isIcon ? 8 : 0}}>{this.state.state}{this.getUnit()}</span>);
         }
     }
 
@@ -104,9 +104,9 @@ class Dimmer extends Generic {
         let icon = this.getIcon();
 
         return this.wrapContent([
-            (<div key={this.props.id + '.div'}>{this.getObjectName()}</div>),
+            (<div key={this.props.id + '.6div'}>{this.getObjectName()}</div>),
             (<Slider
-                key={this.props.id}
+                key={this.props.id + '7'}
                 style={{width: icon ? 'calc(100% - 6em)' : 'calc(100% - 4em)', display: 'inline-block', marginTop: icon ? 8: 0}}
                 min={min}
                 max={max}

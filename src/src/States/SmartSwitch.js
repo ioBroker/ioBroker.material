@@ -47,6 +47,7 @@ class SmartSwitch extends SmartGeneric {
         this.props.tile.setState({
             isPointer: true
         });
+        this.key = 'smart-switch-' + this.id + '-';
 
         this.props.tile.registerHandler('onClick', this.onTileClick.bind(this));
         this.componentReady();
@@ -92,7 +93,7 @@ class SmartSwitch extends SmartGeneric {
             style = Object.assign(style, this.style);
         }
         return (
-            <div key={this.id + '.icon'} style={Object.assign({}, Theme.tile.tileIcon, style)} className="tile-icon">
+            <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, style)} className="tile-icon">
                 <Icon width={'100%'} height={'100%'}/>
                 {this.state.executing ? <CircularProgress style={{zIndex: 3, position: 'absolute', top: 0, left: 0}} size={Theme.tile.tileIcon.width}/> : null}
             </div>
@@ -105,8 +106,8 @@ class SmartSwitch extends SmartGeneric {
 
     render() {
         return this.wrapContent([
-            (<div key={this.id + '.tile-icon'} className="tile-icon">{this.getIcon()}</div>),
-            (<div key={this.id + '.tile-text'} className="tile-text" style={Theme.tile.tileText}>
+            (<div key={this.key + 'tile-icon'} className="tile-icon">{this.getIcon()}</div>),
+            (<div key={this.key + 'tile-text'} className="tile-text" style={Theme.tile.tileText}>
                 <div className="tile-channel-name" style={Object.assign({}, Theme.tile.tileName, this.nameStyle)}>{this.name}</div>
                 <div className="tile-state-text"  style={Object.assign({}, Theme.tile.tileState, this.state[this.actualId] ? Theme.tile.tileStateOn : Theme.tile.tileStateOff)}>{this.getStateText()}</div>
             </div>)

@@ -93,7 +93,7 @@ class StatesList extends Component {
                 if (column.length) {
                     console.log('Add to ' + this.props.enumID + '_' + id + ': ' + column.join(', '));
                     columns.push((<StatesSubList
-                            key={this.props.enumID + '_' + id}
+                            key={this.props.enumID + '_' + id + '-list'}
                             objects={this.props.objects}
                             states={this.props.states}
                             items={column}

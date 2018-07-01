@@ -77,6 +77,7 @@ class SmartThermostat extends SmartGeneric {
 
         this.stateRx.showDialog = false;
         this.props.tile.setState({state: true});
+        this.key = 'smart-thermostat-' + this.id + '-';
 
         this.componentReady();
     }
@@ -104,7 +105,7 @@ class SmartThermostat extends SmartGeneric {
 
     getIcon() {
         return (
-            <div key={this.id + '.icon'} style={Object.assign({}, Theme.tile.tileIcon, {}, {left: '0.5em'})} className="tile-icon">
+            <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, {}, {left: '0.5em'})} className="tile-icon">
                 <Icon width={'100%'} height={'100%'} style={{zIndex: 1}}/>
             </div>
         );
@@ -123,18 +124,18 @@ class SmartThermostat extends SmartGeneric {
             return null;
         }
         return (
-            <div key={this.id + '.tile-secondary'} className="tile-text-second"
+            <div key={this.key + 'tile-secondary'} className="tile-text-second"
                  style={Object.assign({}, Theme.tile.secondary.div, {top: '1em'})} title={I18n.t('Environment values')}>
                 {this.actualId !== this.id ?
                     [
-                        (<IconThermometer key={this.actualId + '.tile-secondary-icon'} style={Object.assign({}, Theme.tile.secondary.icon)} />),
-                        (<span key={this.actualId + '.tile-secondary-text'} style={Theme.tile.secondary.text}>{this.state[this.actualId] === null ? '?' : this.state[this.actualId] + this.unit}</span>),
-                        (<br key={this.actualId + '.tile-secondary-br'} />)
+                        (<IconThermometer key={this.key + 'tile-secondary-icon-0'} style={Object.assign({}, Theme.tile.secondary.icon)} />),
+                        (<span key={this.key + 'tile-secondary-text-0'} style={Theme.tile.secondary.text}>{this.state[this.actualId] === null ? '?' : this.state[this.actualId] + this.unit}</span>),
+                        (<br key={this.key + 'tile-secondary-br-0'} />)
                     ] : null}
                 {this.humidityId ?
                     [
-                        (<IconHydro key={this.humidityId + '.tile-secondary-icon'} style={Object.assign({}, Theme.tile.secondary.icon)} />),
-                        (<span key={this.humidityId + '.tile-secondary-text'} style={Theme.tile.secondary.text}>{this.state[this.humidityId] === null ? '?' : this.state[this.humidityId] + this.humUnit}</span>)
+                        (<IconHydro key={this.key + 'tile-secondary-icon-1'} style={Object.assign({}, Theme.tile.secondary.icon)} />),
+                        (<span key={this.key + 'tile-secondary-text-1'} style={Theme.tile.secondary.text}>{this.state[this.humidityId] === null ? '?' : this.state[this.humidityId] + this.humUnit}</span>)
                     ] : null}
             </div>);
     }
@@ -151,15 +152,15 @@ class SmartThermostat extends SmartGeneric {
 
     render() {
         return this.wrapContent([
-            (<div key={this.id + '.tile-icon'} className="tile-icon" style={{pointerEvents: 'none'}}>{this.getIcon()}</div>),
+            (<div key={this.key + 'tile-icon'} className="tile-icon" style={{pointerEvents: 'none'}}>{this.getIcon()}</div>),
             this.getSecondaryDiv(),
-            (<div key={this.id + '.tile-text'} className="tile-text" style={Object.assign({}, Theme.tile.tileText, this.nameStyle, {marginTop: '3.1em'})}>
+            (<div key={this.key + 'tile-text'} className="tile-text" style={Object.assign({}, Theme.tile.tileText, this.nameStyle, {marginTop: '3.1em'})}>
                 <div className="tile-channel-name" style={Theme.tile.tileName}>{this.name}</div>
                 <div className="tile-state-text"
                      style={Object.assign({}, Theme.tile.tileState, this.state[this.id] ? Theme.tile.tileStateOn : Theme.tile.tileStateOff)}>{this.getStateText()}</div>
             </div>),
             this.state.showDialog ?
-                <Dialog key={this.id + '.thermo'}
+                <Dialog key={this.key + 'dialog'}
                     startValue={this.state[this.id]}
                     actualValue={this.state[this.actualId]}
                     boostValue={this.boostId ? this.state[this.boostId] : null}

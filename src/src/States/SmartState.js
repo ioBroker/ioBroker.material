@@ -125,6 +125,8 @@ class SmartState extends SmartGeneric {
             isPointer: false
         });
 
+        this.key = 'smart-state-' + this.id + '-';
+
         //this.props.tile.registerHandler('onClick', this.onTileClick.bind(this));
         this.componentReady();
     }
@@ -173,7 +175,7 @@ class SmartState extends SmartGeneric {
         }
 
         return (
-            <div key={this.id + '.icon'} style={Object.assign({}, Theme.tile.tileIcon, style)} className="tile-icon">
+            <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, style)} className="tile-icon">
                 <Icon style={{zIndex: 1}} width={'100%'} height={'100%'}/>
             </div>
         );
@@ -198,7 +200,7 @@ class SmartState extends SmartGeneric {
         if (typeof val === 'number') {
             val = Math.round(val * 100) / 100;
         }
-        return (<div key={this.id + '.tile-secondary'} className="tile-text-second" style={Theme.tile.secondary.div} title={this.secondary.title}>
+        return (<div key={this.key + 'tile-secondary'} className="tile-text-second" style={Theme.tile.secondary.div} title={this.secondary.title}>
             {Icon ? (<Icon style={Object.assign({}, Theme.tile.secondary.icon, this.secondary.iconStyle)} />) : null}
             <span style={Theme.tile.secondary.text}>{val + (this.secondary.unit ? ' ' + this.secondary.unit : '')}</span>
         </div>);
@@ -207,9 +209,9 @@ class SmartState extends SmartGeneric {
 
     render() {
         return this.wrapContent([
-            (<div key={this.id + '.tile-icon'} className="tile-icon">{this.getIcon()}</div>),
+            (<div key={this.key + 'tile-icon'} className="tile-icon">{this.getIcon()}</div>),
             this.getSecondaryDiv(),
-            (<div key={this.id + '.tile-text'} className="tile-text" style={Theme.tile.tileText}>
+            (<div key={this.key + 'tile-text'} className="tile-text" style={Theme.tile.tileText}>
                 <div className="tile-channel-name" style={Object.assign({}, Theme.tile.tileName, this.nameStyle)}>{this.name}</div>
                 <div className="tile-state-text"  style={Object.assign({}, Theme.tile.tileState, this.state[this.actualId] ? Theme.tile.tileStateOn : Theme.tile.tileStateOff)}>{this.getStateText()}</div>
             </div>)

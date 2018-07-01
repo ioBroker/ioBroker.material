@@ -62,6 +62,7 @@ class SmartButton extends SmartGeneric {
         } else if (stateName.match(/shuff/i)) {
             this.icon = IconShuffle;
         }
+        this.key = 'smart-button-' + this.id + '-';
 
         this.props.tile.setState({isPointer: true});
         this.props.tile.registerHandler('onClick', this.onTileClick.bind(this));
@@ -78,7 +79,7 @@ class SmartButton extends SmartGeneric {
         const Icon = this.icon;
 
         return (
-            <div key={this.id + '.icon'} style={Object.assign({}, Theme.tile.tileIcon, this.style)} className="tile-icon">
+            <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, this.style)} className="tile-icon">
                 <Icon width={'100%'} height={'100%'}/>
             </div>
         );
@@ -91,8 +92,8 @@ class SmartButton extends SmartGeneric {
     render() {
         const text = this.getStateText();
         return this.wrapContent([
-            (<div key={this.id + '.tile-icon'} className="tile-icon">{this.getIcon()}</div>),
-            (<div key={this.id + '.tile-text'} className="tile-text" style={Theme.tile.tileText}>
+            (<div key={this.key + 'tile-icon'} className="tile-icon">{this.getIcon()}</div>),
+            (<div key={this.key + 'tile-text'} className="tile-text" style={Theme.tile.tileText}>
                 <div className="tile-channel-name" style={Object.assign({}, Theme.tile.tileName, this.nameStyle, {height: '4.5em'})}>{this.name}</div>
                 <div className="tile-state-text"  style={Object.assign({}, Theme.tile.tileState, Theme.tile.tileStateOff, {position: 'absolute', bottom: 0, left :0})}>{text}</div>
             </div>)

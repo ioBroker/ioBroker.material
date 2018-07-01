@@ -117,12 +117,12 @@ class SmartGeneric extends Component {
         this.nameStyle = {fontSize: SmartGeneric.getNameFontSize(this.name)};
 
         if (this.id && this.props.objects[this.id]) {
-            if (this.props.objects[this.id].type === 'state') {
+            /*if (this.props.objects[this.id].type === 'state') {
                 let channel = SmartGeneric.getParentId(this.id);
                 if (this.props.objects[channel] && (this.props.objects[channel].type === 'channel' || this.props.objects[channel].type === 'device')) {
                     this.settingsId = channel;
                 }
-            } else {
+            } else*/ {
                 this.settingsId = this.id;
             }
         }
@@ -133,6 +133,8 @@ class SmartGeneric extends Component {
         }
 
         this.stateRx.settings = Utils.getSettings(this.props.objects[this.settingsId], null, this.defaultEnabling);
+
+        this.props.tile.setVisibility(this.stateRx.settings.enabled);
 
         //    ↓ ignore error here
         this.state = this.stateRx;
@@ -300,10 +302,6 @@ class SmartGeneric extends Component {
     }
 
     saveSettings() {
-        if (this.id.indexOf('hm-rpc.0.LEQ0725777.1') !== -1) {
-            console.log('asa');
-        }
-
         this.props.onSaveSettings && this.props.onSaveSettings(this.settingsId, this.state.settings);
 
         // subscribe if enabled and was not subscribed
@@ -316,6 +314,7 @@ class SmartGeneric extends Component {
             this.subscribed = false;
             this.props.onCollectIds(this, this.subscribes, false);
         }
+        this.props.tile.setVisibility(this.state.settings.enabled);
     }
 
     toggleEnabled() {
@@ -328,7 +327,7 @@ class SmartGeneric extends Component {
     componentWillReceiveProps(nextProps) {
         if (nextProps.editMode !== this.state.editMode) {
             this.setState({editMode: nextProps.editMode});
-            this.props.tile.setVisibility(nextProps.editMode || this.state.settings.enabled);
+            //this.props.tile.setVisibility(nextProps.editMode || this.state.settings.enabled);
         }
     }
 
@@ -359,12 +358,12 @@ class SmartGeneric extends Component {
                 } else if (!that.state[state.id]) {
                     return;
                 }
-                result.push((<Icon key={that.id + '.indicator-' + state.name.toLowerCase()} className={'indicator-' + state.name.toLowerCase()} style={Object.assign({}, Theme.tile.tileIndicator, {color: state.color})}/>));
+                result.push((<Icon key={that.key + 'indicator-' + state.name.toLowerCase()} className={'indicator-' + state.name.toLowerCase()} style={Object.assign({}, Theme.tile.tileIndicator, {color: state.color})}/>));
             }
         });
 
         if (result.length) {
-            return (<div key={this.id + '-indicators'} style={Theme.tile.tileIndicators} title={this.errorText || ''}>{result}</div>);
+            return (<div key={this.key + 'indicators'} style={Theme.tile.tileIndicators} title={this.errorText || ''}>{result}</div>);
         } else {
             return null;
         }
@@ -372,25 +371,25 @@ class SmartGeneric extends Component {
 
     wrapContent(content) {
         if (this.state.editMode) {
-            return (<div key={this.id} >
+            return (<div key={this.key + 'wrapper'}>
                 {this.state.settings.enabled ?
-                    [(<div onClick={this.toggleEnabled.bind(this)} key={this.id + '.icon-check'} style={Object.assign({}, Theme.tile.editMode.checkIcon)}>
+                    [(<div onClick={this.toggleEnabled.bind(this)} key={this.key + 'icon-check'} style={Object.assign({}, Theme.tile.editMode.checkIcon)}>
                             <IconCheck width={'100%'} height={'100%'} />
                     </div>),
-                    (<div key={this.id + '.icon-edit'} style={Object.assign({}, Theme.tile.editMode.editIcon)}>
+                    (<div key={this.key + 'icon-edit'} style={Object.assign({}, Theme.tile.editMode.editIcon)}>
                         <IconEdit width={'100%'} height={'100%'} style={{width: '80%', marginLeft: '20%'}}/>
                         </div>
                     )]
                     :
-                    (<div onClick={this.toggleEnabled.bind(this)} key={this.id + '.icon-check'} style={Object.assign({}, Theme.tile.editMode.removeIcon)}>
+                    (<div onClick={this.toggleEnabled.bind(this)} key={this.key + '.icon-check'} style={Object.assign({}, Theme.tile.editMode.removeIcon)}>
                         <IconRemoved width={'100%'} height={'100%'}/>
                     </div>)
                 }
                 {content}</div>);
         } else if (this.state.settings.enabled) {
             return (
-                <div key={this.id} >
-                    {this.showCorner ? (<div key={this.id + '-corner'}  onMouseDown={this.onLongClick.bind(this)} className="corner" style={Theme.tile.tileCorner}></div>) : null}
+                <div key={this.key + 'wrapper'} >
+                    {this.showCorner ? (<div key={this.key + 'corner'}  onMouseDown={this.onLongClick.bind(this)} className="corner" style={Theme.tile.tileCorner}></div>) : null}
                     {this.getIndicators()}
                     {content}
                 </div>

@@ -50,6 +50,7 @@ class SmartBlinds extends SmartGeneric {
 
         this.stateRx.showDialog = false; // support dialog in this tile used in generic class)
         this.stateRx.setValue = null;
+        this.key = 'smart-blinds-' + this.id + '-';
 
         this.componentReady();
     }
@@ -131,7 +132,7 @@ class SmartBlinds extends SmartGeneric {
 
     getIcon() {
         return (
-            <div key={this.id + '.icon'} style={Object.assign({}, Theme.tile.tileIcon, /*this.state[this.actualId] !== this.min ? {color: Theme.palette.lampOn} : */{}, {left: '1em'})} className="tile-icon">
+            <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, /*this.state[this.actualId] !== this.min ? {color: Theme.palette.lampOn} : */{}, {left: '1em'})} className="tile-icon">
                 <Icon width={'100%'} height={'100%'} style={{zIndex: 1}}/>
                 {this.state.executing ? <CircularProgress style={{zIndex: 3, position: 'absolute', top: 0, left: 0}} size={Theme.tile.tileIcon.width}/> : null}
                 <div style={{
@@ -164,15 +165,15 @@ class SmartBlinds extends SmartGeneric {
 
     render() {
         return this.wrapContent([
-            (<div key={this.id + '.tile-icon'} className="tile-icon"
+            (<div key={this.key + 'tile-icon'} className="tile-icon"
                   style={{pointerEvents: 'none'}}>{this.getIcon()}</div>),
-            (<div key={this.id + '.tile-text'} className="tile-text" style={Object.assign({}, Theme.tile.tileText, this.nameStyle, {marginTop: '3.1em'})}>
+            (<div key={this.key + 'tile-text'} className="tile-text" style={Object.assign({}, Theme.tile.tileText, this.nameStyle, {marginTop: '3.1em'})}>
                 <div className="tile-channel-name" style={Theme.tile.tileName}>{this.name}</div>
                 <div className="tile-state-text"
                      style={Object.assign({}, Theme.tile.tileState, this.state[this.id] ? Theme.tile.tileStateOn : Theme.tile.tileStateOff)}>{this.getStateText()}</div>
             </div>),
             this.state.showDialog ?
-                <Dialog key={this.id + '.slider'}
+                <Dialog key={this.key + 'dialog'}
                     startValue={this.realValueToPercent()}
                     onValueChange={this.setValue.bind(this)}
                     onStop={this.stopId ? this.onStop.bind(this) : null}

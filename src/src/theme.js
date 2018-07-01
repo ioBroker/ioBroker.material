@@ -183,6 +183,9 @@ export default {
             width: '100%',
             height: '2.3em',
         },
+        tileNameSmall: {
+            fontSize: 8,
+        },
         tileText: {
             marginTop: '2.8em',
             pointerEvents: 'none',

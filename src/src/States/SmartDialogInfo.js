@@ -166,13 +166,13 @@ class SmartDialogInfo extends Component  {
             }
         });
         return [
-            (<h4   key={this.props.points[0].id + '_header'} style={Theme.dialog.header}>{this.props.name}</h4>),
-            (<List key={this.props.points[0].id + '_list'} style={Theme.dialog.list}>{result}</List>)
+            (<h4   key={this.props.points[0].id + '_info_header'} style={Theme.dialog.header}>{this.props.name}</h4>),
+            (<List key={this.props.points[0].id + '_info_list'} style={Theme.dialog.list}>{result}</List>)
         ];
     }
 
     render() {
-        return (<div key={this.props.points[0].id + '_dialog'} ref={this.refDialog}
+        return (<div key={this.props.points[0].id + '_info_dialog'} ref={this.refDialog}
              onClick={this.onClose.bind(this)}
              style={Theme.dialog.back}>
             <div style={Theme.dialog.inner}>{this.generatePoints()}</div>

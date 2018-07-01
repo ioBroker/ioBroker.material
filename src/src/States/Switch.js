@@ -37,7 +37,7 @@ class SwitchCustom extends Generic {
         switch (this.props.type) {
             case StateTypes.light:
                 return (
-                    <div key={this.props.id + '.icon'} style={this.state.state ? styles.bulbOn : {}} className="iob-icon">
+                    <div key={this.props.id + '.1icon'} style={this.state.state ? styles.bulbOn : {}} className="iob-icon">
                         <ActionLightbulbOutline  width={Theme.indicatorSize} height={Theme.indicatorSize}/>
                     </div>
                 );
@@ -50,7 +50,7 @@ class SwitchCustom extends Generic {
     render() {
         return this.wrapContent([
                 (<Switch
-                    key={this.props.id}
+                    key={this.props.id + '1'}
                     label={this.getObjectName()}
                     onToggle={(obj, toggled) => this.handleChange(toggled)}
                     checked={this.state.state === 'on' || this.state.state === 'ON' || this.state.state === 1 || this.state.state === '1' || this.state.state === true || this.state.state === 'true'}

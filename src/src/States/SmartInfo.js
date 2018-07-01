@@ -3,10 +3,16 @@ import SmartGeneric from './SmartGeneric';
 import IconThermometer from '../icons/ThermometerSimple';
 import IconHydro from '../icons/Humidity';
 import IconInfo from 'react-icons/lib/md/info';
+import Utils from '../Utils';
 
 import Theme from '../theme';
 import I18n from '../i18n';
 import Dialog from './SmartDialogInfo';
+
+const invisibleDefaultRoles = [
+    /^timer.off$/,
+    /^inhibit$/,
+];
 
 class SmartInfo extends SmartGeneric {
     constructor(props) {
@@ -42,6 +48,12 @@ class SmartInfo extends SmartGeneric {
             this.infos = infoIDs.map(id => SmartInfo.getObjectAttributes(this.props.objects, id, name));
         }
 
+        if (!this.infos.find(state => !invisibleDefaultRoles.find(test => !test.test(state.role)))) {
+            this.defaultEnabling = false;
+        } else {
+            console.log('Visible!');
+        }
+
         // make tile with opacity 1
         this.props.tile.state.state = true;
 
@@ -52,6 +64,8 @@ class SmartInfo extends SmartGeneric {
         this.props.tile.setState({
             isPointer: this.showCorner
         });
+
+        this.key = 'smart-info-' + this.id + '-';
 
         this.componentReady();
     }
@@ -74,6 +88,7 @@ class SmartInfo extends SmartGeneric {
                 icon: IconHydro,
                 iconStyle: {color: '#0056c3'},
                 unit: unit ? ' ' + unit : ' %',
+                role: role,
                 name: title,
                 common: objects[id].common
             }
@@ -84,6 +99,7 @@ class SmartInfo extends SmartGeneric {
                 iconStyle: {color: '#e54100'},
                 unit: unit ? ' ' + unit : '°',
                 name: title,
+                role: role,
                 common: objects[id].common
             }
         } else {
@@ -91,6 +107,7 @@ class SmartInfo extends SmartGeneric {
                 id: id,
                 unit: unit ? ' ' + unit : '',
                 name: title,
+                role: role,
                 common: objects[id].common
             }
         }
@@ -109,7 +126,7 @@ class SmartInfo extends SmartGeneric {
     getIcon() {
         let Icon = this.infos[0].icon || IconInfo;
         return (
-            <div key={this.id + '.icon'} style={Object.assign({}, Theme.tile.tileIcon, this.infos[0].iconStyle || {})} className="tile-icon">
+            <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, this.infos[0].iconStyle || {})} className="tile-icon">
                 <Icon style={{zIndex: 1}} width={'100%'} height={'100%'}/>
             </div>
         );
@@ -126,7 +143,7 @@ class SmartInfo extends SmartGeneric {
         }
         let val = this.state[this.infos[1].id];
         const Icon = this.infos[1].icon;
-        return (<div key={this.id + '.tile-secondary'} className="tile-text-second" style={Theme.tile.secondary.div} title={this.secondary.title}>
+        return (<div key={this.key + 'tile-secondary'} className="tile-text-second" style={Theme.tile.secondary.div} title={this.secondary.name}>
             {Icon ? (<Icon style={Object.assign({}, Theme.tile.secondary.icon, this.infos[1].iconStyle || {})} />) : null}
             <span style={Theme.tile.secondary.text}>{val + this.infos[1].unit}</span>
         </div>);
@@ -134,20 +151,25 @@ class SmartInfo extends SmartGeneric {
 
     getNumberOfValuesIndicator() {
         if (this.infos.length <= 2) return null;
-        return (<div key={this.id + '.tile-number'} style={Theme.tile.tileNumber} title={I18n.t('Show %s values', this.infos.length)}>{this.infos.length}</div>);
+        return (<div key={this.key + 'tile-number'} style={Theme.tile.tileNumber} title={I18n.t('Show %s values', this.infos.length)}>{this.infos.length}</div>);
+    }
+    getFirstName() {
+        this.firstName = this.firstName || I18n.t(Utils.CapitalWords(this.id.split('.').pop()));
+
+        return [(<span key={this.key + 'tile-name'}>{this.name} </span>),(<span key={this.key + 'tile-first-name'} style={Theme.tile.tileNameSmall}>{this.firstName}</span>)];
     }
 
     render() {
         return this.wrapContent([
-            (<div key={this.id + '.tile-icon'} className="tile-icon">{this.getIcon()}</div>),
+            (<div key={this.key + 'tile-icon'} className="tile-icon">{this.getIcon()}</div>),
             this.getSecondaryDiv(),
             this.getNumberOfValuesIndicator(),
-            (<div key={this.id + '.tile-text'} className="tile-text" style={Theme.tile.tileText}>
-                <div className="tile-channel-name" style={Object.assign({}, Theme.tile.tileName, this.nameStyle)}>{this.name}</div>
+            (<div key={this.key + 'tile-text'} className="tile-text" style={Theme.tile.tileText}>
+                <div className="tile-channel-name" style={Object.assign({}, Theme.tile.tileName, this.nameStyle)} title={this.id}>{this.getFirstName()}</div>
                 <div className="tile-state-text"  style={Object.assign({}, Theme.tile.tileState, this.state[this.actualId] ? Theme.tile.tileStateOn : Theme.tile.tileStateOff, {fontSize: 18})}>{this.getStateText()}</div>
             </div>),
             this.state.showDialog ?
-                <Dialog key={this.id + '.dialog'}
+                <Dialog key={this.key + 'dialog'}
                             points={this.infos}
                             name={this.name}
                             //onValueChange={this.onValueChange.bind(this)}
