@@ -26,3 +26,7 @@
 .corner:hover {
   border-width: 0 32px 32px 0 !important;
 }
+.edit-buttons:hover {
+  background: rgba(200, 200, 200, 1) !important;
+  color: black !important;
+}

@@ -34,24 +34,56 @@ class Utils {
     }
 
     static getSettings(obj, options, defaultEnabling) {
-        if (typeof options === 'boolean') {
-            defaultEnabling = options;
-            options = null;
-        }
         let settings;
         if (obj && obj.common && obj.common.custom) {
             settings = obj.common.custom || {};
-            settings = settings.material ? JSON.parse(JSON.stringify(settings.material)) : {enabled: true};
+            settings = settings.material && settings.material[options.user || 'admin'] ? JSON.parse(JSON.stringify(settings.material[options.user || 'admin'])) : {enabled: true};
         } else {
-            settings = {enabled: defaultEnabling === undefined ? true : defaultEnabling};
+            settings = {enabled: defaultEnabling === undefined ? true : defaultEnabling, useCustom: false};
         }
+        if (false && settings.useCommon) {
+            if (obj.common.color) settings.color = obj.common.color;
+            if (obj.common.icon) settings.icon = obj.common.icon;
+            if (obj.common.name) settings.name = obj.common.name;
+        } else {
+            if (!settings.name && options.name) settings.name = options.name;
+            if (!settings.icon && obj.common.icon) settings.icon = obj.common.icon;
+            if (!settings.color && obj.common.color) settings.color = obj.common.color;
+        }
+
+        if (typeof settings.name === 'object') {
+            settings.name = settings.name[options.language] || settings.name.en;
+        }
+
         return settings;
     }
     static setSettings(obj, settings, options) {
         if (obj) {
             obj.common = obj.common || {};
             obj.common.custom = obj.common.custom || {};
-            obj.common.custom.material = settings;
+            obj.common.custom.material = obj.common.custom.material || {};
+            obj.common.custom.material[options.user || 'admin'] = settings;
+            const s = obj.common.custom.material[options.user || 'admin'];
+            if (s.useCommon) {
+                if (s.color !== undefined) {
+                    obj.common.color = s.color;
+                    delete s.color;
+                }
+                if (s.icon !== undefined) {
+                    obj.common.icon = s.icon;
+                    delete s.icon;
+                }
+                if (s.name !== undefined) {
+                    if (typeof obj.common.name !== 'object') {
+                        obj.common.name = {};
+                        obj.common.name[options.language] = s.name;
+                    } else{
+                        obj.common.name[options.language] = s.name;
+                    }
+                    delete s.name;
+                }
+            }
+
             return true;
         } else {
             return false;

@@ -9,6 +9,7 @@ import IconEdit from 'react-icons/lib/md/edit';
 import IconDirectionUp from 'react-icons/lib/md/arrow-upward';
 import IconDirectionDown from 'react-icons/lib/md/arrow-downward';
 import IconDirection from 'react-icons/lib/md/swap-vert';
+import Dialog from './SmartDialogSettings';
 
 class SmartGeneric extends Component {
     static propTypes = {
@@ -16,7 +17,8 @@ class SmartGeneric extends Component {
         states:         PropTypes.object.isRequired,
         tile:           PropTypes.object.isRequired,
         channelInfo:    PropTypes.object.isRequired,
-        enumName:       PropTypes.string
+        enumNames:      PropTypes.object,
+        user:           PropTypes.string
     };
 
     constructor(props, noSubscribe) {
@@ -29,6 +31,7 @@ class SmartGeneric extends Component {
         this.stateRx = {
             executing: false,
             settings: {},
+            showSettings: false,
             editMode: null
         };
         this.defaultEnabling = true; // overload this property to hide element by default
@@ -113,9 +116,6 @@ class SmartGeneric extends Component {
     }
 
     componentReady () {
-        this.name = this.getObjectNameCh();
-        this.nameStyle = {fontSize: SmartGeneric.getNameFontSize(this.name)};
-
         if (this.id && this.props.objects[this.id]) {
             /*if (this.props.objects[this.id].type === 'state') {
                 let channel = SmartGeneric.getParentId(this.id);
@@ -132,7 +132,17 @@ class SmartGeneric extends Component {
             this.props.tile.registerHandler('onMouseDown', this.onTileMouseDown.bind(this));
         }
 
-        this.stateRx.settings = Utils.getSettings(this.props.objects[this.settingsId], null, this.defaultEnabling);
+        this.stateRx.settings = Utils.getSettings(
+            this.props.objects[this.settingsId],
+            {
+                user: this.props.user,
+                language: I18n.getLanguage(),
+                name: this.getObjectNameCh()
+            },
+            this.defaultEnabling
+        );
+
+        this.stateRx.nameStyle = {fontSize: SmartGeneric.getNameFontSize(this.stateRx.settings.name)};
 
         this.props.tile.setVisibility(this.stateRx.settings.enabled);
 
@@ -148,7 +158,7 @@ class SmartGeneric extends Component {
         }
     }
 
-    static getObjectName(objects, id, label, channelName, enumName) {
+    static getObjectName(objects, id, label, channelName, enumNames) {
         let name;
         if (label) {
             name = label;
@@ -156,17 +166,24 @@ class SmartGeneric extends Component {
         if (!id) {
             name = 'No elements';
         } else {
-            if (objects[enumName]) {
-                enumName = SmartGeneric.getObjectName(objects, enumName);
-            }
+            //if (objects[enumName]) {
+            //    enumName = SmartGeneric.getObjectName(objects, enumName);
+            //}
 
             let item = objects[id];
             if (item && item.common && item.common.name) {
                 name = Utils.getObjectName(objects, id);
 
-                if (enumName) {
-                    let reg = new RegExp('\\b' + enumName + '\\b');
-                    name = name.replace(reg, ' ').replace(/\s\s/g, '').trim();
+                if (enumNames) {
+                    if (typeof enumNames === 'object') {
+                        enumNames.forEach(e => {
+                            let reg = new RegExp('\\b' + e + '\\b');
+                            name = name.replace(reg, ' ').replace(/\s\s/g, '').trim();
+                        });
+                    } else {
+                        let reg = new RegExp('\\b' + enumNames + '\\b');
+                        name = name.replace(reg, ' ').replace(/\s\s/g, '').trim();
+                    }
                 }
                 if (channelName) {
                     let reg = new RegExp(channelName + '[.: ]?');
@@ -181,9 +198,16 @@ class SmartGeneric extends Component {
                 name = id.substring(pos + 1).replace(/_/g, ' ');
                 name = Utils.CapitalWords(name);
 
-                if (enumName) {
-                    let reg = new RegExp('\\b' + enumName + '\\b');
-                    name = name.replace(reg, ' ').replace(/\s\s/g, '').trim();
+                if (enumNames) {
+                    if (typeof enumNames === 'object') {
+                        enumNames.forEach(e => {
+                            let reg = new RegExp('\\b' + e + '\\b');
+                            name = name.replace(reg, ' ').replace(/\s\s/g, '').trim();
+                        });
+                    } else {
+                        let reg = new RegExp('\\b' + enumNames + '\\b');
+                        name = name.replace(reg, ' ').replace(/\s\s/g, '').trim();
+                    }
                 }
 
                 if (channelName) {
@@ -207,9 +231,9 @@ class SmartGeneric extends Component {
     getObjectNameCh() {
         const channelId = SmartGeneric.getParentId(this.id);
         if (this.props.objects[channelId] && (this.props.objects[channelId].type === 'channel' || this.props.objects[channelId].type === 'device')) {
-            return SmartGeneric.getObjectName(this.props.objects, channelId, null, null, this.props.enumName) || '&nbsp;';
+            return SmartGeneric.getObjectName(this.props.objects, channelId, null, null, this.props.enumNames) || '&nbsp;';
         } else {
-            return SmartGeneric.getObjectName(this.props.objects, this.id, null, null, this.props.enumName) || '&nbsp;';
+            return SmartGeneric.getObjectName(this.props.objects, this.id, null, null, this.props.enumNames) || '&nbsp;';
         }
     }
 
@@ -369,14 +393,54 @@ class SmartGeneric extends Component {
         }
     }
 
+    getDialogSettings(settings) {
+        settings = settings || [];
+
+        settings.unshift({
+            name: 'icon',
+            value: this.state.settings.icon || '',
+            type: 'icon'
+        });
+        settings.unshift({
+            name: 'colorOn',
+            value: this.state.settings.color || '',
+            type: 'color'
+        });
+        settings.unshift({
+            name: 'name',
+            value: this.state.settings.name || '',
+            type: 'string'
+        });
+        /*settings.unshift({
+            name: 'useCommon',
+            value: this.state.settings.useCommon || false,
+            type: 'boolean'
+        });*/
+        return settings;
+    }
+
+    saveDialogSettings(newSettings) {
+        newSettings.enabled = this.state.settings.enabled;
+        this.setState({settings: newSettings});
+        this.saveSettings();
+    }
+
+    showSettings() {
+        this.setState({showSettings: true});
+    }
+
+    onSettingsClose() {
+        this.setState({showSettings: false});
+    }
+
     wrapContent(content) {
         if (this.state.editMode) {
-            return (<div key={this.key + 'wrapper'}>
+            return [(<div key={this.key + 'wrapper'}>
                 {this.state.settings.enabled ?
-                    [(<div onClick={this.toggleEnabled.bind(this)} key={this.key + 'icon-check'} style={Object.assign({}, Theme.tile.editMode.checkIcon)}>
+                    [(<div onClick={this.toggleEnabled.bind(this)} key={this.key + 'icon-check'} style={Object.assign({}, Theme.tile.editMode.checkIcon)} className="edit-buttons">
                             <IconCheck width={'100%'} height={'100%'} />
                     </div>),
-                    (<div key={this.key + 'icon-edit'} style={Object.assign({}, Theme.tile.editMode.editIcon)}>
+                    (<div onClick={this.showSettings.bind(this)} key={this.key + 'icon-edit'} style={Object.assign({}, Theme.tile.editMode.editIcon)} className="edit-buttons">
                         <IconEdit width={'100%'} height={'100%'} style={{width: '80%', marginLeft: '20%'}}/>
                         </div>
                     )]
@@ -385,7 +449,14 @@ class SmartGeneric extends Component {
                         <IconRemoved width={'100%'} height={'100%'}/>
                     </div>)
                 }
-                {content}</div>);
+                {content}</div>),
+                this.state.showSettings ? (<Dialog key={this.key + 'settings'}
+                         name={this.state.settings.name}
+                         dialogKey={this.key + 'settings'}
+                         settings={this.getDialogSettings()}
+                         onSave={this.saveDialogSettings.bind(this)}
+                         onClose={this.onSettingsClose.bind(this)}
+                />): null];
         } else if (this.state.settings.enabled) {
             return (
                 <div key={this.key + 'wrapper'} >
@@ -407,7 +478,7 @@ class SmartGeneric extends Component {
         if (!this.state.editMode && !this.state.settings.enabled) {
             return null;
         } else {
-            return this.wrapContent(this.getObjectNameCh());
+            return this.wrapContent(this.settings.name || this.getObjectNameCh());
         }
     }
 }

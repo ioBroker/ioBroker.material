@@ -16,6 +16,7 @@ import IconFullScreenExit from 'react-icons/lib/md/fullscreen-exit';
 import IconMic from 'react-icons/lib/md/mic';
 import Utils from './Utils';
 import Dialog from '@material-ui/core/Dialog';
+import DialogSettings from './States/SmartDialogSettings'
 import RaisedButton from '@material-ui/core/Button';
 import SpeechDialog from './SpeechDialog';
 import Theme from './theme';
@@ -61,12 +62,14 @@ class App extends Component {
             errorText:      '',
             masterPath:     path ? 'enum.' + path.split('.').shift() : 'enum.rooms',
             viewEnum:       path ? 'enum.' + path : '',
-            width:          '0'
+            width:          '0',
+            editEnumSettings: false
         };
         this.state.open = this.state.menuFixed;
 
         this.states = {};
         this.tasks = [];
+        this.user = 'admin';
 
         this.subscribes = {};
         this.requestStates = [];
@@ -96,6 +99,8 @@ class App extends Component {
         }, {
             onConnChange: isConnected => {
                 if (isConnected) {
+                    this.user = this.conn.getUser().replace(/^system\.user\./, '');
+
                     this.conn.getObjects(!this.state.refresh, (err, objects) => {
                         if (err) {
                             this.showError(err);
@@ -335,9 +340,9 @@ class App extends Component {
 
         if (task.name === 'saveSettings') {
             this.conn.getObject(task.id, (err, obj) => {
-                let settings = Utils.getSettings(obj);
+                let settings = Utils.getSettings(obj, {user: this.user});
                 if (JSON.stringify(settings) !== JSON.stringify(task.settings)) {
-                    if (Utils.setSettings(obj, task.settings)) {
+                    if (Utils.setSettings(obj, task.settings, {user: this.props.user, language: I18n.getLanguage()})) {
                         this.conn._socket.emit('setObject', obj._id, obj, err => {
                             if (!err) {
                                 this.state.objects[obj._id] = obj;
@@ -432,6 +437,13 @@ class App extends Component {
     toggleEditMode() {
         this.setState({editMode: !this.state.editMode});
     }
+    editEnumSettingsOpen() {
+        this.setState({editEnumSettings: true});
+    }
+    editEnumSettingsClose() {
+        this.setState({editEnumSettings: false});
+    }
+
 
     render() {
         return (
@@ -454,11 +466,19 @@ class App extends Component {
                         </Typography>
                         <div style={{color: Theme.palette.textColor}}>
                             {this.state.connected ? null : (<IconButton disabled={true}><IconSignalOff width={Theme.iconSize} height={Theme.iconSize}/></IconButton>)}
+                            {this.state.editMode ? (<IconButton onClick={this.editEnumSettingsOpen().bind(this)} style={{color: this.state.editEnumSettings ? Theme.palette.editActive: Theme.palette.textColor}}><IconEdit width={Theme.iconSize} height={Theme.iconSize}/></IconButton>) : null}
                             <IconButton onClick={this.toggleEditMode.bind(this)} style={{color: this.state.editMode ? Theme.palette.editActive: Theme.palette.textColor}}><IconEdit width={Theme.iconSize} height={Theme.iconSize}/></IconButton>
                             {SpeechDialog.isSpeechRecognitionSupported() ? <IconButton style={{color: Theme.palette.textColor}} onClick={() => this.onSpeech(true)}><IconMic width={Theme.iconSize} height={Theme.iconSize}/></IconButton> : null}
                             {App.isFullScreenSupported() ?
                                 <IconButton style={{color: Theme.palette.textColor}} onClick={this.onToggleFullScreen.bind(this)}>{this.state.fullScreen ? <IconFullScreenExit width={Theme.iconSize} height={Theme.iconSize} /> : <IconFullScreen width={Theme.iconSize} height={Theme.iconSize} />}</IconButton> : null}
                         </div>
+                        {this.state.editEnumSettings ? (<DialogSettings key={'enum-settings'}
+                                                           name={this.state.settings.name}
+                                                           dialogKey={'enum-settings'}
+                                                           settings={this.getDialogSettings()}
+                                                           onSave={this.saveDialogSettings.bind(this)}
+                                                           onClose={this.onSettingsClose.bind(this)}
+                        />): null}
                     </Toolbar>
                 </AppBar>
 
@@ -483,6 +503,7 @@ class App extends Component {
                     <MenuList
                         width={Theme.menu.width}
                         objects={this.state.objects}
+                        user={this.user}
                         selectedId={this.state.viewEnum}
                         editMode={this.state.editMode}
                         root={this.state.masterPath}
@@ -494,6 +515,7 @@ class App extends Component {
                 <StatesList
                     loading={this.state.loading}
                     objects={this.state.objects}
+                    user={this.user}
                     states={this.states}
                     editMode={this.state.editMode}
                     windowWidth={this.state.width}

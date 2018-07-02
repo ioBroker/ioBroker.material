@@ -10,11 +10,13 @@ import SmartDetector from './States/SmartDetector';
 class StatesSubList extends Component {
 
     static propTypes = {
-        enumID:   PropTypes.string.isRequired,
-        objects:  PropTypes.object.isRequired,
-        editMode: PropTypes.bool.isRequired,
-        states:   PropTypes.object.isRequired,
-        keys:     PropTypes.array.isRequired
+        enumID:     PropTypes.string.isRequired,
+        enumSubID:  PropTypes.string.isRequired,
+        user:       PropTypes.string.isRequired,
+        objects:    PropTypes.object.isRequired,
+        editMode:   PropTypes.bool.isRequired,
+        states:     PropTypes.object.isRequired,
+        keys:       PropTypes.array.isRequired
     };
 
     constructor(props) {
@@ -23,6 +25,7 @@ class StatesSubList extends Component {
         this.state = {
             visible: false
         };
+        this.name = this.props.enumSubID ? Utils.getObjectName(this.props.objects, this.props.enumSubID, false, [this.props.enumID]) : I18n.t('Others')
     }
 
     isVisible() {
@@ -64,12 +67,13 @@ class StatesSubList extends Component {
         return (<Component
             key={state.id + '-sublist-' + Component.name + '-' + i}
             id={channelId}
-            enumName={Utils.getObjectName(this.props.objects, this.props.enumID)}
+            enumNames={[this.name, Utils.getObjectName(this.props.objects, this.props.enumID)]}
             enumFunctions={this.props.enumFunctions}
             editMode={this.props.editMode}
             channelInfo={channelInfo}
             states={this.props.states}
             objects={this.props.objects}
+            user={this.props.user}
             onVisibilityControl={this.onVisibilityControl.bind(this)}
             onSaveSettings={this.props.onSaveSettings}
             onCollectIds={this.props.onCollectIds}
@@ -120,10 +124,8 @@ class StatesSubList extends Component {
             if (items.length) {
                 const visible = this.state.visible || this.props.editMode;
 
-                return (<div key={(this.props.enumID || 'others').replace(/[^\w\d]/g, '_') + '-title'} style={Object.assign({}, Theme.list.row, !visible ? {display: 'none'} : {})}><h3
-                    style={Theme.list.title}>{
-                    this.props.enumID ? Utils.getObjectName(this.props.objects, this.props.enumID) : I18n.t('Others')
-                }</h3>
+                return (<div key={(this.props.enumID + '-' + (this.props.enumSubID || 'others')).replace(/[^\w\d]/g, '_') + '-title'} style={Object.assign({}, Theme.list.row, !visible ? {display: 'none'} : {})}><h3
+                    style={Theme.list.title}>{this.name}</h3>
                     <div style={{width: '100%'}}>{items}</div>
                 </div>);
             } else {

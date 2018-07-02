@@ -20,10 +20,11 @@ import SmartWindowTilt from './States/SmartWindowTilt';
 class TileSmart extends Component {
     static propTypes = {
         id:          PropTypes.string.isRequired,
+        user:        PropTypes.string.isRequired,
         objects:     PropTypes.object.isRequired,
         states:      PropTypes.object.isRequired,
         editMode:    PropTypes.bool.isRequired,
-        enumName:    PropTypes.string,
+        enumNames:   PropTypes.object,
         channelInfo: PropTypes.object
     };
 
@@ -44,7 +45,7 @@ class TileSmart extends Component {
     }
 
     getObjectName(channelName) {
-        return SmartGeneric.getObjectName(this.props.objects, this.stateId, null, channelName, this.props.enumName);
+        return SmartGeneric.getObjectName(this.props.objects, this.stateId, null, channelName, this.props.enumNames);
     }
 
     onMouseDown(e) {
@@ -113,7 +114,7 @@ class TileSmart extends Component {
         //              ↓
         return (<Component
             key={channelInfo.id + '-tile-' + Component.name}
-            enumName={this.props.enumName}
+            enumNames={this.props.enumNames}
             channelInfo={channelInfo}
             tile={tile}
             editMode={this.props.editMode}

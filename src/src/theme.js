@@ -264,7 +264,9 @@ export default {
                 height: '100%',
                 background: 'rgba(200,200,200,0.8)',
                 color: 'white',
-                borderRadius: '0 ' + tileBorderRadius + ' ' + tileBorderRadius + ' 0'
+                borderRadius: '0 ' + tileBorderRadius + ' ' + tileBorderRadius + ' 0',
+                zIndex: 1,
+                cursor: 'pointer'
             },
             editIcon: {
                 position: 'absolute',
@@ -274,7 +276,9 @@ export default {
                 height: '100%',
                 background: 'rgba(200,200,200,0.8)',
                 color: 'white',
-                borderRadius: tileBorderRadius + ' 0 0 ' + tileBorderRadius
+                borderRadius: tileBorderRadius + ' 0 0 ' + tileBorderRadius,
+                zIndex: 1,
+                cursor: 'pointer'
             },
             removeIcon: {
                 position: 'absolute',

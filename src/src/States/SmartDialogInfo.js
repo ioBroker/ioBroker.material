@@ -73,6 +73,9 @@ class SmartDialogInfo extends Component  {
     }
 
     onClose() {
+        if (this.click && Date.now() - this.click < 50) {
+            return;
+        }
         window.removeEventListener('contextmenu', SmartDialogInfo.onContextMenu, false);
         this.props.onClose && this.props.onClose();
     }
@@ -95,6 +98,10 @@ class SmartDialogInfo extends Component  {
 
     handleSlider(id, value) {
         console.log('handleSlider', id, value);
+    }
+
+    onClick() {
+        this.click = Date.now();
     }
 
     generatePoints() {
@@ -175,7 +182,7 @@ class SmartDialogInfo extends Component  {
         return (<div key={this.props.points[0].id + '_info_dialog'} ref={this.refDialog}
              onClick={this.onClose.bind(this)}
              style={Theme.dialog.back}>
-            <div style={Theme.dialog.inner}>{this.generatePoints()}</div>
+            <div onClick={this.onClick.bind(this)} style={Theme.dialog.inner}>{this.generatePoints()}</div>
         </div>);
     }
 }

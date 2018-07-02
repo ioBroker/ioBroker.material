@@ -156,7 +156,7 @@ class SmartInfo extends SmartGeneric {
     getFirstName() {
         this.firstName = this.firstName || I18n.t(Utils.CapitalWords(this.id.split('.').pop()));
 
-        return [(<span key={this.key + 'tile-name'}>{this.name} </span>),(<span key={this.key + 'tile-first-name'} style={Theme.tile.tileNameSmall}>{this.firstName}</span>)];
+        return [(<span key={this.key + 'tile-name'}>{this.state.settings.name} </span>),(<span key={this.key + 'tile-first-name'} style={Theme.tile.tileNameSmall}>{this.firstName}</span>)];
     }
 
     render() {
@@ -165,13 +165,13 @@ class SmartInfo extends SmartGeneric {
             this.getSecondaryDiv(),
             this.getNumberOfValuesIndicator(),
             (<div key={this.key + 'tile-text'} className="tile-text" style={Theme.tile.tileText}>
-                <div className="tile-channel-name" style={Object.assign({}, Theme.tile.tileName, this.nameStyle)} title={this.id}>{this.getFirstName()}</div>
+                <div className="tile-channel-name" style={Object.assign({}, Theme.tile.tileName, this.state.nameStyle)} title={this.id}>{this.getFirstName()}</div>
                 <div className="tile-state-text"  style={Object.assign({}, Theme.tile.tileState, this.state[this.actualId] ? Theme.tile.tileStateOn : Theme.tile.tileStateOff, {fontSize: 18})}>{this.getStateText()}</div>
             </div>),
             this.state.showDialog ?
                 <Dialog key={this.key + 'dialog'}
                             points={this.infos}
-                            name={this.name}
+                            name={this.state.settings.name}
                             //onValueChange={this.onValueChange.bind(this)}
                             onClose={this.onDialogClose.bind(this)}
                             objects={this.props.objects}

@@ -4,11 +4,13 @@ import Tile from './Tile';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Theme from './theme';
 import StatesSubList from './StatesSubList';
+import I18n from "./i18n";
 
 class StatesList extends Component {
 
     static propTypes = {
         enumID:   PropTypes.string.isRequired,
+        user:     PropTypes.string.isRequired,
         objects:  PropTypes.object.isRequired,
         editMode: PropTypes.bool.isRequired,
         states:   PropTypes.object.isRequired,
@@ -95,12 +97,14 @@ class StatesList extends Component {
                     columns.push((<StatesSubList
                             key={this.props.enumID + '_' + id + '-list'}
                             objects={this.props.objects}
+                            user={this.props.user}
                             states={this.props.states}
                             items={column}
                             editMode={this.props.editMode}
                             windowWidth={this.props.width}
                             enumFunctions={this.enumFunctions}
-                            enumID={id}
+                            enumID={this.props.enumID}
+                            enumSubID={id}
                             keys={this.keys}
                             onSaveSettings={this.props.onSaveSettings}
                             onControl={this.props.onControl}
@@ -122,12 +126,14 @@ class StatesList extends Component {
                 columns.push(<StatesSubList
                     key={'others'}
                     objects={this.props.objects}
+                    user={this.props.user}
                     states={this.props.states}
                     items={column}
                     editMode={this.props.editMode}
                     windowWidth={this.props.width}
                     enumFunctions={this.enumFunctions}
-                    enumID={''}
+                    enumID={this.props.enumID}
+                    enumSubID=""
                     keys={this.keys}
                     onSaveSettings={this.props.onSaveSettings}
                     onControl={this.props.onControl}
