@@ -538,3 +538,6 @@ if (typeof module !== 'undefined' && module.parent) {
 } else {
 
 }
+
+export const Types = Types;
+export default ChannelDetector;
