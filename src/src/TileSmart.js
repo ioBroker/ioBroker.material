@@ -34,7 +34,9 @@ class TileSmart extends Component {
         this.state = {
             state: false,
             isPointer: false,
-            visible: null
+            visible: null,
+            colorOn: Theme.tile.tileOn.background,
+            colorOff: Theme.tile.tileOff.background
         };
         this.stateId = this.channelInfo.states.find(state => state.id).id;
         this.handlers = {
@@ -69,10 +71,11 @@ class TileSmart extends Component {
     getTileStyle() {
         let style;
         if (this.props.editMode) {
-            style = Object.assign({}, Theme.tile.tile, Theme.tile.tileOn, Theme.tile.editEnabled);
+            style = Object.assign({}, Theme.tile.tile, Theme.tile.tileOn, {background: this.state.colorOn}, Theme.tile.editEnabled);
             Object.assign(style, Theme.tile.editEnabled);
         } else {
-            style = Object.assign({}, Theme.tile.tile, this.state.state ? Theme.tile.tileOn : Theme.tile.tileOff);
+            style = this.state.state ? Object.assign({}, Theme.tile.tile, Theme.tile.tileOn, {background: this.state.colorOn}) :
+                Object.assign({}, Theme.tile.tile, Theme.tile.tileOff, {background: this.state.colorOff});
         }
         return style;
     }
@@ -81,6 +84,18 @@ class TileSmart extends Component {
         if (this.state.visible !== isVisible) {
             this.setState({visible: isVisible});
             this.props.onVisibilityControl(this.stateId, isVisible);
+        }
+    }
+
+    setColorOn(color) {
+        if (this.state.colorOn !== color) {
+            this.setState({colorOn: color});
+        }
+    }
+
+    setColorOff(color) {
+        if (this.state.colorOff !== color) {
+            this.setState({colorOff: color});
         }
     }
 

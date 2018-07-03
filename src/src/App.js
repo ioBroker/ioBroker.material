@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import MenuList from './List.js';
+import MenuList from './MenuList';
 import StatesList from './StatesList';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -9,6 +9,7 @@ import Drawer from '@material-ui/core/Drawer';
 import IconButton from '@material-ui/core/IconButton';
 import IconClose from 'react-icons/lib/md/close';
 import IconEdit from 'react-icons/lib/md/mode-edit';
+import IconSettings from 'react-icons/lib/md/settings';
 import IconSignalOff from 'react-icons/lib/md/signal-wifi-off';
 import IconLock from 'react-icons/lib/md/lock';
 import IconFullScreen from 'react-icons/lib/md/fullscreen';
@@ -63,7 +64,8 @@ class App extends Component {
             masterPath:     path ? 'enum.' + path.split('.').shift() : 'enum.rooms',
             viewEnum:       path ? 'enum.' + path : '',
             width:          '0',
-            editEnumSettings: false
+            editEnumSettings: false,
+            settings:       null
         };
         this.state.open = this.state.menuFixed;
 
@@ -97,16 +99,16 @@ class App extends Component {
             connLink:      (typeof socketUrl === 'undefined') ? '/' : undefined,  // optional URL of the socket.io adapter
 //            socketSession: ''           // optional - used by authentication
         }, {
-            onConnChange: isConnected => {
+            onConnChange: function (isConnected) { // no lambda here
                 if (isConnected) {
                     this.user = this.conn.getUser().replace(/^system\.user\./, '');
 
-                    this.conn.getObjects(!this.state.refresh, (err, objects) => {
+                    this.conn.getObjects(!this.state.refresh, function (err, objects) {
                         if (err) {
                             this.showError(err);
                         } else {
                             let viewEnum;
-                            this.conn.getObject('system.config', (err, config) => {
+                            this.conn.getObject('system.config', function (err, config) {
                                 if (objects && !this.state.viewEnum) {
                                     let reg = new RegExp('^' + this.state.masterPath + '\\.');
                                     // get first room
@@ -131,23 +133,29 @@ class App extends Component {
                                         type: objects[keys[k]].type
                                     };
                                 }
+                                viewEnum = viewEnum || this.state.viewEnum;
 
                                 if (viewEnum) {
-                                    this.setState({objects: result || {}, viewEnum: viewEnum, loading: false});
+                                    this.setState({
+                                        objects: result || {},
+                                        viewEnum: viewEnum,
+                                        loading: false,
+                                        settings: Utils.getSettings((result || {})[viewEnum], {user: this.user, name: Utils.getObjectName(this.state.objects, viewEnum)})
+                                    });
                                 } else {
                                     this.setState({objects: result || {}, loading: false});
                                 }
                                 this.conn.subscribe(['text2command.' + text2CommandInstance + '.response']);
-                            });
+                            }.bind(this));
                         }
-                    });
+                    }.bind(this));
                 }
                 this.setState({connected: isConnected, loading: true});
-            },
+            }.bind(this),
             onRefresh: () => {
                 window.location.reload();
             },
-            onUpdate: (id, state) => {
+            onUpdate: function (id, state) { // no lambda here
                 setTimeout(() => {
                     if (id) {
                         this.states[id] = state;
@@ -163,10 +171,10 @@ class App extends Component {
                         this.speak(state.val);
                     }
                 }, 0);
-            },
-            onError: err => {
+            }.bind(this),
+            onError: function (err) { // no lambda here
                 this.showError(err);
-            }
+            }.bind(this)
         }, false, false);
     }
 
@@ -444,6 +452,37 @@ class App extends Component {
         this.setState({editEnumSettings: false});
     }
 
+    getDialogSettings(settings) {
+        settings = settings || [];
+
+        settings.unshift({
+            name: 'icon',
+            value: this.state.settings.icon || '',
+            type: 'icon'
+        });
+        settings.unshift({
+            name: 'color',
+            value: this.state.settings.color || '',
+            type: 'color'
+        });
+        settings.unshift({
+            name: 'name',
+            value: this.state.settings.name || '',
+            type: 'string'
+        });
+        settings.unshift({
+            name: 'newLine',
+            value: this.state.settings.newLine || false,
+            type: 'boolean'
+        });
+        return settings;
+    }
+
+    saveDialogSettings(settings) {
+        settings = settings || this.state.settings;
+        this.setState({settings});
+        this.onSaveSettings(this.state.viewEnum, settings);
+    }
 
     render() {
         return (
@@ -466,18 +505,18 @@ class App extends Component {
                         </Typography>
                         <div style={{color: Theme.palette.textColor}}>
                             {this.state.connected ? null : (<IconButton disabled={true}><IconSignalOff width={Theme.iconSize} height={Theme.iconSize}/></IconButton>)}
-                            {this.state.editMode ? (<IconButton onClick={this.editEnumSettingsOpen().bind(this)} style={{color: this.state.editEnumSettings ? Theme.palette.editActive: Theme.palette.textColor}}><IconEdit width={Theme.iconSize} height={Theme.iconSize}/></IconButton>) : null}
+                            {this.state.editMode ? (<IconButton onClick={this.editEnumSettingsOpen.bind(this)} style={{color: this.state.editEnumSettings ? Theme.palette.editActive: Theme.palette.textColor}}><IconSettings width={Theme.iconSize} height={Theme.iconSize}/></IconButton>) : null}
                             <IconButton onClick={this.toggleEditMode.bind(this)} style={{color: this.state.editMode ? Theme.palette.editActive: Theme.palette.textColor}}><IconEdit width={Theme.iconSize} height={Theme.iconSize}/></IconButton>
                             {SpeechDialog.isSpeechRecognitionSupported() ? <IconButton style={{color: Theme.palette.textColor}} onClick={() => this.onSpeech(true)}><IconMic width={Theme.iconSize} height={Theme.iconSize}/></IconButton> : null}
                             {App.isFullScreenSupported() ?
                                 <IconButton style={{color: Theme.palette.textColor}} onClick={this.onToggleFullScreen.bind(this)}>{this.state.fullScreen ? <IconFullScreenExit width={Theme.iconSize} height={Theme.iconSize} /> : <IconFullScreen width={Theme.iconSize} height={Theme.iconSize} />}</IconButton> : null}
                         </div>
                         {this.state.editEnumSettings ? (<DialogSettings key={'enum-settings'}
-                                                           name={this.state.settings.name}
+                                                           name={this.getTitle()}
                                                            dialogKey={'enum-settings'}
                                                            settings={this.getDialogSettings()}
                                                            onSave={this.saveDialogSettings.bind(this)}
-                                                           onClose={this.onSettingsClose.bind(this)}
+                                                           onClose={this.editEnumSettingsClose.bind(this)}
                         />): null}
                     </Toolbar>
                 </AppBar>
@@ -517,6 +556,7 @@ class App extends Component {
                     objects={this.state.objects}
                     user={this.user}
                     states={this.states}
+                    newLine={this.state.settings && this.state.settings.newLine}
                     editMode={this.state.editMode}
                     windowWidth={this.state.width}
                     marginLeft={this.state.menuFixed ? Theme.menu.width : 0}

@@ -14,18 +14,25 @@ class StatesList extends Component {
         objects:  PropTypes.object.isRequired,
         editMode: PropTypes.bool.isRequired,
         states:   PropTypes.object.isRequired,
-        loading:  PropTypes.bool.isRequired
+        loading:  PropTypes.bool.isRequired,
+        newLine:  PropTypes.bool
     };
 
     constructor(props) {
         super(props);
         this.enumFunctions = [];
+        this.state = {
+            newLine: false
+        };
         this.keys = null;
     }
 
     componentWillUpdate(nextProps, nextState) {
         if (!this.enumFunctions.length) {
             this.getEnumFunctions(nextProps.objects).forEach(function (e) {this.enumFunctions.push(e)});
+        }
+        if (nextProps.newLine  !== this.state.newLine) {
+            this.setState({newLine: nextProps.newLine});
         }
     }
 
@@ -99,6 +106,7 @@ class StatesList extends Component {
                             objects={this.props.objects}
                             user={this.props.user}
                             states={this.props.states}
+                            newLine={this.props.newLine}
                             items={column}
                             editMode={this.props.editMode}
                             windowWidth={this.props.width}
@@ -129,6 +137,7 @@ class StatesList extends Component {
                     user={this.props.user}
                     states={this.props.states}
                     items={column}
+                    newLine={this.props.newLine}
                     editMode={this.props.editMode}
                     windowWidth={this.props.width}
                     enumFunctions={this.enumFunctions}

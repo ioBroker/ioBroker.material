@@ -288,7 +288,8 @@ export default {
                 height: '100%',
                 background: 'rgba(80,80,80,0.8)',
                 color: 'gray',
-                borderRadius: tileBorderRadius
+                borderRadius: tileBorderRadius,
+                zIndex: 1
             },
             editEnabled: {
                 background: 'white',

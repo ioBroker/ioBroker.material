@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Utils from '../Utils';
 import I18n from '../i18n';
 import Theme from '../theme';
-import IconCheck from 'react-icons/lib/md/check';
+import IconCheck from 'react-icons/lib/md/visibility';
 import IconRemoved from 'react-icons/lib/md/remove';
 import IconEdit from 'react-icons/lib/md/edit';
 import IconDirectionUp from 'react-icons/lib/md/arrow-upward';
@@ -145,6 +145,9 @@ class SmartGeneric extends Component {
         this.stateRx.nameStyle = {fontSize: SmartGeneric.getNameFontSize(this.stateRx.settings.name)};
 
         this.props.tile.setVisibility(this.stateRx.settings.enabled);
+
+        this.props.tile.setColorOn(this.stateRx.settings.colorOn   || Theme.tile.tileOn.background);
+        this.props.tile.setColorOff(this.stateRx.settings.colorOff || Theme.tile.tileOff.background);
 
         //    ↓ ignore error here
         this.state = this.stateRx;
@@ -325,27 +328,31 @@ class SmartGeneric extends Component {
         }
     }
 
-    saveSettings() {
-        this.props.onSaveSettings && this.props.onSaveSettings(this.settingsId, this.state.settings);
+    saveSettings(newSettings) {
+        const settings = newSettings || this.state.settings;
+        this.props.onSaveSettings && this.props.onSaveSettings(this.settingsId, settings);
 
         // subscribe if enabled and was not subscribed
-        if (this.state.settings.enabled && !this.subscribed) {
+        if (settings.enabled && !this.subscribed) {
             this.subscribed = true;
             this.props.onCollectIds(this, this.subscribes, true);
         } else
         // unsubscribe if disabled and was subscribed
-        if (!this.state.settings.enabled && this.subscribed) {
+        if (!settings.enabled && this.subscribed) {
             this.subscribed = false;
             this.props.onCollectIds(this, this.subscribes, false);
         }
-        this.props.tile.setVisibility(this.state.settings.enabled);
+
+        this.props.tile.setColorOn(settings.colorOn   || Theme.tile.tileOn);
+        this.props.tile.setColorOff(settings.colorOff || Theme.tile.tileOff);
+        this.props.tile.setVisibility(settings.enabled);
     }
 
     toggleEnabled() {
         let settings = JSON.parse(JSON.stringify(this.state.settings));
         settings.enabled = !settings.enabled;
 
-        this.setState({settings}, () => this.saveSettings());
+        this.setState({settings}, () => this.saveSettings(settings));
     }
 
     componentWillReceiveProps(nextProps) {
@@ -403,7 +410,7 @@ class SmartGeneric extends Component {
         });
         settings.unshift({
             name: 'colorOn',
-            value: this.state.settings.color || '',
+            value: this.state.settings.colorOn || '',
             type: 'color'
         });
         settings.unshift({
@@ -419,10 +426,10 @@ class SmartGeneric extends Component {
         return settings;
     }
 
-    saveDialogSettings(newSettings) {
-        newSettings.enabled = this.state.settings.enabled;
-        this.setState({settings: newSettings});
-        this.saveSettings();
+    saveDialogSettings(settings) {
+        settings.enabled = this.state.settings.enabled;
+        this.setState({settings});
+        this.saveSettings(settings);
     }
 
     showSettings() {
@@ -438,7 +445,7 @@ class SmartGeneric extends Component {
             return [(<div key={this.key + 'wrapper'}>
                 {this.state.settings.enabled ?
                     [(<div onClick={this.toggleEnabled.bind(this)} key={this.key + 'icon-check'} style={Object.assign({}, Theme.tile.editMode.checkIcon)} className="edit-buttons">
-                            <IconCheck width={'100%'} height={'100%'} />
+                            <IconCheck width={'90%'} height={'100%'} />
                     </div>),
                     (<div onClick={this.showSettings.bind(this)} key={this.key + 'icon-edit'} style={Object.assign({}, Theme.tile.editMode.editIcon)} className="edit-buttons">
                         <IconEdit width={'100%'} height={'100%'} style={{width: '80%', marginLeft: '20%'}}/>
@@ -460,7 +467,7 @@ class SmartGeneric extends Component {
         } else if (this.state.settings.enabled) {
             return (
                 <div key={this.key + 'wrapper'} >
-                    {this.showCorner ? (<div key={this.key + 'corner'}  onMouseDown={this.onLongClick.bind(this)} className="corner" style={Theme.tile.tileCorner}></div>) : null}
+                    {this.showCorner ? (<div key={this.key + 'corner'} onMouseDown={this.onLongClick.bind(this)} className="corner" style={Theme.tile.tileCorner}></div>) : null}
                     {this.getIndicators()}
                     {content}
                 </div>

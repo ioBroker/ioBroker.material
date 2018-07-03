@@ -15,6 +15,7 @@ class StatesSubList extends Component {
         user:       PropTypes.string.isRequired,
         objects:    PropTypes.object.isRequired,
         editMode:   PropTypes.bool.isRequired,
+        newLine:    PropTypes.bool,
         states:     PropTypes.object.isRequired,
         keys:       PropTypes.array.isRequired
     };
@@ -23,9 +24,16 @@ class StatesSubList extends Component {
         super(props);
         this.detector = new SmartDetector();
         this.state = {
-            visible: false
+            visible: false,
+            newLine: this.props.newLine
         };
         this.name = this.props.enumSubID ? Utils.getObjectName(this.props.objects, this.props.enumSubID, false, [this.props.enumID]) : I18n.t('Others')
+    }
+
+    componentWillUpdate(nextProps) {
+        if (nextProps.newLine  !== this.state.newLine) {
+            this.setState({newLine: nextProps.newLine});
+        }
     }
 
     isVisible() {
@@ -124,7 +132,11 @@ class StatesSubList extends Component {
             if (items.length) {
                 const visible = this.state.visible || this.props.editMode;
 
-                return (<div key={(this.props.enumID + '-' + (this.props.enumSubID || 'others')).replace(/[^\w\d]/g, '_') + '-title'} style={Object.assign({}, Theme.list.row, !visible ? {display: 'none'} : {})}><h3
+                const display = !visible ? {display: 'none'} : (this.state.newLine ? {display: 'block', border: 'none'} : {display: 'inline-block'});
+
+                //style={Object.assign({}, Theme.list.row, {display: display})}
+                return (<div key={(this.props.enumID + '-' + (this.props.enumSubID || 'others')).replace(/[^\w\d]/g, '_') + '-title'}
+                             style={Object.assign({}, Theme.list.row, display)}><h3
                     style={Theme.list.title}>{this.name}</h3>
                     <div style={{width: '100%'}}>{items}</div>
                 </div>);
