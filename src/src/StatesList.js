@@ -13,6 +13,8 @@ class StatesList extends Component {
         objects:  PropTypes.object.isRequired,
         editMode: PropTypes.bool.isRequired,
         states:   PropTypes.object.isRequired,
+        background: PropTypes.string.isRequired,
+        backgroundId: PropTypes.integer,
         loading:  PropTypes.bool.isRequired,
         newLine:  PropTypes.bool
     };
@@ -24,6 +26,8 @@ class StatesList extends Component {
             visible: false,
             newLine: false,
             enumID: this.props.enumID,
+            background: this.props.background,
+            backgroundId: this.props.backgroundId,
             visibileChildren: {}
         };
         this.keys = null;
@@ -43,6 +47,14 @@ class StatesList extends Component {
             changed = true;
         }
 
+        if (nextProps.background !== this.state.background) {
+            newState.background = nextProps.background;
+            changed = true;
+        }
+        if (nextProps.backgroundId !== this.state.backgroundId) {
+            newState.backgroundId = nextProps.backgroundId;
+            changed = true;
+        }
         if (nextProps.enumID !== this.state.enumID) {
             newState.enumID = nextProps.enumID;
             newState.visibileChildren = {};
@@ -233,7 +245,18 @@ class StatesList extends Component {
                 id=""/>));
         }
 
-        return (<div style={Object.assign({marginLeft: this.props.marginLeft}, Theme.mainPanel)}>{columns}</div>);
+        let style;
+        if (this.state.background) {
+            if (this.state.background.match(/\.jpg$|\.gif$|\.png$|\.jpeg$/)) {
+                style = Object.assign({}, Theme.mainPanel, {backgroundSize: '100% auto', backgroundImage: 'url(' + this.state.background + (this.state.backgroundId ? '?ts=' + Date.now() : '') + ')'});
+            } else {
+                style = Object.assign({}, Theme.mainPanel, {background: this.state.background, backgroundImage: 'none'});
+            }
+        } else {
+            style = Theme.mainPanel;
+        }
+
+        return (<div style={Object.assign({marginLeft: this.props.marginLeft}, style)}>{columns}</div>);
     }
 }
 

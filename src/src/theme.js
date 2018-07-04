@@ -2,7 +2,7 @@
     grey,
 } from '@material-ui/core/colors';*/
 
-import Background from './assets/homekit.png';
+import Background from './assets/apartment.jpg';
 
 const appBarHeight = 64;
 const tileBorderRadius = '1em';
@@ -35,6 +35,12 @@ export default {
         width: 250,
         selected: {
             color: '#2196f3'
+        }
+    },
+    settings: {
+        label: {
+            fontSize: 16,
+            paddingTop: 10
         }
     },
     refreshIndicator: {

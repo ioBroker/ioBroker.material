@@ -17,7 +17,7 @@ class SmartGeneric extends Component {
         states:         PropTypes.object.isRequired,
         tile:           PropTypes.object.isRequired,
         channelInfo:    PropTypes.object.isRequired,
-        enumNames:      PropTypes.object,
+        enumNames:      PropTypes.array,
         user:           PropTypes.string
     };
 

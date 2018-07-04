@@ -13,6 +13,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import ColorPicker from '../basic-controls/react-color-picker/ColorPicker';
 import ImageUploader from 'react-images-upload';
+import NoIcon from 'react-icons/lib/md/open-in-browser';
 
 import OkIcon from 'react-icons/lib/md/save';
 import CancelIcon from 'react-icons/lib/md/cancel'
@@ -28,25 +29,30 @@ class SmartDialogSettings extends Component  {
     constructor(props) {
         super(props);
         const state = {
-            __toast: '',
-            __changed: false,
-            __unsavedDialog: false
+            toast: '',
+            changed: false,
+            unsavedDialog: false,
+            pictures: [],
+            values: {
+                
+            }
         };
         this.props.settings.forEach(e => {
-            state[e.name] = e.value === '__default__' ? '' : e.value;
+            state.values[e.name] = e.value === '__default__' ? '' : e.value;
         });
 
         // disable context menu after long click
         window.addEventListener('contextmenu', SmartDialogSettings.onContextMenu, false);
-
         this.state = state;
         this.refDialog = React.createRef();
     }
 
     static onContextMenu(e) {
-        e.preventDefault();
-        console.log('Ignore context menu' + e);
-        return false;
+        if (!e.shiftKey && !e.ctrlKey) {
+            e.preventDefault();
+            console.log('Ignore context menu' + e);
+            return false;
+        }
     }
 
     componentDidMount() {
@@ -65,7 +71,7 @@ class SmartDialogSettings extends Component  {
             return;
         }
         if (!this.ignoreUnsaved && this.isChanged()) {
-            this.setState({__unsavedDialog: true});
+            this.setState({unsavedDialog: true});
         } else {
             window.removeEventListener('contextmenu', SmartDialogSettings.onContextMenu, false);
             this.props.onClose && this.props.onClose();
@@ -75,7 +81,7 @@ class SmartDialogSettings extends Component  {
     onSave() {
         const settings = {};
         this.props.settings.forEach(item => {
-            settings[item.name] = this.state[item.name];
+            settings[item.name] = this.state.values[item.name];
         });
 
         this.props.onSave(settings);
@@ -86,42 +92,49 @@ class SmartDialogSettings extends Component  {
     handleWarningCancel = () => {
         this.ignoreUnsaved = false;
         this.click = Date.now();
-        this.setState({__unsavedDialog: false});
+        this.setState({unsavedDialog: false});
     };
 
     handleWarningIgnore = () => {
         this.ignoreUnsaved = true;
-        this.setState({__unsavedDialog: false});
+        this.setState({unsavedDialog: false});
         this.click = 0;
         this.onClose();
     };
 
     handleToastClose() {
-        this.setState({__toast: ''});
+        this.setState({toast: ''});
     }
 
     handleText(name, ev) {
-        console.log('handleInputSet', name, ev.target.value);
+        const newValue = {values: JSON.parse(JSON.stringify(this.state.values))};
         this.click = Date.now();
-        const newValue = {};
-        newValue[name] = ev.target.value;
-        newValue.__changed = this.isChanged(name, newValue[name]);
+        newValue.values[name] = ev.target.value;
+        newValue.changed = this.isChanged(name, newValue.values[name]);
         this.setState(newValue);
     }
 
     handleToggle(name, ev) {
-        const newValue = {};
+        const newValue = {values: JSON.parse(JSON.stringify(this.state.values))};
         this.click = Date.now();
-        newValue[name] = ev.target.checked;
-        newValue.__changed = this.isChanged(name, newValue[name]);
+        newValue.values[name] = ev.target.checked;
+        newValue.changed = this.isChanged(name, newValue.values[name]);
         this.setState(newValue);
     }
 
     handleColor(name, value) {
-        const newValue = {};
+        const newValue = {values: JSON.parse(JSON.stringify(this.state.values))};
         this.click = Date.now();
-        newValue[name] = value;
-        newValue.__changed = this.isChanged(name, newValue[name]);
+        newValue.values[name] = value;
+        newValue.changed = this.isChanged(name, newValue.values[name]);
+        this.setState(newValue);
+    }
+
+    handleDropImage(name, files, pictures) {
+        const newValue = {values: JSON.parse(JSON.stringify(this.state.values))};
+        this.click = Date.now();
+        newValue.values[name] = pictures[pictures.length - 1];
+        newValue.changed = this.isChanged(name, newValue.values[name]);
         this.setState(newValue);
     }
 
@@ -130,14 +143,8 @@ class SmartDialogSettings extends Component  {
             if (item.name === name) {
                 return newVal !== item.value;
             } else {
-                return item.value !== this.state[item.name]
+                return item.value !== this.state.values[item.name]
             }
-        });
-    }
-
-    onDropHandler(name, picture) {
-        this.setState({
-            [name]: picture,
         });
     }
 
@@ -150,26 +157,39 @@ class SmartDialogSettings extends Component  {
                 item = [(<span key={this.props.dialogKey + '-' + e.name + '-checkbox-name'}>{I18n.t(e.name)}</span>),
                     (<Switch
                         key={this.props.dialogKey + '-' + e.name + '-checkbox'}
-                        checked={this.state[e.name] || false}
+                        checked={this.state.values[e.name] || false}
                         onChange={ev => this.handleToggle(e.name, ev)}
                         value={e.name}
                     />)];
             } else if (e.type === 'color') {
                 item = (<ColorPicker
                         name={I18n.t(e.name)}
-                        color={this.state[e.name] || Theme.tile.tile.background}
+                        color={this.state.values[e.name] || Theme.tile.tile.background}
                         onChange={color => this.handleColor(e.name, color)}
                     />);
             } else if (e.type === 'icon') {
-                item = (<div style={{width: '100%', textAlign: 'center'}}> <img src={this.state[e.name]} style={{width: 64, maxHeight: 64}} /></div>);
+                item = [
+                    (<div key={this.props.dialogKey + '-' + e.name + '-icon-label'} style={Theme.settings.label}>{I18n.t(e.name)}</div>),
+                    (<div key={this.props.dialogKey + '-' + e.name + '-icon'} style={{width: '100%', textAlign: 'center', height: 64}}>
+                        {this.state.values[e.name] ? (<img alt={I18n.t('Item icon')} src={this.state.values[e.name]} style={{width: 64, maxHeight: 64}} />) : <NoIcon width={'100%'} height={'100%'} />}
+                    </div>)];
             } else if (e.type === 'image') {
-                item = (<ImageUploader
-                        withIcon={true}
-                        buttonText='Choose images'
-                        onChange={this.onDropHandler.bind(this)}
-                        imgExtension={['.jpg', '.gif', '.png', '.gif']}
+                item = [
+                    (<div key={this.props.dialogKey + '-' + e.name + '-image-label'} style={Theme.settings.label}>{I18n.t(e.name)}</div>),
+                    this.state.values[e.name] ? (<img key={this.props.dialogKey + '-' + e.name + '-image-preview'} src={this.state.values[e.name]} alt={I18n.t('Background')} style={{width: '100%', height: 'auto'}}/>) : null,
+
+                    (<ImageUploader
+                        key={this.props.dialogKey + '-' + e.name + '-image-uploader'}
+                        withIcon={false}
+                        withPreview={false}
+                        fileSizeError={I18n.t(' file size is too big')}
+                        label={I18n.t('Max file size: 5mb, accepted: jpg|png|jpeg')}
+                        fileTypeError={I18n.t(' is not supported file extension')}
+                        buttonText={I18n.t('Choose images')}
+                        onChange={(pics, files) => this.handleDropImage(e.name, pics, files)}
+                        imgExtension={['.jpg', '.png', '.jpeg', ]}
                         maxFileSize={5242880}
-                    />);
+                    />)];
             } else if (e.type === 'number') {
                 // input field
                 item = (<TextField
@@ -179,7 +199,7 @@ class SmartDialogSettings extends Component  {
                     style={{width: '100%'}}
                     type="number"
                     inputProps={{min: e.min, max: e.max}}
-                    value={this.state[e.name] || ''}
+                    value={this.state.values[e.name] || ''}
                     onChange={ev => this.handleText(e.name, ev)}
                     margin="normal"
                 />);
@@ -190,7 +210,7 @@ class SmartDialogSettings extends Component  {
                     id={e.name}
                     label={I18n.t(e.name)}
                     style={{width: '100%'}}
-                    value={this.state[e.name] || ''}
+                    value={this.state.values[e.name] || ''}
                     onChange={ev => this.handleText(e.name, ev)}
                     margin="normal"
                 />);
@@ -204,7 +224,7 @@ class SmartDialogSettings extends Component  {
         });
         return [
             (<h4   key={this.props.dialogKey + '-header'} style={Theme.dialog.header}>{this.props.name}</h4>),
-            (<Button onClick={this.onSave.bind(this)}  key={this.props.dialogKey + '-ok'}   style={{marginRight: '1em'}}  disabled={!this.state.__changed} variant="extendedFab" color="primary"   aria-label="save"><OkIcon />{I18n.t('Save')}</Button>),
+            (<Button onClick={this.onSave.bind(this)}  key={this.props.dialogKey + '-ok'}   style={{marginRight: '1em'}}  disabled={!this.state.changed} variant="extendedFab" color="primary"   aria-label="save"><OkIcon />{I18n.t('Save')}</Button>),
             (<Button onClick={this.onClose.bind(this)} key={this.props.dialogKey + '-cancel'} style={{float: 'right'}} variant="extendedFab" aria-label="cancel"><CancelIcon/></Button>),
             (<List key={this.props.dialogKey + '-list'} style={Theme.dialog.list}>{result}</List>)
         ];
@@ -220,7 +240,7 @@ class SmartDialogSettings extends Component  {
             <div onClick={this.onClick.bind(this)} style={Theme.dialog.inner}>{this.generatePoints()}</div>
             <Dialog
                 style={{zIndex: 2101}}
-                open={this.state.__unsavedDialog}
+                open={this.state.unsavedDialog}
                 aria-labelledby={I18n.t('Not saved!')}
                 aria-describedby={I18n.t('Changes not saved!')}
             >

@@ -8,6 +8,9 @@
 # production
 /www
 /src/build
+/src/public/vendor.js
+/src/public/vendor.js.map
+/src/src/version.js
 /src/.idea
 /src/node_modules
 

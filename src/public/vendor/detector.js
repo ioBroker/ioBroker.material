@@ -186,7 +186,7 @@ function ChannelDetector() {
         },
         info: {
             states: [
-                {/*role: /^value(\.[.\w]+)|^sensor(\.[.\w]+)|^state(\.[.\w]+)$/,*/                                  indicator: false,                                 name: 'ACTUAL',         required: true, multiple: true, noDeviceDetection: true, ignoreRole: /\.inhibit$/},
+                {                                  indicator: false,                                 name: 'ACTUAL',         required: true, multiple: true, noDeviceDetection: true, ignoreRole: /\.inhibit$/},
                 patternWorking,
                 patternUnreach,
                 patternLowbat,
@@ -200,14 +200,14 @@ function ChannelDetector() {
     function checkEnum(obj, enums, words) {
         var found = false;
         if (enums) {
-            enums.forEach(en => {
+            enums.forEach(function(en) {
                 var pos = en.lastIndexOf('.');
                 if (pos !== -1) {
                     en = en.substring(pos + 1);
                 }
                 for (var lang in words) {
                     if (words.hasOwnProperty(lang)) {
-                        if (words[lang].find(reg => reg.test(en))) {
+                        if (words[lang].find(function (reg) {return reg.test(en);})) {
                             found = true;
                             return false;
                         }
@@ -268,7 +268,7 @@ function ChannelDetector() {
     function getAllStatesInChannel(keys, channelId) {
         var list = [];
         var reg = new RegExp('^' + channelId.replace(/\./g, '\\.') + '\\.[^.]+$');
-        keys.forEach(_id => {
+        keys.forEach(function(_id) {
             if (reg.test(_id)) list.push(_id);
         });
         return list;
@@ -276,7 +276,7 @@ function ChannelDetector() {
     function getAllStatesInDevice(keys, channelId) {
         var list = [];
         var reg = new RegExp('^' + channelId.replace(/\./g, '\\.') + '\\.[^.]+\\.[^.]+$');
-        keys.forEach(_id => {
+        keys.forEach(function(_id) {
             if (reg.test(_id)) list.push(_id);
         });
         return list;
@@ -433,25 +433,27 @@ function ChannelDetector() {
                 }
 
                 var _usedIds = [];
-                patterns[pattern].states.forEach((state, i) => {
+                patterns[pattern].states.forEach(function (state, i) {
                     var found = false;
-                    channelStates.forEach(_id => {
+                    channelStates.forEach(function (_id) {
                         if ((state.indicator || (usedIds.indexOf(_id) === -1 && _usedIds.indexOf(_id) === -1)) && this._applyPattern(objects, _id, state)) {
                             if (!state.indicator){
                                 _usedIds.push(_id);
                             }
                             if (!result) {
                                 result = JSON.parse(JSON.stringify(patterns[pattern]));
-                                result.states.forEach((state, j) => copyState(patterns[pattern].states[j], state));
+                                result.states.forEach(function (state, j) {
+                                    copyState(patterns[pattern].states[j], state);
+                                });
                             }
-                            if (!result.states.find(e => e.id === _id)) {
+                            if (!result.states.find(function (e) {return e.id === _id;})) {
                                 result.states[i].id = _id;
                             }
                             found = true;
                             if (state.multiple && channelStates.length > 1) {
                                 // execute this rule for every state in this channel
                                 var index = i + 1;
-                                channelStates.forEach(cid => {
+                                channelStates.forEach(function (cid) {
                                     if (cid === _id) return;
                                     if ((state.indicator || (usedIds.indexOf(cid) === -1 && _usedIds.indexOf(cid) === -1)) && this._applyPattern(objects, cid, state)) {
                                         if (!state.indicator){
@@ -461,19 +463,19 @@ function ChannelDetector() {
                                         newState.id = cid;
                                         result.states.splice(index++, 0, newState);
                                     }
-                                });
+                                }.bind(this));
                             }
                             return false; // stop iteration
                         }
-                    });
+                    }.bind(this));
                     if (state.required && !found) {
                         result = null;
                         return false;
                     }
-                });
+                }.bind(this));
 
-                if (result && !result.states.find(state => state.required && !state.id)) {
-                    _usedIds.forEach(id => usedIds.push(id));
+                if (result && !result.states.find(function (state) {return state.required && !state.id;})) {
+                    _usedIds.forEach(function (id) {usedIds.push(id);});
                     // result.id = id;
                     //this.cache[id] = result;
                     var deviceStates;
@@ -489,19 +491,19 @@ function ChannelDetector() {
                         if (objects[deviceId] && (objects[deviceId].type === 'channel' || objects[deviceId].type === 'device')) {
                             deviceStates = getAllStatesInDevice(keys, deviceId);
                             if (deviceStates) {
-                                deviceStates.forEach(_id => {
-                                    result.states.forEach((state, i) => {
+                                deviceStates.forEach(function (_id) {
+                                    result.states.forEach(function (state, i) {
                                         if (!state.id && (state.indicator || state.searchInParent) && !state.noDeviceDetection) {
                                             if (this._applyPattern(objects, _id, state.original)) {
                                                 result.states[i].id = _id;
                                             }
                                         }
-                                    });
-                                });
+                                    }.bind(this));
+                                }.bind(this));
                             }
                         }
                     }
-                    result.states.forEach(state => {
+                    result.states.forEach(function (state) {
                         if (state.role) {
                             delete state.role;
                         }
@@ -533,10 +535,10 @@ function ChannelDetector() {
             _keysOptional.sort();
         }
 
-        const result  = [];
+        var result  = [];
         _usedIdsOptional = _usedIdsOptional || [];
 
-        let detected;
+        var detected;
 
         while((detected = this._detectNext(objects, id, _keysOptional, _usedIdsOptional))) {
             result.push(detected);

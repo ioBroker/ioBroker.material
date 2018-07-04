@@ -1,8 +1,11 @@
 {
     "common": {
-        "name":                     "material",
-        "version": "0.5.7",
+        "name": "material",
+        "version": "0.8.0",
         "news": {
+            "0.8.0": {
+                "en": "React app"
+            },
             "0.5.7": {
                 "en": "Ready for cloud services",
                 "de": "Bereit für Cloud-Dienste",

@@ -97,9 +97,9 @@ class Utils {
             const icon = objects[id] && objects[id].common && objects[id].common.icon;
             if (icon) {
                 if (icon.startsWith('data:image')) {
-                    return (<img src={icon} style={style || {}}/>);
+                    return (<img alt={Utils.getObjectName(objects, id)} src={icon} style={style || {}}/>);
                 } else {
-                    return (<img src={icon} style={style || {}}/>);
+                    return (<img alt={Utils.getObjectName(objects, id)} src={icon} style={style || {}}/>);
                 }
             }
         }

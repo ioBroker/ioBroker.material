@@ -8,8 +8,8 @@ import Typography from '@material-ui/core/Typography';
 import Drawer from '@material-ui/core/Drawer';
 import IconButton from '@material-ui/core/IconButton';
 import IconClose from 'react-icons/lib/md/close';
-import IconEdit from 'react-icons/lib/md/mode-edit';
-import IconSettings from 'react-icons/lib/md/settings';
+import IconSettings from 'react-icons/lib/md/mode-edit';
+import IconEdit from 'react-icons/lib/md/settings';
 import IconSignalOff from 'react-icons/lib/md/signal-wifi-off';
 import IconLock from 'react-icons/lib/md/lock';
 import IconFullScreen from 'react-icons/lib/md/fullscreen';
@@ -22,7 +22,8 @@ import RaisedButton from '@material-ui/core/Button';
 import SpeechDialog from './SpeechDialog';
 import Theme from './theme';
 import MenuIcon from 'react-icons/lib/md/menu';
-import I18n from "./i18n";
+import I18n from './i18n';
+import version from './version';
 
 const isKeyboardAvailableOnFullScreen = (typeof Element !== 'undefined' && 'ALLOW_KEYBOARD_INPUT' in Element) && Element.ALLOW_KEYBOARD_INPUT;
 
@@ -50,6 +51,7 @@ class App extends Component {
             masterPath:     path ? 'enum.' + path.split('.').shift() : 'enum.rooms',
             viewEnum:       path ? 'enum.' + path : '',
             width:          '0',
+            backgroundId:   0,
             editEnumSettings: false,
             settings:       null
         };
@@ -454,10 +456,11 @@ class App extends Component {
             type: 'icon'
         });
         settings.unshift({
-            name: 'image',
-            value: this.state.settings.image || '',
-            type: 'icon'
-        });        settings.unshift({
+            name: 'background',
+            value: this.state.settings.background || '',
+            type: 'image'
+        });
+        settings.unshift({
             name: 'color',
             value: this.state.settings.color || '',
             type: 'color'
@@ -477,8 +480,32 @@ class App extends Component {
 
     saveDialogSettings(settings) {
         settings = settings || this.state.settings;
-        this.setState({settings});
-        this.onSaveSettings(this.state.viewEnum, settings);
+        if (settings.background && settings.background.startsWith('data:image')) {
+            const ext = settings.background.match(/^data:image\/([\w\d]+);/);
+            let fileName = '/material.0/' + this.user + '/' + this.state.viewEnum + '.';
+            if (ext) {
+                fileName += ext[1].replace('jpeg', 'jpg');
+            } else {
+                fileName += 'png';
+            }
+            //data:image/jpeg;name=lemon.jpg;base64,
+            const pos = settings.background.indexOf(',');
+            settings.background = settings.background.substring(pos + 1);
+
+            // upload image
+            this.conn.writeFile64(fileName, settings.background, function (err) {
+                if (err) {
+                    window.alert(err);
+                } else {
+                    settings.background = fileName;
+                    this.setState({settings, backgroundId: this.state.backgroundId + 1});
+                    this.onSaveSettings(this.state.viewEnum, settings);
+                }
+            }.bind(this));
+        } else {
+            this.setState({settings});
+            this.onSaveSettings(this.state.viewEnum, settings);
+        }
     }
 
     render() {
@@ -502,10 +529,11 @@ class App extends Component {
                             {this.getTitle()}
                         </Typography>
                         <div style={{color: Theme.palette.textColor}}>
+                            {this.state.editMode ? (<span>{version}</span>) : null}
                             {this.state.connected ? null : (<IconButton disabled={true}><IconSignalOff width={Theme.iconSize} height={Theme.iconSize}/></IconButton>)}
-                            {this.state.editMode ? (<IconButton onClick={this.editEnumSettingsOpen.bind(this)} style={{color: this.state.editEnumSettings ? Theme.palette.editActive: Theme.palette.textColor}}><IconSettings width={Theme.iconSize} height={Theme.iconSize}/></IconButton>) : null}
-                            <IconButton onClick={this.toggleEditMode.bind(this)} style={{color: this.state.editMode ? Theme.palette.editActive: Theme.palette.textColor}}><IconEdit width={Theme.iconSize} height={Theme.iconSize}/></IconButton>
-                            {SpeechDialog.isSpeechRecognitionSupported() ? <IconButton style={{color: Theme.palette.textColor}} onClick={() => this.onSpeech(true)}><IconMic width={Theme.iconSize} height={Theme.iconSize}/></IconButton> : null}
+                            {this.state.connected && this.state.editMode ? (<IconButton onClick={this.editEnumSettingsOpen.bind(this)} style={{color: this.state.editEnumSettings ? Theme.palette.editActive: Theme.palette.textColor}}><IconSettings width={Theme.iconSize} height={Theme.iconSize}/></IconButton>) : null}
+                            {this.state.connected ? (<IconButton onClick={this.toggleEditMode.bind(this)} style={{color: this.state.editMode ? Theme.palette.editActive: Theme.palette.textColor}}><IconEdit width={Theme.iconSize} height={Theme.iconSize}/></IconButton>) : null}
+                            {this.state.connected && SpeechDialog.isSpeechRecognitionSupported() ? <IconButton style={{color: Theme.palette.textColor}} onClick={() => this.onSpeech(true)}><IconMic width={Theme.iconSize} height={Theme.iconSize}/></IconButton> : null}
                             {App.isFullScreenSupported() ?
                                 <IconButton style={{color: Theme.palette.textColor}} onClick={this.onToggleFullScreen.bind(this)}>{this.state.fullScreen ? <IconFullScreenExit width={Theme.iconSize} height={Theme.iconSize} /> : <IconFullScreen width={Theme.iconSize} height={Theme.iconSize} />}</IconButton> : null}
                         </div>
@@ -556,6 +584,8 @@ class App extends Component {
                     objects={this.objects}
                     user={this.user}
                     states={this.states}
+                    background={this.state.settings && this.state.settings.background}
+                    backgroundId={this.state.settings && this.state.backgroundId}
                     newLine={this.state.settings && this.state.settings.newLine}
                     editMode={this.state.editMode}
                     windowWidth={this.state.width}

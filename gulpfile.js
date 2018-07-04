@@ -1,15 +1,19 @@
-const gulp      = require('gulp');
-const exec      = require('gulp-exec');
-const fs        = require('fs');
-const copy      = require('gulp-copy');
-const connect   = require('gulp-connect');
-const watch     = require('gulp-watch');
-const del       = require('del');
+const gulp       = require('gulp');
+const exec       = require('gulp-exec');
+const fs         = require('fs');
+const copy       = require('gulp-copy');
+const connect    = require('gulp-connect');
+const watch      = require('gulp-watch');
+const del        = require('del');
+const uglify     = require('gulp-uglify');
+const concat     = require('gulp-concat');
+const sourcemaps = require('gulp-sourcemaps');
 
 gulp.task('clean', () => {
     return del([
         'src/node_modules/**/*',
         'src/build/**/*',
+        'src/src/version.js',
         'src/package-lock.json'
     ]).then(del([
         'src/node_modules',
@@ -45,7 +49,7 @@ function npmInstall() {
 }
 
 
-gulp.task('npm', done => {
+gulp.task('npm', () => {
     if (fs.existsSync(__dirname + '/src/node_modules')) {
         return Promise.resolve();
     } else {
@@ -80,14 +84,39 @@ gulp.task('build', () => {
     }
 });
 
-gulp.task('copy', () => {
+gulp.task('version', done => {
+    const pack = require('./package');
+    fs.writeFileSync(__dirname + '/src/src/version.js', 'export default \'' + pack.version + '\';');
+    done();
+});
+
+gulp.task('vendorJS', () => {
+
     return gulp.src([
-        'src/build/*/**',
-        'src/build/*',
-        '!src/build/_socket',
-        '!src/build/_socket/info.js'
+        'src/public/vendor/*.js'
     ])
+    .pipe(sourcemaps.init())
+    .pipe(concat('vendor.js'))
+    .pipe(uglify())
+    .pipe(sourcemaps.write('.'))
+    .pipe(gulp.dest('src/public'));
+});
+
+
+gulp.task('copy', () => {
+    return del([
+        'www/**/*'
+    ]).then(() => {
+        gulp.src([
+            'src/build/*/**',
+            'src/build/*',
+            '!src/build/vendor/conn.js',
+            '!src/build/vendor/detector.js',
+            '!src/build/_socket',
+            '!src/build/_socket/info.js'
+        ])
         .pipe(gulp.dest('www/'));
+    });
 });
 
 gulp.task('webserver', () => {
@@ -102,4 +131,4 @@ gulp.task('watch', ['webserver'], () => {
     return watch(['src/src/*/**', 'src/src/*'], { ignoreInitial: true }, ['build']);
 });
 
-gulp.task('default', ['clean', 'npm', 'build', 'copy']);
+gulp.task('default', ['clean', 'version', 'npm', 'build', 'vendorJS', 'copy']);

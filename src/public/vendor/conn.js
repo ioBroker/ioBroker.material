@@ -625,7 +625,7 @@ var servConn = {
     },
     // Write file base 64
     writeFile64:      function (filename, data, callback) {
-        if (!this._checkConnection('writeFile', arguments)) return;
+        if (!this._checkConnection('writeFile64', arguments)) return;
 
         var parts = filename.split('/');
         var adapter = parts[1];

@@ -24,7 +24,7 @@ class TileSmart extends Component {
         objects:     PropTypes.object.isRequired,
         states:      PropTypes.object.isRequired,
         editMode:    PropTypes.bool.isRequired,
-        enumNames:   PropTypes.object,
+        enumNames:   PropTypes.array,
         channelInfo: PropTypes.object
     };
 
