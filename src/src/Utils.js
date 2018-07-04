@@ -1,3 +1,5 @@
+import React from 'react';
+
 class Utils {
     static CapitalWords(name) {
         return name.split(/[\s_]/)
@@ -89,6 +91,21 @@ class Utils {
             return false;
         }
     }
+
+    static getIcon(objects, id, style) {
+        if (id && objects) {
+            const icon = objects[id] && objects[id].common && objects[id].common.icon;
+            if (icon) {
+                if (icon.startsWith('data:image')) {
+                    return (<img src={icon} style={style || {}}/>);
+                } else {
+                    return (<img src={icon} style={style || {}}/>);
+                }
+            }
+        }
+        return null;
+    }
+
 }
 
 export default Utils;

@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react'
 import {ChromePicker} from 'react-color'
 import TextField from '@material-ui/core/TextField';
@@ -68,9 +66,10 @@ class ColorPicker extends React.Component {
     render() {
         const color = ColorPicker.getColor(this.state.color);
         return (
-            <div>
+            <div style={this.props.style}>
                 <TextField
                     id="name"
+                    style={{width: 'calc(100% - 48px)'}}
                     label={this.props.name || 'color'}
                     value={color}
                     onChange={e => this.handleChange(e.target.value)}

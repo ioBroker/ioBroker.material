@@ -2,7 +2,7 @@ import React from 'react';
 import SmartGeneric from './SmartGeneric';
 import IconLight from 'react-icons/lib/ti/lightbulb';
 import IconSwitch from '../icons/Socket';
-import Types from './Types';
+import Types from './SmartTypes';
 import Theme from '../theme';
 import I18n from '../i18n';
 import CircularProgress from '@material-ui/core/CircularProgress';

@@ -62,7 +62,7 @@ class SmartDialogSlider extends Component  {
     constructor(props) {
         super(props);
         this.state = {
-            value: this.props.startValue || 0,
+            value: this.externalValue2localValue(this.props.startValue || 0),
             toast: ''
         };
         this.mouseUpTime = 0;
@@ -82,7 +82,7 @@ class SmartDialogSlider extends Component  {
             name: '',
             timer: null,
             timeUp: 0
-        }
+        };
     }
 
     static onContextMenu(e) {
@@ -104,10 +104,7 @@ class SmartDialogSlider extends Component  {
     eventToValue(e) {
         const pageY = e.touches ? e.touches[e.touches.length - 1].clientY : e.pageY;
 
-        let value = Math.round((pageY - this.top) / this.height * 100);
-        if (this.props.type === SmartDialogSlider.types.blinds) {
-            value = 100 - value;
-        }
+        let value = 100 - Math.round((pageY - this.top) / this.height * 100);
 
         if (value > 100) {
             value = 100;
@@ -146,6 +143,20 @@ class SmartDialogSlider extends Component  {
         document.addEventListener('touchend',   this.onMouseUpBind,     {passive: false, capture: true});
     }
 
+    localValue2externalValue(value) {
+        if (this.props.min !== undefined && this.props.max !== undefined) {
+            return value * (this.props.max - this.props.min) / 100 + this.props.min;
+        } else {
+            return value;
+        }
+    }
+    externalValue2localValue(value) {
+        if (this.props.min !== undefined && this.props.max !== undefined) {
+            return ((value - this.props.min) / (this.props.max - this.props.min)) * 100;
+        } else {
+            return value;
+        }
+    }
     onMouseUp(e) {
         e.preventDefault();
         e.stopPropagation();
@@ -157,7 +168,7 @@ class SmartDialogSlider extends Component  {
         document.removeEventListener('touchmove',   this.onMouseMoveBind,   {passive: false, capture: true});
         document.removeEventListener('touchend',    this.onMouseUpBind,     {passive: false, capture: true});
 
-        this.props.onValueChange && this.props.onValueChange(this.state.value);
+        this.props.onValueChange && this.props.onValueChange(this.localValue2externalValue(this.state.value));
     }
 
     onClose() {
@@ -166,6 +177,7 @@ class SmartDialogSlider extends Component  {
             this.props.onClose && this.props.onClose();
         }
     }
+
     getTopButtonName() {
         switch (this.props.type) {
             case SmartDialogSlider.types.blinds:
@@ -223,7 +235,7 @@ class SmartDialogSlider extends Component  {
                     break;
             }
             this.setState({value});
-            this.props.onValueChange && this.props.onValueChange(value);
+            this.props.onValueChange && this.props.onValueChange(this.localValue2externalValue(value));
         }, 400);
     }
 
@@ -266,7 +278,7 @@ class SmartDialogSlider extends Component  {
                     value = 0;
                 }
                 this.setState({value});
-                this.props.onValueChange && this.props.onValueChange(value);
+                this.props.onValueChange && this.props.onValueChange(this.localValue2externalValue(value));
             }
             this.mouseUpTime = Date.now();
         }

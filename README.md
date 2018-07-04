@@ -15,11 +15,11 @@ This adapter cannot be installed directly from github. Only from npm.
 
 ## Supported types
 
-* Direction indicator
 * Lock
 * Info
 * Edit names, colors, icons
-* Thermometer
+* edit visibility of enums
+*
 
 ## ToDO:
 - try smaller font to write the name of device

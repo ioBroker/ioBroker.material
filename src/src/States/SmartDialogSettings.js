@@ -11,7 +11,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import ColorPicker from './ColorPicker';
+import ColorPicker from '../basic-controls/react-color-picker/ColorPicker';
+import ImageUploader from 'react-images-upload';
 
 import OkIcon from 'react-icons/lib/md/save';
 import CancelIcon from 'react-icons/lib/md/cancel'
@@ -26,19 +27,19 @@ class SmartDialogSettings extends Component  {
 
     constructor(props) {
         super(props);
-        this.state = {
+        const state = {
             __toast: '',
             __changed: false,
             __unsavedDialog: false
         };
         this.props.settings.forEach(e => {
-            this.state[e.name] = e.value === '__default__' ? '' : e.value;
+            state[e.name] = e.value === '__default__' ? '' : e.value;
         });
-
 
         // disable context menu after long click
         window.addEventListener('contextmenu', SmartDialogSettings.onContextMenu, false);
 
+        this.state = state;
         this.refDialog = React.createRef();
     }
 
@@ -134,6 +135,12 @@ class SmartDialogSettings extends Component  {
         });
     }
 
+    onDropHandler(name, picture) {
+        this.setState({
+            [name]: picture,
+        });
+    }
+
     generatePoints() {
         const result = this.props.settings.map((e, i) => {
             const divider = i !== this.props.settings.length - 1 ? (<ListItem key={e.id + '_div'} style={Theme.dialog.divider}/>) : null;
@@ -153,6 +160,29 @@ class SmartDialogSettings extends Component  {
                         color={this.state[e.name] || Theme.tile.tile.background}
                         onChange={color => this.handleColor(e.name, color)}
                     />);
+            } else if (e.type === 'icon') {
+                item = (<div style={{width: '100%', textAlign: 'center'}}> <img src={this.state[e.name]} style={{width: 64, maxHeight: 64}} /></div>);
+            } else if (e.type === 'image') {
+                item = (<ImageUploader
+                        withIcon={true}
+                        buttonText='Choose images'
+                        onChange={this.onDropHandler.bind(this)}
+                        imgExtension={['.jpg', '.gif', '.png', '.gif']}
+                        maxFileSize={5242880}
+                    />);
+            } else if (e.type === 'number') {
+                // input field
+                item = (<TextField
+                    key={this.props.dialogKey + '-' + e.name + '-text'}
+                    id={e.name}
+                    label={I18n.t(e.name)}
+                    style={{width: '100%'}}
+                    type="number"
+                    inputProps={{min: e.min, max: e.max}}
+                    value={this.state[e.name] || ''}
+                    onChange={ev => this.handleText(e.name, ev)}
+                    margin="normal"
+                />);
             } else {
                 // input field
                 item = (<TextField

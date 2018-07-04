@@ -64,6 +64,7 @@ class SmartWindowTilt extends SmartGeneric {
 
                 for (const value in VALUES) {
                     if (VALUES.hasOwnProperty(value)) {
+                        // eslint-disable-next-line no-loop-func
                         if (VALUES[value].find(r => r.test(val))) {
                             val = value;
                             break;
@@ -115,7 +116,6 @@ class SmartWindowTilt extends SmartGeneric {
     }
 
     getIcon() {
-        const isOn = this.state[this.id] === '1' || this.state[this.id] === 1 || this.state[this.id] === true || this.state[this.id] === 'true' || this.state[this.id] === 'on' || this.state[this.id] === 'ON';
         let Icon;
         switch (this.state[this.id]) {
             case 'opened':

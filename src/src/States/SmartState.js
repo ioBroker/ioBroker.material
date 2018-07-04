@@ -21,7 +21,7 @@ import IconSun7 from 'react-icons/lib/md/brightness-7';
 
 import Theme from '../theme';
 import I18n from '../i18n';
-import Types from '../States/Types';
+import Types from '../States/SmartTypes';
 
 const IconSuns = [IconSun1, IconSun2, IconSun3, IconSun4, IconSun5, IconSun6, IconSun7];
 

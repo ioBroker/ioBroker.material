@@ -122,9 +122,9 @@ class SmartGeneric extends Component {
                 if (this.props.objects[channel] && (this.props.objects[channel].type === 'channel' || this.props.objects[channel].type === 'device')) {
                     this.settingsId = channel;
                 }
-            } else*/ {
+            } else {*/
                 this.settingsId = this.id;
-            }
+            //}
         }
         if (this.stateRx.showDialog !== undefined) {
             this.showCorner = true;
@@ -150,6 +150,7 @@ class SmartGeneric extends Component {
         this.props.tile.setColorOff(this.stateRx.settings.colorOff || Theme.tile.tileOff.background);
 
         //    ↓ ignore error here
+        // eslint-disable-next-line react/no-direct-mutation-state
         this.state = this.stateRx;
         delete this.stateRx;
     }
@@ -359,6 +360,14 @@ class SmartGeneric extends Component {
         if (nextProps.editMode !== this.state.editMode) {
             this.setState({editMode: nextProps.editMode});
             //this.props.tile.setVisibility(nextProps.editMode || this.state.settings.enabled);
+        }
+    }
+
+    roundValue(value) {
+        if (typeof this.state.settings.decimals !== 'undefined') {
+            return value.toFixed(this.state.settings.decimals);
+        } else {
+            return value;
         }
     }
 

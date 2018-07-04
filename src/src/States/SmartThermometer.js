@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import SmartGeneric from './SmartGeneric';
 import IconThermometer from '../icons/Thermometer';
 import IconHydro from '../icons/Humidity';

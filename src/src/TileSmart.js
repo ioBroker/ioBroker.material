@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import { Row } from 'react-flexbox-grid';
 import Paper from '@material-ui/core/Paper';
+import I18n from './i18n';
 import Theme from './theme';
-import Types from './States/Types';
+import Types from './States/SmartTypes';
 
 import SmartBlinds from './States/SmartBlinds';
 import SmartButton from './States/SmartButton';
@@ -38,7 +38,7 @@ class TileSmart extends Component {
             colorOn: Theme.tile.tileOn.background,
             colorOff: Theme.tile.tileOff.background
         };
-        this.stateId = this.channelInfo.states.find(state => state.id).id;
+        this.stateId = this.channelInfo && this.channelInfo.states.find(state => state.id).id;
         this.handlers = {
             onMouseDown: null,
             onMouseUp: null,
@@ -101,7 +101,7 @@ class TileSmart extends Component {
 
     wrapContent(content) {
         let style = {cursor: this.state.isPointer ? 'pointer' : 'inherit'};
-        if (!this.props.editMode && !this.state.visible) {
+        if (!this.props.editMode && !this.state.visible && this.channelInfo) {
             style.display = 'none';
         }
 
@@ -112,7 +112,7 @@ class TileSmart extends Component {
                    onMouseUp={this.onMouseUp.bind(this)}
                    onTouchEnd={this.onMouseUp.bind(this)}
                    onClick={this.onClick.bind(this)}>
-                <span style={{display: 'none'}}>{this.channelInfo.states.find(state => state.id).id}</span>
+                <span style={{display: 'none'}}>{this.channelInfo ? this.channelInfo.states.find(state => state.id).id : 'nothing'}</span>
                 {content}
             </Paper>
         );
@@ -145,43 +145,47 @@ class TileSmart extends Component {
     render() {
         let Control;
 
-        switch (this.channelInfo.type) {
-            case Types.light:
-            case Types.socket:
-                Control = SmartSwitch;
-                break;
-            case Types.dimmer:
-                Control = SmartDimmer;
-                break;
-            case Types.blind:
-                Control = SmartBlinds;
-                break;
-            case Types.windowTilt:
-                Control = SmartWindowTilt;
-                break;
-            case Types.button:
-                Control = SmartButton;
-                break;
-            case Types.temperature:
-                Control = SmartThermometer;
-                break;
-            case Types.info:
-                Control = SmartInfo;
-                break;
-            case Types.thermostat:
-                Control = SmartThermostat;
-                break;
-            case Types.value:
-                Control = SmartSlider;
-                break;
-            case Types.window:
-            case Types.fireAlarm:
-            case Types.door:
-            case Types.motion:
-                Control = SmartState;
-                break;
-            default:
-                break;
+        if (this.channelInfo) {
+            switch (this.channelInfo.type) {
+                case Types.light:
+                case Types.socket:
+                    Control = SmartSwitch;
+                    break;
+                case Types.dimmer:
+                    Control = SmartDimmer;
+                    break;
+                case Types.blind:
+                    Control = SmartBlinds;
+                    break;
+                case Types.windowTilt:
+                    Control = SmartWindowTilt;
+                    break;
+                case Types.button:
+                    Control = SmartButton;
+                    break;
+                case Types.temperature:
+                    Control = SmartThermometer;
+                    break;
+                case Types.info:
+                    Control = SmartInfo;
+                    break;
+                case Types.thermostat:
+                    Control = SmartThermostat;
+                    break;
+                case Types.value:
+                    Control = SmartSlider;
+                    break;
+                case Types.window:
+                case Types.fireAlarm:
+                case Types.door:
+                case Types.motion:
+                    Control = SmartState;
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            return this.wrapContent((<span>{I18n.t('Nothing here')}</span>));
         }
 
         if (!Control) {

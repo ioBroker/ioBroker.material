@@ -87,11 +87,11 @@ class SmartSlider extends SmartGeneric {
     }
 
     getIcon() {
-        const _Icon = this.icon;
-        if (_Icon) {
+        const IconCustom = this.icon;
+        if (IconCustom) {
             return (
                 <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, this.state[this.actualId] !== this.min ? {color: Theme.palette.lampOn} : {})} className="tile-icon">
-                    <_Icon width={'100%'} height={'100%'}/>
+                    <IconCustom width={'100%'} height={'100%'}/>
                     {this.state.executing ? <CircularProgress style={{position: 'absolute', top: 0, left: 0}} size={Theme.tile.tileIcon.width}/> : null}
                 </div>
             );
@@ -100,14 +100,26 @@ class SmartSlider extends SmartGeneric {
         }
     }
 
+    getDialogSettings () {
+        const settings =super.getDialogSettings();
+        settings.push({
+            name: 'decimals',
+            value: this.state.settings.decimals || 0,
+            type: 'number',
+            min: 0,
+            max: 6
+        });
+        return settings;
+    }
+
     getStateText() {
         if (this.state[this.actualId] === null || this.state[this.actualId] === undefined) {
             return '---';
         } else {
             if (this.workingId && this.state[this.workingId] && this.state.setValue !== null && this.state.setValue !== undefined) {
-                return this.state[this.id] + this.unit + ' → ' + this.state.setValue + this.unit;
+                return this.roundValue(this.state[this.id]) + this.unit + ' → ' + this.state.setValue + this.unit;
             } else {
-                return this.state[this.id] + this.unit;
+                return this.roundValue(this.state[this.id]) + this.unit;
             }
         }
     }

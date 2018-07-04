@@ -126,14 +126,6 @@ class MenuList extends Component {
         return items;
     }
 
-    static getObjectIcon(objects, id) {
-        if (objects && objects[id] && objects[id].common && objects[id].common.icon) {
-            return null;
-        } else {
-            return null;
-        }
-    }
-
     static isOpened(path, id) {
         if (id === path.substring(0, id.length)) return true;
         return undefined;
@@ -154,9 +146,11 @@ class MenuList extends Component {
         if (typeof items !== 'object') {
             items = this.getElementsToShow(items);
         }
+        const icons = items.map(id => Utils.getIcon(this.props.objects, id, Theme.menuIcon));
+        const anyIcons = !!icons.find(icon => icon);
 
-        return items.map(id => {
-            const icon = MenuList.getObjectIcon(this.props.objects, id);
+        return items.map((id, i) => {
+            const icon = icons[i];
             const children = this.getListItems(id);
             return [(<ListItem
                     button
@@ -164,7 +158,7 @@ class MenuList extends Component {
                     key={id}
                     onClick={el => this.onSelected(id, el)}
                 >
-                    {icon && <ListItemIcon>{icon}</ListItemIcon>}
+                    {icon ? (<ListItemIcon>{icon}</ListItemIcon>) : (anyIcons ? (<div style={{width: Theme.menuIcon.height + 1}}>&nbsp;</div>) : null)}
                     <ListItemText
                         primary={Utils.getObjectName(this.props.objects, id)}
                     />

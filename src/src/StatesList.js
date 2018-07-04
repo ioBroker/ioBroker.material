@@ -1,10 +1,9 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import Tile from './Tile';
+import TileSmart from './TileSmart';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Theme from './theme';
 import StatesSubList from './StatesSubList';
-import I18n from "./i18n";
 
 class StatesList extends Component {
 
@@ -22,22 +21,42 @@ class StatesList extends Component {
         super(props);
         this.enumFunctions = [];
         this.state = {
-            newLine: false
+            visible: false,
+            newLine: false,
+            enumID: this.props.enumID,
+            visibileChildren: {}
         };
         this.keys = null;
+        this.collectVisibility = null;
+        this.collectVisibilityTimer = null;
     }
 
     componentWillUpdate(nextProps, nextState) {
         if (!this.enumFunctions.length) {
-            this.getEnumFunctions(nextProps.objects).forEach(function (e) {this.enumFunctions.push(e)});
+            this.getEnumFunctions(nextProps.objects).forEach(e => this.enumFunctions.push(e));
         }
-        if (nextProps.newLine  !== this.state.newLine) {
-            this.setState({newLine: nextProps.newLine});
+        const newState = {};
+        let changed = false;
+
+        if (nextProps.newLine !== this.state.newLine) {
+            newState.newLine = nextProps.newLine;
+            changed = true;
+        }
+
+        if (nextProps.enumID !== this.state.enumID) {
+            newState.enumID = nextProps.enumID;
+            newState.visibileChildren = {};
+            newState.visible = false;
+            changed = true;
+        }
+
+        if (changed) {
+            this.setState(newState);
         }
     }
 
     getElementsToShow() {
-        let _enum = this.props.objects[this.props.enumID];
+        let _enum = this.props.objects[this.state.enumID];
 
         return _enum && _enum.common ? _enum.common.members || [] : [];
     }
@@ -60,7 +79,41 @@ class StatesList extends Component {
         return result;
     }
 
-    getEnumFunctions(objects) {
+    onVisibilityTimer() {
+        this.collectVisibilityTimer = null;
+        let commonVisible = false;
+        const combinedVisibility = Object.assign({}, this.state.visibileChildren, this.collectVisibility);
+        for (const _id in combinedVisibility) {
+            if (combinedVisibility.hasOwnProperty(_id) && combinedVisibility[_id] ) {
+                commonVisible = true;
+                break;
+            }
+        }
+        const newState = {visibileChildren: combinedVisibility};
+
+        if (this.state.visible !== commonVisible) {
+            newState.visible = commonVisible;
+            this.props.onVisibilityControl && this.props.onVisibilityControl(this.props.enumSubID, commonVisible);
+        }
+
+        this.setState(newState);
+        this.collectVisibility = null;
+    }
+
+    onVisibilityControl(id, visible) {
+        const oldState = this.collectVisibility && this.collectVisibility[id] !== undefined ? this.collectVisibility[id] : this.state.visibileChildren[id];
+
+        if (oldState !== visible) {
+            this.collectVisibility = this.collectVisibility || {};
+            this.collectVisibility[id] = visible;
+            if (this.collectVisibilityTimer) {
+                clearTimeout(this.collectVisibilityTimer);
+            }
+            this.collectVisibilityTimer = setTimeout(() => this.onVisibilityTimer(), 0);
+        }
+    }
+
+    getEnumFunctions() {
         return this.getEnums('enum.functions.');
     }
 
@@ -73,16 +126,16 @@ class StatesList extends Component {
             this.keys.sort();
         }
         if (!this.enumFunctions.length) {
-            this.getEnumFunctions(this.props.objects).forEach(function (e) {this.enumFunctions.push(e)});
+            this.getEnumFunctions(this.props.objects).forEach(e => this.enumFunctions.push(e));
         }
 
         if (!this.props.loading && items && items.length) {
             //let rxItems = this.getListItems(items);
             let orderEnums;
-            if (this.props.enumID.startsWith('enum.rooms.')) {
+            if (this.state.enumID.startsWith('enum.rooms.')) {
                 orderEnums = 'enum.functions.';
             } else
-            if (this.props.enumID.startsWith('enum.functions.')) {
+            if (this.state.enumID.startsWith('enum.functions.')) {
                 orderEnums = 'enum.rooms.';
             } else {
                 orderEnums = 'enum.functions.';
@@ -100,18 +153,19 @@ class StatesList extends Component {
                 }
 
                 if (column.length) {
-                    console.log('Add to ' + this.props.enumID + '_' + id + ': ' + column.join(', '));
+                    console.log('Add to ' + this.state.enumID + '_' + id + ': ' + column.join(', '));
                     columns.push((<StatesSubList
-                            key={this.props.enumID + '_' + id + '-list'}
+                            key={this.state.enumID + '_' + id + '-list'}
                             objects={this.props.objects}
                             user={this.props.user}
                             states={this.props.states}
                             newLine={this.props.newLine}
                             items={column}
+                            onVisibilityControl={this.onVisibilityControl.bind(this)}
                             editMode={this.props.editMode}
                             windowWidth={this.props.width}
                             enumFunctions={this.enumFunctions}
-                            enumID={this.props.enumID}
+                            enumID={this.state.enumID}
                             enumSubID={id}
                             keys={this.keys}
                             onSaveSettings={this.props.onSaveSettings}
@@ -139,14 +193,25 @@ class StatesList extends Component {
                     items={column}
                     newLine={this.props.newLine}
                     editMode={this.props.editMode}
+                    onVisibilityControl={this.onVisibilityControl.bind(this)}
                     windowWidth={this.props.width}
                     enumFunctions={this.enumFunctions}
-                    enumID={this.props.enumID}
-                    enumSubID=""
+                    enumID={this.state.enumID}
+                    enumSubID="others"
                     keys={this.keys}
                     onSaveSettings={this.props.onSaveSettings}
                     onControl={this.props.onControl}
                     onCollectIds={this.props.onCollectIds}/>);
+            }
+
+            if (!this.state.visible) {
+                columns.push((<TileSmart
+                    key="nothing"
+                    editMode={this.props.editMode}
+                    user={this.props.user}
+                    states={this.props.states}
+                    objects={this.props.objects}
+                    id=""/>));
             }
 
             // sort items
@@ -159,7 +224,13 @@ class StatesList extends Component {
             columns.push((<CircularProgress key="wait-circle" size={60} thickness={7} color="primary" style={{padding: 20}}/>));
         } else  {
             // no items
-            columns.push((<Tile key="nothing"  states={this.props.states} objects={this.props.objects} id=""/>));
+            columns.push((<TileSmart
+                key="nothing"
+                editMode={this.props.editMode}
+                user={this.props.user}
+                states={this.props.states}
+                objects={this.props.objects}
+                id=""/>));
         }
 
         return (<div style={Object.assign({marginLeft: this.props.marginLeft}, Theme.mainPanel)}>{columns}</div>);

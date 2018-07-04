@@ -44,15 +44,16 @@ class SmartDialogInfo extends Component  {
     // states
     constructor(props) {
         super(props);
-        this.state = {
-            toast: ''
+        const state = {
+            __toast: ''
         };
         this.props.points.forEach(e => {
-             this.state[e.id] = this.props.states[e.id] ? this.props.states[e.id].val : null;
+            state[e.id] = this.props.states[e.id] ? this.props.states[e.id].val : null;
         });
         // disable context menu after long click
         window.addEventListener('contextmenu', SmartDialogInfo.onContextMenu, false);
 
+        this.state = state;
         this.refDialog = React.createRef();
     }
 
@@ -81,7 +82,7 @@ class SmartDialogInfo extends Component  {
     }
 
     handleToastClose() {
-        this.setState({toast: ''});
+        this.setState({__toast: ''});
     }
 
     handleInputSet(id) {

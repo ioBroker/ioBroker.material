@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import SmartGeneric from './SmartGeneric';
 import IconThermometer from '../icons/ThermometerSimple';
 import IconHydro from '../icons/Humidity';
@@ -143,7 +143,7 @@ class SmartInfo extends SmartGeneric {
         }
         let val = this.state[this.infos[1].id];
         const Icon = this.infos[1].icon;
-        return (<div key={this.key + 'tile-secondary'} className="tile-text-second" style={Theme.tile.secondary.div} title={this.secondary.name}>
+        return (<div key={this.key + 'tile-secondary'} className="tile-text-second" style={Theme.tile.secondary.div} title={this.infos[1].name}>
             {Icon ? (<Icon style={Object.assign({}, Theme.tile.secondary.icon, this.infos[1].iconStyle || {})} />) : null}
             <span style={Theme.tile.secondary.text}>{val + this.infos[1].unit}</span>
         </div>);

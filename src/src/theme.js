@@ -1,6 +1,6 @@
-import {
+/*import {
     grey,
-} from '@material-ui/core/colors';
+} from '@material-ui/core/colors';*/
 
 import Background from './assets/homekit.png';
 
@@ -13,6 +13,16 @@ export default {
         //color: 'rgba(200, 200, 200, 0.8)',//''#337ab7',
         //background: 'rgb(39, 144, 222)',
         height: appBarHeight
+    },
+    appBarIcon: {
+        height: 24,
+        paddingRight: 10,
+        overflow: 'hidden'
+    },
+    menuIcon: {
+        height: 24,
+        overflow: 'hidden',
+        marginRight: 0
     },
     mainPanel: {
         backgroundImage: 'url(' + Background + ')',//'url(homekit.png)',

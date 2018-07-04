@@ -28,19 +28,6 @@ const isKeyboardAvailableOnFullScreen = (typeof Element !== 'undefined' && 'ALLO
 
 const text2CommandInstance = 0;
 
-const styles = {
-    root: {
-        flexGrow: 1,
-    },
-    flex: {
-        flex: 1,
-    },
-    menuButton: {
-        marginLeft: -12,
-        marginRight: 20,
-    },
-};
-
 class App extends Component {
     // ensure ALLOW_KEYBOARD_INPUT is available and enabled
 
@@ -52,7 +39,6 @@ class App extends Component {
         this.state = {
             menuFixed:      (typeof Storage !== 'undefined') ? window.localStorage.getItem('menuFixed') === '1' : false,
             open:           false,
-            objects:        {},
             isListening:    false,
             loading:        true,
             connected:      false,
@@ -69,6 +55,7 @@ class App extends Component {
         };
         this.state.open = this.state.menuFixed;
 
+        this.objects = {};
         this.states = {};
         this.tasks = [];
         this.user = 'admin';
@@ -135,15 +122,15 @@ class App extends Component {
                                 }
                                 viewEnum = viewEnum || this.state.viewEnum;
 
+                                this.objects = result || {};
                                 if (viewEnum) {
                                     this.setState({
-                                        objects: result || {},
                                         viewEnum: viewEnum,
                                         loading: false,
-                                        settings: Utils.getSettings((result || {})[viewEnum], {user: this.user, name: Utils.getObjectName(this.state.objects, viewEnum)})
+                                        settings: Utils.getSettings((result || {})[viewEnum], {user: this.user, name: Utils.getObjectName(this.objects, viewEnum)})
                                     });
                                 } else {
-                                    this.setState({objects: result || {}, loading: false});
+                                    this.setState({loading: false});
                                 }
                                 this.conn.subscribe(['text2command.' + text2CommandInstance + '.response']);
                             }.bind(this));
@@ -252,7 +239,13 @@ class App extends Component {
 
     onItemSelected(id) {
         window.location.hash = encodeURIComponent(id.replace(/^enum\./, ''));
-        this.setState({viewEnum: id, open: this.state.menuFixed});
+
+        // load settings for this enum
+        this.setState({
+            viewEnum: id,
+            open: this.state.menuFixed,
+            settings: Utils.getSettings(this.objects[id], {user: this.user, name: Utils.getObjectName(this.objects, id)})
+        });
     }
 
     onRootChanged(root, page) {
@@ -353,7 +346,7 @@ class App extends Component {
                     if (Utils.setSettings(obj, task.settings, {user: this.props.user, language: I18n.getLanguage()})) {
                         this.conn._socket.emit('setObject', obj._id, obj, err => {
                             if (!err) {
-                                this.state.objects[obj._id] = obj;
+                                this.objects[obj._id] = obj;
                             }
                             this.tasks.shift();
                             if (err) console.error('Cannot save: ' + obj._id);
@@ -382,17 +375,17 @@ class App extends Component {
         }
     }
 
-    getTitle () {
-        if (!this.state.viewEnum || !this.state.objects) {
+    getTitle() {
+        if (!this.state.viewEnum || !this.objects) {
             return (<span>ioBroker</span>);
         }
 
         if (this.state.width < 500) {
-            return (<span>{Utils.getObjectName(this.state.objects, this.state.viewEnum)}</span>);
+            return (<span>{Utils.getObjectName(this.objects, this.state.viewEnum)}</span>);
         } else if (this.state.width < 1000) {
-            return (<span>{Utils.getObjectName(this.state.objects, this.state.masterPath)} / {Utils.getObjectName(this.state.objects, this.state.viewEnum)}</span>);
+            return (<span>{Utils.getObjectName(this.objects, this.state.masterPath)} / {Utils.getObjectName(this.objects, this.state.viewEnum)}</span>);
         } else {
-            return (<span>{Utils.getObjectName(this.state.objects, this.state.masterPath)} / {Utils.getObjectName(this.state.objects, this.state.viewEnum)}</span>);
+            return (<span>{Utils.getObjectName(this.objects, this.state.masterPath)} / {Utils.getObjectName(this.objects, this.state.viewEnum)}</span>);
         }
     }
 
@@ -432,10 +425,10 @@ class App extends Component {
 
     getLocale() {
         let locale = 'de-DE';
-        if (this.state.objects['system.config'] && this.state.objects['system.config'].common) {
-            if (this.state.objects['system.config'].common.language === 'en') {
+        if (this.objects['system.config'] && this.objects['system.config'].common) {
+            if (this.objects['system.config'].common.language === 'en') {
                 locale = 'en-US';
-            } else if (this.state.objects['system.config'].common.language === 'en') {
+            } else if (this.objects['system.config'].common.language === 'en') {
                 locale = 'ru-RU';
             }
         }
@@ -461,6 +454,10 @@ class App extends Component {
             type: 'icon'
         });
         settings.unshift({
+            name: 'image',
+            value: this.state.settings.image || '',
+            type: 'icon'
+        });        settings.unshift({
             name: 'color',
             value: this.state.settings.color || '',
             type: 'color'
@@ -495,11 +492,12 @@ class App extends Component {
                         marginLeft: this.state.menuFixed ? Theme.menu.width : 0
                     }}
                 >
-                    <Toolbar>
+                    <Toolbar style={{background: this.state.settings ? this.state.settings.color : undefined}}>
                         {!this.state.menuFixed &&
                             (<IconButton color="inherit" aria-label="Menu" onClick={this.onToggleMenu.bind(this)} >
                                 <MenuIcon/>
                             </IconButton>)}
+                        {Utils.getIcon(this.objects, this.state.viewEnum, Theme.appBarIcon)}
                         <Typography variant="title" color="inherit" style={{flex: 1}}>
                             {this.getTitle()}
                         </Typography>
@@ -523,7 +521,9 @@ class App extends Component {
 
                 <Drawer
                     variant={this.state.menuFixed ? 'permanent' : 'temporary'}
-                    open={this.state.open} style={{width: Theme.menu.width}}>
+                    open={this.state.open}
+                    onClose={() => this.setState({open: false})}
+                    style={{width: Theme.menu.width}}>
                     <Toolbar>
                         <IconButton onClick={this.onToggleMenu.bind(this)} style={{color: Theme.palette.textColor}}>
                             <IconClose width={Theme.iconSize} height={Theme.iconSize} />
@@ -541,7 +541,7 @@ class App extends Component {
                     </Toolbar>
                     <MenuList
                         width={Theme.menu.width}
-                        objects={this.state.objects}
+                        objects={this.objects}
                         user={this.user}
                         selectedId={this.state.viewEnum}
                         editMode={this.state.editMode}
@@ -553,7 +553,7 @@ class App extends Component {
                 </Drawer>
                 <StatesList
                     loading={this.state.loading}
-                    objects={this.state.objects}
+                    objects={this.objects}
                     user={this.user}
                     states={this.states}
                     newLine={this.state.settings && this.state.settings.newLine}
@@ -579,7 +579,7 @@ class App extends Component {
                 </Dialog>
                 {SpeechDialog.isSpeechRecognitionSupported() ?
                     <SpeechDialog
-                        objects={this.state.objects}
+                        objects={this.objects}
                         isShow={this.state.isListening}
                         locale={this.getLocale()}
                         onSpeech={this.onSpeechRec.bind(this)}
