@@ -456,6 +456,12 @@ class App extends Component {
             type: 'icon'
         });
         settings.unshift({
+            name: 'backgroundColor',
+            label: 'Background color',
+            value: this.state.settings.backgroundColor || '',
+            type: 'color'
+        });
+        settings.unshift({
             name: 'background',
             value: this.state.settings.background || '',
             type: 'image'
@@ -478,22 +484,20 @@ class App extends Component {
         return settings;
     }
 
+    readImageNames(cb) {
+        const dir = '/material.0/' + this.user + '/';
+        this.conn.readDir(dir, (err, files) => {
+            cb(files.map(file => dir + file.file));
+        });
+    }
+
     saveDialogSettings(settings) {
         settings = settings || this.state.settings;
-        if (settings.background && settings.background.startsWith('data:image')) {
-            const ext = settings.background.match(/^data:image\/([\w\d]+);/);
-            let fileName = '/material.0/' + this.user + '/' + this.state.viewEnum + '.';
-            if (ext) {
-                fileName += ext[1].replace('jpeg', 'jpg');
-            } else {
-                fileName += 'png';
-            }
-            //data:image/jpeg;name=lemon.jpg;base64,
-            const pos = settings.background.indexOf(',');
-            settings.background = settings.background.substring(pos + 1);
+        if (settings.background && typeof settings.background === 'object') {
+            let fileName = '/material.0/' + this.user + '/' + this.state.viewEnum + '.' + settings.background.ext;
 
             // upload image
-            this.conn.writeFile64(fileName, settings.background, function (err) {
+            this.conn.writeFile64(fileName, settings.background.data, function (err) {
                 if (err) {
                     window.alert(err);
                 } else {
@@ -524,7 +528,7 @@ class App extends Component {
                             (<IconButton color="inherit" aria-label="Menu" onClick={this.onToggleMenu.bind(this)} >
                                 <MenuIcon/>
                             </IconButton>)}
-                        {Utils.getIcon(this.objects, this.state.viewEnum, Theme.appBarIcon)}
+                        {Utils.getIcon(this.objects, this.state.viewEnum, Theme.appBarIcon, this.state.settings)}
                         <Typography variant="title" color="inherit" style={{flex: 1}}>
                             {this.getTitle()}
                         </Typography>
@@ -539,6 +543,7 @@ class App extends Component {
                         </div>
                         {this.state.editEnumSettings ? (<DialogSettings key={'enum-settings'}
                                                            name={this.getTitle()}
+                                                           getImages={this.readImageNames.bind(this)}
                                                            dialogKey={'enum-settings'}
                                                            settings={this.getDialogSettings()}
                                                            onSave={this.saveDialogSettings.bind(this)}
@@ -584,8 +589,9 @@ class App extends Component {
                     objects={this.objects}
                     user={this.user}
                     states={this.states}
-                    background={this.state.settings && this.state.settings.background}
-                    backgroundId={this.state.settings && this.state.backgroundId}
+                    backgroundColor={(this.state.settings && this.state.settings.backgroundColor) || ''}
+                    background={(this.state.settings && this.state.settings.background) || ''}
+                    backgroundId={this.state.backgroundId}
                     newLine={this.state.settings && this.state.settings.newLine}
                     editMode={this.state.editMode}
                     windowWidth={this.state.width}

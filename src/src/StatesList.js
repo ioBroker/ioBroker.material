@@ -8,15 +8,16 @@ import StatesSubList from './StatesSubList';
 class StatesList extends Component {
 
     static propTypes = {
-        enumID:   PropTypes.string.isRequired,
-        user:     PropTypes.string.isRequired,
-        objects:  PropTypes.object.isRequired,
-        editMode: PropTypes.bool.isRequired,
-        states:   PropTypes.object.isRequired,
-        background: PropTypes.string.isRequired,
-        backgroundId: PropTypes.integer,
-        loading:  PropTypes.bool.isRequired,
-        newLine:  PropTypes.bool
+        enumID:          PropTypes.string.isRequired,
+        user:            PropTypes.string.isRequired,
+        objects:         PropTypes.object.isRequired,
+        editMode:        PropTypes.bool.isRequired,
+        states:          PropTypes.object.isRequired,
+        background:      PropTypes.string.isRequired,
+        backgroundId:    PropTypes.number,
+        backgroundColor: PropTypes.string,
+        loading:         PropTypes.bool.isRequired,
+        newLine:         PropTypes.bool
     };
 
     constructor(props) {
@@ -47,6 +48,10 @@ class StatesList extends Component {
             changed = true;
         }
 
+        if (nextProps.backgroundColor !== this.state.backgroundColor) {
+            newState.backgroundColor = nextProps.backgroundColor;
+            changed = true;
+        }
         if (nextProps.background !== this.state.background) {
             newState.background = nextProps.background;
             changed = true;
@@ -252,6 +257,8 @@ class StatesList extends Component {
             } else {
                 style = Object.assign({}, Theme.mainPanel, {background: this.state.background, backgroundImage: 'none'});
             }
+        } else if (this.state.backgroundColor) {
+            style = Object.assign({}, Theme.mainPanel, {background: this.state.backgroundColor, backgroundImage: 'none'});
         } else {
             style = Theme.mainPanel;
         }

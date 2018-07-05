@@ -92,9 +92,9 @@ class Utils {
         }
     }
 
-    static getIcon(objects, id, style) {
+    static getIcon(objects, id, style, settings) {
         if (id && objects) {
-            const icon = objects[id] && objects[id].common && objects[id].common.icon;
+            let icon = (settings && settings.icon) || (objects[id] && objects[id].common && objects[id].common.icon);
             if (icon) {
                 if (icon.startsWith('data:image')) {
                     return (<img alt={Utils.getObjectName(objects, id)} src={icon} style={style || {}}/>);

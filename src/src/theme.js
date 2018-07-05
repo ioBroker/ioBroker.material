@@ -41,6 +41,21 @@ export default {
         label: {
             fontSize: 16,
             paddingTop: 10
+        },
+        dropzone: {
+            marginTop: 10,
+            width: '100%',
+            height: 65,
+            border: '2px dashed black',
+            textAlign: 'center',
+            paddingTop: 45,
+            borderRadius: 10
+        },
+        dropzoneRejected: {
+            border: '2px dashed red',
+        },
+        dropzoneAccepted: {
+            border: '2px dashed green',
         }
     },
     refreshIndicator: {

@@ -12,19 +12,26 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import ColorPicker from '../basic-controls/react-color-picker/ColorPicker';
-import ImageUploader from 'react-images-upload';
-import NoIcon from 'react-icons/lib/md/open-in-browser';
-
+import ImageSelector from '../basic-controls/react-image-selector/ImageSelector';
 import OkIcon from 'react-icons/lib/md/save';
-import CancelIcon from 'react-icons/lib/md/cancel'
+import CancelIcon from 'react-icons/lib/md/cancel';
+import PropTypes from 'prop-types';
+
 class SmartDialogSettings extends Component  {
 
     // expected:
-    //      name
-    //      dialogKey
     //      settings - array of [{id, icon, color, ...}]
-    //      onSave
-    //      onClose
+    static propTypes = {
+        name:               PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.object
+        ]),
+        getImages:          PropTypes.func,
+        dialogKey:          PropTypes.string,
+        settings:           PropTypes.array.isRequired,
+        onSave:             PropTypes.func.isRequired,
+        onClose:            PropTypes.func
+    };
 
     constructor(props) {
         super(props);
@@ -32,10 +39,10 @@ class SmartDialogSettings extends Component  {
             toast: '',
             changed: false,
             unsavedDialog: false,
-            pictures: [],
             values: {
                 
-            }
+            },
+            images: []
         };
         this.props.settings.forEach(e => {
             state.values[e.name] = e.value === '__default__' ? '' : e.value;
@@ -45,6 +52,9 @@ class SmartDialogSettings extends Component  {
         window.addEventListener('contextmenu', SmartDialogSettings.onContextMenu, false);
         this.state = state;
         this.refDialog = React.createRef();
+        this.props.getImages && this.props.getImages(function(images) {
+            this.setState({images});
+        }.bind(this));
     }
 
     static onContextMenu(e) {
@@ -83,7 +93,6 @@ class SmartDialogSettings extends Component  {
         this.props.settings.forEach(item => {
             settings[item.name] = this.state.values[item.name];
         });
-
         this.props.onSave(settings);
         this.ignoreUnsaved = true;
         this.onClose();
@@ -130,14 +139,21 @@ class SmartDialogSettings extends Component  {
         this.setState(newValue);
     }
 
-    handleDropImage(name, files, pictures) {
+    handleUploadImage(name, files, pictures) {
         const newValue = {values: JSON.parse(JSON.stringify(this.state.values))};
         this.click = Date.now();
         newValue.values[name] = pictures[pictures.length - 1];
         newValue.changed = this.isChanged(name, newValue.values[name]);
         this.setState(newValue);
     }
-
+    handleDropImage(name, file) {
+        const newValue = {values: JSON.parse(JSON.stringify(this.state.values))};
+        this.click = Date.now();
+        newValue.values[name] = file;
+        newValue.changed = this.isChanged(name, newValue.values[name]);
+        this.setState(newValue);
+    }
+    
     isChanged(name, newVal) {
         return !!this.props.settings.find(item => {
             if (item.name === name) {
@@ -163,33 +179,43 @@ class SmartDialogSettings extends Component  {
                     />)];
             } else if (e.type === 'color') {
                 item = (<ColorPicker
+                        key={this.props.dialogKey + '-' + e.name + '-color'}
                         name={I18n.t(e.name)}
                         color={this.state.values[e.name] || Theme.tile.tile.background}
                         onChange={color => this.handleColor(e.name, color)}
                     />);
             } else if (e.type === 'icon') {
-                item = [
+                /*item = [
                     (<div key={this.props.dialogKey + '-' + e.name + '-icon-label'} style={Theme.settings.label}>{I18n.t(e.name)}</div>),
                     (<div key={this.props.dialogKey + '-' + e.name + '-icon'} style={{width: '100%', textAlign: 'center', height: 64}}>
                         {this.state.values[e.name] ? (<img alt={I18n.t('Item icon')} src={this.state.values[e.name]} style={{width: 64, maxHeight: 64}} />) : <NoIcon width={'100%'} height={'100%'} />}
-                    </div>)];
+                    </div>)];*/
+                item = (<ImageSelector
+                    maxSize={15000}
+                    icons={true}
+                    height={64}
+                    key={this.props.dialogKey + '-' + e.name + '-icon'}
+                    label={e.label ? I18n.t(e.label) : I18n.t(e.name)}
+                    image={this.state.values[e.name]}
+                    maxHeight={200}
+                    onUpload={file => this.handleDropImage(e.name, file)}
+                    textAccepted={I18n.t('All files will be accepted')}
+                    textRejected={I18n.t('Some files will be rejected')}
+                    textWaiting={I18n.t('Drop some files here or click...')}
+                />);
             } else if (e.type === 'image') {
-                item = [
-                    (<div key={this.props.dialogKey + '-' + e.name + '-image-label'} style={Theme.settings.label}>{I18n.t(e.name)}</div>),
-                    this.state.values[e.name] ? (<img key={this.props.dialogKey + '-' + e.name + '-image-preview'} src={this.state.values[e.name]} alt={I18n.t('Background')} style={{width: '100%', height: 'auto'}}/>) : null,
-
-                    (<ImageUploader
-                        key={this.props.dialogKey + '-' + e.name + '-image-uploader'}
-                        withIcon={false}
-                        withPreview={false}
-                        fileSizeError={I18n.t(' file size is too big')}
-                        label={I18n.t('Max file size: 5mb, accepted: jpg|png|jpeg')}
-                        fileTypeError={I18n.t(' is not supported file extension')}
-                        buttonText={I18n.t('Choose images')}
-                        onChange={(pics, files) => this.handleDropImage(e.name, pics, files)}
-                        imgExtension={['.jpg', '.png', '.jpeg', ]}
-                        maxFileSize={5242880}
-                    />)];
+                item = (<ImageSelector
+                    maxSize={6000000}
+                    images={this.state.images}
+                    key={this.props.dialogKey + '-' + e.name + '-image'}
+                    label={e.label ? I18n.t(e.label) : I18n.t(e.name)}
+                    maxHeight={200}
+                    image={this.state.values[e.name]}
+                    onUpload={file => this.handleDropImage(e.name, file)}
+                    textAccepted={I18n.t('All files will be accepted')}
+                    textRejected={I18n.t('Some files will be rejected')}
+                    textWaiting={I18n.t('Drop some files here or click...')}
+                />);
             } else if (e.type === 'number') {
                 // input field
                 item = (<TextField
@@ -229,6 +255,7 @@ class SmartDialogSettings extends Component  {
             (<List key={this.props.dialogKey + '-list'} style={Theme.dialog.list}>{result}</List>)
         ];
     }
+
     onClick() {
         this.click = Date.now();
     }

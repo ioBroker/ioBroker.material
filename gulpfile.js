@@ -90,8 +90,23 @@ gulp.task('version', done => {
     done();
 });
 
-gulp.task('vendorJS', () => {
+const ignoreSvgs = ['fireOff.svg'];
+gulp.task('icons', done => {
+    const dir = __dirname + '/src/src/icons';
+    const files = fs.readdirSync(__dirname + '/src/src/icons').filter(e => e.match(/\.svg$/) && ignoreSvgs.indexOf(e) === -1);
+    const texts = files.map(file => fs.readFileSync(dir + '/' + file));
+    let text = ['import {Component} from "react";'];
+    text.push('class IconList extends Component {');
+    text.push('    static List = [');
+    texts.forEach(file => text.push('       ' + '"data:image/svg+xml;base64,' + Buffer.from(file).toString('base64') + '",'));
+    text.push('    ];');
+    text.push('}');
+    text.push('export default IconList;');
+    fs.writeFileSync(dir + '/icons.js', text.join('\n'));
+    done();
+});
 
+gulp.task('vendorJS', () => {
     return gulp.src([
         'src/public/vendor/*.js'
     ])
@@ -131,4 +146,4 @@ gulp.task('watch', ['webserver'], () => {
     return watch(['src/src/*/**', 'src/src/*'], { ignoreInitial: true }, ['build']);
 });
 
-gulp.task('default', ['clean', 'version', 'npm', 'build', 'vendorJS', 'copy']);
+gulp.task('default', ['clean', 'icons', 'version', 'npm', 'build', 'vendorJS', 'copy']);

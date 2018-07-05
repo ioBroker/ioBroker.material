@@ -38,6 +38,7 @@ class MenuList extends Component {
         objects:        PropTypes.object.isRequired,
         selectedId:     PropTypes.string,
         editMode:       PropTypes.bool.isRequired,
+        user:           PropTypes.string.isRequired,
         root:           PropTypes.string.isRequired,
         onSelectedItemChanged: PropTypes.func.isRequired,
         onRootChanged:  PropTypes.func.isRequired
@@ -146,7 +147,7 @@ class MenuList extends Component {
         if (typeof items !== 'object') {
             items = this.getElementsToShow(items);
         }
-        const icons = items.map(id => Utils.getIcon(this.props.objects, id, Theme.menuIcon));
+        const icons = items.map(id => Utils.getIcon(this.props.objects, id, Theme.menuIcon, Utils.getSettings(this.props.objects[id], {user: this.props.user})));
         const anyIcons = !!icons.find(icon => icon);
 
         return items.map((id, i) => {
