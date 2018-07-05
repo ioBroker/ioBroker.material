@@ -33,11 +33,10 @@ class SmartDialogSlider extends Component  {
     };
     static buttonStopStyle = {
         position: 'absolute',
-        left: 'calc(50% + 3.5em)',
-        bottom: '2.4em',
+        left: 'calc(50% + 6em)',
+        bottom: '4.5em',
         height: '2em',
-        width: '2em',
-        //cursor: 'pointer'
+        width: '2.5em'
     };
     static sliderStyle = {
         position: 'absolute',
@@ -86,9 +85,11 @@ class SmartDialogSlider extends Component  {
     }
 
     static onContextMenu(e) {
-        e.preventDefault();
-        console.log('Ignore context menu' + e);
-        return false;
+        if (!e.shiftKey && !e.ctrlKey) {
+            e.preventDefault();
+            console.log('Ignore context menu' + e);
+            return false;
+        }
     }
 
     componentDidMount() {

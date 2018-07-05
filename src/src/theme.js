@@ -14,6 +14,10 @@ export default {
         //background: 'rgb(39, 144, 222)',
         height: appBarHeight
     },
+    appBarVersionUpdate: {
+        cursor: 'pointer',
+        color: 'green'
+    },
     appBarIcon: {
         height: 24,
         paddingRight: 10,
@@ -129,6 +133,7 @@ export default {
         disabledColor:      fade(fullWhite, 0.3),
         pickerHeaderColor:  fade(fullWhite, 0.12),
         clockCircleColor:   fade(fullWhite, 0.12),*/
+        updateAvailable:    '#3fff3f',
         editActive:         'red',
         lampOn:             '#ffcc02'
     },

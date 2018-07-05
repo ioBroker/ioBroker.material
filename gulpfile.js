@@ -8,6 +8,7 @@ const del        = require('del');
 const uglify     = require('gulp-uglify');
 const concat     = require('gulp-concat');
 const sourcemaps = require('gulp-sourcemaps');
+const crypto     = require('crypto');
 
 gulp.task('clean', () => {
     return del([
@@ -47,7 +48,6 @@ function npmInstall() {
         });
     });
 }
-
 
 gulp.task('npm', () => {
     if (fs.existsSync(__dirname + '/src/node_modules')) {
@@ -117,8 +117,7 @@ gulp.task('vendorJS', () => {
     .pipe(gulp.dest('src/public'));
 });
 
-
-gulp.task('copy', () => {
+gulp.task('copy', ['vendorJS', 'modifyServiceWorker'], () => {
     return del([
         'www/**/*'
     ]).then(() => {
@@ -134,6 +133,23 @@ gulp.task('copy', () => {
     });
 });
 
+function getHash(data) {
+    var md5 = crypto.createHash('md5');
+    md5.update(data);
+
+    return md5.digest('hex');
+}
+
+gulp.task('modifyServiceWorker', done => {
+    let text = fs.readFileSync(__dirname + '/src/build/service-worker.js');
+    if (text.toString().indexOf('vendor.js') === -1) {
+        const hash = getHash(text);
+        text = text.toString().replace('precacheConfig=[["./index.html"', 'precacheConfig=[["./vendor.js","' + hash + '"],["./index.html"');
+        fs.writeFileSync(__dirname + '/src/build/service-worker.js', text);
+    }
+    done();
+});
+
 gulp.task('webserver', () => {
     connect.server({
         root: 'src/build',
@@ -146,4 +162,4 @@ gulp.task('watch', ['webserver'], () => {
     return watch(['src/src/*/**', 'src/src/*'], { ignoreInitial: true }, ['build']);
 });
 
-gulp.task('default', ['clean', 'icons', 'version', 'npm', 'build', 'vendorJS', 'copy']);
+gulp.task('default', ['clean', 'icons', 'version', 'npm', 'build', 'modifyServiceWorker', 'vendorJS', 'copy']);

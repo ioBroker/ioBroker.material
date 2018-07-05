@@ -26,7 +26,7 @@ This adapter cannot be installed directly from github. Only from npm.
 - show last change state
 
 ## Changelog
-### 0.8.0 (2018.07.05)
+### 0.8.4 (2018.07.05)
 * (bluefox) React app
 
 ### 0.5.7 (2018.01.24)

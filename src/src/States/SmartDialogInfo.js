@@ -58,9 +58,11 @@ class SmartDialogInfo extends Component  {
     }
 
     static onContextMenu(e) {
-        e.preventDefault();
-        console.log('Ignore context menu' + e);
-        return false;
+        if (!e.shiftKey && !e.ctrlKey) {
+            e.preventDefault();
+            console.log('Ignore context menu' + e);
+            return false;
+        }
     }
 
     componentDidMount() {

@@ -194,6 +194,7 @@ class SmartDialogSettings extends Component  {
                     maxSize={15000}
                     icons={true}
                     height={64}
+                    accept={'image/jpeg, image/png, image/gif, image/svg+xml'}
                     key={this.props.dialogKey + '-' + e.name + '-icon'}
                     label={e.label ? I18n.t(e.label) : I18n.t(e.name)}
                     image={this.state.values[e.name]}

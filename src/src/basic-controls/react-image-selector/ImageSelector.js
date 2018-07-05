@@ -72,6 +72,7 @@ class ImageSelector extends React.Component {
         images:          PropTypes.array,
         icons:           PropTypes.bool,
         label:           PropTypes.string,
+        accept:          PropTypes.string,
         textAccepted:    PropTypes.string,
         textRejected:    PropTypes.string,
         textWaiting:     PropTypes.string
@@ -118,6 +119,7 @@ class ImageSelector extends React.Component {
     }
 
     handleDropImage(files) {
+        if (!files && !files.length) return;
         const file = files[files.length - 1];
 
         ImageSelector.readFile(file, (err, result) => {
@@ -154,7 +156,11 @@ class ImageSelector extends React.Component {
             {this.state.opened &&
                 [
                     ((this.state.images && this.state.images.length) || this.icons) && (<ImageList key={'image-list'} images={this.state.images || this.icons} onSelect={this.handleSelectImage.bind(this)}/>),
-                    (<Dropzone key={'image-drop'} maxSize={this.props.maxSize} onDrop={files => this.handleDropImage(files)} accept="image/jpeg, image/png" style={_style}>
+                    (<Dropzone key={'image-drop'}
+                               maxSize={this.props.maxSize}
+                               onDrop={files => this.handleDropImage(files)}
+                               accept={this.props.accept || 'image/jpeg, image/png'}
+                               style={_style}>
                         {
                             ({isDragActive, isDragReject}) => {
                                 if (isDragActive) {

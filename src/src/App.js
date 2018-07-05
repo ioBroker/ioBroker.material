@@ -24,6 +24,8 @@ import Theme from './theme';
 import MenuIcon from 'react-icons/lib/md/menu';
 import I18n from './i18n';
 import version from './version';
+import Button from '@material-ui/core/Button';
+import IconRefresh from 'react-icons/lib/md/refresh';
 
 const isKeyboardAvailableOnFullScreen = (typeof Element !== 'undefined' && 'ALLOW_KEYBOARD_INPUT' in Element) && Element.ALLOW_KEYBOARD_INPUT;
 
@@ -53,7 +55,8 @@ class App extends Component {
             width:          '0',
             backgroundId:   0,
             editEnumSettings: false,
-            settings:       null
+            settings:       null,
+            actualVersion:  ''
         };
         this.state.open = this.state.menuFixed;
 
@@ -91,6 +94,10 @@ class App extends Component {
             onConnChange: function (isConnected) { // no lambda here
                 if (isConnected) {
                     this.user = this.conn.getUser().replace(/^system\.user\./, '');
+
+                    this.conn.getObject('system.adapter.material', function (err, obj) {
+                        obj && obj.common && obj.common.version && this.setState({actualVersion: obj.common.version});
+                    }.bind(this));
 
                     this.conn.getObjects(!this.state.refresh, function (err, objects) {
                         if (err) {
@@ -512,6 +519,47 @@ class App extends Component {
         }
     }
 
+    static onUpdateVersion() {
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.ready.then(registration => {
+                registration.update();
+                setTimeout(() => document.location.reload(), 1000);
+            });
+        }
+    }
+
+    getVersionControl() {
+        if (!this.state.editMode) return null;
+        if (this.state.actualVersion && this.state.actualVersion !== version) {
+            return (<Button onClick={() => App.onUpdateVersion()} variant="contained" size="small" color="secondary">
+                <IconRefresh style={{marginRight: 5}}/> {I18n.t('Update to')} {this.state.actualVersion}
+            </Button>);
+        } else {
+            return (<span onClick={() => App.onUpdateVersion()}>{version}</span>);
+        }
+    }
+
+    getEditButton() {
+        if (!this.state.connected) return null;
+
+        let style;
+        if (this.state.editMode) {
+            style = {color: Theme.palette.editActive};
+        } else if (this.state.actualVersion && this.state.actualVersion !== version) {
+            style = {color: Theme.palette.updateAvailable};
+        } else {
+            style = {color: Theme.palette.textColor};
+        }
+
+        return (
+            <IconButton
+            onClick={this.toggleEditMode.bind(this)}
+            style={style}>
+                <IconEdit width={Theme.iconSize} height={Theme.iconSize}/>
+            </IconButton>
+        );
+    }
+
     render() {
         return (
             <div>
@@ -533,10 +581,10 @@ class App extends Component {
                             {this.getTitle()}
                         </Typography>
                         <div style={{color: Theme.palette.textColor}}>
-                            {this.state.editMode ? (<span>{version}</span>) : null}
+                            {this.getVersionControl()}
                             {this.state.connected ? null : (<IconButton disabled={true}><IconSignalOff width={Theme.iconSize} height={Theme.iconSize}/></IconButton>)}
                             {this.state.connected && this.state.editMode ? (<IconButton onClick={this.editEnumSettingsOpen.bind(this)} style={{color: this.state.editEnumSettings ? Theme.palette.editActive: Theme.palette.textColor}}><IconSettings width={Theme.iconSize} height={Theme.iconSize}/></IconButton>) : null}
-                            {this.state.connected ? (<IconButton onClick={this.toggleEditMode.bind(this)} style={{color: this.state.editMode ? Theme.palette.editActive: Theme.palette.textColor}}><IconEdit width={Theme.iconSize} height={Theme.iconSize}/></IconButton>) : null}
+                            {this.getEditButton()}
                             {this.state.connected && SpeechDialog.isSpeechRecognitionSupported() ? <IconButton style={{color: Theme.palette.textColor}} onClick={() => this.onSpeech(true)}><IconMic width={Theme.iconSize} height={Theme.iconSize}/></IconButton> : null}
                             {App.isFullScreenSupported() ?
                                 <IconButton style={{color: Theme.palette.textColor}} onClick={this.onToggleFullScreen.bind(this)}>{this.state.fullScreen ? <IconFullScreenExit width={Theme.iconSize} height={Theme.iconSize} /> : <IconFullScreen width={Theme.iconSize} height={Theme.iconSize} />}</IconButton> : null}
