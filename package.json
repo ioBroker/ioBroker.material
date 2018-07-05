@@ -44,7 +44,8 @@
   "main": "www/index.html",
   "scripts": {
     "test": "echo \"No test specified\" && exit 0",
-    "build": "node node_modules/gulp/bin/gulp.js"
+    "build": "node node_modules/gulp/bin/gulp.js",
+    "prepublish": "node node_modules/gulp/bin/gulp.js"
   },
   "license": "CC-BY-NC-4.0"
 }
