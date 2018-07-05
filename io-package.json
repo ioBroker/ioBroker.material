@@ -73,5 +73,16 @@
     "native": {
     },
     "objects": [
+    ],
+    "instanceObjects": [
+        {
+            "_id": "",
+            "type": "meta",
+            "common": {
+                "name": "user files and images for material",
+                "type": "meta.user"
+            },
+            "native": {}
+        }
     ]
 }
