@@ -58,6 +58,7 @@ gulp.task('2-npm', () => {
         return npmInstall();
     }
 });
+
 gulp.task('2-npm-dep', ['1-clean'], () => {
     if (fs.existsSync(__dirname + '/src/node_modules')) {
         return Promise.resolve();
@@ -65,6 +66,7 @@ gulp.task('2-npm-dep', ['1-clean'], () => {
         return npmInstall();
     }
 });
+
 function build() {
     const options = {
         continueOnError:        false, // default = false, true means don't emit error event
@@ -96,7 +98,7 @@ gulp.task('3-build', () => {
     return build();
 });
 
-gulp.task('3-build-dep', ['2-npm-dep', 'icons', 'version'], () => {
+gulp.task('3-build-dep', ['2-npm', 'icons', 'version', 'vendorJS'], () => {
     return build();
 });
 
@@ -142,26 +144,27 @@ function getHash(data) {
 }
 
 function modifyServiceWorker() {
-    try {
-        let text = fs.readFileSync(__dirname + '/src/build/service-worker.js');
-        if (text.toString().indexOf('vendor.js') === -1) {
-            const hash = getHash(text);
-            text = text.toString().replace('precacheConfig=[["./index.html"', 'precacheConfig=[["./vendor.js","' + hash + '"],["./index.html"');
-            fs.writeFileSync(__dirname + '/src/build/service-worker.js', text);
+    return new Promise(resolve => {
+        try {
+            let text = fs.readFileSync(__dirname + '/src/build/service-worker.js');
+            if (text.toString().indexOf('vendor.js') === -1) {
+                const hash = getHash(text);
+                text = text.toString().replace('precacheConfig=[["./index.html"', 'precacheConfig=[["./vendor.js","' + hash + '"],["./index.html"');
+                fs.writeFileSync(__dirname + '/src/build/service-worker.js', text);
+            }
+        } catch (e) {
+            console.error('Cannot modify service-worker.js' + e);
         }
-    } catch (e) {
-        console.error('Cannot modify service-worker.js' + e);
-    }
+        resolve();
+    });
 }
 
-gulp.task('4-modifyServiceWorker-dep', ['3-build-dep'], done => {
-    modifyServiceWorker();
-    done();
+gulp.task('4-modifyServiceWorker-dep', ['3-build-dep'], () => {
+    return modifyServiceWorker();
 });
 
-gulp.task('4-modifyServiceWorker', done => {
-    modifyServiceWorker();
-    done();
+gulp.task('4-modifyServiceWorker', () => {
+    return modifyServiceWorker();
 });
 
 function copyFiles() {
