@@ -10,7 +10,7 @@ const concat     = require('gulp-concat');
 const sourcemaps = require('gulp-sourcemaps');
 const crypto     = require('crypto');
 
-gulp.task('clean', () => {
+gulp.task('1-clean', () => {
     return del([
         'src/node_modules/**/*',
         'src/build/**/*',
@@ -42,22 +42,30 @@ function npmInstall() {
             // code 1 is strange error that cannot be explained. Everything is installed but error :(
             if (code && code !== 1) {
                 reject('Cannot install: ' + code);
+            } else {
+                console.log(`"${cmd} in ${cwd} finished.`);
+                // command succeeded
+                resolve();
             }
-            // command succeeded
-            resolve();
         });
     });
 }
 
-gulp.task('npm', () => {
+gulp.task('2-npm', () => {
     if (fs.existsSync(__dirname + '/src/node_modules')) {
         return Promise.resolve();
     } else {
         return npmInstall();
     }
 });
-
-gulp.task('build', () => {
+gulp.task('2-npm-dep', ['1-clean'], () => {
+    if (fs.existsSync(__dirname + '/src/node_modules')) {
+        return Promise.resolve();
+    } else {
+        return npmInstall();
+    }
+});
+function build() {
     const options = {
         continueOnError:        false, // default = false, true means don't emit error event
         pipeStdout:             false, // default = false, true means stdout is written to file.contents
@@ -82,6 +90,14 @@ gulp.task('build', () => {
             .pipe(exec.reporter(reportOptions)).pipe(connect.reload());
 
     }
+}
+
+gulp.task('3-build', () => {
+    return build();
+});
+
+gulp.task('3-build-dep', ['2-npm-dep', 'icons', 'version'], () => {
+    return build();
 });
 
 gulp.task('version', done => {
@@ -91,6 +107,7 @@ gulp.task('version', done => {
 });
 
 const ignoreSvgs = ['fireOff.svg'];
+
 gulp.task('icons', done => {
     const dir = __dirname + '/src/src/icons';
     const files = fs.readdirSync(__dirname + '/src/src/icons').filter(e => e.match(/\.svg$/) && ignoreSvgs.indexOf(e) === -1);
@@ -117,7 +134,37 @@ gulp.task('vendorJS', () => {
     .pipe(gulp.dest('src/public'));
 });
 
-gulp.task('copy', ['vendorJS', 'modifyServiceWorker'], () => {
+function getHash(data) {
+    const md5 = crypto.createHash('md5');
+    md5.update(data);
+
+    return md5.digest('hex');
+}
+
+function modifyServiceWorker() {
+    try {
+        let text = fs.readFileSync(__dirname + '/src/build/service-worker.js');
+        if (text.toString().indexOf('vendor.js') === -1) {
+            const hash = getHash(text);
+            text = text.toString().replace('precacheConfig=[["./index.html"', 'precacheConfig=[["./vendor.js","' + hash + '"],["./index.html"');
+            fs.writeFileSync(__dirname + '/src/build/service-worker.js', text);
+        }
+    } catch (e) {
+        console.error('Cannot modify service-worker.js' + e);
+    }
+}
+
+gulp.task('4-modifyServiceWorker-dep', ['3-build-dep'], done => {
+    modifyServiceWorker();
+    done();
+});
+
+gulp.task('4-modifyServiceWorker', done => {
+    modifyServiceWorker();
+    done();
+});
+
+function copyFiles() {
     return del([
         'www/**/*'
     ]).then(() => {
@@ -129,25 +176,16 @@ gulp.task('copy', ['vendorJS', 'modifyServiceWorker'], () => {
             '!src/build/_socket',
             '!src/build/_socket/info.js'
         ])
-        .pipe(gulp.dest('www/'));
+            .pipe(gulp.dest('www/'));
     });
-});
-
-function getHash(data) {
-    var md5 = crypto.createHash('md5');
-    md5.update(data);
-
-    return md5.digest('hex');
 }
 
-gulp.task('modifyServiceWorker', done => {
-    let text = fs.readFileSync(__dirname + '/src/build/service-worker.js');
-    if (text.toString().indexOf('vendor.js') === -1) {
-        const hash = getHash(text);
-        text = text.toString().replace('precacheConfig=[["./index.html"', 'precacheConfig=[["./vendor.js","' + hash + '"],["./index.html"');
-        fs.writeFileSync(__dirname + '/src/build/service-worker.js', text);
-    }
-    done();
+gulp.task('5-copy', ['vendorJS', '4-modifyServiceWorker'], () => {
+    return copyFiles();
+});
+
+gulp.task('5-copy-dep', ['vendorJS', '4-modifyServiceWorker-dep'], () => {
+    return copyFiles();
 });
 
 gulp.task('webserver', () => {
@@ -162,4 +200,4 @@ gulp.task('watch', ['webserver'], () => {
     return watch(['src/src/*/**', 'src/src/*'], { ignoreInitial: true }, ['build']);
 });
 
-gulp.task('default', ['clean', 'icons', 'version', 'npm', 'build', 'modifyServiceWorker', 'vendorJS', 'copy']);
+gulp.task('default', ['5-copy-dep']);
