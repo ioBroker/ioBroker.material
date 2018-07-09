@@ -11,6 +11,8 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Switch from '@material-ui/core/Switch';
 import Slider from 'material-ui-slider-label/Slider';
+import Paper from '@material-ui/core/Paper';
+import Modal from '@material-ui/core/Modal';
 
 const styles = {
     labelStyleOuter: {
@@ -182,11 +184,12 @@ class SmartDialogInfo extends Component  {
     }
 
     render() {
-        return (<div key={this.props.points[0].id + '_info_dialog'} ref={this.refDialog}
-             onClick={this.onClose.bind(this)}
-             style={Theme.dialog.back}>
-            <div onClick={this.onClick.bind(this)} style={Theme.dialog.inner}>{this.generatePoints()}</div>
-        </div>);
+       ////return (<div key={this.props.points[0].id + '_info_dialog'} ref={this.refDialog}
+       //     onClick={this.onClose.bind(this)}
+       //     style={Theme.dialog.back}>
+       //    <Paper elevation={3} onClick={this.onClick.bind(this)}>{this.generatePoints()}</Paper>
+       //</div>);
+        return (<Modal open={true}><Paper elevation={3} onClick={this.onClick.bind(this)}>{this.generatePoints()}</Paper></Modal>);
     }
 }
 

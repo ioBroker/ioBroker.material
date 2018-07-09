@@ -35,6 +35,18 @@ body, #root, #root>div{
   height: 100%;
 }
 
+/* scrollbar */
+*::-webkit-scrollbar-track {
+  background-color: #ccc;
+}
+*::-webkit-scrollbar {
+  width: 6px;
+  background-color: #ccc;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: #575757;
+}
+
 
 /* ----------------------- animations --------------------------- */
 @-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }

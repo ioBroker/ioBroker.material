@@ -74,12 +74,8 @@ export default {
             left: 'calc(50% - 180px)',
             maxWidth: 360,
             width: '100%',
-            background: '#cacaca',
-            borderRadius: '1em',
-            padding: '1em',
-            boxShadow: 'rgba(0, 0, 0, 0.2) 0px 3px 5px -1px, rgba(0, 0, 0, 0.14) 0px 6px 10px 0px, rgba(0, 0, 0, 0.12) 0px 1px 18px 0px',
-            overflowX: 'hidden',
-            overflowY: 'auto',
+            padding: '1em 0 1em 1em',
+            overflow: 'hidden',
             boxSizing: 'border-box'
         },
         back:  {
@@ -93,7 +89,11 @@ export default {
             background: 'rgba(238,238,238,0.8)'
         },
         list:{
-
+            height: 'calc(100% - 90px)',
+            overflowX: 'hidden',
+            overflowY: 'auto',
+            paddingBottom: 20,
+            paddingRight: 16
         },
         point: {
         },
@@ -115,7 +115,14 @@ export default {
         header: {
             fontSize: 20,
             textAlign: 'center',
-            color: 'white'
+            color: 'black'
+        },
+        saveButton: {
+            position: 'absolute',
+            top: 10,
+            right: 20,
+            zIndex: 1
+
         }
     },
     palette: {

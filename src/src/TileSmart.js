@@ -77,6 +77,11 @@ class TileSmart extends Component {
             style = this.state.state ? Object.assign({}, Theme.tile.tile, Theme.tile.tileOn, {background: this.state.colorOn}) :
                 Object.assign({}, Theme.tile.tile, Theme.tile.tileOff, {background: this.state.colorOff});
         }
+        if (!this.channelInfo) {
+            style.paddingTop = 50;
+            style.textAlign = 'center'
+        }
+
         return style;
     }
 
@@ -111,7 +116,8 @@ class TileSmart extends Component {
                    onTouchStart={this.onMouseDown.bind(this)}
                    onMouseUp={this.onMouseUp.bind(this)}
                    onTouchEnd={this.onMouseUp.bind(this)}
-                   onClick={this.onClick.bind(this)}>
+                   onClick={this.onClick.bind(this)}
+            >
                 <span style={{display: 'none'}}>{this.channelInfo ? this.channelInfo.states.find(state => state.id).id : 'nothing'}</span>
                 {content}
             </Paper>

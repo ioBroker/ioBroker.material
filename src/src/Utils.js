@@ -8,11 +8,18 @@ class Utils {
             .join(' ');
     }
 
-    static getObjectName(objects, id, isDesc) {
+    static getObjectName(objects, id, settings, isDesc) {
         let item = objects[id];
         let text = id;
         const attr = isDesc ? 'desc' : 'name';
 
+        if (settings && settings.name) {
+            text = settings.name;
+            if (typeof text === 'object') {
+                const lang = (objects['system.config'] && objects['system.config'].common && objects['system.config'].common.language) || 'en';
+                text = text[lang] || text.en;
+            }
+        } else
         if (item && item.common && item.common[attr]) {
             text = item.common[attr];
             if (attr !== 'desc' && !text && item.common.desc) {
@@ -43,18 +50,39 @@ class Utils {
         } else {
             settings = {enabled: defaultEnabling === undefined ? true : defaultEnabling, useCustom: false};
         }
+
         if (false && settings.useCommon) {
             if (obj.common.color) settings.color = obj.common.color;
-            if (obj.common.icon) settings.icon = obj.common.icon;
-            if (obj.common.name) settings.name = obj.common.name;
+            if (obj.common.icon)  settings.icon  = obj.common.icon;
+            if (obj.common.name)  settings.name  = obj.common.name;
         } else {
-            if (!settings.name && options.name) settings.name = options.name;
-            if (!settings.icon && obj.common.icon) settings.icon = obj.common.icon;
-            if (!settings.color && obj.common.color) settings.color = obj.common.color;
+            if (options) {
+                if (!settings.name  && options.name)  settings.name  = options.name;
+                if (!settings.icon  && options.icon)  settings.icon  = options.icon;
+                if (!settings.color && options.color) settings.color = options.color;
+            }
+
+            if (obj && obj.common) {
+                if (!settings.color && obj.common.color) settings.color = obj.common.color;
+                if (!settings.icon  && obj.common.icon)  settings.icon  = obj.common.icon;
+                if (!settings.name  && obj.common.name)  settings.name  = obj.common.name;
+            }
         }
 
         if (typeof settings.name === 'object') {
             settings.name = settings.name[options.language] || settings.name.en;
+
+            settings.name = (settings.name || '').replace(/_/g, ' ');
+
+            if (settings.name === settings.name.toUpperCase()) {
+                settings.name = settings.name[0] + settings.name.substring(1).toLowerCase();
+            }
+        }
+        if (!settings.name && obj) {
+            let pos = obj._id.lastIndexOf('.');
+            settings.name = obj._id.substring(pos + 1).replace(/[_.]/g, ' ');
+            settings.name = (settings.name || '').replace(/_/g, ' ');
+            settings.name = Utils.CapitalWords(settings.name);
         }
 
         return settings;
@@ -92,20 +120,16 @@ class Utils {
         }
     }
 
-    static getIcon(objects, id, style, settings) {
-        if (id && objects) {
-            let icon = (settings && settings.icon) || (objects[id] && objects[id].common && objects[id].common.icon);
-            if (icon) {
-                if (icon.startsWith('data:image')) {
-                    return (<img alt={Utils.getObjectName(objects, id)} src={icon} style={style || {}}/>);
-                } else {
-                    return (<img alt={Utils.getObjectName(objects, id)} src={icon} style={style || {}}/>);
-                }
+    static getIcon(settings, style) {
+        if (settings && settings.icon) {
+            if (settings.icon.startsWith('data:image')) {
+                return (<img alt={settings.name} src={settings.icon} style={style || {}}/>);
+            } else { // may be later some changes for second type
+                return (<img alt={settings.name} src={settings.icon} style={style || {}}/>);
             }
         }
         return null;
     }
-
 }
 
 export default Utils;

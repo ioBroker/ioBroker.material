@@ -30,6 +30,7 @@ import IconRefresh from 'react-icons/lib/md/refresh';
 const isKeyboardAvailableOnFullScreen = (typeof Element !== 'undefined' && 'ALLOW_KEYBOARD_INPUT' in Element) && Element.ALLOW_KEYBOARD_INPUT;
 
 const text2CommandInstance = 0;
+const NAMESPACE = 'material.0';
 
 class App extends Component {
     // ensure ALLOW_KEYBOARD_INPUT is available and enabled
@@ -136,7 +137,7 @@ class App extends Component {
                                     this.setState({
                                         viewEnum: viewEnum,
                                         loading: false,
-                                        settings: Utils.getSettings((result || {})[viewEnum], {user: this.user, name: Utils.getObjectName(this.objects, viewEnum)})
+                                        settings: Utils.getSettings((result || {})[viewEnum], {user: this.user, language: I18n.getLanguage()})
                                     });
                                 } else {
                                     this.setState({loading: false});
@@ -253,7 +254,7 @@ class App extends Component {
         this.setState({
             viewEnum: id,
             open: this.state.menuFixed,
-            settings: Utils.getSettings(this.objects[id], {user: this.user, name: Utils.getObjectName(this.objects, id)})
+            settings: Utils.getSettings(this.objects[id], {user: this.user, language: I18n.getLanguage()})
         });
     }
 
@@ -350,12 +351,15 @@ class App extends Component {
 
         if (task.name === 'saveSettings') {
             this.conn.getObject(task.id, (err, obj) => {
-                let settings = Utils.getSettings(obj, {user: this.user});
+                let settings = Utils.getSettings(obj, {user: this.user, language: I18n.getLanguage()});
                 if (JSON.stringify(settings) !== JSON.stringify(task.settings)) {
-                    if (Utils.setSettings(obj, task.settings, {user: this.props.user, language: I18n.getLanguage()})) {
+                    if (Utils.setSettings(obj, task.settings, {user: this.user, language: I18n.getLanguage()})) {
                         this.conn._socket.emit('setObject', obj._id, obj, err => {
                             if (!err) {
                                 this.objects[obj._id] = obj;
+                            }
+                            if (typeof this.tasks[0].cb === 'function') {
+                                this.tasks[0].cb();
                             }
                             this.tasks.shift();
                             if (err) console.error('Cannot save: ' + obj._id);
@@ -363,22 +367,31 @@ class App extends Component {
                         });
                     } else {
                         console.log('Invalid object: ' + task.id);
+                        if (typeof this.tasks[0].cb === 'function') {
+                            this.tasks[0].cb();
+                        }
                         this.tasks.shift();
                         setTimeout(this.processTasks.bind(this), 0);
                     }
                 } else {
+                    if (typeof this.tasks[0].cb === 'function') {
+                        this.tasks[0].cb();
+                    }
                     this.tasks.shift();
                     setTimeout(this.processTasks.bind(this), 0);
                 }
             });
         } else {
+            if (typeof this.tasks[0].cb === 'function') {
+                this.tasks[0].cb();
+            }
             this.tasks.shift();
             setTimeout(this.processTasks.bind(this), 0);
         }
     }
 
-    onSaveSettings(id, settings) {
-        this.tasks.push({name: 'saveSettings', id, settings});
+    onSaveSettings(id, settings, cb) {
+        this.tasks.push({name: 'saveSettings', id, settings, cb});
         if (this.tasks.length === 1) {
             this.processTasks();
         }
@@ -390,11 +403,11 @@ class App extends Component {
         }
 
         if (this.state.width < 500) {
-            return (<span>{Utils.getObjectName(this.objects, this.state.viewEnum)}</span>);
+            return (<span>{this.state.settings && this.state.settings.name}</span>);
         } else if (this.state.width < 1000) {
-            return (<span>{Utils.getObjectName(this.objects, this.state.masterPath)} / {Utils.getObjectName(this.objects, this.state.viewEnum)}</span>);
+            return (<span>{Utils.getObjectName(this.objects, this.state.masterPath)} / {this.state.settings && this.state.settings.name}</span>);
         } else {
-            return (<span>{Utils.getObjectName(this.objects, this.state.masterPath)} / {Utils.getObjectName(this.objects, this.state.viewEnum)}</span>);
+            return (<span>{Utils.getObjectName(this.objects, this.state.masterPath)} / {this.state.settings && this.state.settings.name}</span>);
         }
     }
 
@@ -492,7 +505,7 @@ class App extends Component {
     }
 
     readImageNames(cb) {
-        const dir = '/material.0/' + this.user + '/';
+        const dir = `/${NAMESPACE}/${this.user}/`;
         this.conn.readDir(dir, (err, files) => {
             cb(files.map(file => dir + file.file));
         });
@@ -501,7 +514,7 @@ class App extends Component {
     saveDialogSettings(settings) {
         settings = settings || this.state.settings;
         if (settings.background && typeof settings.background === 'object') {
-            let fileName = '/material.0/' + this.user + '/' + this.state.viewEnum + '.' + settings.background.ext;
+            let fileName = `/${NAMESPACE}/${this.user}/${this.state.viewEnum}.${settings.background.ext}`;
 
             // upload image
             this.conn.writeFile64(fileName, settings.background.data, function (err) {
@@ -576,7 +589,7 @@ class App extends Component {
                             (<IconButton color="inherit" aria-label="Menu" onClick={this.onToggleMenu.bind(this)} >
                                 <MenuIcon/>
                             </IconButton>)}
-                        {Utils.getIcon(this.objects, this.state.viewEnum, Theme.appBarIcon, this.state.settings)}
+                        {Utils.getIcon(this.state.settings, Theme.appBarIcon)}
                         <Typography variant="title" color="inherit" style={{flex: 1}}>
                             {this.getTitle()}
                         </Typography>
@@ -624,6 +637,7 @@ class App extends Component {
                         width={Theme.menu.width}
                         objects={this.objects}
                         user={this.user}
+                        language={this.language}
                         selectedId={this.state.viewEnum}
                         editMode={this.state.editMode}
                         root={this.state.masterPath}

@@ -30,3 +30,6 @@
   background: rgba(200, 200, 200, 1) !important;
   color: black !important;
 }
+.small-visibility-button:hover {
+  background: #ff6a5b;
+}

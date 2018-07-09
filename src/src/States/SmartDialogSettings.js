@@ -16,6 +16,9 @@ import ImageSelector from '../basic-controls/react-image-selector/ImageSelector'
 import OkIcon from 'react-icons/lib/md/save';
 import CancelIcon from 'react-icons/lib/md/cancel';
 import PropTypes from 'prop-types';
+import Paper from '@material-ui/core/Paper';
+import Toolbar from '@material-ui/core/Toolbar';
+import AppBar from '@material-ui/core/AppBar';
 
 class SmartDialogSettings extends Component  {
 
@@ -67,12 +70,14 @@ class SmartDialogSettings extends Component  {
 
     componentDidMount() {
         // move this element to the top of body
-        this.savedParent = this.refDialog.current.parentElement;
-        document.body.appendChild(this.refDialog.current);
+        if (this.refDialog) {
+            this.savedParent = this.refDialog.current.parentElement;
+            document.body.appendChild(this.refDialog.current);
+        }
     }
 
     componentWillUnmount() {
-        this.savedParent.appendChild(this.refDialog.current);
+        this.refDialog && this.savedParent.appendChild(this.refDialog.current);
     }
 
     onClose() {
@@ -250,9 +255,10 @@ class SmartDialogSettings extends Component  {
             }
         });
         return [
-            (<h4   key={this.props.dialogKey + '-header'} style={Theme.dialog.header}>{this.props.name}</h4>),
-            (<Button onClick={this.onSave.bind(this)}  key={this.props.dialogKey + '-ok'}   style={{marginRight: '1em'}}  disabled={!this.state.changed} variant="extendedFab" color="primary"   aria-label="save"><OkIcon />{I18n.t('Save')}</Button>),
-            (<Button onClick={this.onClose.bind(this)} key={this.props.dialogKey + '-cancel'} style={{float: 'right'}} variant="extendedFab" aria-label="cancel"><CancelIcon/></Button>),
+            (<Toolbar>
+                <h4   key={this.props.dialogKey + '-header'} style={Theme.dialog.header}>{this.props.name}</h4>
+                <Button onClick={this.onSave.bind(this)}  key={this.props.dialogKey + '-ok'} style={Theme.dialog.saveButton}  disabled={!this.state.changed} variant="extendedFab" color="primary"   aria-label="save"><OkIcon />{I18n.t('Save')}</Button>
+            </Toolbar>),
             (<List key={this.props.dialogKey + '-list'} style={Theme.dialog.list}>{result}</List>)
         ];
     }
@@ -263,9 +269,9 @@ class SmartDialogSettings extends Component  {
 
     render() {
         return (<div key={this.props.dialogKey + '-dialog'} ref={this.refDialog}
-             onClick={this.onClose.bind(this)}
-             style={Theme.dialog.back}>
-            <div onClick={this.onClick.bind(this)} style={Theme.dialog.inner}>{this.generatePoints()}</div>
+                  onClick={this.onClose.bind(this)}
+                  style={Theme.dialog.back}>
+            <Paper onClick={this.onClick.bind(this)} style={Theme.dialog.inner}>{this.generatePoints()}</Paper>
             <Dialog
                 style={{zIndex: 2101}}
                 open={this.state.unsavedDialog}
