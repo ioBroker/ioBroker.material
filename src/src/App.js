@@ -351,7 +351,7 @@ class App extends Component {
 
         if (task.name === 'saveSettings') {
             this.conn.getObject(task.id, (err, obj) => {
-                let settings = Utils.getSettings(obj, {user: this.user, language: I18n.getLanguage()}, task.defaultSettings.enabled);
+                let settings = Utils.getSettings(obj, {user: this.user, language: I18n.getLanguage()}, task.defaultSettings && task.defaultSettings.enabled);
                 if (JSON.stringify(settings) !== JSON.stringify(task.settings)) {
                     if (Utils.setSettings(obj, task.settings, {user: this.user, language: I18n.getLanguage()})) {
                         this.conn._socket.emit('setObject', obj._id, obj, err => {
