@@ -26,10 +26,7 @@ class InputControl extends Component {
     static propTypes = {
         classes:    PropTypes.object.isRequired,
         label:      PropTypes.string.isRequired,
-        value:      PropTypes.oneOfType([
-            PropTypes.string,
-            PropTypes.number
-        ]),
+        value:      PropTypes.object.isRequired,
         icon:       PropTypes.oneOfType([
             PropTypes.string,
             PropTypes.object
@@ -42,17 +39,19 @@ class InputControl extends Component {
         super(props);
         this.type = this.props.type || (typeof this.props.value === 'number' ? 'number' : 'text');
         this.state = {
-            value: this.props.value
+            val: this.props.value ? this.props.value.val : '?',
+            ts: this.props.value ? this.props.value.ts : 0,
+            lc: this.props.value ? this.props.value.lc : 0
         }
     }
 
-    onChange(value) {
-        this.setState({value});
+    onChange(val) {
+        this.setState({val});
     }
 
     onKeyDown(e) {
         if (e.keyCode === 13) {
-            this.props.onChange(this.type === 'number' ? parseFloat(this.state.value) : this.state.value);
+            this.props.onChange(this.type === 'number' ? parseFloat(this.state.val) : this.state.val);
         }
     }
 
@@ -74,7 +73,7 @@ class InputControl extends Component {
                     className={classes.input}
                     type={this.type}
                     label={label}
-                    value={this.state.value}
+                    value={this.state.val}
                     onKeyDown={this.onKeyDown.bind(this)}
                     onChange={event => this.onChange(event.target.value)}
                     margin="normal"
@@ -82,7 +81,7 @@ class InputControl extends Component {
                 <Button
                     tabIndex="1"
                     className={classes.button}
-                    onClick={e => onChange(this.type === 'number' ? parseFloat(this.state.value) : this.state.value)}
+                    onClick={e => onChange(this.type === 'number' ? parseFloat(this.state.val) : this.state.val)}
                     variant="contained">
                     {Icon}
                     {label}

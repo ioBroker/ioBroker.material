@@ -77,7 +77,7 @@ export default {
             padding: '1em 0 1em 1em',
             overflow: 'hidden',
             boxSizing: 'border-box',
-            background: 'rgba(80, 80, 80, 0.5)'
+            background: 'rgba(255, 255, 255, 0.8)'
         },
         back:  {
             width: '100%',
@@ -95,17 +95,6 @@ export default {
             overflowY: 'auto',
             paddingBottom: 20,
             width: 'calc(100% - 1em)'
-        },
-        point: {
-        },
-        name: {
-
-        },
-        value: {
-            fontWeight: 'bold'
-        },
-        unit: {
-
         },
         divider: {
             paddingTop: 0,
@@ -136,6 +125,40 @@ export default {
         },
         settingsBack: {
             background: 'rgba(255,255,255,0.5)'
+        },
+        info: {
+            line: {
+                width: '100%'
+            },
+            label: {
+                display: 'inline-block',
+                lineHeight: '48px',
+                fontSize: 16
+            },
+            lc: {
+                fontSize: 12,
+                paddingRight: 16,
+                float: 'right',
+                lineHeight: '48px'
+            },
+            icon: {
+                height: 20,
+                marginRight: 10
+            },
+            value: {
+                fontWeight: 'bold',
+                fontSize: 20
+            },
+            unit: {
+
+            },
+            valueUnit: {
+                float: 'right',
+                lineHeight: '48px'
+            },
+            floatRight: {
+                float: 'right'
+            }
         }
     },
     palette: {
@@ -164,20 +187,15 @@ export default {
     },
     list: {
         title: {
-            //background: 'rgba(210, 210, 210, 0.8)',
             fontSize: 20,
             color: 'white',
             margin: '0.5em',
             padding: '0 0 0 1em',
-            //padding: '0.5em 0 0.5em 2em',
-            //borderRadius: '0.5em'
         },
         row: {
-            //width: 'calc(100% - 4em)',
             paddingLeft: '1em',
             paddingRight: '1em',
             display: 'inline-block',
-            //background: '#ffffff57', // experimental
             borderRadius: '2em',
             border: '1px dashed #c7c7c7',
             margin: '0.5em'

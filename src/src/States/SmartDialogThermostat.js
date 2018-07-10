@@ -47,24 +47,22 @@ class SmartDialogThermostat extends SmartDialogGeneric  {
     // states
     constructor(props) {
         super(props);
-        this.state = {
-            value: this.props.startValue || 0,
-            boostValue: this.props.boostValue,
-            toast: ''
-        };
-        this.min = this.props.min;
-        if (this.min > this.props.actualValue) {
-            this.min = this.props.actualValue
+        this.stateRx.value = props.startValue || 0;
+        this.stateRx.boostValue = props.boostValue;
+
+        this.min = props.min;
+        if (this.min > props.actualValue) {
+            this.min = props.actualValue
         }
-        if (this.min > this.props.startValue) {
-            this.min = this.props.startValue
+        if (this.min > props.startValue) {
+            this.min = props.startValue
         }
-        this.max = this.props.max;
-        if (this.max < this.props.actualValue) {
-            this.max = this.props.actualValue
+        this.max = props.max;
+        if (this.max < props.actualValue) {
+            this.max = props.actualValue
         }
-        if (this.max < this.props.startValue) {
-            this.max = this.props.startValue
+        if (this.max < props.startValue) {
+            this.max = props.startValue
         }
 
         this.onMouseMoveBind = this.onMouseMove.bind(this);
@@ -182,20 +180,20 @@ class SmartDialogThermostat extends SmartDialogGeneric  {
     }
 
     generateContent() {
-        return [
-            this.state.boostValue !== null && this.state.boostValue !== undefined ?
+        return (<div ref={this.refPanel} style={{width: 'calc(100% - 1em)', height: '100%'}}>
+            {this.state.boostValue !== null && this.state.boostValue !== undefined ?
                 (<Button variant="contained" color={this.state.boostValue ? 'secondary' : ''} onClick={this.onBoostMode.bind(this)}
                          style={{top: '1.3em'}}
                          className="boost-button">{I18n.t('Boost')}
-                </Button>) : null,
-            (<ThermostatControl
+                </Button>) : null}
+            <ThermostatControl
                 minValue={this.min}
                 maxValue={this.max}
                 hvacMode={'heating'}
                 ambientTemperature={this.props.actualValue}
                 targetTemperature={this.state.value}
-            />)
-        ];
+            />
+        </div>);
     }
 }
 

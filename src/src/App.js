@@ -30,7 +30,7 @@ import IconRefresh from 'react-icons/lib/md/refresh';
 const isKeyboardAvailableOnFullScreen = (typeof Element !== 'undefined' && 'ALLOW_KEYBOARD_INPUT' in Element) && Element.ALLOW_KEYBOARD_INPUT;
 
 const text2CommandInstance = 0;
-const NAMESPACE = 'material.0';
+const NAMESPACE = 'material';
 
 class App extends Component {
     // ensure ALLOW_KEYBOARD_INPUT is available and enabled
@@ -661,7 +661,7 @@ class App extends Component {
                     backgroundId={this.state.backgroundId}
                     newLine={this.state.settings && this.state.settings.newLine}
                     editMode={this.state.editMode}
-                    windowWidth={this.state.width}
+                    windowWidth={parseFloat(this.state.width)}
                     marginLeft={this.state.menuFixed ? Theme.menu.width : 0}
                     enumID={this.state.viewEnum}
                     onSaveSettings={this.onSaveSettings.bind(this)}

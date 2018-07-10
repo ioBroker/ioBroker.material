@@ -26,8 +26,11 @@ class SmartGeneric extends Component {
         super(props);
         this.channelInfo = this.props.channelInfo;
         this.subscribes = null;
+        this.subscribed = false;
+
         this.width = Theme.tile.width;
         this.height = Theme.tile.height;
+
         this.showCorner = false; // set it to true to show the corner
         this.stateRx = {
             executing: false,

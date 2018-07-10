@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Utils from './Utils';
 import Theme from './theme';
 import I18n from './i18n';
-import TileSmart from './TileSmart';
+import SmartTile from './SmartTile';
 import SmartDetector from './States/SmartDetector';
 
 class StatesSubList extends Component {
@@ -131,7 +131,7 @@ class StatesSubList extends Component {
             }*/
             let controls = that.detector.detect(that.props.objects, id, that.props.keys, usedIds);
             if (controls) {
-                controls = controls.map(contorl => that.createControl(TileSmart, id, contorl, i));
+                controls = controls.map(contorl => that.createControl(SmartTile, id, contorl, i));
             } else {
                 console.log('Nothing found for ' + id);
             }

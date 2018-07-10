@@ -30,3 +30,4 @@ node_modules
 iob_npm.done
 package-lock.json
 /src/public/_socket/info.js
+/src/src/i18n/flat

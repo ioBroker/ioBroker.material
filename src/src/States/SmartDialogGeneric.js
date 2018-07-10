@@ -17,7 +17,8 @@ class SmartDialogGeneric extends Component  {
         dialogKey:          PropTypes.string,
         windowWidth:        PropTypes.string,
 
-        onClose:            PropTypes.func
+        onClose:            PropTypes.func,
+        onCollectIds:       PropTypes.func
     };
 
     constructor(props) {
@@ -32,6 +33,11 @@ class SmartDialogGeneric extends Component  {
         this.dialogStyle = {};
         this.closeOnPaperClick = false;
         this.savedParent = null;
+
+        this.subscribes = null;
+        this.subscribed = false;
+        this.editMode   = this.props.editMode;
+
     }
 
     componentReady () {
@@ -55,10 +61,31 @@ class SmartDialogGeneric extends Component  {
             this.savedParent = this.refDialog.current.parentElement;
             document.body.appendChild(this.refDialog.current);
         }
+
+        if (this.subscribes && !this.subscribed) {
+            this.subscribed = true;
+            this.props.onCollectIds(this, this.subscribes, true);
+        }
     }
 
     componentWillUnmount() {
         this.refDialog && this.savedParent.appendChild(this.refDialog.current);
+
+        if (this.props.onCollectIds && this.subscribed) {
+            this.props.onCollectIds(this, this.subscribes, false);
+            this.subscribed = null;
+        }
+    }
+
+    // default handler
+    updateState(id, state) {
+        const newState = {};
+        if (state) {
+            newState[id] = {val: state.val, ts: state.ts, lc: state.lc};
+        } else {
+            newState[id] = null;
+        }
+        this.setState(newState);
     }
 
     mayClose() {
@@ -105,7 +132,9 @@ class SmartDialogGeneric extends Component  {
                      ref={this.refDialog}
                      onClick={this.onClose.bind(this)}
                      style={Theme.dialog.back}>
-            <Paper onClick={this.onClick.bind(this)} style={Object.assign({}, Theme.dialog.inner, this.dialogStyle)}>
+            <Paper onClick={this.onClick.bind(this)}
+                   style={Object.assign({}, Theme.dialog.inner, this.dialogStyle)}
+            >
                 {this.generateContent()}
                 <Snackbar
                     key={this.props.dialogKey + '-toast'}

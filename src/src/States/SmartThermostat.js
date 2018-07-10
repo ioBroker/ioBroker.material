@@ -161,15 +161,16 @@ class SmartThermostat extends SmartGeneric {
             </div>),
             this.state.showDialog ?
                 <Dialog key={this.key + 'dialog'}
-                    startValue={this.state[this.id]}
-                    windowWidth={this.props.windowWidth}
-                    actualValue={this.state[this.actualId]}
-                    boostValue={this.boostId ? this.state[this.boostId] : null}
-                    onBoostToggle={this.onBoostToggle.bind(this)}
-                    min={this.min}
-                    max={this.max}
-                    onValueChange={this.setValue.bind(this)}
-                    onClose={this.onDialogClose.bind(this)}
+                        dialogKey={this.key + 'dialog'}
+                        startValue={this.state[this.id]}
+                        windowWidth={this.props.windowWidth}
+                        actualValue={this.state[this.actualId]}
+                        boostValue={this.boostId ? this.state[this.boostId] : null}
+                        onBoostToggle={this.onBoostToggle.bind(this)}
+                        min={this.min}
+                        max={this.max}
+                        onValueChange={this.setValue.bind(this)}
+                        onClose={this.onDialogClose.bind(this)}
                 /> : null
         ]);
     }

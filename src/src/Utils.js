@@ -1,5 +1,7 @@
 import React from 'react';
 
+const NAMESPACE = 'material';
+
 class Utils {
     static CapitalWords(name) {
         return (name || '').split(/[\s_]/)
@@ -46,9 +48,13 @@ class Utils {
         let settings;
         if (obj && obj.common && obj.common.custom) {
             settings = obj.common.custom || {};
-            settings = settings.material && settings.material[options.user || 'admin'] ? JSON.parse(JSON.stringify(settings.material[options.user || 'admin'])) : {enabled: true};
+            settings = settings[NAMESPACE] && settings[NAMESPACE][options.user || 'admin'] ? JSON.parse(JSON.stringify(settings[NAMESPACE][options.user || 'admin'])) : {enabled: true};
         } else {
             settings = {enabled: defaultEnabling === undefined ? true : defaultEnabling, useCustom: false};
+        }
+
+        if (!settings.hasOwnProperty('enabled')) {
+            settings.enabled = defaultEnabling === undefined ? true : defaultEnabling;
         }
 
         if (false && settings.useCommon) {
@@ -91,9 +97,9 @@ class Utils {
         if (obj) {
             obj.common = obj.common || {};
             obj.common.custom = obj.common.custom || {};
-            obj.common.custom.material = obj.common.custom.material || {};
-            obj.common.custom.material[options.user || 'admin'] = settings;
-            const s = obj.common.custom.material[options.user || 'admin'];
+            obj.common.custom[NAMESPACE] = obj.common.custom[NAMESPACE] || {};
+            obj.common.custom[NAMESPACE][options.user || 'admin'] = settings;
+            const s = obj.common.custom[NAMESPACE][options.user || 'admin'];
             if (s.useCommon) {
                 if (s.color !== undefined) {
                     obj.common.color = s.color;
@@ -132,20 +138,31 @@ class Utils {
     }
 
     static splitCamelCase(text) {
-        if (text !== text.toUpperCase()) {
-            const words = [];
-            let i = 0;
-            let start = 0;
-            while (i < text.length) {
-                if (text[i].match(/[A-ZÜÄÖА-Я]/)) {
-                    words.push(text.substring(start, i));
-                    start = i;
+        if (false && text !== text.toUpperCase()) {
+            const words = text.split(/\s+/);
+            for (let i = 0; i < words.length; i++) {
+                let word = words[i];
+                if (word.toLowerCase() !== word && word.toUpperCase() !== word) {
+                    let z = 0;
+                    const ww = [];
+                    let start = 0;
+                    while (z < word.length) {
+                        if (word[z].match(/[A-ZÜÄÖА-Я]/)) {
+                            ww.push(word.substring(start, z));
+                            start = z;
+                        }
+                        z++;
+                    }
+                    if (start !== z) {
+                        ww.push(word.substring(start, z));
+                    }
+                    for (let k = 0; k < ww.length; k++) {
+                        words.splice(i + k, 0, ww[k]);
+                    }
+                    i += ww.length;
                 }
-                i++;
             }
-            if (start !== i) {
-                words.push(text.substring(start, i));
-            }
+
             return words.map(w => {
                 w = w.trim();
                 if (w) {

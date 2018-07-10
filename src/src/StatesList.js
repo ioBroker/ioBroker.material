@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import TileSmart from './TileSmart';
+import SmartTile from './SmartTile';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Theme from './theme';
 import StatesSubList from './StatesSubList';
@@ -223,7 +223,7 @@ class StatesList extends Component {
             }
 
             if (!this.state.visible) {
-                columns.push((<TileSmart
+                columns.push((<SmartTile
                     key="nothing"
                     editMode={this.props.editMode}
                     user={this.props.user}
@@ -242,7 +242,7 @@ class StatesList extends Component {
             columns.push((<CircularProgress key="wait-circle" size={60} thickness={7} color="primary" style={{padding: 20}}/>));
         } else  {
             // no items
-            columns.push((<TileSmart
+            columns.push((<SmartTile
                 key="nothing"
                 editMode={this.props.editMode}
                 user={this.props.user}

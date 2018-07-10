@@ -7,6 +7,11 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import Theme from './theme';
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
+// load words for moment.js
+import 'moment/locale/fr';
+import 'moment/locale/de';
+import 'moment/locale/ru';
+import 'moment/locale/es';
 
 /*const muiTheme = getMuiTheme({
     appBar: {

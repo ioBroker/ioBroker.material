@@ -4,16 +4,13 @@ import Theme from '../theme';
 import I18n from '../i18n';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import Moment from 'react-moment';
 import Button from '@material-ui/core/Button';
 import Slider from '@material-ui/lab/Slider';
 import SmartDialogGeneric from './SmartDialogGeneric';
 import Typography from '@material-ui/core/Typography';
 import BoolControl from '../basic-controls/react-info-controls/BoolControl'
 import InputControl from '../basic-controls/react-info-controls/InputControl'
+import InfoControl from '../basic-controls/react-info-controls/InfoControl'
 
 const styles = {
     labelStyleOuter: {
@@ -56,7 +53,14 @@ class SmartDialogInfo extends SmartDialogGeneric  {
     constructor(props) {
         super(props);
         this.props.points.forEach(e => {
-            this.stateRx[e.id] = this.props.states[e.id] ? this.props.states[e.id].val : null;
+            const state = this.props.states[e.id];
+            if (state) {
+                this.stateRx[e.id] = {val: state.val, ts: state.ts, lc: state.lc};
+            } else {
+                this.stateRx[e.id] = null;
+            }
+            this.subscribes = this.subscribes || [];
+            this.subscribes.push(e.id);
         });
         this.refDialog = React.createRef();
 
@@ -70,15 +74,25 @@ class SmartDialogInfo extends SmartDialogGeneric  {
 
     handleToggle(id) {
         const newState = {};
-        newState[id] = !this.state[id];
+        const state = this.state[id];
+        newState[id] = {val: !(state && state.val)};
+        if (state) {
+            newState[id].lc = state.lc;
+            newState[id].ts = state.ts;
+        }
         this.setState(newState);
-        this.controlValue(id, newState[id]);
+        this.controlValue(id, newState[id].val);
     }
 
     handleValue(id, value) {
         const newState = {};
-        newState[id] = value;
-        if (this.state[id] !== newState[id]) {
+        newState[id] = {val: value};
+        const state = this.state[id];
+        if (state) {
+            newState[id].lc = state.lc;
+            newState[id].ts = state.ts;
+        }
+        if (this.state[id].val !== newState[id].val) {
             this.setState(newState);
         }
         this.controlValue(id, value);
@@ -101,7 +115,6 @@ class SmartDialogInfo extends SmartDialogGeneric  {
                                     value={this.state[e.id]}
                                     language={I18n.getLanguage()}
                                     icon={e.icon}
-                                    ts={0}
                                     onChange={() => this.handleToggle(e.id)}
                                     />);
                     } else { // button: read = false, write = true
@@ -112,23 +125,23 @@ class SmartDialogInfo extends SmartDialogGeneric  {
                     }
                 } else if (e.common.type === 'number' && e.common.min !== undefined && e.common.max !== undefined) {
                     // slider
-                    item = [(<Typography key={this.props.dialogKey + '-' + e.id + '-title'}>{e.name} - {this.state[e.id]}{e.unit}</Typography>),
+                    item = [(<Typography key={this.props.dialogKey + '-' + e.id + '-title'}>{e.name} - {this.state[e.id] ? this.state[e.id].val : '?'}{e.unit}</Typography>),
                         (<Slider
                             key={this.props.dialogKey + '-' + e.id + '-control'}
                             min={e.common.min}
                             max={e.common.max}
                             step={((e.common.max - e.common.min) / 100)}
-                            value={this.state[e.id]}
+                            value={this.state[e.id].val}
                             aria-labelledby={e.name}
                             style={{width: 'calc(100% - 20px)', marginLeft: 10}}
                             onChange={(event, value) => this.handleValue(e.id, value)}
-                            label={
+                            /*label={
                                 <div style={styles.labelStyleOuter}>
                                     <div style={styles.labelStyleInner}>
-                                        {this.state[e.id]}
+                                        {this.state[e.id].val}
                                     </div>
                                 </div>
-                            }
+                            }*/
                         />)];
                 } else {
                     // input field
@@ -142,25 +155,22 @@ class SmartDialogInfo extends SmartDialogGeneric  {
                     />);
                 }
             } else {
-                const state = this.props.states[e.id];
                 if (e.common && e.common.type === 'boolean') {
                     item = (<BoolControl
                         key={this.props.dialogKey + '-' + e.id + '-control'}
                         label={e.name}
                         value={this.state[e.id]}
                         language={I18n.getLanguage()}
-                        ts={(this.props.states[e.id] && this.props.states[e.id].lc) || 0}
                     />);
                 } else {
                     item = (
-                        <ListItem key={this.props.dialogKey + '-' + e.id + '-title'} style={Theme.dialog.point}>
-                            {false && Icon ? (<ListItemIcon><Icon /></ListItemIcon>) : null}
-                            <ListItemText primary={e.name} secondary={state && state.ts ? (<Moment style={{fontSize: 12}} date={state.ts} interval={15} fromNow locale={I18n.getLanguage()}/>) : '?'} />
-                            <ListItemSecondaryAction>
-                                <span style={Theme.dialog.value}>{state && state.val !== undefined && state.val !== null ? state.val.toString() : '?'}</span>
-                                <span style={Theme.dialog.unit}>{e.unit}</span>
-                            </ListItemSecondaryAction>
-                        </ListItem>
+                        <InfoControl
+                            key={this.props.dialogKey + '-' + e.id + '-control'}
+                            label={e.name}
+                            unit={e.unit || ''}
+                            value={this.state[e.id]}
+                            language={I18n.getLanguage()}
+                        />
                     );
                 }
             }

@@ -17,7 +17,7 @@ import SmartThermometer from './States/SmartThermometer';
 import SmartThermostat from "./States/SmartThermostat";
 import SmartWindowTilt from './States/SmartWindowTilt';
 
-class TileSmart extends Component {
+class SmartTile extends Component {
     static propTypes = {
         id:          PropTypes.string.isRequired,
         user:        PropTypes.string.isRequired,
@@ -212,5 +212,5 @@ class TileSmart extends Component {
     }
 }
 
-export default TileSmart;
+export default SmartTile;
 

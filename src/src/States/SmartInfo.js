@@ -21,6 +21,7 @@ class SmartInfo extends SmartGeneric {
         tile:               PropTypes.object.isRequired,
         objects:            PropTypes.object.isRequired,
         states:             PropTypes.object.isRequired,
+        onCollectIds:       PropTypes.func,
         onControl:          PropTypes.func
     };
 
@@ -207,6 +208,7 @@ class SmartInfo extends SmartGeneric {
                         dialogKey={this.key + 'dialog'}
                         windowWidth={this.props.windowWidth}
                         points={this.infos}
+                        onCollectIds={this.props.onCollectIds}
                         name={this.state.settings.name}
                         onValueChange={this.setValue.bind(this)}
                         onClose={this.onDialogClose.bind(this)}
