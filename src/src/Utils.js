@@ -2,9 +2,9 @@ import React from 'react';
 
 class Utils {
     static CapitalWords(name) {
-        return name.split(/[\s_]/)
+        return (name || '').split(/[\s_]/)
             .filter(item => item)
-            .map(word => word[0].toUpperCase() + word.substring(1).toLowerCase())
+            .map(word => word ? word[0].toUpperCase() + word.substring(1).toLowerCase() : '')
             .join(' ');
     }
 
@@ -129,6 +129,33 @@ class Utils {
             }
         }
         return null;
+    }
+
+    static splitCamelCase(text) {
+        if (text !== text.toUpperCase()) {
+            const words = [];
+            let i = 0;
+            let start = 0;
+            while (i < text.length) {
+                if (text[i].match(/[A-ZÜÄÖА-Я]/)) {
+                    words.push(text.substring(start, i));
+                    start = i;
+                }
+                i++;
+            }
+            if (start !== i) {
+                words.push(text.substring(start, i));
+            }
+            return words.map(w => {
+                w = w.trim();
+                if (w) {
+                    return w[0].toUpperCase() + w.substring(1).toLowerCase();
+                }
+                return '';
+            }).join(' ');
+        } else {
+            return Utils.CapitalWords(text);
+        }
     }
 }
 

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import Theme from '../theme';
 import IconUp from 'react-icons/lib/fa/angle-double-up';
 import IconDown from 'react-icons/lib/fa/angle-double-down';
@@ -7,10 +7,25 @@ import IconStop from 'react-icons/lib/md/stop'
 import I18n from '../i18n';
 import {darken} from '@material-ui/core/styles/colorManipulator';
 import Button from '@material-ui/core/Button';
-import Snackbar from '@material-ui/core/Snackbar';
+import SmartDialogGeneric from './SmartDialogGeneric';
+import PropTypes from 'prop-types';
 
-class SmartDialogSlider extends Component  {
+class SmartDialogSlider extends SmartDialogGeneric  {
+    // expected:
 
+    static propTypes = {
+        name:               PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.object
+        ]),
+        dialogKey:          PropTypes.string,
+        windowWidth:        PropTypes.string,
+
+        onClose:            PropTypes.func,
+        onValueChange:      PropTypes.func,
+        startValue:         PropTypes.number,
+        type:               PropTypes.number
+    };
     static types = {
         value:  0,
         dimmer: 1,
@@ -52,26 +67,13 @@ class SmartDialogSlider extends Component  {
         top: 'calc(4em + 48px)',
         left: 'calc(50% - 100px)'
     };
-    // expected:
-    // onValueChange
-    // onColorChange
-    // onClose
-    // startValue
-    // type
+
     constructor(props) {
         super(props);
-        this.state = {
-            value: this.externalValue2localValue(this.props.startValue || 0),
-            toast: ''
-        };
-        this.mouseUpTime = 0;
+        this.stateRx.value   = this.externalValue2localValue(this.props.startValue || 0);
         this.onMouseMoveBind = this.onMouseMove.bind(this);
-        this.onMouseUpBind = this.onMouseUp.bind(this);
+        this.onMouseUpBind   = this.onMouseUp.bind(this);
 
-        // disable context menu after long click
-        window.addEventListener('contextmenu', SmartDialogSlider.onContextMenu, false);
-
-        this.refDialog = React.createRef();
         this.refSlider = React.createRef();
 
         this.type = this.props.type || SmartDialogSlider.types.dimmer;
@@ -82,24 +84,8 @@ class SmartDialogSlider extends Component  {
             timer: null,
             timeUp: 0
         };
-    }
-
-    static onContextMenu(e) {
-        if (!e.shiftKey && !e.ctrlKey) {
-            e.preventDefault();
-            console.log('Ignore context menu' + e);
-            return false;
-        }
-    }
-
-    componentDidMount() {
-        // move this element to the top of body
-        this.savedParent = this.refDialog.current.parentElement;
-        document.body.appendChild(this.refDialog.current);
-    }
-
-    componentWillUnmount() {
-        this.savedParent.appendChild(this.refDialog.current);
+        this.closeOnPaperClick = true; // used in generic
+        this.componentReady();
     }
 
     eventToValue(e) {
@@ -151,6 +137,7 @@ class SmartDialogSlider extends Component  {
             return value;
         }
     }
+
     externalValue2localValue(value) {
         if (this.props.min !== undefined && this.props.max !== undefined) {
             return ((value - this.props.min) / (this.props.max - this.props.min)) * 100;
@@ -158,10 +145,11 @@ class SmartDialogSlider extends Component  {
             return value;
         }
     }
+
     onMouseUp(e) {
         e.preventDefault();
         e.stopPropagation();
-        this.mouseUpTime = Date.now();
+        this.click = Date.now();
         this.mouseDown = false;
         console.log('Stopped');
         document.removeEventListener('mousemove',   this.onMouseMoveBind,   {passive: false, capture: true});
@@ -170,13 +158,6 @@ class SmartDialogSlider extends Component  {
         document.removeEventListener('touchend',    this.onMouseUpBind,     {passive: false, capture: true});
 
         this.props.onValueChange && this.props.onValueChange(this.localValue2externalValue(this.state.value));
-    }
-
-    onClose() {
-        if (!this.mouseUpTime || Date.now() - this.mouseUpTime > 100) {
-            window.removeEventListener('contextmenu', SmartDialogSlider.onContextMenu, false);
-            this.props.onClose && this.props.onClose();
-        }
     }
 
     getTopButtonName() {
@@ -214,7 +195,8 @@ class SmartDialogSlider extends Component  {
     }
     }
 
-    onButtonDown(buttonName) {
+    onButtonDown(e, buttonName) {
+        e && e.stopPropagation();
         if (Date.now() - this.button.time < 50) return;
         if (this.button.timer) {
             clearTimeout(this.button.timer);
@@ -240,7 +222,8 @@ class SmartDialogSlider extends Component  {
         }, 400);
     }
 
-    onButtonUp() {
+    onButtonUp(e) {
+        e && e.stopPropagation();
         if (Date.now() - this.button.timeUp < 100) {
             if (this.button.timer) {
                 clearTimeout(this.button.timer);
@@ -281,7 +264,7 @@ class SmartDialogSlider extends Component  {
                 this.setState({value});
                 this.props.onValueChange && this.props.onValueChange(this.localValue2externalValue(value));
             }
-            this.mouseUpTime = Date.now();
+            this.click = Date.now();
         }
     }
 
@@ -297,14 +280,10 @@ class SmartDialogSlider extends Component  {
     }
 
     onStop(e) {
-        e.preventDefault();
-        e.stopPropagation();
+        e && e.preventDefault();
+        e && e.stopPropagation();
         this.setState({toast: I18n.t('sent')});
         this.props.onStop && this.props.onStop();
-    }
-
-    handleToastClose() {
-        this.setState({toast: ''});
     }
 
     getValueText() {
@@ -319,7 +298,7 @@ class SmartDialogSlider extends Component  {
         }
     }
 
-    generateSlider() {
+    generateContent() {
         let sliderStyle = {
             position: 'absolute',
             width: '100%',
@@ -351,60 +330,45 @@ class SmartDialogSlider extends Component  {
             handlerStyle.top = '0.4em';
         }
 
-        return (
-            <div style={{width: '16em', position: 'absolute', height: '100%', maxHeight: 600, left: 'calc(50% - 8em)'}}>
-                <div onTouchStart={() => this.onButtonDown('top')}
-                  onMouseDown={() => this.onButtonDown('top')}
+        return [
+            (<div key={this.props.dialogKey + '-top-button'}
+                  onTouchStart={e => this.onButtonDown(e, 'top')}
+                  onMouseDown={e => this.onButtonDown(e, 'top')}
                   onTouchEnd={this.onButtonUp.bind(this)}
                   onMouseUp={this.onButtonUp.bind(this)}
-                  style={Object.assign({}, SmartDialogSlider.buttonStyle, {top: '1.3em'})} className="dimmer-button">{this.getTopButtonName()}</div>
-                <div  ref={this.refSlider}
-                    onMouseDown={this.onMouseDown.bind(this)}
-                    onTouchStart={this.onMouseDown.bind(this)}
-                    style={SmartDialogSlider.sliderStyle}>
+                  onClick={e => e.stopPropagation()}
+                  style={Object.assign({}, SmartDialogSlider.buttonStyle, {top: '1.3em'})} className="dimmer-button">{this.getTopButtonName()}</div>),
+            (<div key={this.props.dialogKey + '-slider'}
+                  ref={this.refSlider}
+                  onMouseDown={this.onMouseDown.bind(this)}
+                  onTouchStart={this.onMouseDown.bind(this)}
+                  onClick={e => e.stopPropagation()}
+                  style={SmartDialogSlider.sliderStyle}>
                     <div style={sliderStyle}>
-                        <div style={handlerStyle}>
-                        </div>
+                        <div style={handlerStyle} />
                     </div>
-                    <div style={{position: 'absolute', top: 'calc(50% - 0.55em)', userSelect: 'none', width: '100%',
-                        textAlign: 'center', fontSize: '2em'}}>
+                    <div style={{position: 'absolute', top: 'calc(50% - 0.55em)', userSelect: 'none', width: '100%', textAlign: 'center', fontSize: '2em'}}>
                         {this.getValueText()}
                     </div>
-                </div>
-                <div onTouchStart={() => this.onButtonDown('bottom')}
-                   onMouseDown={() => this.onButtonDown('bottom')}
-                   onTouchEnd={this.onButtonUp.bind(this)}
-                   onMouseUp={this.onButtonUp.bind(this)}
-                   style={Object.assign({}, SmartDialogSlider.buttonStyle, {bottom: '1.8em'})} className="dimmer-button">{this.getBottomButtonName()}</div>
-                {this.props.onStop ?
-                    <Button
-                        variant="fab"
-                        color="secondary"
-                        aria-label="stop"
-                        style={SmartDialogSlider.buttonStopStyle}
-                        onClick={this.onStop.bind(this)}
-                        className="dimmer-button"><IconStop/></Button>
-                    : null}
-                <Snackbar
-                    anchorOrigin={{vertical: 'top', horizontal: 'right'}}
-                    open={!!this.state.toast}
-                    onClose={this.handleToastClose.bind(this)}
-                    autoHideDuration={4000}
-                    ContentProps={{
-                        'aria-describedby': 'message-id',
-                    }}
-                    message={<span id="message-id">{this.state.toast}</span>}
-                />
-            </div>
-        );
-    }
-
-    render() {
-        return (<div ref={this.refDialog}
-             onClick={this.onClose.bind(this)}
-             style={Theme.dialog.back}>
-            {this.generateSlider()}
-        </div>);
+                </div>),
+            (<div key={this.props.dialogKey + '-bottom-button'}
+                  onTouchStart={e => this.onButtonDown(e, 'bottom')}
+                  onMouseDown={e => this.onButtonDown(e, 'bottom')}
+                  onTouchEnd={this.onButtonUp.bind(this)}
+                  onMouseUp={this.onButtonUp.bind(this)}
+                  onClick={e => e.stopPropagation()}
+                  style={Object.assign({}, SmartDialogSlider.buttonStyle, {bottom: '1.8em'})} className="dimmer-button">{this.getBottomButtonName()}</div>),
+            !this.props.onStop ? null :
+                (<Button key={this.props.dialogKey + '-stop-button'}
+                         variant="fab"
+                         color="secondary"
+                         aria-label="stop"
+                         style={SmartDialogSlider.buttonStopStyle}
+                         onClick={this.onStop.bind(this)}
+                         className="dimmer-button">
+                    <IconStop/>
+                </Button>)
+        ];
     }
 }
 

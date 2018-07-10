@@ -158,6 +158,7 @@ class SmartLight extends SmartGeneric {
             </div>),
             this.state.showDialog ?
                 <Dialog key={this.key + 'dialog'}
+                    windowWidth={this.props.windowWidth}
                     startValue={this.realValueToPercent()}
                     onValueChange={this.setValue.bind(this)}
                     onClose={this.onDialogClose.bind(this)}

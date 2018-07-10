@@ -9,7 +9,7 @@
 
 React and Material UI interface.
 
-## Instllation
+## Installation
 **Important!**
 This adapter cannot be installed directly from github. Only from npm.
 
@@ -17,9 +17,18 @@ This adapter cannot be installed directly from github. Only from npm.
 
 * Lock
 * Info
-* Edit names, colors, icons
-* edit visibility of enums
-*
+* Cams (over extra Adapter)
+* events (over extra Adapter)
+* Main screen
+* Weather
+* Media tile
+* Instances control
+* Charts
+* Narrow menu
+* remove background of favicon
+* Background/Opacity of menu adjustable
+* Settings for On/Off color/opacity of tiles
+* Detect if the color must be inverted for background (menu, appbar, tiles)
 
 ## ToDO:
 - try smaller font to write the name of device

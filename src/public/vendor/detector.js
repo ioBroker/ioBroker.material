@@ -16,6 +16,7 @@ var Types = {
     window: 'window',
     windowTilt: 'windowTilt',
     media: 'media',
+    slider: 'slider',
     thermostat: 'thermostat',
     camera: 'camera',
     motion: 'motion',
@@ -36,6 +37,26 @@ function ChannelDetector() {
     var patternDirection = {role: /^indicator\.direction$/,               indicator: true,                                            name: 'DIRECTION',          required: false};
 
     var patterns = {
+        mediaPlayer: {
+            states: [
+                {role: /button.play(\..*)?$/,          indicator: false,     write: true,  type: 'boolean',                                                   name: 'PLAY',               required: true},
+                {role: /button.pause(\..*)?$/,         indicator: false,     write: true,  type: 'boolean',                                                   name: 'PAUSE',              required: true},
+                {role: /button.stop(\..*)?$/,          indicator: false,     write: true,  type: 'boolean',                                                   name: 'STOP',               required: false},
+                {role: /button.next(\..*)?$/,          indicator: false,     write: true,  type: 'boolean',                                                   name: 'STOP',               required: false},
+                {role: /button.prev(\..*)?$/,          indicator: false,     write: true,  type: 'boolean',                                                   name: 'STOP',               required: false},
+                {role: /media.state(\..*)?$/,          indicator: false,     write: false,                                                                    name: 'STATE',              required: false},
+                {role: /media.artist(\..*)?$/,         indicator: false,     write: false, type: 'string',                                                    name: 'ARTIST',             required: false},
+                {role: /media.album(\..*)?$/,          indicator: false,     write: false, type: 'string',                                                    name: 'ARTIST',             required: false},
+                {role: /media.title(\..*)?$/,          indicator: false,     write: false, type: 'string',                                                    name: 'ARTIST',             required: false},
+                {role: /media.cover(\..*)?$/,          indicator: false,     write: false, type: 'string',                                                    name: 'ARTIST',             required: false},
+                {role: /media.duration(\..*)?$/,       indicator: false,     write: false, type: 'number',                                                    name: 'ARTIST',             required: false},
+                {role: /media.elapsed(\..*)?$/,        indicator: false,     write: false, type: 'number',                                                    name: 'ARTIST',             required: false},
+                patternLowbat,
+                patternMaintain,
+                patternError
+            ],
+            type: Types.media
+        },
         thermostat: {
             states: [
                 {role: /temperature(\..*)?$/,          indicator: false,     write: true,  type: 'number',                                                    name: 'SET',                required: true},
@@ -149,7 +170,7 @@ function ChannelDetector() {
                 patternMaintain,
                 patternError
             ],
-            type: Types.value
+            type: Types.slider
         },
         socket: {
             states: [
@@ -420,8 +441,8 @@ function ChannelDetector() {
                 channelStates = getAllStatesInChannel(keys, id);
             }
 
-            if (id.indexOf('javascript.0.devices.sensorComplex') !== -1) {
-                //console.log('aaa');
+            if (id.indexOf('javascript.0.devices.valueSimple') !== -1) {
+                console.log('aaa');
             }
 
             for (var pattern in patterns) {
@@ -446,6 +467,10 @@ function ChannelDetector() {
                                     copyState(patterns[pattern].states[j], state);
                                 });
                             }
+                            if (!result.type) {
+                                debugger;
+                            }
+
                             if (!result.states.find(function (e) {return e.id === _id;})) {
                                 result.states[i].id = _id;
                             }

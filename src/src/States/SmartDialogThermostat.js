@@ -1,10 +1,29 @@
-import React, {Component} from 'react';
-import Theme from '../theme';
+import React from 'react';
+import PropTypes from 'prop-types';
 import I18n from '../i18n';
 import ThermostatControl from '../basic-controls/react-nest-thermostat';
 import Button from '@material-ui/core/Button';
+import SmartDialogGeneric from './SmartDialogGeneric';
 
-class SmartDialogThermostat extends Component  {
+class SmartDialogThermostat extends SmartDialogGeneric  {
+    // expected:
+
+    static propTypes = {
+        name:               PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.object
+        ]),
+        dialogKey:          PropTypes.string.isRequired,
+        windowWidth:        PropTypes.number,
+        onClose:            PropTypes.func.isRequired,
+
+        objects:            PropTypes.object,
+        states:             PropTypes.object,
+        onValueChange:      PropTypes.func,
+        startValue:         PropTypes.number.isRequired,
+        actualValue:        PropTypes.number,
+    };
+
     static buttonBoostStyle = {
         position: 'absolute',
         left: 'calc(50% - 2em)',
@@ -48,31 +67,17 @@ class SmartDialogThermostat extends Component  {
             this.max = this.props.startValue
         }
 
-        this.mouseUpTime = 0;
         this.onMouseMoveBind = this.onMouseMove.bind(this);
         this.onMouseUpBind   = this.onMouseUp.bind(this);
         this.onMouseDownBind = this.onMouseDown.bind(this);
 
-        // disable context menu after long click
-        window.addEventListener('contextmenu', SmartDialogThermostat.onContextMenu, false);
-
-        this.refDialog = React.createRef();
         this.refPanel = React.createRef();
         this.svgControl = null;
-    }
-
-    static onContextMenu(e) {
-        if (!e.shiftKey && !e.ctrlKey) {
-            e.preventDefault();
-            console.log('Ignore context menu' + e);
-            return false;
-        }
+        this.componentReady();
     }
 
     componentDidMount() {
-        // move this element to the top of body
-        this.savedParent = this.refDialog.current.parentElement;
-        document.body.appendChild(this.refDialog.current);
+        super.componentDidMount();
         this.svgControl = this.refPanel.current.getElementsByTagName('svg')[0];
         this.svgWidth = this.svgControl.clientWidth;
         this.svgHeight = this.svgControl.clientHeight;
@@ -83,10 +88,6 @@ class SmartDialogThermostat extends Component  {
 
         this.svgControl.addEventListener('mousedown', this.onMouseDownBind, {passive: false, capture: true});
         this.svgControl.addEventListener('touchstart', this.onMouseDownBind, {passive: false, capture: true});
-    }
-
-    componentWillUnmount() {
-        this.savedParent.appendChild(this.refDialog.current);
     }
 
     static roundValue(value, round) {
@@ -166,7 +167,7 @@ class SmartDialogThermostat extends Component  {
     onMouseUp(e) {
         e.preventDefault();
         e.stopPropagation();
-        this.mouseUpTime = Date.now();
+        this.click = Date.now();
         document.removeEventListener('mousemove',   this.onMouseMoveBind,   {passive: false, capture: true});
         document.removeEventListener('mouseup',     this.onMouseUpBind,     {passive: false, capture: true});
         document.removeEventListener('touchmove',   this.onMouseMoveBind,   {passive: false, capture: true});
@@ -175,44 +176,26 @@ class SmartDialogThermostat extends Component  {
         this.props.onValueChange && this.props.onValueChange(this.state.value);
     }
 
-
-    onClose() {
-        if (!this.mouseUpTime || Date.now() - this.mouseUpTime > 100) {
-            window.removeEventListener('contextmenu', SmartDialogThermostat.onContextMenu, false);
-            this.props.onClose && this.props.onClose();
-        }
-    }
-
-    handleToastClose() {
-        this.setState({toast: ''});
-    }
-
     onBoostMode() {
         this.props.onBoostToggle && this.props.onBoostToggle(!this.state.boostValue);
         this.setState({boostValue: !this.state.boostValue});
     }
 
-    render() {
-        return (<div key={'thermo_dialog'} ref={this.refDialog}
-             onClick={this.onClose.bind(this)}
-             style={Theme.dialog.back}>
-            <div style={Object.assign({}, Theme.dialog.inner, {overflowY: 'hidden'})} ref={this.refPanel}>
-                {this.state.boostValue !== null && this.state.boostValue !== undefined ?
-                    (<Button variant="contained" color={this.state.boostValue ? 'secondary' : ''} onClick={this.onBoostMode.bind(this)}
-                          style={{top: '1.3em'}}
-                          className="boost-button">{I18n.t('Boost')}
-                    </Button>) : null
-                }
-
-                <ThermostatControl
-                    minValue={this.min}
-                    maxValue={this.max}
-                    hvacMode={'heating'}
-                    ambientTemperature={this.props.actualValue}
-                    targetTemperature={this.state.value}
-                />
-            </div>
-        </div>);
+    generateContent() {
+        return [
+            this.state.boostValue !== null && this.state.boostValue !== undefined ?
+                (<Button variant="contained" color={this.state.boostValue ? 'secondary' : ''} onClick={this.onBoostMode.bind(this)}
+                         style={{top: '1.3em'}}
+                         className="boost-button">{I18n.t('Boost')}
+                </Button>) : null,
+            (<ThermostatControl
+                minValue={this.min}
+                maxValue={this.max}
+                hvacMode={'heating'}
+                ambientTemperature={this.props.actualValue}
+                targetTemperature={this.state.value}
+            />)
+        ];
     }
 }
 

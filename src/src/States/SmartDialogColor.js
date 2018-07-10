@@ -1,10 +1,22 @@
-import React, {Component} from 'react';
+import React from 'react';
 import ColorsImg from '../assets/rgb.png';
 import {decomposeColor} from '@material-ui/core/styles/colorManipulator';
-import Theme from "../theme";
+import PropTypes from 'prop-types';
+import SmartDialogGeneric from './SmartDialogGeneric';
 
-
-class SmartDialogColor extends Component  {
+class SmartDialogColor extends SmartDialogGeneric  {
+    // expected:
+    static propTypes = {
+        name:               PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.object
+        ]),
+        dialogKey:          PropTypes.string.isRequired,
+        windowWidth:        PropTypes.number,
+        onClose:            PropTypes.func.isRequired,
+        onValueChange:      PropTypes.func,
+        startValue:         PropTypes.string
+    };
 
     static buttonColorStyle = {
         position: 'absolute',
@@ -14,13 +26,9 @@ class SmartDialogColor extends Component  {
         width: '2.5em',
         cursor: 'pointer'
     };
+
     static handlerSize = 32;
-    // expected:
-    // onValueChange
-    // onColorChange
-    // onClose
-    // startValue
-    // type
+
     constructor(props) {
         super(props);
         this.state = {
@@ -46,7 +54,8 @@ class SmartDialogColor extends Component  {
             time: 0,
             name: '',
             timer: null
-        }
+        };
+        this.componentReady();
     }
 
     /**
@@ -276,7 +285,11 @@ class SmartDialogColor extends Component  {
         }
     }
 
-    generateColor() {
+    onClick() {
+        this.click = Date.now();
+    }
+
+    generateContent() {
         let pos = SmartDialogColor.colorToPos(this.state.value, this.colorWidth - SmartDialogColor.handlerSize);
 
         return (
@@ -315,14 +328,6 @@ class SmartDialogColor extends Component  {
                 </div>
             </div>
         );
-    }
-
-    render() {
-        return (<div ref={this.refDialog}
-             onClick={this.onClose.bind(this)}
-             style={Theme.dialog.back}>
-            {this.generateColor()}
-        </div>);
     }
 }
 

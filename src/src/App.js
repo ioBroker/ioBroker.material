@@ -351,7 +351,7 @@ class App extends Component {
 
         if (task.name === 'saveSettings') {
             this.conn.getObject(task.id, (err, obj) => {
-                let settings = Utils.getSettings(obj, {user: this.user, language: I18n.getLanguage()});
+                let settings = Utils.getSettings(obj, {user: this.user, language: I18n.getLanguage()}, task.defaultSettings.enabled);
                 if (JSON.stringify(settings) !== JSON.stringify(task.settings)) {
                     if (Utils.setSettings(obj, task.settings, {user: this.user, language: I18n.getLanguage()})) {
                         this.conn._socket.emit('setObject', obj._id, obj, err => {
@@ -390,8 +390,13 @@ class App extends Component {
         }
     }
 
-    onSaveSettings(id, settings, cb) {
-        this.tasks.push({name: 'saveSettings', id, settings, cb});
+    onSaveSettings(id, settings, defaultSettings, cb) {
+        if (typeof defaultSettings === 'function') {
+            cb = defaultSettings;
+            defaultSettings = {};
+        }
+
+        this.tasks.push({name: 'saveSettings', id, settings, defaultSettings, cb});
         if (this.tasks.length === 1) {
             this.processTasks();
         }
@@ -593,7 +598,7 @@ class App extends Component {
                         <Typography variant="title" color="inherit" style={{flex: 1}}>
                             {this.getTitle()}
                         </Typography>
-                        <div style={{color: Theme.palette.textColor}}>
+                        <div style={{color: Theme.palette.textColor, whiteSpace: 'nowrap'}}>
                             {this.getVersionControl()}
                             {this.state.connected ? null : (<IconButton disabled={true}><IconSignalOff width={Theme.iconSize} height={Theme.iconSize}/></IconButton>)}
                             {this.state.connected && this.state.editMode ? (<IconButton onClick={this.editEnumSettingsOpen.bind(this)} style={{color: this.state.editEnumSettings ? Theme.palette.editActive: Theme.palette.textColor}}><IconSettings width={Theme.iconSize} height={Theme.iconSize}/></IconButton>) : null}

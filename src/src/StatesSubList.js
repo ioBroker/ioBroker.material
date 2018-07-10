@@ -14,6 +14,7 @@ class StatesSubList extends Component {
         user:       PropTypes.string.isRequired,
         objects:    PropTypes.object.isRequired,
         editMode:   PropTypes.bool.isRequired,
+        windowWidth: PropTypes.number,
         newLine:    PropTypes.bool,
         states:     PropTypes.object.isRequired,
         keys:       PropTypes.array.isRequired
@@ -106,6 +107,7 @@ class StatesSubList extends Component {
             enumFunctions={this.props.enumFunctions}
             editMode={this.props.editMode}
             channelInfo={channelInfo}
+            windowWidth={this.props.windowWidth}
             states={this.props.states}
             objects={this.props.objects}
             user={this.props.user}

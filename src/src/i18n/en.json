@@ -1,32 +1,23 @@
 {
-  "Rooms":     "Rooms",
-  "Functions": "Functions",
+  "-": "-",
+  "Environment values": "Environment values",
   "Favorites": "Favorites",
-  "Environment values": "Umwelt",
-  "Others": "Others",
-  "Nothing here": "Nothing here",
-
-  "On":        "On",
-  "Off":       "Off",
-
-  "opened":    "opened",
-  "closed":    "closed",
-  "tilted":    "tilted",
-  "unknown":   "unknown",
-
-  "Show %s values": "Show %s values",
-
-  "fire":      "fire",
-  "-":         "-",
-
+  "Functions": "Functions",
   "Listening...": "Listening...",
-  "Speech recognition running...": "Speech recognition running...",
-
-  "SABOTAGE":  "Sabotage",
-
-  "sent":      "sent",
-
   "No elements": "No elements",
-
-  "SET_TEMPERATURE": "Set temperature"
+  "Nothing here": "Nothing here",
+  "Off": "Off",
+  "On": "On",
+  "Others": "Others",
+  "Rooms": "Rooms",
+  "SABOTAGE": "Sabotage",
+  "SET_TEMPERATURE": "Set temperature",
+  "Show %s values": "Show %s values",
+  "Speech recognition running...": "Speech recognition running...",
+  "closed": "closed",
+  "fire": "fire",
+  "opened": "opened",
+  "sent": "sent",
+  "tilted": "tilted",
+  "unknown": "unknown"
 }

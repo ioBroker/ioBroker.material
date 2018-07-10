@@ -24,6 +24,7 @@ class TileSmart extends Component {
         objects:     PropTypes.object.isRequired,
         states:      PropTypes.object.isRequired,
         editMode:    PropTypes.bool.isRequired,
+        windowWidth: PropTypes.number,
         enumNames:   PropTypes.array,
         channelInfo: PropTypes.object
     };
@@ -140,6 +141,7 @@ class TileSmart extends Component {
             tile={tile}
             editMode={this.props.editMode}
             states={this.props.states}
+            windowWidth={this.props.windowWidth}
             objects={this.props.objects}
             registerHandler={this.registerHandler.bind(this)}
             onSaveSettings={this.props.onSaveSettings}
@@ -178,7 +180,7 @@ class TileSmart extends Component {
                 case Types.thermostat:
                     Control = SmartThermostat;
                     break;
-                case Types.value:
+                case Types.slider:
                     Control = SmartSlider;
                     break;
                 case Types.window:

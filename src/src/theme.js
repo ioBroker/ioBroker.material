@@ -76,7 +76,8 @@ export default {
             width: '100%',
             padding: '1em 0 1em 1em',
             overflow: 'hidden',
-            boxSizing: 'border-box'
+            boxSizing: 'border-box',
+            background: 'rgba(80, 80, 80, 0.5)'
         },
         back:  {
             width: '100%',
@@ -93,7 +94,7 @@ export default {
             overflowX: 'hidden',
             overflowY: 'auto',
             paddingBottom: 20,
-            paddingRight: 16
+            width: 'calc(100% - 1em)'
         },
         point: {
         },
@@ -123,6 +124,18 @@ export default {
             right: 20,
             zIndex: 1
 
+        },
+        closeButton: {
+            position: 'absolute',
+            top: 5,
+            right: 5,
+            width: 36,
+            height: 24,
+            borderRadius: 24,
+            zIndex: 2
+        },
+        settingsBack: {
+            background: 'rgba(255,255,255,0.5)'
         }
     },
     palette: {

@@ -18,6 +18,7 @@ class SmartGeneric extends Component {
         tile:           PropTypes.object.isRequired,
         channelInfo:    PropTypes.object.isRequired,
         enumNames:      PropTypes.array,
+        windowWidth:    PropTypes.number,
         user:           PropTypes.string
     };
 
@@ -331,7 +332,7 @@ class SmartGeneric extends Component {
 
     saveSettings(newSettings) {
         const settings = newSettings || this.state.settings;
-        this.props.onSaveSettings && this.props.onSaveSettings(this.settingsId, settings);
+        this.props.onSaveSettings && this.props.onSaveSettings(this.settingsId, settings, {enabled: this.defaultEnabling});
 
         // subscribe if enabled and was not subscribed
         if (settings.enabled && !this.subscribed) {
@@ -451,21 +452,24 @@ class SmartGeneric extends Component {
 
     wrapContent(content) {
         if (this.state.editMode) {
-            return [(<div key={this.key + 'wrapper'}>
-                {this.state.settings.enabled ?
-                    [(<div onClick={this.toggleEnabled.bind(this)} key={this.key + 'icon-check'} style={Object.assign({}, Theme.tile.editMode.checkIcon)} className="edit-buttons">
-                            <IconCheck width={'90%'} height={'100%'} />
-                    </div>),
-                    (<div onClick={this.showSettings.bind(this)} key={this.key + 'icon-edit'} style={Object.assign({}, Theme.tile.editMode.editIcon)} className="edit-buttons">
-                        <IconEdit width={'100%'} height={'100%'} style={{width: '80%', marginLeft: '20%'}}/>
-                        </div>
-                    )]
-                    :
-                    (<div onClick={this.toggleEnabled.bind(this)} key={this.key + '.icon-check'} style={Object.assign({}, Theme.tile.editMode.removeIcon)}>
-                        <IconRemoved width={'100%'} height={'100%'}/>
-                    </div>)
-                }
-                {content}</div>),
+            return [
+                (<div key={this.key + 'type'} style={{display: 'none'}}>{this.channelInfo.type}</div>),
+                (<div key={this.key + 'wrapper'}>
+                    {this.state.settings.enabled ?
+                        [(<div onClick={this.toggleEnabled.bind(this)} key={this.key + 'icon-check'} style={Object.assign({}, Theme.tile.editMode.checkIcon)} className="edit-buttons">
+                                <IconCheck width={'90%'} height={'100%'} />
+                        </div>),
+                        (<div onClick={this.showSettings.bind(this)} key={this.key + 'icon-edit'} style={Object.assign({}, Theme.tile.editMode.editIcon)} className="edit-buttons">
+                            <IconEdit width={'100%'} height={'100%'} style={{width: '80%', marginLeft: '20%'}}/>
+                            </div>
+                        )]
+                        :
+                        (<div onClick={this.toggleEnabled.bind(this)} key={this.key + '.icon-check'} style={Object.assign({}, Theme.tile.editMode.removeIcon)}>
+                            <IconRemoved width={'100%'} height={'100%'}/>
+                        </div>)
+                    }
+                    {content}
+                </div>),
                 this.state.showSettings ? (<Dialog key={this.key + 'settings'}
                          name={this.state.settings.name}
                          dialogKey={this.key + 'settings'}
@@ -474,13 +478,14 @@ class SmartGeneric extends Component {
                          onClose={this.onSettingsClose.bind(this)}
                 />): null];
         } else if (this.state.settings.enabled) {
-            return (
-                <div key={this.key + 'wrapper'} >
-                    {this.showCorner ? (<div key={this.key + 'corner'} onMouseDown={this.onLongClick.bind(this)} className="corner" style={Theme.tile.tileCorner}></div>) : null}
+            return [
+                (<div key={this.key + 'type'} style={{display: 'none'}}>{this.channelInfo.type}</div>),
+                (<div key={this.key + 'wrapper'} >
+                    {this.showCorner ? (<div key={this.key + 'corner'} onMouseDown={this.onLongClick.bind(this)} className="corner" style={Theme.tile.tileCorner}/>) : null}
                     {this.getIndicators()}
                     {content}
-                </div>
-            );
+                </div>)
+            ];
         } else {
             return null;
         }

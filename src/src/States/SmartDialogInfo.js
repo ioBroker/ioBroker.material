@@ -1,4 +1,5 @@
-import React, {Component} from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import Theme from '../theme';
 import I18n from '../i18n';
 import List from '@material-ui/core/List';
@@ -8,11 +9,11 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Moment from 'react-moment';
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Switch from '@material-ui/core/Switch';
-import Slider from 'material-ui-slider-label/Slider';
-import Paper from '@material-ui/core/Paper';
-import Modal from '@material-ui/core/Modal';
+import Slider from '@material-ui/lab/Slider';
+import SmartDialogGeneric from './SmartDialogGeneric';
+import Typography from '@material-ui/core/Typography';
+import BoolControl from '../basic-controls/react-info-controls/BoolControl'
+import InputControl from '../basic-controls/react-info-controls/InputControl'
 
 const styles = {
     labelStyleOuter: {
@@ -36,83 +37,56 @@ const styles = {
     },
 };
 
-class SmartDialogInfo extends Component  {
-
+class SmartDialogInfo extends SmartDialogGeneric  {
     // expected:
-    // points - array of [{id, icon, unit, name, iconStyle}]
-    // onValueChange
-    // onClose
-    // objects
-    // states
+    static propTypes = {
+        name:               PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.object
+        ]),
+        dialogKey:          PropTypes.string.isRequired,
+        windowWidth:        PropTypes.number,
+        onClose:            PropTypes.func.isRequired,
+        objects:            PropTypes.object,
+        states:             PropTypes.object,
+        onValueChange:      PropTypes.func,
+        points:             PropTypes.array.isRequired
+    };
+
     constructor(props) {
         super(props);
-        const state = {
-            __toast: ''
-        };
         this.props.points.forEach(e => {
-            state[e.id] = this.props.states[e.id] ? this.props.states[e.id].val : null;
+            this.stateRx[e.id] = this.props.states[e.id] ? this.props.states[e.id].val : null;
         });
-        // disable context menu after long click
-        window.addEventListener('contextmenu', SmartDialogInfo.onContextMenu, false);
-
-        this.state = state;
         this.refDialog = React.createRef();
+
+        this.componentReady();
     }
 
-    static onContextMenu(e) {
-        if (!e.shiftKey && !e.ctrlKey) {
-            e.preventDefault();
-            console.log('Ignore context menu' + e);
-            return false;
-        }
-    }
-
-    componentDidMount() {
-        // move this element to the top of body
-        this.savedParent = this.refDialog.current.parentElement;
-        document.body.appendChild(this.refDialog.current);
-    }
-
-    componentWillUnmount() {
-        this.savedParent.appendChild(this.refDialog.current);
-    }
-
-    onClose() {
-        if (this.click && Date.now() - this.click < 50) {
-            return;
-        }
-        window.removeEventListener('contextmenu', SmartDialogInfo.onContextMenu, false);
-        this.props.onClose && this.props.onClose();
-    }
-
-    handleToastClose() {
-        this.setState({__toast: ''});
-    }
-
-    handleInputSet(id) {
-        console.log('handleInputSet', id);
+    controlValue(id, value) {
+        this.setState({toast: I18n.t('sent')});
+        this.props.onValueChange && this.props.onValueChange(id, value);
     }
 
     handleToggle(id) {
-        console.log('handleToggle', id);
+        const newState = {};
+        newState[id] = !this.state[id];
+        this.setState(newState);
+        this.controlValue(id, newState[id]);
     }
 
-    handleButton(id) {
-        console.log('handleButton', id);
+    handleValue(id, value) {
+        const newState = {};
+        newState[id] = value;
+        if (this.state[id] !== newState[id]) {
+            this.setState(newState);
+        }
+        this.controlValue(id, value);
     }
 
-    handleSlider(id, value) {
-        console.log('handleSlider', id, value);
-    }
-
-    onClick() {
-        this.click = Date.now();
-    }
-
-    generatePoints() {
+    generateContent() {
         const result = this.props.points.map((e, i) => {
             const Icon = e.icon;
-            const state = this.props.states[e.id];
             const divider = i !== this.props.points.length - 1 ? (<ListItem key={e.id + '_div'} style={Theme.dialog.divider}/>) : null;
 
             let item;
@@ -121,25 +95,33 @@ class SmartDialogInfo extends Component  {
                 if (e.common.type === 'boolean') {
                     // switch
                     if (e.common.read !== false) {
-                        item = [(<span>{e.name}</span>),
-                            (<Switch
-                                checked={this.state[e.id]}
-                                onChange={() => this.handleToggle(e.id)}
-                                value={e.id}
-                            />)];
+                        item = (<BoolControl
+                                    key={this.props.dialogKey + '-' + e.id + '-control'}
+                                    label={e.name}
+                                    value={this.state[e.id]}
+                                    language={I18n.getLanguage()}
+                                    icon={e.icon}
+                                    ts={0}
+                                    onChange={() => this.handleToggle(e.id)}
+                                    />);
                     } else { // button: read = false, write = true
-                        item = (<Button variant="contained" click={() => this.handleButton(e.id)}>{e.name}</Button>);
+                        item = (<div key={this.props.dialogKey + '-' + e.id + '-control'}
+                                     style={{width: '100%', textAlign: 'center'}}>
+                                    <Button variant="contained" style={{minWidth: '50%'}} onClick={event => this.handleButton(event, e.id)}>{e.name}</Button>
+                                </div>);
                     }
                 } else if (e.common.type === 'number' && e.common.min !== undefined && e.common.max !== undefined) {
                     // slider
-                    item = [(<div>{e.name} {e.unit}</div>),
+                    item = [(<Typography key={this.props.dialogKey + '-' + e.id + '-title'}>{e.name} - {this.state[e.id]}{e.unit}</Typography>),
                         (<Slider
-                            defaultValue={e.common.min}
+                            key={this.props.dialogKey + '-' + e.id + '-control'}
                             min={e.common.min}
                             max={e.common.max}
                             step={((e.common.max - e.common.min) / 100)}
                             value={this.state[e.id]}
-                            onChange={(e, value) => this.handleSlider(e.id, value)}
+                            aria-labelledby={e.name}
+                            style={{width: 'calc(100% - 20px)', marginLeft: 10}}
+                            onChange={(event, value) => this.handleValue(e.id, value)}
                             label={
                                 <div style={styles.labelStyleOuter}>
                                     <div style={styles.labelStyleInner}>
@@ -150,25 +132,37 @@ class SmartDialogInfo extends Component  {
                         />)];
                 } else {
                     // input field
-                    item = [(<TextField
-                            key={e.id + '_input'}
-                            id={e.id}
-                            label={e.name}
-                            value={state ? state.val : ''}
-                            onChange={() => this.handleChange('name')}
-                            margin="normal"
-                        />),
-                        (<Button key={e.id + '_set'} click={() => this.handleInputSet(e.id)} variant="contained">{e.name}</Button>)];
+                    item = (<InputControl
+                        key={this.props.dialogKey + '-' + e.id + '-title'}
+                        type={e.common && e.common.type === 'number' ? 'number' : 'text'}
+                        icon={e.icon}
+                        label={e.name}
+                        value={this.state[e.id]}
+                        onChange={value => this.handleValue(e.id, value)}
+                    />);
                 }
             } else {
-                item = (<ListItem key={e.id + '_info'} style={Theme.dialog.point}>
-                    {false && Icon ? (<ListItemIcon><Icon /></ListItemIcon>) : null}
-                    <ListItemText primary={e.name} secondary={state && state.ts ? (<Moment style={{fontSize: 12}} date={state.ts} interval={15} fromNow locale={I18n.getLanguage()}/>) : '?'} />
-                    <ListItemSecondaryAction>
-                        <span style={Theme.dialog.value}>{state ? state.val : '?'}</span>
-                        <span style={Theme.dialog.unit}>{e.unit}</span>
-                    </ListItemSecondaryAction>
-                </ListItem>);
+                const state = this.props.states[e.id];
+                if (e.common && e.common.type === 'boolean') {
+                    item = (<BoolControl
+                        key={this.props.dialogKey + '-' + e.id + '-control'}
+                        label={e.name}
+                        value={this.state[e.id]}
+                        language={I18n.getLanguage()}
+                        ts={(this.props.states[e.id] && this.props.states[e.id].lc) || 0}
+                    />);
+                } else {
+                    item = (
+                        <ListItem key={this.props.dialogKey + '-' + e.id + '-title'} style={Theme.dialog.point}>
+                            {false && Icon ? (<ListItemIcon><Icon /></ListItemIcon>) : null}
+                            <ListItemText primary={e.name} secondary={state && state.ts ? (<Moment style={{fontSize: 12}} date={state.ts} interval={15} fromNow locale={I18n.getLanguage()}/>) : '?'} />
+                            <ListItemSecondaryAction>
+                                <span style={Theme.dialog.value}>{state && state.val !== undefined && state.val !== null ? state.val.toString() : '?'}</span>
+                                <span style={Theme.dialog.unit}>{e.unit}</span>
+                            </ListItemSecondaryAction>
+                        </ListItem>
+                    );
+                }
             }
 
             if (divider) {
@@ -179,17 +173,8 @@ class SmartDialogInfo extends Component  {
         });
         return [
             (<h4   key={this.props.points[0].id + '_info_header'} style={Theme.dialog.header}>{this.props.name}</h4>),
-            (<List key={this.props.points[0].id + '_info_list'} style={Theme.dialog.list}>{result}</List>)
+            (<List key={this.props.points[0].id + '_info_list'}   style={Theme.dialog.list}>{result}</List>)
         ];
-    }
-
-    render() {
-       ////return (<div key={this.props.points[0].id + '_info_dialog'} ref={this.refDialog}
-       //     onClick={this.onClose.bind(this)}
-       //     style={Theme.dialog.back}>
-       //    <Paper elevation={3} onClick={this.onClick.bind(this)}>{this.generatePoints()}</Paper>
-       //</div>);
-        return (<Modal open={true}><Paper elevation={3} onClick={this.onClick.bind(this)}>{this.generatePoints()}</Paper></Modal>);
     }
 }
 

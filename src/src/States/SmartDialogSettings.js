@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import Theme from '../theme';
 import I18n from '../i18n';
 import List from '@material-ui/core/List';
@@ -14,13 +14,11 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import ColorPicker from '../basic-controls/react-color-picker/ColorPicker';
 import ImageSelector from '../basic-controls/react-image-selector/ImageSelector';
 import OkIcon from 'react-icons/lib/md/save';
-import CancelIcon from 'react-icons/lib/md/cancel';
 import PropTypes from 'prop-types';
-import Paper from '@material-ui/core/Paper';
 import Toolbar from '@material-ui/core/Toolbar';
-import AppBar from '@material-ui/core/AppBar';
+import SmartDialogGeneric from './SmartDialogGeneric';
 
-class SmartDialogSettings extends Component  {
+class SmartDialogSettings extends SmartDialogGeneric  {
 
     // expected:
     //      settings - array of [{id, icon, color, ...}]
@@ -31,6 +29,7 @@ class SmartDialogSettings extends Component  {
         ]),
         getImages:          PropTypes.func,
         dialogKey:          PropTypes.string,
+        windowWidth:        PropTypes.number,
         settings:           PropTypes.array.isRequired,
         onSave:             PropTypes.func.isRequired,
         onClose:            PropTypes.func
@@ -38,58 +37,34 @@ class SmartDialogSettings extends Component  {
 
     constructor(props) {
         super(props);
-        const state = {
-            toast: '',
-            changed: false,
-            unsavedDialog: false,
-            values: {
-                
-            },
-            images: []
+        this.stateRx.changed = false;
+        this.stateRx.unsavedDialog = false;
+        this.stateRx.values = {
+
         };
+        this.stateRx.images = [];
+
         this.props.settings.forEach(e => {
-            state.values[e.name] = e.value === '__default__' ? '' : e.value;
+            this.stateRx.values[e.name] = e.value === '__default__' ? '' : e.value;
         });
 
-        // disable context menu after long click
-        window.addEventListener('contextmenu', SmartDialogSettings.onContextMenu, false);
-        this.state = state;
-        this.refDialog = React.createRef();
+        // This is asynchronous
         this.props.getImages && this.props.getImages(function(images) {
             this.setState({images});
         }.bind(this));
-    }
 
-    static onContextMenu(e) {
-        if (!e.shiftKey && !e.ctrlKey) {
-            e.preventDefault();
-            console.log('Ignore context menu' + e);
-            return false;
-        }
-    }
+        this.dialogStyle = Theme.dialog.settingsBack;
 
-    componentDidMount() {
-        // move this element to the top of body
-        if (this.refDialog) {
-            this.savedParent = this.refDialog.current.parentElement;
-            document.body.appendChild(this.refDialog.current);
-        }
-    }
-
-    componentWillUnmount() {
-        this.refDialog && this.savedParent.appendChild(this.refDialog.current);
+        this.componentReady();
     }
 
     onClose() {
-        const now = Date.now();
-        if (this.click && now - this.click < 50) {
-            return;
-        }
+        if (!super.mayClose()) return;
+
         if (!this.ignoreUnsaved && this.isChanged()) {
             this.setState({unsavedDialog: true});
         } else {
-            window.removeEventListener('contextmenu', SmartDialogSettings.onContextMenu, false);
-            this.props.onClose && this.props.onClose();
+            super.onClose(true);
         }
     }
 
@@ -115,10 +90,6 @@ class SmartDialogSettings extends Component  {
         this.click = 0;
         this.onClose();
     };
-
-    handleToastClose() {
-        this.setState({toast: ''});
-    }
 
     handleText(name, ev) {
         const newValue = {values: JSON.parse(JSON.stringify(this.state.values))};
@@ -169,7 +140,7 @@ class SmartDialogSettings extends Component  {
         });
     }
 
-    generatePoints() {
+    generateContent() {
         const result = this.props.settings.map((e, i) => {
             const divider = i !== this.props.settings.length - 1 ? (<ListItem key={e.id + '_div'} style={Theme.dialog.divider}/>) : null;
 
@@ -263,31 +234,22 @@ class SmartDialogSettings extends Component  {
         ];
     }
 
-    onClick() {
-        this.click = Date.now();
-    }
-
-    render() {
-        return (<div key={this.props.dialogKey + '-dialog'} ref={this.refDialog}
-                  onClick={this.onClose.bind(this)}
-                  style={Theme.dialog.back}>
-            <Paper onClick={this.onClick.bind(this)} style={Theme.dialog.inner}>{this.generatePoints()}</Paper>
-            <Dialog
-                style={{zIndex: 2101}}
-                open={this.state.unsavedDialog}
-                aria-labelledby={I18n.t('Not saved!')}
-                aria-describedby={I18n.t('Changes not saved!')}
-            >
-                <DialogTitle id="alert-dialog-title">{I18n.t('Ignore changes?')}</DialogTitle>
-                <DialogContent>
-                    <DialogContentText id="alert-dialog-description">{I18n.t('Changes are not saved.')}</DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={this.handleWarningCancel.bind(this)} color="primary" autoFocus>{I18n.t('Stay edit')}</Button>
-                    <Button onClick={this.handleWarningIgnore.bind(this)} color="secondary">{I18n.t('Discard changes')}</Button>
-                </DialogActions>
-            </Dialog>
-        </div>);
+    getAdditionalElements() {
+        return (<Dialog
+            style={{zIndex: 2101}}
+            open={this.state.unsavedDialog}
+            aria-labelledby={I18n.t('Not saved!')}
+            aria-describedby={I18n.t('Changes not saved!')}
+        >
+            <DialogTitle id="alert-dialog-title">{I18n.t('Ignore changes?')}</DialogTitle>
+            <DialogContent>
+                <DialogContentText id="alert-dialog-description">{I18n.t('Changes are not saved.')}</DialogContentText>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={this.handleWarningCancel.bind(this)} color="primary" autoFocus>{I18n.t('Stay edit')}</Button>
+                <Button onClick={this.handleWarningIgnore.bind(this)} color="secondary">{I18n.t('Discard changes')}</Button>
+            </DialogActions>
+        </Dialog>);
     }
 }
 

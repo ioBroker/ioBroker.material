@@ -1,32 +1,23 @@
 {
-  "Rooms":     "Комнаты",
-  "Functions": "Функции",
-  "Favorites": "Закладки",
+  "-": "-",
   "Environment values": "Окружающая среда",
-  "Others": "Без категории",
-  "Nothing here": "Здесь ничего нет",
-
-  "On":        "Вкл.",
-  "Off":       "Выкл.",
-
-  "opened":    "откр.",
-  "closed":    "закр.",
-  "tilted":    "откинуто",
-  "unknown":   "неизв.",
-
-  "Show %s values": "Показать %s значений",
-
-  "fire":      "дым",
-  "-":         "-",
-
+  "Favorites": "Закладки",
+  "Functions": "Функции",
   "Listening...": "Слушаю...",
-  "Speech recognition running...": "Идёт распознавание речи...",
-
-  "SABOTAGE":  "Саботаж",
-
-  "sent":      "команда отдана",
-
   "No elements": "Нет элементов",
-
-  "SET_TEMPERATURE": "Желаемая температура"
+  "Nothing here": "Здесь ничего нет",
+  "Off": "Выкл.",
+  "On": "Вкл.",
+  "Others": "Без категории",
+  "Rooms": "Комнаты",
+  "SABOTAGE": "Саботаж",
+  "SET_TEMPERATURE": "Желаемая температура",
+  "Show %s values": "Показать %s значений",
+  "Speech recognition running...": "Идёт распознавание речи...",
+  "closed": "закр.",
+  "fire": "дым",
+  "opened": "откр.",
+  "sent": "команда отдана",
+  "tilted": "откинуто",
+  "unknown": "неизв."
 }

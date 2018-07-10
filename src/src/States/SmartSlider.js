@@ -135,13 +135,14 @@ class SmartSlider extends SmartGeneric {
             </div>),
             this.state.showDialog ?
                 <Dialog key={this.key + 'dialog'}
-                    startValue={this.state[this.id]}
-                    min={this.min}
-                    max={this.max}
-                    unit={this.unit}
-                    onValueChange={this.setValue.bind(this)}
-                    onClose={this.onDialogClose.bind(this)}
-                    type={Dialog.types.value}
+                        startValue={this.state[this.id]}
+                        windowWidth={this.props.windowWidth}
+                        min={this.min}
+                        max={this.max}
+                        unit={this.unit}
+                        onValueChange={this.setValue.bind(this)}
+                        onClose={this.onDialogClose.bind(this)}
+                        type={Dialog.types.value}
                 /> : null
         ]);
     }

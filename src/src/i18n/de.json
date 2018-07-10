@@ -1,32 +1,23 @@
 {
-  "Rooms":     "Räume",
-  "Functions": "Funktionen",
-  "Favorites": "Favorite",
+  "-": "-",
   "Environment values": "Umwelt",
-  "Others": "Andere",
-  "Nothing here": "Nichts hier",
-
-  "On":        "an",
-  "Off":       "aus",
-
-  "opened":    "auf",
-  "closed":    "zu",
-  "tilted":    "gekippt",
-  "unknown":   "unbekannt",
-
-  "Show %s values": "Zeige %s Werte",
-
-  "fire":      "Feuer",
-  "-":         "-",
-
+  "Favorites": "Favorite",
+  "Functions": "Funktionen",
   "Listening...": "Höre...",
-  "Speech recognition running...": "Spracherkennung läuft...",
-
-  "SABOTAGE":  "Sabotage",
-
-  "sent":      "gesendet",
-
   "No elements": "Keine Elemente",
-
-  "SET_TEMPERATURE": "Solltemperatur"
+  "Nothing here": "Nichts hier",
+  "Off": "aus",
+  "On": "an",
+  "Others": "Andere",
+  "Rooms": "Räume",
+  "SABOTAGE": "Sabotage",
+  "SET_TEMPERATURE": "Solltemperatur",
+  "Show %s values": "Zeige %s Werte",
+  "Speech recognition running...": "Spracherkennung läuft...",
+  "closed": "zu",
+  "fire": "Feuer",
+  "opened": "auf",
+  "sent": "gesendet",
+  "tilted": "gekippt",
+  "unknown": "unbekannt"
 }
