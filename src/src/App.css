@@ -27,9 +27,30 @@
   border-width: 0 32px 32px 0 !important;
 }
 .edit-buttons:hover {
-  background: rgba(200, 200, 200, 1) !important;
+  background: rgba(200, 200, 200, 0.8) !important;
   color: black !important;
 }
 .small-visibility-button:hover {
   background: #ff6a5b;
+}
+
+/* The animation code */
+@keyframes back-red {
+    0%   {background-color: red;}
+    50%  {background-color: red;}
+    100% {background-color: white;}
+}
+
+.just-enabled-disabled-1 {
+    background-color: white;
+    animation-name: back-red;
+    animation-duration: 2s;
+}
+.just-enabled-disabled-2 {
+  background-color: white;
+  animation-name: back-red;
+  animation-duration: 2s;
+}
+.menu-selected span {
+  color: #2196f3
 }

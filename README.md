@@ -27,7 +27,8 @@ This adapter cannot be installed directly from github. Only from npm.
 * Narrow menu
 * Background/Opacity of menu adjustable
 * Settings for On/Off color/opacity of tiles
-* Detect if the color must be inverted for background (menu, appbar, tiles)
+* Detect if the color must be inverted for background (menu, tiles)
+* Sort order of tiles
 
 ## ToDO:
 - try smaller font to write the name of device

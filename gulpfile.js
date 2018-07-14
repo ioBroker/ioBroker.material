@@ -74,7 +74,7 @@ gulp.task('flat=>i18n', done => {
     });
 });
 
-gulp.task('1-clean', () => {
+gulp.task('clean', () => {
     return del([
         'src/node_modules/**/*',
         'src/build/**/*',
@@ -123,7 +123,7 @@ gulp.task('2-npm', () => {
     }
 });
 
-gulp.task('2-npm-dep', ['1-clean'], () => {
+gulp.task('2-npm-dep', ['clean'], () => {
     if (fs.existsSync(__dirname + '/src/node_modules')) {
         return Promise.resolve();
     } else {

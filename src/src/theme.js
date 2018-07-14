@@ -365,12 +365,18 @@ export default {
                 borderRadius: tileBorderRadius,
                 zIndex: 1
             },
+            buttonIcon: {
+                paddingTop: '100%'
+            },
+            buttonIconRemoved: {
+                paddingTop: '30%'
+            },
             editEnabled: {
-                background: 'white',
+                backgroundColor: 'white',
                 opacity: 1
             },
             editDisabled: {
-                background: 'white',
+                backgroundColor: 'white',
                 opacity: 0.5
             },
         }

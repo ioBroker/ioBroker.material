@@ -17,6 +17,11 @@ const styles = {
         top: 0,
         right: 0,
         color: 'black'
+    },
+    buttonBig: {
+        width: 32,
+        height: 32,
+        borderRadius: 32
     }
 };
 
@@ -42,7 +47,7 @@ class SmallVisibilityButton extends React.Component {
 
     render() {
         if (this.props.big) {
-            return (<IconButton onClick={e => this.toggleState(e)} >
+            return (<IconButton onClick={e => this.toggleState(e)}  style={Object.assign({}, styles.button, styles.buttonBig)}>
                 {this.state.visible ? <IconCheck width={'100%'}/> : <IconUncheck width={'100%'}/>}
             </IconButton>);
         } else {

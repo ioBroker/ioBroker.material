@@ -4,6 +4,7 @@ import Paper from '@material-ui/core/Paper';
 import I18n from './i18n';
 import Theme from './theme';
 import Types from './States/SmartTypes';
+import Grow from '@material-ui/core/Grow';
 
 import SmartBlinds from './States/SmartBlinds';
 import SmartButton from './States/SmartButton';
@@ -73,7 +74,6 @@ class SmartTile extends Component {
         let style;
         if (this.props.editMode) {
             style = Object.assign({}, Theme.tile.tile, Theme.tile.tileOn, {background: this.state.colorOn}, Theme.tile.editEnabled);
-            Object.assign(style, Theme.tile.editEnabled);
         } else {
             style = this.state.state ? Object.assign({}, Theme.tile.tile, Theme.tile.tileOn, {background: this.state.colorOn}) :
                 Object.assign({}, Theme.tile.tile, Theme.tile.tileOff, {background: this.state.colorOff});
@@ -88,6 +88,7 @@ class SmartTile extends Component {
 
     setVisibility(isVisible) {
         if (this.state.visible !== isVisible) {
+            this.lastEnabledChange = Date.now();
             this.setState({visible: isVisible});
             this.props.onVisibilityControl(this.stateId, isVisible);
         }
@@ -110,19 +111,27 @@ class SmartTile extends Component {
         if (!this.props.editMode && !this.state.visible && this.channelInfo) {
             style.display = 'none';
         }
+        const hasAnimation = this.props.editMode && Date.now() - this.lastEnabledChange < 500;
+        if (hasAnimation && this.hasAnimation) {
+            this.hasAnimation = this.hasAnimation === 'just-enabled-disabled-1' ? 'just-enabled-disabled-2' : 'just-enabled-disabled-1';
+        } else if (hasAnimation) {
+            this.hasAnimation = 'just-enabled-disabled-1';
+        } else {
+            this.hasAnimation = '';
+        }
 
         return (
             <Paper style={Object.assign(this.getTileStyle(), style)}
-                   onMouseDown={this.onMouseDown.bind(this)}
-                   onTouchStart={this.onMouseDown.bind(this)}
-                   onMouseUp={this.onMouseUp.bind(this)}
-                   onTouchEnd={this.onMouseUp.bind(this)}
-                   onClick={this.onClick.bind(this)}
+                   className={this.hasAnimation}
+                             onMouseDown={this.onMouseDown.bind(this)}
+                             onTouchStart={this.onMouseDown.bind(this)}
+                             onMouseUp={this.onMouseUp.bind(this)}
+                             onTouchEnd={this.onMouseUp.bind(this)}
+                             onClick={this.onClick.bind(this)}
             >
                 <span style={{display: 'none'}}>{this.channelInfo ? this.channelInfo.states.find(state => state.id).id : 'nothing'}</span>
                 {content}
-            </Paper>
-        );
+            </Paper>);
     }
 
     registerHandler(eventName, handler) {

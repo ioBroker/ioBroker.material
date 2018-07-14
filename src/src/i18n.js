@@ -22,7 +22,7 @@ class I18n {
             if (w) {
                 word = w;
             } else {
-                console.log(`Translate: "${word}"`);
+                console.log(`Translate: "${word}": "${word}",`);
             }
         }
         if (arg1 !== undefined) {

@@ -30,7 +30,7 @@ class StatesList extends Component {
             enumID: this.props.enumID,
             background: this.props.background,
             backgroundId: this.props.backgroundId,
-            visibileChildren: {}
+            visibleChildren: {}
         };
         this.keys = null;
         this.collectVisibility = null;
@@ -63,7 +63,7 @@ class StatesList extends Component {
         }
         if (nextProps.enumID !== this.state.enumID) {
             newState.enumID = nextProps.enumID;
-            newState.visibileChildren = {};
+            newState.visibleChildren = {};
             newState.visible = false;
             changed = true;
         }
@@ -100,14 +100,14 @@ class StatesList extends Component {
     onVisibilityTimer() {
         this.collectVisibilityTimer = null;
         let commonVisible = false;
-        const combinedVisibility = Object.assign({}, this.state.visibileChildren, this.collectVisibility);
+        const combinedVisibility = Object.assign({}, this.state.visibleChildren, this.collectVisibility);
         for (const _id in combinedVisibility) {
             if (combinedVisibility.hasOwnProperty(_id) && combinedVisibility[_id] ) {
                 commonVisible = true;
                 break;
             }
         }
-        const newState = {visibileChildren: combinedVisibility};
+        const newState = {visibleChildren: combinedVisibility};
 
         if (this.state.visible !== commonVisible) {
             newState.visible = commonVisible;
@@ -119,7 +119,7 @@ class StatesList extends Component {
     }
 
     onVisibilityControl(id, visible) {
-        const oldState = this.collectVisibility && this.collectVisibility[id] !== undefined ? this.collectVisibility[id] : this.state.visibileChildren[id];
+        const oldState = this.collectVisibility && this.collectVisibility[id] !== undefined ? this.collectVisibility[id] : this.state.visibleChildren[id];
 
         if (oldState !== visible) {
             this.collectVisibility = this.collectVisibility || {};

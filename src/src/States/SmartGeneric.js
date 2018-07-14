@@ -42,6 +42,8 @@ class SmartGeneric extends Component {
 
         this.editMode = this.props.editMode;
 
+        this.lastEnabledChange = 0;
+
         if (typeof noSubscribe !== 'boolean' || !noSubscribe) {
             if (this.channelInfo.states) {
                 let ids = [];
@@ -459,16 +461,16 @@ class SmartGeneric extends Component {
                 (<div key={this.key + 'type'} style={{display: 'none'}}>{this.channelInfo.type}</div>),
                 (<div key={this.key + 'wrapper'}>
                     {this.state.settings.enabled ?
-                        [(<div onClick={this.toggleEnabled.bind(this)} key={this.key + 'icon-check'} style={Object.assign({}, Theme.tile.editMode.checkIcon)} className="edit-buttons">
-                                <IconCheck width={'90%'} height={'100%'} />
+                        [(<div onClick={this.toggleEnabled.bind(this)} key={this.key + 'icon-check'} style={Theme.tile.editMode.checkIcon} className="edit-buttons">
+                                <IconCheck width={'90%'} height={'50%'} style={Theme.tile.editMode.buttonIcon}/>
                         </div>),
-                        (<div onClick={this.showSettings.bind(this)} key={this.key + 'icon-edit'} style={Object.assign({}, Theme.tile.editMode.editIcon)} className="edit-buttons">
-                            <IconEdit width={'100%'} height={'100%'} style={{width: '80%', marginLeft: '20%'}}/>
+                        (<div onClick={this.showSettings.bind(this)} key={this.key + 'icon-edit'} style={Theme.tile.editMode.editIcon} className="edit-buttons">
+                            <IconEdit width={'100%'} height={'50%'} style={Object.assign({}, Theme.tile.editMode.buttonIcon, {width: '80%', marginLeft: '20%'})}/>
                             </div>
                         )]
                         :
-                        (<div onClick={this.toggleEnabled.bind(this)} key={this.key + '.icon-check'} style={Object.assign({}, Theme.tile.editMode.removeIcon)}>
-                            <IconRemoved width={'100%'} height={'100%'}/>
+                        (<div onClick={this.toggleEnabled.bind(this)} key={this.key + '.icon-check'} style={Theme.tile.editMode.removeIcon}>
+                            <IconRemoved width={'100%'} height={'100%'} style={Theme.tile.editMode.buttonIconRemoved}/>
                         </div>)
                     }
                     {content}

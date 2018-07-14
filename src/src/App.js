@@ -56,6 +56,7 @@ class App extends Component {
             width:          '0',
             backgroundId:   0,
             editEnumSettings: false,
+            editAppSettings: false,
             settings:       null,
             actualVersion:  ''
         };
@@ -471,6 +472,12 @@ class App extends Component {
     editEnumSettingsClose() {
         this.setState({editEnumSettings: false});
     }
+    editAppSettingsOpen() {
+        this.setState({editAppSettings: true});
+    }
+    editAppSettingsClose() {
+        this.setState({editAppSettings: false});
+    }
 
     getDialogSettings(settings) {
         settings = settings || [];
@@ -509,6 +516,18 @@ class App extends Component {
         return settings;
     }
 
+    getAppSettings(settings) {
+        settings = settings || [];
+
+        settings.unshift({
+            name: 'instances',
+            value: this.state.settings.instances === undefined ? true : this.state.settings.instances,
+            type: 'boolean'
+        });
+
+        return settings;
+    }
+
     readImageNames(cb) {
         const dir = `/${NAMESPACE}/${this.user}/`;
         this.conn.readDir(dir, (err, files) => {
@@ -535,6 +554,11 @@ class App extends Component {
             this.setState({settings});
             this.onSaveSettings(this.state.viewEnum, settings);
         }
+    }
+
+    saveAppSettings(settings) {
+        settings = settings || this.state.settings;
+
     }
 
     static onUpdateVersion() {
@@ -579,6 +603,8 @@ class App extends Component {
     }
 
     render() {
+        const toolbarBackground = this.state.settings ? this.state.settings.color : undefined;
+        const invertColor = toolbarBackground && Utils.invertColor(toolbarBackground);
         return (
             <div>
                 <AppBar
@@ -589,7 +615,7 @@ class App extends Component {
                         marginLeft: this.state.menuFixed ? Theme.menu.width : 0
                     }}
                 >
-                    <Toolbar style={{background: this.state.settings ? this.state.settings.color : undefined}}>
+                    <Toolbar style={{background: toolbarBackground, color: invertColor ? undefined : 'black'}}>
                         {!this.state.menuFixed &&
                             (<IconButton color="inherit" aria-label="Menu" onClick={this.onToggleMenu.bind(this)} >
                                 <MenuIcon/>
@@ -614,6 +640,15 @@ class App extends Component {
                                                            settings={this.getDialogSettings()}
                                                            onSave={this.saveDialogSettings.bind(this)}
                                                            onClose={this.editEnumSettingsClose.bind(this)}
+
+                        />): null}
+                        {this.state.editAppSettings ? (<DialogSettings key={'app-settings'}
+                                                                        name={I18n.t('App settings')}
+                                                                        dialogKey={'app-settings'}
+                                                                        settings={this.getAppSettings()}
+                                                                        onSave={this.saveAppSettings.bind(this)}
+                                                                        onClose={this.editAppSettingsClose.bind(this)}
+
                         />): null}
                     </Toolbar>
                 </AppBar>
@@ -627,6 +662,8 @@ class App extends Component {
                         <IconButton onClick={this.onToggleMenu.bind(this)} style={{color: Theme.palette.textColor}}>
                             <IconClose width={Theme.iconSize} height={Theme.iconSize} />
                         </IconButton>
+
+                        {false && this.state.connected && this.state.editMode ? (<IconButton onClick={this.editAppSettingsOpen.bind(this)} style={{color: this.state.editEnumSettings ? Theme.palette.editActive: Theme.palette.textColor}}><IconSettings width={Theme.iconSize} height={Theme.iconSize}/></IconButton>) : null}
 
                         <div style={{flex: 1}}>
                         </div>

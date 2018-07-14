@@ -247,7 +247,7 @@ class MenuList extends Component {
             return [(<ListItem
                     style={{opacity: this.props.editMode && !this.state.visibility[item.id] ? 0.5 : 1}}
                     button
-                    className={this.props.selectedId === item.id ? 'selected' : ''}
+                    className={this.props.selectedId === item.id ? 'menu-selected' : ''}
                     key={item.id}
                     onClick={el => this.onSelected(item.id, el)}
                 >
@@ -287,9 +287,7 @@ class MenuList extends Component {
                 <div style={{width: this.props.width}}>
                     <Divider />
                     {this.getListHeader()}
-                    <List>
-                        {this.getListItems(items)}
-                    </List>
+                    <List>{this.getListItems(items)}</List>
                 </div>
             );
         } else {

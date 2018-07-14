@@ -174,6 +174,39 @@ class Utils {
             return Utils.CapitalWords(text);
         }
     }
+
+    // https://stackoverflow.com/questions/35969656/how-can-i-generate-the-opposite-color-according-to-current-color
+    static invertColor(color) {
+        if (color.indexOf('#') === 0) {
+            color = color.slice(1);
+        }
+        let r;
+        let g;
+        let b;
+
+        const rgb = color.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
+        if (rgb && rgb.length === 4) {
+            r = parseInt(rgb[1], 10);
+            g = parseInt(rgb[2], 10);
+            b = parseInt(rgb[3], 10);
+        } else {
+            // convert 3-digit hex to 6-digits.
+            if (color.length === 3) {
+                color = color[0] + color[0] + color[1] + color[1] + color[2] + color[2];
+            }
+            if (color.length !== 6) {
+                return false;
+            }
+
+            r = parseInt(color.slice(0, 2), 16);
+            g = parseInt(color.slice(2, 4), 16);
+            b = parseInt(color.slice(4, 6), 16);
+        }
+
+
+        // http://stackoverflow.com/a/3943023/112731
+        return (r * 0.299 + g * 0.587 + b * 0.114) <= 186;
+    };
 }
 
 export default Utils;
