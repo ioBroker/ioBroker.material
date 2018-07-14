@@ -15,7 +15,6 @@ class SmartBlinds extends SmartGeneric {
 
     constructor(props) {
         super(props);
-        this.inverted = this.props.inverted || true;
 
         if (this.channelInfo.states) {
             let state = this.channelInfo.states.find(state => state.id && state.name === 'SET');
@@ -65,7 +64,7 @@ class SmartBlinds extends SmartGeneric {
         }
         val = parseFloat(val);
         val = Math.round((val - this.min) / (this.max - this.min) * 100);
-        if (this.inverted) {
+        if (this.state.settings.inverted) {
             val = 100 - val;
         }
         return val;
@@ -73,7 +72,7 @@ class SmartBlinds extends SmartGeneric {
 
     percentToRealValue(percent) {
         percent = parseFloat(percent);
-        if (this.inverted) {
+        if (this.state.settings.inverted) {
             percent = 100 - percent;
         }
         return Math.round((this.max - this.min) * percent / 100);
@@ -151,6 +150,17 @@ class SmartBlinds extends SmartGeneric {
         );
     }
 
+    getDialogSettings () {
+        const settings = super.getDialogSettings();
+
+        settings.unshift({
+            name: 'inverted',
+            value: this.state.settings.inverted || false,
+            type: 'boolean'
+        });
+        return settings;
+    }
+
     getStateText() {
         if (this.state[this.actualId] === null || this.state[this.actualId] === undefined) {
             return '---';
@@ -174,11 +184,12 @@ class SmartBlinds extends SmartGeneric {
             </div>),
             this.state.showDialog ?
                 <Dialog key={this.key + 'dialog'}
-                    startValue={this.realValueToPercent()}
-                    onValueChange={this.setValue.bind(this)}
-                    onStop={this.stopId ? this.onStop.bind(this) : null}
-                    onClose={this.onDialogClose.bind(this)}
-                    type={Dialog.types.blinds}
+                        startValue={this.realValueToPercent()}
+                        onValueChange={this.setValue.bind(this)}
+                        inverted={this.state.settings.inverted}
+                        onStop={this.stopId ? this.onStop.bind(this) : null}
+                        onClose={this.onDialogClose.bind(this)}
+                        type={Dialog.types.blinds}
                 /> : null
         ]);
     }

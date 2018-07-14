@@ -25,7 +25,6 @@ This adapter cannot be installed directly from github. Only from npm.
 * Instances control
 * Charts
 * Narrow menu
-* remove background of favicon
 * Background/Opacity of menu adjustable
 * Settings for On/Off color/opacity of tiles
 * Detect if the color must be inverted for background (menu, appbar, tiles)

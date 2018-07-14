@@ -101,7 +101,7 @@ class SmartSlider extends SmartGeneric {
     }
 
     getDialogSettings () {
-        const settings =super.getDialogSettings();
+        const settings = super.getDialogSettings();
         settings.push({
             name: 'decimals',
             value: this.state.settings.decimals || 0,
@@ -109,6 +109,7 @@ class SmartSlider extends SmartGeneric {
             min: 0,
             max: 6
         });
+
         return settings;
     }
 
