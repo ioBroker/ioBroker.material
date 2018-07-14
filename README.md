@@ -9,6 +9,8 @@
 
 React and Material UI interface.
 
+![Screenshot](img/screenshot1.png)
+
 ## Installation
 **Important!**
 This adapter cannot be installed directly from github. Only from npm.
