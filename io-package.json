@@ -80,7 +80,8 @@
             "type": "meta",
             "common": {
                 "name": "user files and images for material",
-                "type": "meta.user"
+                "type": "meta.user",
+                "expert": true
             },
             "native": {}
         }

@@ -13,10 +13,12 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import ColorPicker from '../basic-controls/react-color-picker/ColorPicker';
 import ImageSelector from '../basic-controls/react-image-selector/ImageSelector';
+import ChipsControl from '../basic-controls/react-info-controls/ChipsControl';
 import OkIcon from 'react-icons/lib/md/save';
 import PropTypes from 'prop-types';
 import Toolbar from '@material-ui/core/Toolbar';
 import SmartDialogGeneric from './SmartDialogGeneric';
+import Paper from '@material-ui/core/Paper';
 
 class SmartDialogSettings extends SmartDialogGeneric  {
 
@@ -107,7 +109,7 @@ class SmartDialogSettings extends SmartDialogGeneric  {
         this.setState(newValue);
     }
 
-    handleColor(name, value) {
+    handleValue(name, value) {
         const newValue = {values: JSON.parse(JSON.stringify(this.state.values))};
         this.click = Date.now();
         newValue.values[name] = value;
@@ -158,14 +160,16 @@ class SmartDialogSettings extends SmartDialogGeneric  {
                         key={this.props.dialogKey + '-' + e.name + '-color'}
                         name={I18n.t(e.name)}
                         color={this.state.values[e.name] || Theme.tile.tile.background}
-                        onChange={color => this.handleColor(e.name, color)}
+                        onChange={color => this.handleValue(e.name, color)}
                     />);
+            } else if (e.type === 'chips') {
+                item = (<ChipsControl
+                    label={I18n.t(e.name)}
+                    textAdd={I18n.t('add indicator')}
+                    value={this.state.values[e.name] || ''}
+                    onChange={value => this.handleValue(e.name, value)}
+                />);
             } else if (e.type === 'icon') {
-                /*item = [
-                    (<div key={this.props.dialogKey + '-' + e.name + '-icon-label'} style={Theme.settings.label}>{I18n.t(e.name)}</div>),
-                    (<div key={this.props.dialogKey + '-' + e.name + '-icon'} style={{width: '100%', textAlign: 'center', height: 64}}>
-                        {this.state.values[e.name] ? (<img alt={I18n.t('Item icon')} src={this.state.values[e.name]} style={{width: 64, maxHeight: 64}} />) : <NoIcon width={'100%'} height={'100%'} />}
-                    </div>)];*/
                 item = (<ImageSelector
                     maxSize={15000}
                     icons={true}
@@ -222,7 +226,7 @@ class SmartDialogSettings extends SmartDialogGeneric  {
             if (0 && divider) {
                 return [item, divider];
             } else {
-                return item;
+                return (<Paper style={{margin: 5, padding: 5}} elevation={1}>{item}</Paper>);
             }
         });
         return [

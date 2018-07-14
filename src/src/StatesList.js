@@ -16,6 +16,7 @@ class StatesList extends Component {
         background:      PropTypes.string.isRequired,
         backgroundId:    PropTypes.number,
         backgroundColor: PropTypes.string,
+        ignoreIndicators: PropTypes.array,
         windowWidth:     PropTypes.number,
         loading:         PropTypes.bool.isRequired,
         newLine:         PropTypes.bool
@@ -179,6 +180,7 @@ class StatesList extends Component {
                             states={this.props.states}
                             newLine={this.props.newLine}
                             items={column}
+                            ignoreIndicators={this.props.ignoreIndicators}
                             onVisibilityControl={this.onVisibilityControl.bind(this)}
                             editMode={this.props.editMode}
                             windowWidth={this.props.windowWidth}
@@ -211,6 +213,7 @@ class StatesList extends Component {
                     items={column}
                     newLine={this.props.newLine}
                     editMode={this.props.editMode}
+                    ignoreIndicators={this.props.ignoreIndicators}
                     onVisibilityControl={this.onVisibilityControl.bind(this)}
                     windowWidth={this.props.windowWidth}
                     enumFunctions={this.enumFunctions}

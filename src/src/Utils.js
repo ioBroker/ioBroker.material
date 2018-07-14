@@ -3,6 +3,8 @@ import React from 'react';
 const NAMESPACE = 'material';
 
 class Utils {
+    static namespace = NAMESPACE;
+
     static CapitalWords(name) {
         return (name || '').split(/[\s_]/)
             .filter(item => item)

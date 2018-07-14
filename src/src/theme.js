@@ -105,7 +105,11 @@ export default {
         header: {
             fontSize: 20,
             textAlign: 'center',
-            color: 'black'
+            color: 'black',
+            maxWidth: 'calc(100% - 80px)',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis'
         },
         saveButton: {
             position: 'absolute',

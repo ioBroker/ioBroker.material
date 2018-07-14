@@ -39,6 +39,7 @@ class MenuList extends Component {
         editMode:       PropTypes.bool.isRequired,
         user:           PropTypes.string.isRequired,
         root:           PropTypes.string.isRequired,
+        background:     PropTypes.string,
         onSelectedItemChanged: PropTypes.func.isRequired,
         onRootChanged:  PropTypes.func.isRequired
     };
@@ -50,7 +51,8 @@ class MenuList extends Component {
         this.state = {
             selectedIndex:  this.props.defaultValue,
             editMode:       this.props.editMode,
-            visibility:     this.fillVisibility().visibility
+            visibility:     this.fillVisibility().visibility,
+            background:     this.props.background
         };
     }
 
@@ -81,6 +83,9 @@ class MenuList extends Component {
         if (nextProps.editMode !== this.state.editMode) {
             this.setState({editMode: nextProps.editMode});
         }
+        if (nextProps.background !== this.state.background) {
+            this.setState({background: nextProps.background});
+        }
         if (nextProps.objects) {
             const {changed, visibility} = this.fillVisibility(nextProps.objects, nextProps.editMode);
             if (changed) {
@@ -93,7 +98,7 @@ class MenuList extends Component {
         let items = this.getElementsToShow('enum');
 
         if (items && items.length) {
-            return (<ListSubheader style={{background: 'white', borderBottom: '1px solid rgba(0, 0, 0, 0.12)'}}>{
+            return (<ListSubheader style={{background: this.state.background || 'white', borderBottom: '1px solid rgba(0, 0, 0, 0.12)'}}>{
                 items.map(function (item) {
                     let settings = this.settings[item.id];
 
@@ -282,21 +287,25 @@ class MenuList extends Component {
     render() {
         let items = this.getElementsToShow();
 
+        const style = {width: this.props.width};
+        if (this.state.background) {
+            style.background = this.state.background;
+        }
         if (items && items.length) {
             return (
-                <div style={{width: this.props.width}}>
+                <div style={style}>
                     <Divider />
                     {this.getListHeader()}
-                    <List>{this.getListItems(items)}</List>
+                    <List style={this.state.background ? {background: this.state.background} : {}}>{this.getListItems(items)}</List>
                 </div>
             );
         } else {
             return (
-                <div style={{width: this.props.width}}>
+                <div style={style} >
                     <Divider />
                     {this.getListHeader()}
                     <Divider />
-                    <List>
+                    <List >
                         <ListItem key="0" value="0">
                             <ListItemText>{I18n.t('No elements')}</ListItemText>
                         </ListItem>

@@ -21,7 +21,7 @@ const style = {
     },
     dropzone: {
         marginTop: 20,
-        width: '100%',
+        width: 'calc(100% - 10px)',
         height: 65,
         border: '2px dashed black',
         textAlign: 'center',

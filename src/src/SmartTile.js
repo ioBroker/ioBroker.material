@@ -26,6 +26,7 @@ class SmartTile extends Component {
         states:      PropTypes.object.isRequired,
         editMode:    PropTypes.bool.isRequired,
         windowWidth: PropTypes.number,
+        ignoreIndicators: PropTypes.array,
         enumNames:   PropTypes.array,
         channelInfo: PropTypes.object
     };
@@ -148,6 +149,7 @@ class SmartTile extends Component {
             enumNames={this.props.enumNames}
             channelInfo={channelInfo}
             tile={tile}
+            ignoreIndicators={this.props.ignoreIndicators}
             editMode={this.props.editMode}
             states={this.props.states}
             windowWidth={this.props.windowWidth}

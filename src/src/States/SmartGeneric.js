@@ -17,6 +17,7 @@ class SmartGeneric extends Component {
         states:         PropTypes.object.isRequired,
         tile:           PropTypes.object.isRequired,
         channelInfo:    PropTypes.object.isRequired,
+        ignoreIndicators: PropTypes.array,
         enumNames:      PropTypes.array,
         windowWidth:    PropTypes.number,
         user:           PropTypes.string
@@ -36,7 +37,8 @@ class SmartGeneric extends Component {
             executing: false,
             settings: {},
             showSettings: false,
-            editMode: null
+            editMode: null,
+            ignoreIndicators: this.props.ignoreIndicators || []
         };
         this.defaultEnabling = true; // overload this property to hide element by default
 
@@ -52,7 +54,13 @@ class SmartGeneric extends Component {
                         !state.noSubscribe &&
                         this.props.objects[state.id] &&
                         this.props.objects[state.id].type === 'state' &&
-                        ids.indexOf(state.id) === -1) {
+                        ids.indexOf(state.id) === -1)
+                    {
+                        const pos = state.id.lastIndexOf('.');
+                        if (pos !== -1 && this.stateRx.ignoreIndicators.indexOf(state.id.substring(pos + 1)) !== -1) {
+                            return;
+                        }
+
                         ids.push(state.id);
                     }
                 });
@@ -367,6 +375,9 @@ class SmartGeneric extends Component {
             this.setState({editMode: nextProps.editMode});
             //this.props.tile.setVisibility(nextProps.editMode || this.state.settings.enabled);
         }
+        if (JSON.stringify(nextProps.ignoreIndicators) !== JSON.stringify(this.state.ignoreIndicators)) {
+            this.setState({ignoreIndicators: nextProps.ignoreIndicators});
+        }
     }
 
     roundValue(value) {
@@ -389,6 +400,10 @@ class SmartGeneric extends Component {
         const that = this;
         this.channelInfo.states.forEach(state =>  {
             if (state.indicator && state.id) {
+                const pos = state.id.lastIndexOf('.');
+                if (pos !== -1 && this.state.ignoreIndicators.indexOf(state.id.substring(pos + 1)) !== -1) {
+                    return;
+                }
                 let Icon = state.icon;
                 if (state.id === that.indicators.directionId) {
                     const strVal = that.state[state.id];
