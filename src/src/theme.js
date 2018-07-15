@@ -9,6 +9,28 @@ const tileBorderRadius = '1em';
 const tileIconWidth = 40;
 
 export default {
+    classes: {
+        menuBackground: {
+            background: 'inherit'
+        },
+        loadingBackground: {
+            position: 'absolute',
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0
+        },
+        loadingContainer: {
+            position: 'absolute',
+            textAlign: 'center',
+            top: 'calc(50% - 2.5em)'
+        },
+        loadingText: {
+            color: 'rgba(0, 0, 0, .3)',
+            fontSize: '5em',
+            position: 'relative'
+        }
+    },
     appBar: {
         //color: 'rgba(200, 200, 200, 0.8)',//''#337ab7',
         //background: 'rgb(39, 144, 222)',
@@ -26,14 +48,14 @@ export default {
     menuIcon: {
         height: 24,
         overflow: 'hidden',
-        marginRight: 0
+        marginRight: 0,
+        width: 24
     },
     mainPanel: {
         backgroundImage: 'url(' + Background + ')',//'url(homekit.png)',
         backgroundSize: '100% auto',
         paddingTop: appBarHeight,
         minHeight: 'calc(100% - 14px)', // I have no idea, why this 14px are here
-        //background: '#000'//'#1b1b1b'
     },
     menu: {
         width: 250,
@@ -162,6 +184,13 @@ export default {
             },
             floatRight: {
                 float: 'right'
+            },
+            subTitle: {
+                color: 'rgba(0, 0, 0, 0.54)',
+                padding: 0,
+                fontSize: 12,
+                lineHeight: 1,
+                display: 'block'
             }
         }
     },

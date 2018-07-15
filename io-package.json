@@ -1,9 +1,9 @@
 {
     "common": {
         "name": "material",
-        "version": "0.8.5",
+        "version": "0.8.6",
         "news": {
-            "0.8.5": {
+            "0.8.6": {
                 "en": "React app"
             },
             "0.5.7": {
@@ -55,12 +55,16 @@
         "loglevel":                 "info",
         "dependencies":             ["web"],
         "icon":                     "material.svg",
+        "enabled":                  true,
         "extIcon":                  "https://raw.githubusercontent.com/ioBroker/ioBroker.material/master/admin/material.svg",
         "keywords":                 ["user", "interface", "webapp", "jquerymobile", "ui"],
         "readme":                   "https://github.com/ioBroker/ioBroker.material/blob/master/README.md",
         "singleton":                true,
         "preserveSettings":         "material",
 	    "nogit":                    true,
+        "webPreSettings":           {
+            "materialBackground": "native.loadingBackground"
+        },
         "authors": [
             "bluefox <dogafox@gmail.com>"
         ],
@@ -71,6 +75,7 @@
 		"welcomeScreen": 			{"link": "material/index.html", "name": "material", "img": "material.admin/material.svg", "color": "black", "order": 2}
     },
     "native": {
+        "loadingBackground": ""
     },
     "objects": [
     ],

@@ -4,6 +4,7 @@ import SmartTile from './SmartTile';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Theme from './theme';
 import StatesSubList from './StatesSubList';
+import Utils from './Utils';
 
 class StatesList extends Component {
 
@@ -13,12 +14,13 @@ class StatesList extends Component {
         objects:         PropTypes.object.isRequired,
         editMode:        PropTypes.bool.isRequired,
         states:          PropTypes.object.isRequired,
+        connected:       PropTypes.bool.isRequired,
         background:      PropTypes.string.isRequired,
         backgroundId:    PropTypes.number,
         backgroundColor: PropTypes.string,
         ignoreIndicators: PropTypes.array,
         windowWidth:     PropTypes.number,
-        loading:         PropTypes.bool.isRequired,
+        windowHeight:    PropTypes.number,
         newLine:         PropTypes.bool
     };
 
@@ -75,9 +77,13 @@ class StatesList extends Component {
     }
 
     getElementsToShow() {
-        let _enum = this.props.objects[this.state.enumID];
+        if (this.state.enumID === Utils.INSTANCES) {
+            return Object.keys(this.props.objects);
+        } else {
+            let _enum = this.props.objects[this.state.enumID];
 
-        return _enum && _enum.common ? _enum.common.members || [] : [];
+            return _enum && _enum.common ? _enum.common.members || [] : [];
+        }
     }
 
     getEnums(objects, enums) {
@@ -148,8 +154,26 @@ class StatesList extends Component {
             this.getEnumFunctions(this.props.objects).forEach(e => this.enumFunctions.push(e));
         }
 
-        if (!this.props.loading && items && items.length) {
-            //let rxItems = this.getListItems(items);
+        if (this.props.enumID === Utils.INSTANCES) {
+            columns.push((<StatesSubList
+                key={this.state.enumID + '_' + Utils.INSTANCES + '-list'}
+                objects={this.props.objects}
+                user={this.props.user}
+                states={this.props.states}
+                items={items}
+                ignoreIndicators={[]}
+                onVisibilityControl={this.onVisibilityControl.bind(this)}
+                editMode={false}
+                windowWidth={this.props.windowWidth}
+                enumFunctions={this.enumFunctions}
+                enumID={this.state.enumID}
+                enumSubID={''}
+                keys={this.keys}
+                onSaveSettings={this.props.onSaveSettings}
+                onControl={this.props.onControl}
+                onCollectIds={this.props.onCollectIds}/>));
+        } else
+        if (items && items.length) {
             let orderEnums;
             if (this.state.enumID.startsWith('enum.rooms.')) {
                 orderEnums = 'enum.functions.';
@@ -240,7 +264,7 @@ class StatesList extends Component {
             // If rooms => by functions
             // else => by functions
             //columns = columns.map((items, i) => <Col key={'col' + i} style={{width: '9em'}}>{items}</Col>);
-        } else if (this.props.loading) {
+        } else if (this.props.connected) {
             // no connection
             columns.push((<CircularProgress key="wait-circle" size={60} thickness={7} color="primary" style={{padding: 20}}/>));
         } else  {
@@ -257,14 +281,16 @@ class StatesList extends Component {
         let style;
         if (this.state.background) {
             if (this.state.background.match(/\.jpg$|\.gif$|\.png$|\.jpeg$/)) {
-                style = Object.assign({}, Theme.mainPanel, {backgroundSize: '100% auto', backgroundImage: 'url(' + this.state.background + (this.state.backgroundId ? '?ts=' + Date.now() : '') + ')'});
+                style = Object.assign({}, Theme.mainPanel, {
+                    backgroundSize: this.props.windowWidth > this.props.windowHeight ? '100% auto' : 'auto 100%',
+                    backgroundImage: 'url(' + this.state.background + (this.state.backgroundId ? '?ts=' + Date.now() : '') + ')'});
             } else {
                 style = Object.assign({}, Theme.mainPanel, {background: this.state.background, backgroundImage: 'none'});
             }
         } else if (this.state.backgroundColor) {
             style = Object.assign({}, Theme.mainPanel, {background: this.state.backgroundColor, backgroundImage: 'none'});
         } else {
-            style = Theme.mainPanel;
+            style = Object.assign({}, Theme.mainPanel, {backgroundSize: this.props.windowWidth > this.props.windowHeight ? '100% auto' : 'auto 100%'});
         }
 
         return (<div style={Object.assign({marginLeft: this.props.marginLeft}, style)}>{columns}</div>);

@@ -4,7 +4,6 @@ import Paper from '@material-ui/core/Paper';
 import I18n from './i18n';
 import Theme from './theme';
 import Types from './States/SmartTypes';
-import Grow from '@material-ui/core/Grow';
 
 import SmartBlinds from './States/SmartBlinds';
 import SmartButton from './States/SmartButton';
@@ -17,6 +16,8 @@ import SmartSwitch from './States/SmartSwitch';
 import SmartThermometer from './States/SmartThermometer';
 import SmartThermostat from "./States/SmartThermostat";
 import SmartWindowTilt from './States/SmartWindowTilt';
+import SmartLock from "./States/SmartLock";
+import SmartInstance from "./States/SmartInstance";
 
 class SmartTile extends Component {
     static propTypes = {
@@ -193,6 +194,12 @@ class SmartTile extends Component {
                     break;
                 case Types.slider:
                     Control = SmartSlider;
+                    break;
+                case Types.lock:
+                    Control = SmartLock;
+                    break;
+                case Types.instance:
+                    Control = SmartInstance;
                     break;
                 case Types.window:
                 case Types.fireAlarm:

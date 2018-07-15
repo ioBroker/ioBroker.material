@@ -1,6 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Theme from '../theme';
 import I18n from '../i18n';
+
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import TextField from '@material-ui/core/TextField';
@@ -11,14 +13,17 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Toolbar from '@material-ui/core/Toolbar';
+import Paper from '@material-ui/core/Paper';
+
+import OkIcon from 'react-icons/lib/md/save';
+
 import ColorPicker from '../basic-controls/react-color-picker/ColorPicker';
 import ImageSelector from '../basic-controls/react-image-selector/ImageSelector';
 import ChipsControl from '../basic-controls/react-info-controls/ChipsControl';
-import OkIcon from 'react-icons/lib/md/save';
-import PropTypes from 'prop-types';
-import Toolbar from '@material-ui/core/Toolbar';
+import SelectControl from '../basic-controls/react-info-controls/SelectControl';
+
 import SmartDialogGeneric from './SmartDialogGeneric';
-import Paper from '@material-ui/core/Paper';
 
 class SmartDialogSettings extends SmartDialogGeneric  {
 
@@ -169,6 +174,13 @@ class SmartDialogSettings extends SmartDialogGeneric  {
                     value={this.state.values[e.name] || ''}
                     onChange={value => this.handleValue(e.name, value)}
                 />);
+            } else if (e.type === 'select') {
+                item = (<SelectControl
+                    value={this.state.values[e.name] || ''}
+                    onChange={value => this.handleValue(e.name, value)}
+                    label={I18n.t(e.name)}
+                    options={e.options}
+                />);
             } else if (e.type === 'icon') {
                 item = (<ImageSelector
                     maxSize={15000}
@@ -226,11 +238,11 @@ class SmartDialogSettings extends SmartDialogGeneric  {
             if (0 && divider) {
                 return [item, divider];
             } else {
-                return (<Paper style={{margin: 5, padding: 5}} elevation={1}>{item}</Paper>);
+                return (<Paper key={this.props.dialogKey + '-' + e.name + '-paper'} style={{margin: 5, padding: 5}} elevation={1}>{item}</Paper>);
             }
         });
         return [
-            (<Toolbar>
+            (<Toolbar key={this.props.dialogKey + '-toolbar'} >
                 <h4   key={this.props.dialogKey + '-header'} style={Theme.dialog.header}>{this.props.name}</h4>
                 <Button onClick={this.onSave.bind(this)}  key={this.props.dialogKey + '-ok'} style={Theme.dialog.saveButton}  disabled={!this.state.changed} variant="extendedFab" color="primary"   aria-label="save"><OkIcon />{I18n.t('Save')}</Button>
             </Toolbar>),

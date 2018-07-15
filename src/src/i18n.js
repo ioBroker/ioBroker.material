@@ -8,10 +8,12 @@ class I18n {
         'de': require('./i18n/de'),
     };
 
-    static lang = 'en';
+    static lang = window.sysLang || 'en';
 
     static setLanguage(lang) {
-        if (lang) I18n.lang = lang;
+        if (lang) {
+            I18n.lang = lang;
+        }
     }
     static getLanguage() {
         return I18n.lang;

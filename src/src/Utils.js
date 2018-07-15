@@ -4,6 +4,7 @@ const NAMESPACE = 'material';
 
 class Utils {
     static namespace = NAMESPACE;
+    static INSTANCES = 'instances';
 
     static CapitalWords(name) {
         return (name || '').split(/[\s_]/)

@@ -17,6 +17,8 @@ This adapter cannot be installed directly from github. Only from npm.
 
 ## Supported types
 
+
+## ToDO:
 * Lock
 * Info
 * Cams (over extra Adapter)
@@ -31,13 +33,10 @@ This adapter cannot be installed directly from github. Only from npm.
 * Settings for On/Off color/opacity of tiles
 * Detect if the color must be inverted for background (menu, tiles)
 * Sort order of tiles
-
-## ToDO:
-- try smaller font to write the name of device
-- show last change state
+* Set default view
 
 ## Changelog
-### 0.8.4 (2018.07.05)
+### 0.8.6 (2018.07.15)
 * (bluefox) React app
 
 ### 0.5.7 (2018.01.24)

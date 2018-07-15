@@ -85,6 +85,20 @@ function ChannelDetector() {
             ],
             type: Types.blind
         },
+        lock: {
+            states: [
+                {role: /^switch.lock$/,                       indicator: false, type: 'boolean',  write: true,              name: 'SET',                 required: true},
+                {role: /^state$/,                             indicator: false, type: 'boolean',  write: false,             name: 'ACTUAL',              required: false},
+                {                                             indicator: false, type: 'boolean',  write: true, read: false, name: 'OPEN',                required: false, noSubscribe: true},
+                patternDirection,
+                patternWorking,
+                patternUnreach,
+                patternLowbat,
+                patternMaintain,
+                patternError
+            ],
+            type: Types.lock
+        },
         motion: {
             states: [
                 {role: /^state\.motion$|^sensor\.motion$/,                   indicator: false, type: 'boolean', name: 'ACTUAL',     required: true},

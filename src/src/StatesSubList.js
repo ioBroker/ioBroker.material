@@ -5,6 +5,8 @@ import Theme from './theme';
 import I18n from './i18n';
 import SmartTile from './SmartTile';
 import SmartDetector from './States/SmartDetector';
+import Types from './States/SmartTypes';
+
 
 class StatesSubList extends Component {
 
@@ -31,7 +33,11 @@ class StatesSubList extends Component {
             enumSubID: this.props.enumSubID,
             visibleChildren: {}
         };
-        this.name = this.state.enumSubID ? Utils.getObjectName(this.props.objects, this.state.enumSubID, false, [this.state.enumID]) : I18n.t('Others');
+        if (this.state.enumID === Utils.INSTANCES) {
+            this.name = I18n.t('All instances');
+        } else {
+            this.name = this.state.enumSubID ? Utils.getObjectName(this.props.objects, this.state.enumSubID, false, [this.state.enumID]) : I18n.t('Others');
+        }
         this.collectVisibility = null;
         this.collectVisibilityTimer = null;
     }
@@ -123,6 +129,17 @@ class StatesSubList extends Component {
     getListItems(items) {
         const that = this;
         const usedIds = [];
+        if (this.props.enumID === Utils.INSTANCES) {
+            return items.map(function (id, i) {
+                return that.createControl(SmartTile, id, {
+                    states: [
+                        {id: id + '.alive', name: 'ALIVE'},
+                        {id: id + '.connected', name: 'CONNECTED'}
+                    ],
+                    type: Types.instance
+                }, i);
+            });
+        }
         const controls = items.map(function (id, i) {
             if (that.state[id] === undefined) {
                 //debugger;

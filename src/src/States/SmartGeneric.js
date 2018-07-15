@@ -49,7 +49,10 @@ class SmartGeneric extends Component {
         if (typeof noSubscribe !== 'boolean' || !noSubscribe) {
             if (this.channelInfo.states) {
                 let ids = [];
-                this.channelInfo.states.forEach(state => {
+                this.channelInfo.states.forEach(function (state) {
+                    if (state.id.startsWith('system.adapter.')) {
+                        ids.push(state.id);
+                    }
                     if (state.id &&
                         !state.noSubscribe &&
                         this.props.objects[state.id] &&
@@ -63,7 +66,8 @@ class SmartGeneric extends Component {
 
                         ids.push(state.id);
                     }
-                });
+                }.bind(this));
+
                 if (ids.length) {
                     this.subscribes = ids;
 
@@ -131,30 +135,34 @@ class SmartGeneric extends Component {
 
     componentReady () {
         if (this.id && this.props.objects[this.id]) {
-            /*if (this.props.objects[this.id].type === 'state') {
-                let channel = SmartGeneric.getParentId(this.id);
-                if (this.props.objects[channel] && (this.props.objects[channel].type === 'channel' || this.props.objects[channel].type === 'device')) {
-                    this.settingsId = channel;
-                }
-            } else {*/
-                this.settingsId = this.id;
-            //}
+            this.settingsId = this.id;
+        } else
+        if (this.instanceId !== undefined) {
+            this.settingsId = this.instanceId;
         }
+
         if (this.stateRx.showDialog !== undefined) {
             this.showCorner = true;
             this.onMouseUpBind = this.onMouseUp.bind(this);
             this.props.tile.registerHandler('onMouseDown', this.onTileMouseDown.bind(this));
         }
 
-        this.stateRx.settings = Utils.getSettings(
-            this.props.objects[this.settingsId],
-            {
-                user: this.props.user,
-                language: I18n.getLanguage(),
-                name: this.getObjectNameCh()
-            },
-            this.defaultEnabling
-        );
+        if (this.props.objects[this.settingsId] && this.props.objects[this.settingsId].type === 'instance') {
+            this.stateRx.settings = {
+                enabled: true,
+                name: this.props.objects[this.settingsId].common.name + '.' + this.instanceNumber
+            }
+        } else {
+            this.stateRx.settings = Utils.getSettings(
+                this.props.objects[this.settingsId],
+                {
+                    user: this.props.user,
+                    language: I18n.getLanguage(),
+                    name: this.getObjectNameCh()
+                },
+                this.defaultEnabling
+            );
+        }
 
         this.stateRx.nameStyle = {fontSize: SmartGeneric.getNameFontSize(this.stateRx.settings.name)};
 
@@ -490,7 +498,9 @@ class SmartGeneric extends Component {
                     }
                     {content}
                 </div>),
-                this.state.showSettings ? (<Dialog key={this.key + 'settings'}
+                this.state.showSettings ? (
+                    <Dialog key={this.key + 'settings'}
+                         windowWidth={this.props.windowWidth}
                          name={this.state.settings.name}
                          dialogKey={this.key + 'settings'}
                          settings={this.getDialogSettings()}

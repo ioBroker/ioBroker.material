@@ -1,12 +1,17 @@
 import React, { Component } from 'react';
+import {withStyles} from '@material-ui/core/styles';
+
 import './App.css';
-import MenuList from './MenuList';
-import StatesList from './StatesList';
+
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Drawer from '@material-ui/core/Drawer';
+import Dialog from '@material-ui/core/Dialog';
 import IconButton from '@material-ui/core/IconButton';
+import RaisedButton from '@material-ui/core/Button';
+import Button from '@material-ui/core/Button';
+
 import IconClose from 'react-icons/lib/md/close';
 import IconSettings from 'react-icons/lib/md/mode-edit';
 import IconEdit from 'react-icons/lib/md/settings';
@@ -15,25 +20,30 @@ import IconLock from 'react-icons/lib/md/lock';
 import IconFullScreen from 'react-icons/lib/md/fullscreen';
 import IconFullScreenExit from 'react-icons/lib/md/fullscreen-exit';
 import IconMic from 'react-icons/lib/md/mic';
-import Utils from './Utils';
-import Dialog from '@material-ui/core/Dialog';
-import DialogSettings from './States/SmartDialogSettings'
-import RaisedButton from '@material-ui/core/Button';
-import SpeechDialog from './SpeechDialog';
+import IconMenu from 'react-icons/lib/md/menu';
+import IconRefresh from 'react-icons/lib/md/refresh';
+
 import Theme from './theme';
-import MenuIcon from 'react-icons/lib/md/menu';
 import I18n from './i18n';
 import version from './version';
-import Button from '@material-ui/core/Button';
-import IconRefresh from 'react-icons/lib/md/refresh';
+import Utils from './Utils';
+import MenuList from './MenuList';
+import StatesList from './StatesList';
+import SpeechDialog from './SpeechDialog';
+import DialogSettings from './States/SmartDialogSettings';
+import LoadingIndicator from './basic-controls/react-loading-screen/LoadingIndicator';
 
 const isKeyboardAvailableOnFullScreen = (typeof Element !== 'undefined' && 'ALLOW_KEYBOARD_INPUT' in Element) && Element.ALLOW_KEYBOARD_INPUT;
 
 const text2CommandInstance = 0;
 const appConfigID = 'system.adapter.material.0';
 
+const styles = () => (Theme.classes);
+
 class App extends Component {
     // ensure ALLOW_KEYBOARD_INPUT is available and enabled
+
+    static LOADING_TOTAL = 5;
 
     constructor(props) {
         super(props);
@@ -45,15 +55,18 @@ class App extends Component {
             open:           false,
             isListening:    false,
             loading:        true,
+            loadingProgress: 0,
+            loadingStep:    'loading...',
             connected:      false,
             refresh:        false,
             errorShow:      false,
             fullScreen:     false,
             editMode:       false,
             errorText:      '',
-            masterPath:     path ? 'enum.' + path.split('.').shift() : 'enum.rooms',
-            viewEnum:       path ? 'enum.' + path : '',
+            masterPath:     path === Utils.INSTANCES ? 'instances' : (path ? 'enum.' + path.split('.').shift() : 'enum.rooms'),
+            viewEnum:       path === Utils.INSTANCES ? 'instances' : (path ? 'enum.' + path : ''),
             width:          '0',
+            height:         '0',
             backgroundId:   0,
             editEnumSettings: false,
             editAppSettings: false,
@@ -65,9 +78,11 @@ class App extends Component {
 
         this.objects = {};
         this.states = {};
+        this.instances = null;
         this.tasks = [];
         this.user = 'admin';
 
+        this.subscribeInstances = false;
         this.subscribes = {};
         this.requestStates = [];
         this.conn = window.servConn;
@@ -82,12 +97,130 @@ class App extends Component {
         //console.log(prevProps);
     }
 
+    loadingStep(description) {
+        this.setState({loadingProgress: this.state.loadingProgress + 1, loadingStep: description});
+    }
+
+    readInstancesData(readInstances, cb) {
+        if (readInstances) {
+            this.conn._socket.emit('getObjectView', 'system', 'instance', {
+                    startkey: 'system.adapter.',
+                    endkey: 'system.group.\u9999'
+                },
+                function (err, res) {
+                    this.instances = {};
+                    if (res && res.rows && res.rows.length) {
+                        for (let i = 0; i < res.rows.length; i++) {
+                            const obj = res.rows[i].value;
+                            this.instances[obj._id] = obj;
+                        }
+                    }
+
+                    cb();
+                }.bind(this));
+        } else {
+            cb();
+        }
+    }
+
+    readAllData() {
+        this.loadingStep('read objects');
+        this.user = this.conn.getUser().replace(/^system\.user\./, '');
+
+        this.conn.getObject('system.adapter.material', function (err, obj) {
+            obj && obj.common && obj.common.version && this.setState({actualVersion: obj.common.version});
+        }.bind(this));
+
+        this.conn.getObjects(!this.state.refresh, function (err, objects) {
+            if (err) {
+                this.showError(err);
+            } else {
+                let viewEnum = this.state.viewEnum;
+
+                this.loadingStep('read config');
+                this.conn.getObject(appConfigID, function (err, appConfig) {
+                    this.loadingStep('read app config');
+                    this.conn.getObject('system.config', function (err, config) {
+                        objects['system.config'] = config;
+
+                        I18n.setLanguage((config && config.common && config.common.language) || window.sysLang);
+
+                        let keys = Object.keys(objects);
+                        keys.sort();
+                        let result = {};
+                        for (let k = 0; k < keys.length; k++) {
+                            if (keys[k].match(/^system\./) && keys[k] !== 'system.config') continue;
+                            result[keys[k]] = {
+                                common: objects[keys[k]].common,
+                                type: objects[keys[k]].type
+                            };
+                        }
+                        const appSettings = Utils.getSettings(appConfig || {_id: appConfigID}, {
+                            user: this.user,
+                            language: I18n.getLanguage()
+                        });
+
+                        // add loadingBackground & co
+                        if (appConfig.native) {
+                            Object.assign(appSettings, appConfig.native);
+                        }
+
+                        if (!viewEnum) {
+                            viewEnum = appSettings.startEnum;
+                        }
+                        if (result && !viewEnum) {
+                            let reg = new RegExp('^' + this.state.masterPath + '\\.');
+                            // get first room
+                            for (let id in result) {
+                                if (result.hasOwnProperty(id) && reg.test(id)) {
+                                    viewEnum = id;
+                                    break;
+                                }
+                            }
+                        }
+
+                        this.objects = result || {};
+
+                        this.readInstancesData(appSettings.instances, function () {
+                            this.loadingStep('done');
+                            if (viewEnum) {
+                                this.setState({
+                                    viewEnum: viewEnum,
+                                    loading: false,
+                                    settings: Utils.getSettings((result || {})[viewEnum], {
+                                        user: this.user,
+                                        language: I18n.getLanguage()
+                                    }),
+                                    appSettings
+                                });
+                            } else {
+                                this.setState({loading: false});
+                            }
+
+                            this.conn.subscribe(['text2command.' + text2CommandInstance + '.response']);
+
+                            if (appSettings.instances) {
+                                this.conn._socket.emit('subscribeObjects', 'system.adapter.*');
+                                this.subscribeInstances = true;
+                            } else if (this.subscribeInstances) {
+                                this.conn._socket.emit('unsubscribeObjects', 'system.adapter.*');
+                                this.subscribeInstances = false;
+                            }
+                        }.bind(this));
+                    }.bind(this));
+                }.bind(this));
+            }
+        }.bind(this));
+    }
+
     componentDidMount () {
         this.updateWindowDimensions();
         window.addEventListener('resize', this.updateWindowDimensions);
 
         this.conn.namespace   = 'mobile.0';
         this.conn._useStorage = false;
+
+        this.loadingStep('connecting');
 
         this.conn.init({
             name:          'mobile.0',  // optional - default 'vis.0'
@@ -96,69 +229,16 @@ class App extends Component {
         }, {
             onConnChange: function (isConnected) { // no lambda here
                 if (isConnected) {
-                    this.user = this.conn.getUser().replace(/^system\.user\./, '');
-
-                    this.conn.getObject('system.adapter.material', function (err, obj) {
-                        obj && obj.common && obj.common.version && this.setState({actualVersion: obj.common.version});
-                    }.bind(this));
-
-                    this.conn.getObjects(!this.state.refresh, function (err, objects) {
-                        if (err) {
-                            this.showError(err);
-                        } else {
-                            let viewEnum;
-                            this.conn.getObject(appConfigID, function (err, appConfig) {
-                                this.conn.getObject('system.config', function (err, config) {
-                                    if (objects && !this.state.viewEnum) {
-                                        let reg = new RegExp('^' + this.state.masterPath + '\\.');
-                                        // get first room
-                                        for (let id in objects) {
-                                            if (objects.hasOwnProperty(id) && reg.test(id)) {
-                                                viewEnum = id;
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    objects['system.config'] = config;
-
-                                    I18n.setLanguage(config && config.common && config.common.language);
-
-                                    let keys = Object.keys(objects);
-                                    keys.sort();
-                                    let result = {};
-                                    for (let k = 0; k < keys.length; k++) {
-                                        if (keys[k].match(/^system\./) && keys[k] !== 'system.config') continue;
-                                        result[keys[k]] = {
-                                            common: objects[keys[k]].common,
-                                            type: objects[keys[k]].type
-                                        };
-                                    }
-                                    viewEnum = viewEnum || this.state.viewEnum;
-
-                                    this.objects = result || {};
-                                    if (viewEnum) {
-                                        this.setState({
-                                            viewEnum: viewEnum,
-                                            loading: false,
-                                            settings: Utils.getSettings((result || {})[viewEnum], {
-                                                user: this.user,
-                                                language: I18n.getLanguage()
-                                            }),
-                                            appSettings: Utils.getSettings(appConfig || {_id: appConfigID}, {
-                                                user: this.user,
-                                                language: I18n.getLanguage()
-                                            })
-                                        });
-                                    } else {
-                                        this.setState({loading: false});
-                                    }
-                                    this.conn.subscribe(['text2command.' + text2CommandInstance + '.response']);
-                                }.bind(this));
-                            }.bind(this));
-                        }
-                    }.bind(this));
+                    this.setState({connected: true, loading: true});
+                    this.readAllData();
+                } else {
+                    this.setState({
+                        connected: false,
+                        loadingProgress: 1,
+                        loading: true,
+                        loadingStep: 'connecting'
+                    });
                 }
-                this.setState({connected: isConnected, loading: true});
             }.bind(this),
             onRefresh: () => {
                 window.location.reload();
@@ -182,6 +262,16 @@ class App extends Component {
             }.bind(this),
             onError: function (err) { // no lambda here
                 this.showError(err);
+            }.bind(this),
+            onObjectChange: function (id, obj) {
+                if (this.instances) {
+                    if (obj) {
+                        this.instances[id] = obj;
+                    } else if (this.instances[id]) {
+                        delete this.instances[id];
+                    }
+                    this.forceUpdate();
+                }
             }.bind(this)
         }, false, false);
     }
@@ -196,7 +286,7 @@ class App extends Component {
         }
         this.resizeTimer = setTimeout(() => {
             this.resizeTimer = null;
-            this.setState({width: window.innerWidth/*, height: window.innerHeight*/});
+            this.setState({width: window.innerWidth, height: window.innerHeight});
         }, 200);
     }
 
@@ -261,12 +351,28 @@ class App extends Component {
     onItemSelected(id) {
         window.location.hash = encodeURIComponent(id.replace(/^enum\./, ''));
 
-        // load settings for this enum
-        this.setState({
+        const states = {
             viewEnum: id,
-            open: this.state.menuFixed,
-            settings: Utils.getSettings(this.objects[id], {user: this.user, language: I18n.getLanguage()})
-        });
+            open: this.state.menuFixed
+        };
+        if (id !== Utils.INSTANCES) {
+            states.settings = Utils.getSettings(this.objects[id], {user: this.user, language: I18n.getLanguage()});
+            if (this.subscribeInstances) {
+                this.conn._socket.emit('unsubscribeObjects', 'system.adapter.*');
+                this.subscribeInstances = false;
+            }
+            // load settings for this enum
+            this.setState(states);
+        } else {
+            this.readInstancesData(true, () => {
+                if (!this.subscribeInstances) {
+                    this.conn._socket.emit('subscribeObjects', 'system.adapter.*');
+                    this.subscribeInstances = true;
+                }
+                // load settings for this enum
+                this.setState(states);
+            });
+        }
     }
 
     onRootChanged(root, page) {
@@ -392,6 +498,29 @@ class App extends Component {
                     setTimeout(this.processTasks.bind(this), 0);
                 }
             });
+        } else if (task.name === 'saveNativeSettings') {
+            this.conn.getObject(task.id, (err, obj) => {
+                if (JSON.stringify(obj.native) !== JSON.stringify(task.settings)) {
+                    Object.assign(obj.native, task.settings);
+                    this.conn._socket.emit('setObject', obj._id, obj, err => {
+                        if (!err) {
+                            this.objects[obj._id] = obj;
+                        }
+                        if (typeof this.tasks[0].cb === 'function') {
+                            this.tasks[0].cb();
+                        }
+                        this.tasks.shift();
+                        if (err) console.error('Cannot save: ' + obj._id);
+                        setTimeout(this.processTasks.bind(this), 0);
+                    });
+                } else {
+                    if (typeof this.tasks[0].cb === 'function') {
+                        this.tasks[0].cb();
+                    }
+                    this.tasks.shift();
+                    setTimeout(this.processTasks.bind(this), 0);
+                }
+            });
         } else {
             if (typeof this.tasks[0].cb === 'function') {
                 this.tasks[0].cb();
@@ -408,6 +537,7 @@ class App extends Component {
         }
 
         this.tasks.push({name: 'saveSettings', id, settings, defaultSettings, cb});
+
         if (this.tasks.length === 1) {
             this.processTasks();
         }
@@ -416,6 +546,10 @@ class App extends Component {
     getTitle() {
         if (!this.state.viewEnum || !this.objects) {
             return (<span>ioBroker</span>);
+        }
+
+        if (this.state.viewEnum === Utils.INSTANCES) {
+            return (<span>{I18n.t('Menu ' + Utils.INSTANCES)}</span>);
         }
 
         if (this.state.width < 500) {
@@ -476,27 +610,33 @@ class App extends Component {
     toggleEditMode() {
         this.setState({editMode: !this.state.editMode});
     }
+
     editEnumSettingsOpen() {
         this.setState({editEnumSettings: true});
     }
+
     editEnumSettingsClose() {
         this.setState({editEnumSettings: false});
     }
+
     editAppSettingsOpen() {
         this.setState({editAppSettings: true});
     }
+
     editAppSettingsClose() {
         this.setState({editAppSettings: false});
     }
 
-    getDialogSettings(settings) {
-        settings = settings || [];
+    getDialogSettings() {
+        const settings = [];
 
-        settings.unshift({
-            name: 'icon',
-            value: this.state.settings.icon || '',
-            type: 'icon'
-        });
+        if (this.state.viewEnum !== Utils.INSTANCES) {
+            settings.unshift({
+                name: 'icon',
+                value: this.state.settings.icon || '',
+                type: 'icon'
+            });
+        }
         settings.unshift({
             name: 'backgroundColor',
             label: 'Background color',
@@ -513,38 +653,103 @@ class App extends Component {
             value: this.state.settings.color || '',
             type: 'color'
         });
-        settings.unshift({
-            name: 'name',
-            value: this.state.settings.name || '',
-            type: 'string'
-        });
-        settings.unshift({
-            name: 'newLine',
-            value: this.state.settings.newLine || false,
-            type: 'boolean'
-        });
+        if (this.state.viewEnum !== Utils.INSTANCES) {
+            settings.unshift({
+                name: 'name',
+                value: this.state.settings.name || '',
+                type: 'string'
+            });
+            settings.unshift({
+                name: 'newLine',
+                value: this.state.settings.newLine || false,
+                type: 'boolean'
+            });
+        }
         return settings;
+    }
+
+    static isEnumUsed(result, id) {
+        return !!result.find(opt => {
+            if (opt.hasOwnProperty('children')) {
+                return App.isEnumUsed(opt.children, id);
+            } else {
+                return opt.value === id;
+            }
+        })
+    }
+
+    getEnums(root, ids, settings) {
+        const result = [];
+        if (!root) {
+            result.push({value: '', label: I18n.t('default')});
+        }
+        root = root || 'enum';
+        settings = settings || {};
+
+        let objects = this.objects;
+        let reg       = root ? new RegExp('^' + root.replace(/\./g, '\\.') + '\\.') : new RegExp('^[^.]$');
+        if (!ids) {
+            const keys = Object.keys(objects);
+            // keys.sort(); not required
+            ids = keys.filter(id => objects.hasOwnProperty(id) && reg.test(id));
+        }
+
+        for (let i = 0; i < ids.length; i++) {
+            const id = ids[i];
+            if (!reg.test(id)) {
+                continue;
+            }
+
+            if (!settings[id]) {
+                settings[id] = Utils.getSettings(objects[id], {user: this.user, language: I18n.getLanguage()}, true);
+            }
+
+            if (settings[id].enabled === false || App.isEnumUsed(result, id)) {
+                continue;
+            }
+
+            let subTree = this.getEnums(id, ids, settings);
+            if (!subTree || !subTree.length) {
+                result.push({label: settings[id].name, value: id});
+            } else {
+                result.push({label: settings[id].name, children: subTree});
+            }
+        }
+        return result;
     }
 
     getAppSettings(settings) {
         settings = settings || [];
 
-        settings.unshift({
+        settings.push({
             name: 'instances',
             value: this.state.appSettings.instances === undefined ? true : this.state.appSettings.instances,
             type: 'boolean'
         });
 
-        settings.unshift({
+        settings.push({
             name: 'menuBackground',
             value: this.state.appSettings.menuBackground || '',
             type: 'color'
         });
 
-        settings.unshift({
+        settings.push({
+            name: 'loadingBackground',
+            value: this.state.appSettings.loadingBackground || '',
+            type: 'color'
+        });
+
+        settings.push({
             name: 'ignoreIndicators',
             value: this.state.appSettings.ignoreIndicators === undefined ? 'UNREACH_ALARM,STICKY_UNREACH_ALARM,STICKY_UNREACH' : this.state.appSettings.ignoreIndicators,
             type: 'chips'
+        });
+
+        settings.push({
+            name: 'startEnum',
+            value: this.state.appSettings.startEnum || '',
+            options: this.getEnums(),
+            type: 'select'
         });
 
         return settings;
@@ -568,22 +773,48 @@ class App extends Component {
                     window.alert(err);
                 } else {
                     settings.background = fileName;
-                    this.setState({settings, backgroundId: this.state.backgroundId + 1});
-                    this.onSaveSettings(this.state.viewEnum, settings);
+                    if (this.state.viewEnum === Utils.INSTANCES) {
+                        const appSettings = JSON.parse(JSON.stringify(this.state.appSettings));
+                        appSettings.instancesSettings = settings;
+                        this.setState({appSettings, backgroundId: this.state.backgroundId + 1});
+                        this.saveAppSettings(appSettings);
+                    } else {
+                        this.setState({settings, backgroundId: this.state.backgroundId + 1});
+                        this.onSaveSettings(this.state.viewEnum, settings);
+                    }
                 }
             }.bind(this));
         } else {
-            this.setState({settings});
-            this.onSaveSettings(this.state.viewEnum, settings);
+            if (this.state.viewEnum === Utils.INSTANCES) {
+                const appSettings = JSON.parse(JSON.stringify(this.state.appSettings));
+                appSettings.instancesSettings = settings;
+                this.setState({appSettings});
+                this.saveAppSettings(appSettings);
+            } else {
+                this.setState({settings});
+                this.onSaveSettings(this.state.viewEnum, settings);
+            }
         }
     }
 
     saveAppSettings(appSettings) {
         appSettings = appSettings || this.state.appSettings;
+        const nativeSettings = {
+            loadingBackground: appSettings.loadingBackground
+        };
+        const _appSettings = JSON.parse(JSON.stringify(appSettings));
+        delete _appSettings.loadingBackground;
 
-        this.tasks.push({name: 'saveSettings', id: appConfigID, settings: appSettings});
+        let tasks = 0;
+        if (nativeSettings.loadingBackground !== undefined) {
+            tasks++;
+            this.tasks.push({name: 'saveNativeSettings', id: appConfigID, settings: nativeSettings});
+        }
+        tasks++;
+        this.tasks.push({name: 'saveSettings', id: appConfigID, settings: _appSettings});
         this.setState({appSettings});
-        if (this.tasks.length === 1) {
+
+        if (this.tasks.length === tasks) {
             this.processTasks();
         }
     }
@@ -629,134 +860,181 @@ class App extends Component {
         );
     }
 
-    render() {
+    getDrawer() {
+        return (<Drawer
+            variant={this.state.menuFixed ? 'permanent' : 'temporary'}
+            open={this.state.open}
+            onClose={() => this.setState({open: false})}
+            classes={{paper: this.props.classes.menuBackground}}
+            style={{
+                width: Theme.menu.width,
+                background: (this.state.appSettings && this.state.appSettings.menuBackground) || undefined}}>
+            <Toolbar style={this.state.appSettings && this.state.appSettings.menuBackground ? {background: this.state.appSettings.menuBackground} : {}}>
+                <IconButton onClick={this.onToggleMenu.bind(this)} style={{color: Theme.palette.textColor}}>
+                    <IconClose width={Theme.iconSize} height={Theme.iconSize} />
+                </IconButton>
+
+                {this.state.connected && this.state.editMode ? (<IconButton onClick={this.editAppSettingsOpen.bind(this)} style={{color: this.state.editEnumSettings ? Theme.palette.editActive: Theme.palette.textColor}}><IconSettings width={Theme.iconSize} height={Theme.iconSize}/></IconButton>) : null}
+
+                <div style={{flex: 1}}>
+                </div>
+
+                {this.state.width > 500 && !this.state.menuFixed ?
+                    (<IconButton onClick={this.onToggleLock.bind(this)} style={{float: 'right', color: Theme.palette.textColor}}>
+                        <IconLock width={Theme.iconSize} height={Theme.iconSize}/>
+                    </IconButton>)
+                    : null
+                }
+            </Toolbar>
+            <MenuList
+                width={Theme.menu.width}
+                objects={this.objects}
+                user={this.user}
+                instances={this.state.appSettings && this.state.appSettings.instances}
+                background={this.state.appSettings && this.state.appSettings.menuBackground}
+                language={I18n.getLanguage()}
+                selectedId={this.state.viewEnum}
+                editMode={this.state.editMode}
+                root={this.state.masterPath}
+                onSaveSettings={this.onSaveSettings.bind(this)}
+                onRootChanged={this.onRootChanged.bind(this)}
+                onSelectedItemChanged={this.onItemSelected.bind(this)}
+            />
+        </Drawer>);
+    }
+
+    getAppBar() {
         const toolbarBackground = this.state.settings ? this.state.settings.color : undefined;
         const notInvertColor = !toolbarBackground || Utils.invertColor(toolbarBackground);
+        const connected = this.state.connected;
+
+        return (<AppBar
+            position="fixed"
+            style={{
+                width: this.state.menuFixed ? 'calc(100% - ' +  Theme.menu.width + 'px)' : '100%',
+                color: Theme.palette.textColor,
+                marginLeft: this.state.menuFixed ? Theme.menu.width : 0
+            }}
+        >
+            <Toolbar style={{background: toolbarBackground, color: notInvertColor ? undefined : 'black'}}>
+                {!this.state.menuFixed &&
+                (<IconButton color="inherit" aria-label="Menu" onClick={this.onToggleMenu.bind(this)} >
+                    <IconMenu/>
+                </IconButton>)}
+                {Utils.getIcon(this.state.settings, Theme.appBarIcon)}
+                <Typography variant="title" color="inherit" style={{flex: 1}}>
+                    {this.getTitle()}
+                </Typography>
+                <div style={{color: Theme.palette.textColor, whiteSpace: 'nowrap'}}>
+                    {this.getVersionControl()}
+                    {connected ? null : (<IconButton disabled={true}><IconSignalOff width={Theme.iconSize} height={Theme.iconSize}/></IconButton>)}
+                    {connected && this.state.editMode ? (<IconButton onClick={this.editEnumSettingsOpen.bind(this)} style={{color: this.state.editEnumSettings ? Theme.palette.editActive: Theme.palette.textColor}}><IconSettings width={Theme.iconSize} height={Theme.iconSize}/></IconButton>) : null}
+                    {this.getEditButton()}
+                    {connected && SpeechDialog.isSpeechRecognitionSupported() ? <IconButton style={{color: Theme.palette.textColor}} onClick={() => this.onSpeech(true)}><IconMic width={Theme.iconSize} height={Theme.iconSize}/></IconButton> : null}
+                    {App.isFullScreenSupported() ?
+                        <IconButton style={{color: Theme.palette.textColor}} onClick={this.onToggleFullScreen.bind(this)}>{this.state.fullScreen ? <IconFullScreenExit width={Theme.iconSize} height={Theme.iconSize} /> : <IconFullScreen width={Theme.iconSize} height={Theme.iconSize} />}</IconButton> : null}
+                </div>
+                {this.state.editEnumSettings ? (<DialogSettings key={'enum-settings'}
+                                                                name={this.getTitle()}
+                                                                windowWidth={parseFloat(this.state.width)}
+                                                                getImages={this.readImageNames.bind(this)}
+                                                                dialogKey={'enum-settings'}
+                                                                settings={this.getDialogSettings()}
+                                                                onSave={this.saveDialogSettings.bind(this)}
+                                                                onClose={this.editEnumSettingsClose.bind(this)}
+
+                />): null}
+                {this.state.editAppSettings ? (<DialogSettings key={'app-settings'}
+                                                               windowWidth={parseFloat(this.state.width)}
+                                                               name={I18n.t('App settings')}
+                                                               dialogKey={'app-settings'}
+                                                               settings={this.getAppSettings()}
+                                                               onSave={this.saveAppSettings.bind(this)}
+                                                               onClose={this.editAppSettingsClose.bind(this)}
+
+                />): null}
+            </Toolbar>
+        </AppBar>);
+    }
+
+    getStateList() {
+        return (<StatesList
+                objects={this.state.viewEnum === Utils.INSTANCES ? this.instances : this.objects}
+                user={this.user}
+                states={this.states}
+                connected={this.state.connected}
+                ignoreIndicators={((this.state.appSettings && this.state.appSettings.ignoreIndicators) || '').split(',')}
+                backgroundColor={(this.state.settings && this.state.settings.backgroundColor) || ''}
+                background={(this.state.settings && this.state.settings.background) || ''}
+                backgroundId={this.state.backgroundId}
+                newLine={this.state.settings && this.state.settings.newLine}
+                editMode={this.state.editMode}
+                windowWidth={parseFloat(this.state.width)}
+                windowHeight={parseFloat(this.state.height)}
+                marginLeft={this.state.menuFixed ? Theme.menu.width : 0}
+                enumID={this.state.viewEnum}
+                onSaveSettings={this.onSaveSettings.bind(this)}
+                onControl={this.onControl.bind(this)}
+                onCollectIds={this.onCollectIds.bind(this)}/>
+        );
+    }
+
+    getErrorDialog() {
+        return (<Dialog
+            actions={(<RaisedButton
+                label="Ok"
+                primary={true}
+                onClick={() => this.setState({errorShow: false})}
+            />)}
+            modal={false}
+            open={this.state.errorShow}
+            onRequestClose={() => this.setState({errorShow: false})}
+        >
+            {this.state.errorText}
+        </Dialog>);
+    }
+
+    getSpeechDialog() {
+        return (SpeechDialog.isSpeechRecognitionSupported() ?
+            <SpeechDialog
+                objects={this.objects}
+                isShow={this.state.isListening}
+                locale={this.getLocale()}
+                onSpeech={this.onSpeechRec.bind(this)}
+                onFinished={() => this.onSpeech(false)}
+            /> : null);
+    }
+
+    getLoadingScreen() {
+        const background = window.materialBackground;
+        const notInvertColor = !background || Utils.invertColor(background);
+
         return (
-            <div>
-                <AppBar
-                    position="fixed"
-                    style={{
-                        width: this.state.menuFixed ? 'calc(100% - ' +  Theme.menu.width + 'px)' : '100%',
-                        color: Theme.palette.textColor,
-                        marginLeft: this.state.menuFixed ? Theme.menu.width : 0
-                    }}
-                >
-                    <Toolbar style={{background: toolbarBackground, color: notInvertColor ? undefined : 'black'}}>
-                        {!this.state.menuFixed &&
-                            (<IconButton color="inherit" aria-label="Menu" onClick={this.onToggleMenu.bind(this)} >
-                                <MenuIcon/>
-                            </IconButton>)}
-                        {Utils.getIcon(this.state.settings, Theme.appBarIcon)}
-                        <Typography variant="title" color="inherit" style={{flex: 1}}>
-                            {this.getTitle()}
-                        </Typography>
-                        <div style={{color: Theme.palette.textColor, whiteSpace: 'nowrap'}}>
-                            {this.getVersionControl()}
-                            {this.state.connected ? null : (<IconButton disabled={true}><IconSignalOff width={Theme.iconSize} height={Theme.iconSize}/></IconButton>)}
-                            {this.state.connected && this.state.editMode ? (<IconButton onClick={this.editEnumSettingsOpen.bind(this)} style={{color: this.state.editEnumSettings ? Theme.palette.editActive: Theme.palette.textColor}}><IconSettings width={Theme.iconSize} height={Theme.iconSize}/></IconButton>) : null}
-                            {this.getEditButton()}
-                            {this.state.connected && SpeechDialog.isSpeechRecognitionSupported() ? <IconButton style={{color: Theme.palette.textColor}} onClick={() => this.onSpeech(true)}><IconMic width={Theme.iconSize} height={Theme.iconSize}/></IconButton> : null}
-                            {App.isFullScreenSupported() ?
-                                <IconButton style={{color: Theme.palette.textColor}} onClick={this.onToggleFullScreen.bind(this)}>{this.state.fullScreen ? <IconFullScreenExit width={Theme.iconSize} height={Theme.iconSize} /> : <IconFullScreen width={Theme.iconSize} height={Theme.iconSize} />}</IconButton> : null}
-                        </div>
-                        {this.state.editEnumSettings ? (<DialogSettings key={'enum-settings'}
-                                                           name={this.getTitle()}
-                                                           getImages={this.readImageNames.bind(this)}
-                                                           dialogKey={'enum-settings'}
-                                                           settings={this.getDialogSettings()}
-                                                           onSave={this.saveDialogSettings.bind(this)}
-                                                           onClose={this.editEnumSettingsClose.bind(this)}
-
-                        />): null}
-                        {this.state.editAppSettings ? (<DialogSettings key={'app-settings'}
-                                                                        name={I18n.t('App settings')}
-                                                                        dialogKey={'app-settings'}
-                                                                        settings={this.getAppSettings()}
-                                                                        onSave={this.saveAppSettings.bind(this)}
-                                                                        onClose={this.editAppSettingsClose.bind(this)}
-
-                        />): null}
-                    </Toolbar>
-                </AppBar>
-
-                <Drawer
-                    variant={this.state.menuFixed ? 'permanent' : 'temporary'}
-                    open={this.state.open}
-                    onClose={() => this.setState({open: false})}
-                    style={{width: Theme.menu.width, background: (this.state.appSettings && this.state.appSettings.menuBackground) || undefined}}>
-                    <Toolbar style={this.state.appSettings && this.state.appSettings.menuBackground ? {background: this.state.appSettings.menuBackground} : {}}>
-                        <IconButton onClick={this.onToggleMenu.bind(this)} style={{color: Theme.palette.textColor}}>
-                            <IconClose width={Theme.iconSize} height={Theme.iconSize} />
-                        </IconButton>
-
-                        {this.state.connected && this.state.editMode ? (<IconButton onClick={this.editAppSettingsOpen.bind(this)} style={{color: this.state.editEnumSettings ? Theme.palette.editActive: Theme.palette.textColor}}><IconSettings width={Theme.iconSize} height={Theme.iconSize}/></IconButton>) : null}
-
-                        <div style={{flex: 1}}>
-                        </div>
-
-                        {this.state.width > 500 && !this.state.menuFixed ?
-                            (<IconButton onClick={this.onToggleLock.bind(this)} style={{float: 'right', color: Theme.palette.textColor}}>
-                                <IconLock width={Theme.iconSize} height={Theme.iconSize}/>
-                            </IconButton>)
-                            : null
-                        }
-                    </Toolbar>
-                    <MenuList
-                        width={Theme.menu.width}
-                        objects={this.objects}
-                        user={this.user}
-                        background={this.state.appSettings && this.state.appSettings.menuBackground}
-                        language={this.language}
-                        selectedId={this.state.viewEnum}
-                        editMode={this.state.editMode}
-                        root={this.state.masterPath}
-                        onSaveSettings={this.onSaveSettings.bind(this)}
-                        onRootChanged={this.onRootChanged.bind(this)}
-                        onSelectedItemChanged={this.onItemSelected.bind(this)}
-                    />
-                </Drawer>
-                <StatesList
-                    loading={this.state.loading}
-                    objects={this.objects}
-                    user={this.user}
-                    states={this.states}
-                    ignoreIndicators={((this.state.appSettings && this.state.appSettings.ignoreIndicators) || '').split(',')}
-                    backgroundColor={(this.state.settings && this.state.settings.backgroundColor) || ''}
-                    background={(this.state.settings && this.state.settings.background) || ''}
-                    backgroundId={this.state.backgroundId}
-                    newLine={this.state.settings && this.state.settings.newLine}
-                    editMode={this.state.editMode}
-                    windowWidth={parseFloat(this.state.width)}
-                    marginLeft={this.state.menuFixed ? Theme.menu.width : 0}
-                    enumID={this.state.viewEnum}
-                    onSaveSettings={this.onSaveSettings.bind(this)}
-                    onControl={this.onControl.bind(this)}
-                    onCollectIds={this.onCollectIds.bind(this)}/>
-
-                <Dialog
-                    actions={(<RaisedButton
-                        label="Ok"
-                        primary={true}
-                        onClick={() => this.setState({errorShow: false})}
-                    />)}
-                    modal={false}
-                    open={this.state.errorShow}
-                    onRequestClose={() => this.setState({errorShow: false})}
-                >
-                    {this.state.errorText}
-                </Dialog>
-                {SpeechDialog.isSpeechRecognitionSupported() ?
-                    <SpeechDialog
-                        objects={this.objects}
-                        isShow={this.state.isListening}
-                        locale={this.getLocale()}
-                        onSpeech={this.onSpeechRec.bind(this)}
-                        onFinished={() => this.onSpeech(false)}
-                    /> : null}
+            <div className={this.props.classes.loadingBackground} style={{background: window.materialBackground}}>
+                <LoadingIndicator
+                    color={notInvertColor ? 'white' : 'black' }
+                    value={100 * this.state.loadingProgress / App.LOADING_TOTAL}
+                    label={I18n.t(this.state.loadingStep)}
+                />
             </div>
         );
     }
+
+    render() {
+        if (this.state.loading) {
+            return this.getLoadingScreen();
+        } else {
+            return (
+                <div>
+                    {this.getAppBar()}
+                    {this.getDrawer()}
+                    {this.getStateList()}
+                    {this.getErrorDialog()}
+                    {this.getSpeechDialog()}
+                </div>
+            );
+        }
+    }
 }
 
-export default App;
+export default withStyles(styles)(App);

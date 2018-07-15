@@ -1,24 +1,27 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import Divider from '@material-ui/core/Divider';
-import Utils from './Utils';
 import Button from '@material-ui/core/Button';
-import IconRooms from './icons/IconHome';
 import Collapse from '@material-ui/core/Collapse';
+
+import Utils from './Utils';
 import I18n from './i18n'
 import VisibilityButton from './basic-controls/react-visibility-button/VisibilityButton';
+import Theme from './theme';
 
+import IconRooms from './icons/IconHome';
 import IconButton    from '@material-ui/core/IconButton';
 import IconFunctions from 'react-icons/lib/md/lightbulb-outline';
 import IconFavorites from 'react-icons/lib/md/favorite';
-import Theme from './theme';
 import ExpandLess from 'react-icons/lib/md/expand-less';
 import ExpandMore from 'react-icons/lib/md/expand-more';
+import IconInstances from 'react-icons/lib/md/play-arrow';
 
 const styles = {
     iconsSelected: {
@@ -41,7 +44,8 @@ class MenuList extends Component {
         root:           PropTypes.string.isRequired,
         background:     PropTypes.string,
         onSelectedItemChanged: PropTypes.func.isRequired,
-        onRootChanged:  PropTypes.func.isRequired
+        onRootChanged:  PropTypes.func.isRequired,
+        instances:      PropTypes.bool // show instances menu
     };
 
     constructor(props) {
@@ -52,7 +56,8 @@ class MenuList extends Component {
             selectedIndex:  this.props.defaultValue,
             editMode:       this.props.editMode,
             visibility:     this.fillVisibility().visibility,
-            background:     this.props.background
+            background:     this.props.background,
+            instances:      this.props.instances
         };
     }
 
@@ -85,6 +90,9 @@ class MenuList extends Component {
         }
         if (nextProps.background !== this.state.background) {
             this.setState({background: nextProps.background});
+        }
+        if (nextProps.instances !== this.state.instances) {
+            this.setState({instances: nextProps.instances});
         }
         if (nextProps.objects) {
             const {changed, visibility} = this.fillVisibility(nextProps.objects, nextProps.editMode);
@@ -180,6 +188,10 @@ class MenuList extends Component {
     getElementsToShow(root, _objects, editMode) {
         root = root || this.props.root;
 
+        if (root === Utils.INSTANCES) {
+            root = 'enum.rooms';
+        }
+
         editMode = (editMode === undefined) ? this.props.editMode : editMode;
         let objects = _objects || this.props.objects;
         let items     = [];
@@ -271,7 +283,7 @@ class MenuList extends Component {
     }
 
     onSelected(id, el) {
-        if (this.props.objects[id]) {
+        if (this.props.objects[id] || id === Utils.INSTANCES) {
             this.props.onSelectedItemChanged && this.props.onSelectedItemChanged(id);
         }
     }
@@ -292,11 +304,24 @@ class MenuList extends Component {
             style.background = this.state.background;
         }
         if (items && items.length) {
+            const list = this.getListItems(items);
+            if (this.state.instances && (this.props.root === 'enum.rooms' || this.props.root === Utils.INSTANCES)) {
+                list.push((<ListItem
+                    button
+                    className={this.props.selectedId === Utils.INSTANCES ? 'menu-selected' : ''}
+                    key={Utils.INSTANCES}
+                    onClick={el => this.onSelected(Utils.INSTANCES, el)}
+                >
+                    <ListItemIcon><IconInstances style={Object.assign({}, Theme.menuIcon, {color: '#008000'})}/></ListItemIcon>
+                    <ListItemText primary={I18n.t('Instances')}/>
+                </ListItem>));
+            }
+
             return (
                 <div style={style}>
                     <Divider />
                     {this.getListHeader()}
-                    <List style={this.state.background ? {background: this.state.background} : {}}>{this.getListItems(items)}</List>
+                    <List style={this.state.background ? {background: this.state.background} : {}}>{list}</List>
                 </div>
             );
         } else {

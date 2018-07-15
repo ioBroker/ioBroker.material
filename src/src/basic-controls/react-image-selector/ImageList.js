@@ -10,15 +10,16 @@ const styles = theme => ({
         minWidth: 300,
         width: '100%',
         overflowX: 'hidden',
-        overflowY: 'auto'
+        overflowY: 'auto',
+        marginLeft: 22
     },
     image: {
         position: 'relative',
         height: 200,
-        [theme.breakpoints.down('xs')]: {
+        /*[theme.breakpoints.down('xs')]: {
             width: '100% !important', // Overrides inline-style
             height: 100,
-        },
+        },*/
         '&:hover, &$focusVisible': {
             zIndex: 1,
             '& $imageBackdrop': {
@@ -99,20 +100,20 @@ class ImageList extends React.Component {
                     }
                     return (
                         <ButtonBase
+                            tabindex={i}
                             onClick={() => this.onSelect(image, i)}
                             focusRipple
                             key={'images-' + i}
                             className={this.classes.image}
                             focusVisibleClassName={this.classes.focusVisible}
-                            style={{width: '20%', height: 64, background: 'grey', marginRight: 2, marginBottom: 2}}
+                            style={{width: 64, height: 64, background: 'grey', marginRight: 2, marginBottom: 2}}
                         >
                             {Image ?
                                 (<Image className={this.classes.imageSrc} width={'calc(100% - 10px)'} height={'calc(100% - 10px)'}/>) :
                                 (<span className={this.classes.imageSrc} style={{backgroundImage: `url(${image})`,}}/>)
                             }
                             <span className={this.classes.imageBackdrop} />
-                            <span className={this.classes.imageButton}>
-                        </span>
+                            <span className={this.classes.imageButton}/>
                         </ButtonBase>
                     );
                 }.bind(this))}
