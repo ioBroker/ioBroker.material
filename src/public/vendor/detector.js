@@ -23,7 +23,8 @@ var Types = {
     fireAlarm: 'fireAlarm',
     floodAlarm: 'floodAlarm',
     gate: 'gate',
-    info: 'info'
+    info: 'info',
+    instance: 'instance'
 };
 
 function ChannelDetector() {

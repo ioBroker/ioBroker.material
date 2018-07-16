@@ -50,11 +50,12 @@ class SmartGeneric extends Component {
             if (this.channelInfo.states) {
                 let ids = [];
                 this.channelInfo.states.forEach(function (state) {
+                    if (!state.id) return;
+
                     if (state.id.startsWith('system.adapter.')) {
                         ids.push(state.id);
-                    }
-                    if (state.id &&
-                        !state.noSubscribe &&
+                    } else
+                    if (!state.noSubscribe &&
                         this.props.objects[state.id] &&
                         this.props.objects[state.id].type === 'state' &&
                         ids.indexOf(state.id) === -1)
@@ -147,21 +148,23 @@ class SmartGeneric extends Component {
             this.props.tile.registerHandler('onMouseDown', this.onTileMouseDown.bind(this));
         }
 
-        if (this.props.objects[this.settingsId] && this.props.objects[this.settingsId].type === 'instance') {
-            this.stateRx.settings = {
-                enabled: true,
-                name: this.props.objects[this.settingsId].common.name + '.' + this.instanceNumber
+        if (this.settingsId) {
+            if (this.props.objects[this.settingsId] && this.props.objects[this.settingsId].type === 'instance') {
+                this.stateRx.settings = {
+                    enabled: true,
+                    name: this.props.objects[this.settingsId].common.name + '.' + this.instanceNumber
+                }
+            } else {
+                this.stateRx.settings = Utils.getSettings(
+                    this.props.objects[this.settingsId],
+                    {
+                        user: this.props.user,
+                        language: I18n.getLanguage(),
+                        name: this.getObjectNameCh()
+                    },
+                    this.defaultEnabling
+                );
             }
-        } else {
-            this.stateRx.settings = Utils.getSettings(
-                this.props.objects[this.settingsId],
-                {
-                    user: this.props.user,
-                    language: I18n.getLanguage(),
-                    name: this.getObjectNameCh()
-                },
-                this.defaultEnabling
-            );
         }
 
         this.stateRx.nameStyle = {fontSize: SmartGeneric.getNameFontSize(this.stateRx.settings.name)};
@@ -198,7 +201,7 @@ class SmartGeneric extends Component {
 
             let item = objects[id];
             if (item && item.common && item.common.name) {
-                name = Utils.getObjectName(objects, id);
+                name = Utils.getObjectName(objects, id, null, {language: I18n.getLanguage()});
 
                 if (enumNames) {
                     if (typeof enumNames === 'object') {

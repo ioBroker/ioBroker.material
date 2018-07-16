@@ -110,6 +110,11 @@ class MenuList extends Component {
                 items.map(function (item) {
                     let settings = this.settings[item.id];
 
+                    if (!settings || this.props.objects) {
+                        this.settings[item.id] = Utils.getSettings(this.props.objects[item.id], {user: this.props.user, language: this.props.language}, true);
+                        settings = this.settings[item.id];
+                    }
+
                     if (settings.enabled === false && !this.props.editMode) {
                         return;
                     }

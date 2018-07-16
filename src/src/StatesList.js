@@ -68,6 +68,7 @@ class StatesList extends Component {
             newState.enumID = nextProps.enumID;
             newState.visibleChildren = {};
             newState.visible = false;
+            this.keys = null;
             changed = true;
         }
 
@@ -77,8 +78,24 @@ class StatesList extends Component {
     }
 
     getElementsToShow() {
-        if (this.state.enumID === Utils.INSTANCES) {
-            return Object.keys(this.props.objects);
+        if (this.props.enumID === Utils.INSTANCES) {
+            return Object.keys(this.props.objects).filter(id => !this.props.objects[id].common.onlyWWW).sort((a, b) => {
+                const objA = this.props.objects[a].common;
+                const objB = this.props.objects[b].common;
+                if (objA.onlyWWW && objB.onlyWWW) {
+                    if (objA.name > objB.name) return 1;
+                    if (objA.name < objB.name) return -1;
+                    return 0;
+                } else if (objA.onlyWWW) {
+                    return 1;
+                } else if (objB.onlyWWW) {
+                    return -1;
+                } else {
+                    if (objA.name > objB.name) return 1;
+                    if (objA.name < objB.name) return -1;
+                    return 0;
+                }
+            });
         } else {
             let _enum = this.props.objects[this.state.enumID];
 
@@ -144,6 +161,10 @@ class StatesList extends Component {
 
     render() {
         let items = this.getElementsToShow();
+        if (items.length > 300) {
+            return null; // something is wrong
+        }
+
         let columns = [];
 
         if (!this.keys || !this.keys.length) {
@@ -175,10 +196,10 @@ class StatesList extends Component {
         } else
         if (items && items.length) {
             let orderEnums;
-            if (this.state.enumID.startsWith('enum.rooms.')) {
+            if (this.state.enumID && this.state.enumID.startsWith('enum.rooms.')) {
                 orderEnums = 'enum.functions.';
             } else
-            if (this.state.enumID.startsWith('enum.functions.')) {
+            if (this.state.enumID && this.state.enumID.startsWith('enum.functions.')) {
                 orderEnums = 'enum.rooms.';
             } else {
                 orderEnums = 'enum.functions.';

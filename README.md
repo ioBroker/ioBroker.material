@@ -15,12 +15,15 @@ React and Material UI interface.
 **Important!**
 This adapter cannot be installed directly from github. Only from npm.
 
+## Usage
+It is very important to know, that adapter shows only devices that added to some categories, like *rooms* or *function*.
+Better if every device belongs to both categories. Because every device has a type and place.
+
+
 ## Supported types
 
 
-## ToDO:
-* Lock
-* Info
+## ToDO
 * Cams (over extra Adapter)
 * events (over extra Adapter)
 * Main screen
@@ -34,9 +37,10 @@ This adapter cannot be installed directly from github. Only from npm.
 * Detect if the color must be inverted for background (menu, tiles)
 * Sort order of tiles
 * Set default view
+* vacuum cleaner
 
 ## Changelog
-### 0.8.6 (2018.07.15)
+### 0.8.7 (2018.07.16)
 * (bluefox) React app
 
 ### 0.5.7 (2018.01.24)

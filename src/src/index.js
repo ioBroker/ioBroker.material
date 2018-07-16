@@ -1,3 +1,5 @@
+//import io from '../public/vendor/socket.io';
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';

@@ -12,28 +12,6 @@ import BoolControl from '../basic-controls/react-info-controls/BoolControl'
 import InputControl from '../basic-controls/react-info-controls/InputControl'
 import InfoControl from '../basic-controls/react-info-controls/InfoControl'
 
-const styles = {
-    labelStyleOuter: {
-        width: '30px',
-        height: '30px',
-        borderRadius: '50% 50% 50% 0',
-        background: 'grey',
-        position: 'absolute',
-        transform: 'rotate(-45deg)',
-        top: '-40px',
-        left: '-9px',
-    },
-    labelStyleInner: {
-        transform: 'rotate(45deg)',
-        color: 'white',
-        textAlign: 'center',
-        position: 'relative',
-        top: '3px',
-        right: '0px',
-        fontSize: '10px',
-    },
-};
-
 class SmartDialogInfo extends SmartDialogGeneric  {
     // expected:
     static propTypes = {
@@ -100,7 +78,6 @@ class SmartDialogInfo extends SmartDialogGeneric  {
 
     generateContent() {
         const result = this.props.points.map((e, i) => {
-            const Icon = e.icon;
             const divider = i !== this.props.points.length - 1 ? (<ListItem key={e.id + '_div'} style={Theme.dialog.divider}/>) : null;
 
             let item;

@@ -211,7 +211,10 @@ export default {
         clockCircleColor:   fade(fullWhite, 0.12),*/
         updateAvailable:    '#3fff3f',
         editActive:         'red',
-        lampOn:             '#ffcc02'
+        lampOn:             '#ffcc02',
+        lampOff:            'inherit',
+        instanceRunning:    '#52af19',
+        instanceStopped:    '#7b3d29'
     },
     iconSize: '24px',
     indicatorSize: '20px',
@@ -360,6 +363,11 @@ export default {
                 position: 'absolute',
                 top: '2em',
                 right: '1em'
+            },
+            button: {
+                position: 'absolute',
+                top: '1em',
+                right: '0.5em'
             }
         },
         editMode: {

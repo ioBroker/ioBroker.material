@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
-// import Moment from 'react-moment';
 import TextField from '@material-ui/core/TextField';
 import Chip from '@material-ui/core/Chip';
 import AddIcon from 'react-icons/lib/md/add';
@@ -76,7 +75,7 @@ class ChipsControl extends Component {
 
         return (
             <div className={classes.line}>
-                <div className={classes.label}>{this.props.label}</div>
+                <div className={classes.label}>{label}</div>
                 <div className={classes.chips}>
                     {
                         this.state.chips.map(word => (<Chip

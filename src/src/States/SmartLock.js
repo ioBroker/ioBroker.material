@@ -115,6 +115,9 @@ class SmartLock extends SmartGeneric {
             case 'openDoor':
                 this.props.onControl(this.openId, true);
                 break;
+
+            default:
+                break;
         }
         // No idea why direct control does not work
         setTimeout(() => {

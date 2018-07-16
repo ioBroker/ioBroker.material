@@ -1,9 +1,9 @@
 {
     "common": {
         "name": "material",
-        "version": "0.8.6",
+        "version": "0.8.7",
         "news": {
-            "0.8.6": {
+            "0.8.7": {
                 "en": "React app"
             },
             "0.5.7": {

@@ -348,15 +348,18 @@ class App extends Component {
         this.setState({fullScreen: !this.state.fullScreen});
     }
 
-    onItemSelected(id) {
-        window.location.hash = encodeURIComponent(id.replace(/^enum\./, ''));
+    onItemSelected(enumId, masterPath) {
+        window.location.hash = encodeURIComponent(enumId.replace(/^enum\./, ''));
 
         const states = {
-            viewEnum: id,
+            viewEnum: enumId,
             open: this.state.menuFixed
         };
-        if (id !== Utils.INSTANCES) {
-            states.settings = Utils.getSettings(this.objects[id], {user: this.user, language: I18n.getLanguage()});
+        if (masterPath !== undefined) {
+            states.masterPath = masterPath;
+        }
+        if (enumId !== Utils.INSTANCES) {
+            states.settings = Utils.getSettings(this.objects[enumId], {user: this.user, language: I18n.getLanguage()});
             if (this.subscribeInstances) {
                 this.conn._socket.emit('unsubscribeObjects', 'system.adapter.*');
                 this.subscribeInstances = false;
@@ -377,8 +380,7 @@ class App extends Component {
 
     onRootChanged(root, page) {
         if (page) {
-            window.location.hash = encodeURIComponent(page.replace(/^enum\./, ''));
-            this.setState({masterPath: root, viewEnum: page});
+            this.onItemSelected(page, root);
         } else {
             this.setState({masterPath: root});
         }
@@ -455,8 +457,20 @@ class App extends Component {
         }
     }
 
-    onControl(id, val) {
-        this.conn.setState(id, val);
+    onControl(id, val, objectAttribute) {
+        if (objectAttribute) {
+            this.conn.getObject(id, (err, oldObj) => {
+                // todo
+                oldObj.common.enabled = val;
+                this.conn._socket.emit('setObject', oldObj._id, oldObj, err => {
+                    if (err) {
+                        this.setState({errorText: err});
+                    }
+                });
+            });
+        } else {
+            this.conn.setState(id, val);
+        }
     }
 
     processTasks() {
@@ -555,9 +569,9 @@ class App extends Component {
         if (this.state.width < 500) {
             return (<span>{this.state.settings && this.state.settings.name}</span>);
         } else if (this.state.width < 1000) {
-            return (<span>{Utils.getObjectName(this.objects, this.state.masterPath)} / {this.state.settings && this.state.settings.name}</span>);
+            return (<span>{Utils.getObjectName(this.objects, this.state.masterPath, null, {language: I18n.getLanguage()})} / {this.state.settings && this.state.settings.name}</span>);
         } else {
-            return (<span>{Utils.getObjectName(this.objects, this.state.masterPath)} / {this.state.settings && this.state.settings.name}</span>);
+            return (<span>{Utils.getObjectName(this.objects, this.state.masterPath, null, {language: I18n.getLanguage()})} / {this.state.settings && this.state.settings.name}</span>);
         }
     }
 
@@ -1007,12 +1021,12 @@ class App extends Component {
 
     getLoadingScreen() {
         const background = window.materialBackground;
-        const notInvertColor = !background || Utils.invertColor(background);
+        const invertColor = background && Utils.invertColor(background);
 
         return (
             <div className={this.props.classes.loadingBackground} style={{background: window.materialBackground}}>
                 <LoadingIndicator
-                    color={notInvertColor ? 'white' : 'black' }
+                    color={invertColor ? 'white' : 'black' }
                     value={100 * this.state.loadingProgress / App.LOADING_TOTAL}
                     label={I18n.t(this.state.loadingStep)}
                 />

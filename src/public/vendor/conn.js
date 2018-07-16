@@ -65,7 +65,7 @@ var servConn = {
     getIsLoginRequired: function () {
         return this._isSecure;
     },
-    getUser: function () {
+    getUser:          function () {
         return this._user;
     },
     setReloadTimeout: function (timeout){
@@ -159,7 +159,7 @@ var servConn = {
             }, 1000);
         }
     },
-    reload: function () {
+    reload:           function () {
         if (window.location.host === 'iobroker.net' ||
             window.location.host === 'iobroker.biz') {
             window.location = '/';
@@ -518,7 +518,7 @@ var servConn = {
             }
         }
     },
-    getMimeType: function (ext) {
+    getMimeType:      function (ext) {
         if (ext.indexOf('.') !== -1) ext = ext.toLowerCase().match(/\.[^.]+$/);
         var _mimeType;
         if (ext === '.css') {
@@ -1084,7 +1084,7 @@ var servConn = {
         }
     },
     // return time when the objects were synchronized
-    getSyncTime:     function () {
+    getSyncTime:      function () {
         if (this._useStorage && typeof storage !== 'undefined') {
             var timeSync = storage.get('timeSync');
             if (timeSync) return new Date(timeSync);
@@ -1287,7 +1287,7 @@ var servConn = {
             callback(err, result);
         });
     },
-    getLiveHost:        function (cb) {
+    getLiveHost:      function (cb) {
         var that = this;
         this._socket.emit('getObjectView', 'system', 'host', {startkey: 'system.host.', endkey: 'system.host.\u9999'}, function (err, res) {
             var _hosts = [];
@@ -1309,7 +1309,7 @@ var servConn = {
             });
         });
     },
-    readDirAsZip:       function (project, useConvert, callback) {
+    readDirAsZip:     function (project, useConvert, callback) {
         if (!callback) {
             callback = useConvert;
             useConvert = undefined;
@@ -1344,7 +1344,7 @@ var servConn = {
 
         });
     },
-    writeDirAsZip:       function (project, base64, callback) {
+    writeDirAsZip:    function (project, base64, callback) {
         if (!this._isConnected) {
             console.log('No connection!');
             return;

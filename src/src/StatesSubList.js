@@ -6,6 +6,7 @@ import I18n from './i18n';
 import SmartTile from './SmartTile';
 import SmartDetector from './States/SmartDetector';
 import Types from './States/SmartTypes';
+import IconUnreach from "react-icons/lib/md/perm-scan-wifi";
 
 
 class StatesSubList extends Component {
@@ -36,7 +37,7 @@ class StatesSubList extends Component {
         if (this.state.enumID === Utils.INSTANCES) {
             this.name = I18n.t('All instances');
         } else {
-            this.name = this.state.enumSubID ? Utils.getObjectName(this.props.objects, this.state.enumSubID, false, [this.state.enumID]) : I18n.t('Others');
+            this.name = this.state.enumSubID && this.state.enumSubID !== 'others' ? Utils.getObjectName(this.props.objects, this.state.enumSubID, false, {language: I18n.getLanguage()}) : I18n.t('Others');
         }
         this.collectVisibility = null;
         this.collectVisibilityTimer = null;
@@ -58,7 +59,7 @@ class StatesSubList extends Component {
             changed = true;
         }
         if (nextProps.enumSubID !== this.state.enumSubID) {
-            this.name = nextProps.enumSubID ? Utils.getObjectName(this.props.objects, nextProps.enumSubID, false, [nextProps.enumID || this.state.enumID]) : I18n.t('Others');
+            this.name = nextProps.enumSubID ? Utils.getObjectName(this.props.objects, nextProps.enumSubID, false, {language: I18n.getLanguage()}) : I18n.t('Others');
             newState.enumSubID = nextProps.enumSubID;
             newState.visibleChildren = {};
             newState.visible = false;
@@ -110,7 +111,7 @@ class StatesSubList extends Component {
         return (<Component
             key={state.id + '-sublist-' + Component.name + '-' + i}
             id={channelId}
-            enumNames={[this.name, Utils.getObjectName(this.props.objects, this.state.enumID)]}
+            enumNames={[this.name, Utils.getObjectName(this.props.objects, this.state.enumID, null, {language: I18n.getLanguage()})]}
             enumFunctions={this.props.enumFunctions}
             editMode={this.props.editMode}
             channelInfo={channelInfo}
@@ -127,31 +128,30 @@ class StatesSubList extends Component {
     }
 
     getListItems(items) {
-        const that = this;
         const usedIds = [];
         if (this.props.enumID === Utils.INSTANCES) {
             return items.map(function (id, i) {
-                return that.createControl(SmartTile, id, {
+                return this.createControl(SmartTile, id, {
                     states: [
-                        {id: id + '.alive', name: 'ALIVE'},
-                        {id: id + '.connected', name: 'CONNECTED'}
+                        {id: id + '.alive',     name: 'ALIVE'},
+                        {id: id + '.connected', name: 'UNREACH', type: 'boolean', indicator: true, icon: IconUnreach, color: Theme.tile.tileIndicatorsIcons.unreach}
                     ],
                     type: Types.instance
                 }, i);
-            });
+            }.bind(this));
         }
         const controls = items.map(function (id, i) {
-            if (that.state[id] === undefined) {
+            if (this.state[id] === undefined) {
                 //debugger;
             }
 
             /*if (!that.props.editMode && that.state[id] === false) {
                 return null;
             }*/
-            let controls = that.detector.detect(that.props.objects, id, that.props.keys, usedIds);
+            let controls = this.detector.detect(this.props.objects, id, this.props.keys, usedIds);
             if (controls) {
                 controls = controls.map(control => {
-                    return {control: that.createControl(SmartTile, id, control, i), id: control.states.find(state => state.id).id};
+                    return {control: this.createControl(SmartTile, id, control, i), id: control.states.find(state => state.id).id};
                 });
             } else {
                 console.log('Nothing found for ' + id);

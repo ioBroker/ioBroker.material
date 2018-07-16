@@ -1,11 +1,14 @@
 import React from 'react';
+import Button from '@material-ui/core/Button';
+
 import SmartGeneric from './SmartGeneric';
-import IconLight from 'react-icons/lib/ti/lightbulb';
-import IconSwitch from '../icons/Socket';
-import Types from './SmartTypes';
 import Theme from '../theme';
 import I18n from '../i18n';
-import CircularProgress from '@material-ui/core/CircularProgress';
+
+import IconPlay from 'react-icons/lib/md/play-arrow';
+import IconPause from 'react-icons/lib/md/pause';
+//import IconChecked from 'react-icons/lib/md/check-circle';
+//import IconUnchecked from 'react-icons/lib/md/cancel';
 
 class SmartInstance extends SmartGeneric {
     constructor(props) {
@@ -24,16 +27,24 @@ class SmartInstance extends SmartGeneric {
             this.instanceNumber = parts[parts.length - 1];
             this.instanceId = parts.join('.');
 
-            state = this.channelInfo.states.find(state => state.id && state.name === 'CONNECTED');
-            this.connectedId = state ? state.id : this.id;
+            if (this.props.objects[this.instanceId].type !== 'instance') {
+                this.id = '';
+                this.componentReady();
+                return;
+            }
+
+            if (!this.props.objects[this.instanceId].common.onlyWWW) {
+                state = this.channelInfo.states.find(state => state.id && state.name === 'UNREACH');
+                this.connectedId = state ? state.id : this.id;
+            }
         }
 
         this.props.tile.setState({
-            isPointer: true
+            isPointer: false
         });
         this.key = 'smart-instance-' + this.id + '-';
 
-        this.props.tile.registerHandler('onClick', this.onTileClick.bind(this));
+        // this.props.tile.registerHandler('onClick', this.onTileClick.bind(this));
         this.componentReady();
     }
     updateState(id, state) {
@@ -41,17 +52,33 @@ class SmartInstance extends SmartGeneric {
         const val = typeof state.val === 'number' ? !!state.val : state.val === true || state.val === 'true' || state.val === '1' || state.val === 'on' || state.val === 'ON';
         if (id === this.id) {
             newState[id] = val;
+            if (this.connectedId) {
+                if (val) {
+                    newState[this.connectedId] = !this.connectedState;
+                } else {
+                    newState[this.connectedId] = false;
+                }
+            }
+
             this.setState(newState);
 
             this.props.tile.setState({
                 state: val
             });
+        } else if (id === this.connectedId) {
+            this.connectedState = state.val;
+            if (this.state[this.id]) {
+                state.val = !state.val;
+            } else {
+                state.val = false;
+            }
+            super.updateState(id, state);
         } else {
             super.updateState(id, state);
         }
     }
     toggle() {
-        this.props.onControl(this.id, !this.state[this.id]);
+        this.props.onControl(this.instanceId, !this.props.objects[this.instanceId].common.enabled, 'common.enabled');
     }
 
     onTileClick() {
@@ -62,8 +89,7 @@ class SmartInstance extends SmartGeneric {
         const img = '/' + this.props.objects[this.instanceId].common.name + '.admin/' + this.props.objects[this.instanceId].common.icon;
         return (
             <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon)} className="tile-icon">
-                <img width={'100%'} height={'100%'} src={img} alt={this.state.settings.name}/>
-                {this.state.executing ? <CircularProgress style={{zIndex: 3, position: 'absolute', top: 0, left: 0}} size={Theme.tile.tileIcon.width}/> : null}
+                <img width={'100%'} height={'100%'} src={img} alt={'i' || this.state.settings.name}/>
             </div>
         );
     }
@@ -77,12 +103,49 @@ class SmartInstance extends SmartGeneric {
         }
     }
 
+    getSecondaryDiv() {
+        let Icon;
+        let text;
+        let color;
+
+        if (this.props.objects[this.instanceId].common.enabled) {
+            Icon = IconPause;
+            text = I18n.t('disable adapter');
+            color = '#90ee90';
+        } else {
+            Icon = IconPlay;
+            text = I18n.t('enable adapter');
+            color = '#f99';
+        }
+
+        return (<div key={this.key + 'tile-secondary'} className="tile-text-second"
+                     style={Theme.tile.secondary.button} title={text}>
+            <Button variant="fab" mini onClick={this.toggle.bind(this)} style={{background: color, boxShadow: 'none'}} aria-label={text}>
+                <Icon />
+            </Button>
+        </div>);
+    }
+
     render() {
-        const style = this.state[this.id] ? Theme.tile.tileStateOn : Theme.tile.tileStateOff;
-        Object.assign(style, {color: this.state[this.id] ? 'green' : 'red'});
+        if (this.props.objects[this.instanceId].type !== 'instance') {
+            return null;
+        }
+        const style = Object.assign(
+            {},
+            this.state[this.id] ? Theme.tile.tileStateOn : Theme.tile.tileStateOff,
+            {
+                color: this.state[this.id] ? Theme.palette.instanceRunning : Theme.palette.instanceStopped,
+                position: 'absolute',
+                bottom: 0
+            }
+        );
+
         return this.wrapContent([
             (<div key={this.key + 'tile-icon'} className="tile-icon">{this.getIcon()}</div>),
-            (<div key={this.key + 'tile-text'} className="tile-text" style={Theme.tile.tileText}>
+                this.getSecondaryDiv(),
+            (<div key={this.key + 'tile-text'}
+                  className="tile-text"
+                  style={Object.assign({}, Theme.tile.tileText, {minHeight: 56})}>
                 <div className="tile-channel-name" style={Object.assign({}, Theme.tile.tileName, this.state.nameStyle)}>{this.state.settings.name}</div>
                 <div className="tile-state-text"   style={Object.assign({}, Theme.tile.tileState, style)}>{this.getStateText()}</div>
             </div>)

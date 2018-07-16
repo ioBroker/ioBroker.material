@@ -191,7 +191,8 @@ gulp.task('icons', done => {
 
 gulp.task('vendorJS', () => {
     return gulp.src([
-        'src/public/vendor/*.js'
+        'src/public/vendor/*.js',
+        '!src/public/vendor/socket.io.js'
     ])
     .pipe(sourcemaps.init())
     .pipe(concat('vendor.js'))

@@ -183,6 +183,7 @@ class SmartInfo extends SmartGeneric {
         if (this.infos.length <= 2) return null;
         return (<div key={this.key + 'tile-number'} style={Theme.tile.tileNumber} title={I18n.t('Show %s values', this.infos.length)}>{this.infos.length}</div>);
     }
+
     getFirstName() {
         this.firstName = this.firstName || I18n.t(Utils.CapitalWords(this.id.split('.').pop()));
 

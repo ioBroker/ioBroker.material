@@ -13,16 +13,19 @@ class Utils {
             .join(' ');
     }
 
-    static getObjectName(objects, id, settings, isDesc) {
+    static getObjectName(objects, id, settings, options, isDesc) {
         let item = objects[id];
         let text = id;
         const attr = isDesc ? 'desc' : 'name';
 
+        options = options || {};
+        if (!options.language) {
+            options.language = (objects['system.config'] && objects['system.config'].common && objects['system.config'].common.language) || window.sysLang || 'en';
+        }
         if (settings && settings.name) {
             text = settings.name;
             if (typeof text === 'object') {
-                const lang = (objects['system.config'] && objects['system.config'].common && objects['system.config'].common.language) || 'en';
-                text = text[lang] || text.en;
+                text = text[options.language] || text.en;
             }
         } else
         if (item && item.common && item.common[attr]) {
@@ -31,8 +34,7 @@ class Utils {
                 text = item.common.desc;
             }
             if (typeof text === 'object') {
-                const lang = (objects['system.config'] && objects['system.config'].common && objects['system.config'].common.language) || 'en';
-                text = text[lang] || text.en;
+                text = text[options.language] || text.en;
             }
             text = text.replace(/[_.]/g, ' ');
 
