@@ -14,6 +14,7 @@
   "Favorites": "Закладки",
   "Functions": "Функции",
   "Ignore changes?": "Игнорировать изменения?",
+  "Instances": "Инстанции",
   "Listening...": "Слушаю...",
   "Lock state": "Состояние замка",
   "Menu instances": "Инстанции драйверов",
@@ -68,5 +69,5 @@
   "stopped": "остановлен",
   "tilted": "откинуто",
   "unknown": "неизв.",
-  "Instances": "Инстанции"
+  "colorOff": "Цвет ВЫКЛ."
 }

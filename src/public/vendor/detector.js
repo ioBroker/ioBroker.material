@@ -444,7 +444,7 @@ function ChannelDetector() {
         return newState;
     }
 
-    this._detectNext = function (objects, id, keys, usedIds) {
+    this._detectNext = function (objects, id, keys, usedIds, ignoreIndicators) {
         usedIds = usedIds || [];
 
         if (objects[id] && objects[id].common) {
@@ -473,6 +473,15 @@ function ChannelDetector() {
                     var found = false;
                     channelStates.forEach(function (_id) {
                         if ((state.indicator || (usedIds.indexOf(_id) === -1 && _usedIds.indexOf(_id) === -1)) && this._applyPattern(objects, _id, state)) {
+                            if (state.indicator && ignoreIndicators) {
+                                var parts = _id.split('.');
+
+                                if (ignoreIndicators.indexOf(parts.pop()) !== -1) {
+                                    console.log(_id + ' ignored');
+                                    return;
+                                }
+                            }
+
                             if (!state.indicator){
                                 _usedIds.push(_id);
                             }
@@ -565,7 +574,7 @@ function ChannelDetector() {
         return null;
     };
 
-    this.detect = function (objects, id, _keysOptional, _usedIdsOptional) {
+    this.detect = function (objects, id, _keysOptional, _usedIdsOptional, ignoreIndicators) {
         if (this.cache[id] !== undefined) {
             return this.cache[id];
         }
@@ -580,7 +589,7 @@ function ChannelDetector() {
 
         var detected;
 
-        while((detected = this._detectNext(objects, id, _keysOptional, _usedIdsOptional))) {
+        while((detected = this._detectNext(objects, id, _keysOptional, _usedIdsOptional, ignoreIndicators))) {
             result.push(detected);
         }
 

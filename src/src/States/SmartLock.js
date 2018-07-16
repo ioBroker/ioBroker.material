@@ -49,6 +49,7 @@ class SmartLock extends SmartGeneric {
         this.iconColorOff = '';
         this.textOn = 'opened';
         this.textOff = 'closed';
+        this.doubleState = true; // used in generic
 
         this.props.tile.registerHandler('onClick', this.onTileClick.bind(this));
         this.componentReady();

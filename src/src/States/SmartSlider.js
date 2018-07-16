@@ -35,6 +35,7 @@ class SmartSlider extends SmartGeneric {
         this.stateRx.showDialog = false; // support dialog in this tile used in generic class)
         this.stateRx.setValue = null;
         this.key = 'smart-slider-' + this.id + '-';
+        this.doubleState = true; // used in generic
 
         this.icon = Icon;
 

@@ -20,7 +20,7 @@ class IOBChannelDetector {
         this.detector = new window.ChannelDetector();
     }
 
-    detect(/*objects, keys, id, usedIds*/) {
+    detect(/*objects, keys, id, usedIds, ignoreIndicators*/) {
         const result = this.detector.detect.apply(this.detector, arguments);
 
         if (result) {

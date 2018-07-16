@@ -14,6 +14,7 @@
   "Favorites": "Favorites",
   "Functions": "Functions",
   "Ignore changes?": "Ignore changes?",
+  "Instances": "Instances",
   "Listening...": "Listening...",
   "Lock state": "Lock state",
   "Menu instances": "Instances",
@@ -68,5 +69,5 @@
   "stopped": "stopped",
   "tilted": "tilted",
   "unknown": "unknown",
-  "Instances": "Instances"
+  "colorOff": "OFF color"
 }

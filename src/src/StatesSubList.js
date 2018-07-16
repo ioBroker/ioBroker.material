@@ -20,6 +20,7 @@ class StatesSubList extends Component {
         ignoreIndicators: PropTypes.array,
         windowWidth:    PropTypes.number,
         newLine:        PropTypes.bool,
+        invertColor:    PropTypes.bool,
         states:         PropTypes.object.isRequired,
         keys:           PropTypes.array.isRequired
     };
@@ -148,7 +149,7 @@ class StatesSubList extends Component {
             /*if (!that.props.editMode && that.state[id] === false) {
                 return null;
             }*/
-            let controls = this.detector.detect(this.props.objects, id, this.props.keys, usedIds);
+            let controls = this.detector.detect(this.props.objects, id, this.props.keys, usedIds, this.props.ignoreIndicators);
             if (controls) {
                 controls = controls.map(control => {
                     return {control: this.createControl(SmartTile, id, control, i), id: control.states.find(state => state.id).id};
@@ -196,7 +197,7 @@ class StatesSubList extends Component {
                 //style={Object.assign({}, Theme.list.row, {display: display})}
                 return (<div key={(this.state.enumID + '-' + this.state.enumSubID).replace(/[^\w\d]/g, '_') + '-title'}
                              style={Object.assign({}, Theme.list.row, display)}><h3
-                    style={Theme.list.title}>{this.name}</h3>
+                    style={Object.assign({}, Theme.list.title, {color: this.props.invertColor ? 'white' : 'black'})}>{this.name}</h3>
                     <div style={{width: '100%'}}>{items}</div>
                 </div>);
             } else {

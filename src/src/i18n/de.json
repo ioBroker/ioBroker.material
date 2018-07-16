@@ -14,6 +14,7 @@
   "Favorites": "Favorite",
   "Functions": "Funktionen",
   "Ignore changes?": "Änderungen ignorieren?",
+  "Instances": "Instanzen",
   "Listening...": "Höre...",
   "Lock state": "Sperrstatus",
   "Menu instances": "Instanzen",
@@ -68,5 +69,5 @@
   "stopped": "gestoppt",
   "tilted": "gekippt",
   "unknown": "unbekannt",
-  "Instances": "Instanzen"
+  "colorOff": "Frabe-AUS"
 }

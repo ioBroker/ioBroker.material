@@ -187,7 +187,9 @@ class App extends Component {
                                 this.setState({
                                     viewEnum: viewEnum,
                                     loading: false,
-                                    settings: Utils.getSettings((result || {})[viewEnum], {
+                                    settings: viewEnum === Utils.INSTANCES ?
+                                        appSettings.instancesSettings || {}
+                                        : Utils.getSettings((result || {})[viewEnum], {
                                         user: this.user,
                                         language: I18n.getLanguage()
                                     }),
@@ -367,6 +369,7 @@ class App extends Component {
             // load settings for this enum
             this.setState(states);
         } else {
+            states.settings = this.state.appSettings.instancesSettings || {};
             this.readInstancesData(true, () => {
                 if (!this.subscribeInstances) {
                     this.conn._socket.emit('subscribeObjects', 'system.adapter.*');
@@ -790,7 +793,7 @@ class App extends Component {
                     if (this.state.viewEnum === Utils.INSTANCES) {
                         const appSettings = JSON.parse(JSON.stringify(this.state.appSettings));
                         appSettings.instancesSettings = settings;
-                        this.setState({appSettings, backgroundId: this.state.backgroundId + 1});
+                        this.setState({appSettings, settings, backgroundId: this.state.backgroundId + 1});
                         this.saveAppSettings(appSettings);
                     } else {
                         this.setState({settings, backgroundId: this.state.backgroundId + 1});
@@ -802,7 +805,7 @@ class App extends Component {
             if (this.state.viewEnum === Utils.INSTANCES) {
                 const appSettings = JSON.parse(JSON.stringify(this.state.appSettings));
                 appSettings.instancesSettings = settings;
-                this.setState({appSettings});
+                this.setState({appSettings, settings});
                 this.saveAppSettings(appSettings);
             } else {
                 this.setState({settings});

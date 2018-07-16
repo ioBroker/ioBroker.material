@@ -175,6 +175,9 @@ class StatesList extends Component {
             this.getEnumFunctions(this.props.objects).forEach(e => this.enumFunctions.push(e));
         }
 
+        const background = this.props.backgroundColor;
+        const invertColor = !background || Utils.invertColor(background);
+
         if (this.props.enumID === Utils.INSTANCES) {
             columns.push((<StatesSubList
                 key={this.state.enumID + '_' + Utils.INSTANCES + '-list'}
@@ -182,6 +185,7 @@ class StatesList extends Component {
                 user={this.props.user}
                 states={this.props.states}
                 items={items}
+                invertColor={invertColor}
                 ignoreIndicators={[]}
                 onVisibilityControl={this.onVisibilityControl.bind(this)}
                 editMode={false}
@@ -225,6 +229,7 @@ class StatesList extends Component {
                             states={this.props.states}
                             newLine={this.props.newLine}
                             items={column}
+                            invertColor={invertColor}
                             ignoreIndicators={this.props.ignoreIndicators}
                             onVisibilityControl={this.onVisibilityControl.bind(this)}
                             editMode={this.props.editMode}
@@ -262,6 +267,7 @@ class StatesList extends Component {
                     onVisibilityControl={this.onVisibilityControl.bind(this)}
                     windowWidth={this.props.windowWidth}
                     enumFunctions={this.enumFunctions}
+                    invertColor={invertColor}
                     enumID={this.state.enumID}
                     enumSubID="others"
                     keys={this.keys}

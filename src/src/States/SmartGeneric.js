@@ -31,6 +31,7 @@ class SmartGeneric extends Component {
 
         this.width = Theme.tile.width;
         this.height = Theme.tile.height;
+        this.doubleState = false; // has on/off or only info
 
         this.showCorner = false; // set it to true to show the corner
         this.stateRx = {
@@ -449,6 +450,13 @@ class SmartGeneric extends Component {
             value: this.state.settings.icon || '',
             type: 'icon'
         });
+        if (this.doubleState) {
+            settings.unshift({
+                name: 'colorOff',
+                value: this.state.settings.colorOff || '',
+                type: 'color'
+            });
+        }
         settings.unshift({
             name: 'colorOn',
             value: this.state.settings.colorOn || '',

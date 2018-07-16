@@ -48,6 +48,7 @@ class SmartSwitch extends SmartGeneric {
             isPointer: true
         });
         this.key = 'smart-switch-' + this.id + '-';
+        this.doubleState = true; // used in generic
 
         this.props.tile.registerHandler('onClick', this.onTileClick.bind(this));
         this.componentReady();

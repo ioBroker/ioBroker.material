@@ -1,9 +1,11 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Paper from '@material-ui/core/Paper';
+
 import I18n from './i18n';
 import Theme from './theme';
 import Types from './States/SmartTypes';
+import Utils from './Utils';
 
 import SmartBlinds from './States/SmartBlinds';
 import SmartButton from './States/SmartButton';
@@ -16,7 +18,7 @@ import SmartSwitch from './States/SmartSwitch';
 import SmartThermometer from './States/SmartThermometer';
 import SmartThermostat from "./States/SmartThermostat";
 import SmartWindowTilt from './States/SmartWindowTilt';
-import SmartLock from "./States/SmartLock";
+import SmartLock from './States/SmartLock';
 import SmartInstance from "./States/SmartInstance";
 
 class SmartTile extends Component {
@@ -80,6 +82,9 @@ class SmartTile extends Component {
             style = this.state.state ? Object.assign({}, Theme.tile.tile, Theme.tile.tileOn, {background: this.state.colorOn}) :
                 Object.assign({}, Theme.tile.tile, Theme.tile.tileOff, {background: this.state.colorOff});
         }
+
+        style.color = Utils.invertColor(style.background) ? 'white' : 'black';
+
         if (!this.channelInfo) {
             style.paddingTop = 50;
             style.textAlign = 'center'

@@ -125,6 +125,8 @@ class SmartState extends SmartGeneric {
             isPointer: false
         });
 
+        this.doubleState = true; // used in generic
+
         this.key = 'smart-state-' + this.id + '-';
 
         //this.props.tile.registerHandler('onClick', this.onTileClick.bind(this));
