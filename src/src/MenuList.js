@@ -43,6 +43,7 @@ class MenuList extends Component {
         user:           PropTypes.string.isRequired,
         root:           PropTypes.string.isRequired,
         background:     PropTypes.string,
+        debug:          PropTypes.bool,
         onSelectedItemChanged: PropTypes.func.isRequired,
         onRootChanged:  PropTypes.func.isRequired,
         instances:      PropTypes.bool // show instances menu
@@ -55,13 +56,14 @@ class MenuList extends Component {
         this.state = {
             selectedIndex:  this.props.defaultValue,
             editMode:       this.props.editMode,
-            visibility:     this.fillVisibility().visibility,
+            visibility:     this.fillVisibility(this.props.root, this.props.objects, this.props.editMode).visibility,
             background:     this.props.background,
-            instances:      this.props.instances
+            instances:      this.props.instances,
+            root:           this.props.root
         };
     }
 
-    fillVisibility(objects, editMode) {
+    fillVisibility(root, objects, editMode) {
         objects = objects || this.props.objects;
         editMode = (editMode === undefined) ? this.props.editMode : editMode;
         let items = this.getElementsToShow('enum', objects, editMode);
@@ -73,7 +75,7 @@ class MenuList extends Component {
                 changed = true;
             }
         }.bind(this));
-        items = this.getElementsToShow('', objects, editMode);
+        items = this.getElementsToShow(root, objects, editMode);
         items.forEach(function (e) {
             visibility[e.id] = !(e.settings.enabled === false);
             if (this.state && this.state.visibility[e.id] !== visibility[e.id]) {
@@ -85,20 +87,34 @@ class MenuList extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        const newState = {};
+        let wasChanged = false;
         if (nextProps.editMode !== this.state.editMode) {
-            this.setState({editMode: nextProps.editMode});
+            newState.editMode = nextProps.editMode;
+            wasChanged = true;
         }
         if (nextProps.background !== this.state.background) {
-            this.setState({background: nextProps.background});
+            newState.background = nextProps.background;
+            wasChanged = true;
         }
         if (nextProps.instances !== this.state.instances) {
-            this.setState({instances: nextProps.instances});
+            newState.instances = nextProps.instances;
+            wasChanged = true;
+        }
+        if (nextProps.root !== this.state.root) {
+            newState.root = nextProps.root;
+            newState.visibility = this.fillVisibility(nextProps.root, nextProps.objects, nextProps.editMode).visibility;
+            wasChanged = true;
         }
         if (nextProps.objects) {
-            const {changed, visibility} = this.fillVisibility(nextProps.objects, nextProps.editMode);
+            const {changed, visibility} = this.fillVisibility(nextProps.root, nextProps.objects, nextProps.editMode);
             if (changed) {
-                this.setState({visibility});
+                wasChanged = true;
+                newState.visibility = visibility;
             }
+        }
+        if (wasChanged) {
+            this.setState(newState);
         }
     }
 

@@ -175,6 +175,10 @@ class SmartGeneric extends Component {
         this.props.tile.setColorOn(this.stateRx.settings.colorOn   || Theme.tile.tileOn.background);
         this.props.tile.setColorOff(this.stateRx.settings.colorOff || Theme.tile.tileOff.background);
 
+        if (this.width > 1) {
+            this.props.tile.setSize(this.width);
+        }
+
         //    ↓ ignore error here
         // eslint-disable-next-line react/no-direct-mutation-state
         this.state = this.stateRx;
@@ -208,16 +212,25 @@ class SmartGeneric extends Component {
                     if (typeof enumNames === 'object') {
                         enumNames.forEach(e => {
                             let reg = new RegExp('\\b' + e + '\\b');
-                            name = name.replace(reg, ' ').replace(/\s\s/g, '').trim();
+                            const newName = name.replace(reg, ' ').replace(/\s\s/g, '').trim();
+                            if (newName) {
+                                name = newName;
+                            }
                         });
                     } else {
                         let reg = new RegExp('\\b' + enumNames + '\\b');
-                        name = name.replace(reg, ' ').replace(/\s\s/g, '').trim();
+                        const newName = name.replace(reg, ' ').replace(/\s\s/g, '').trim();
+                        if (newName) {
+                            name = newName;
+                        }
                     }
                 }
                 if (channelName) {
                     let reg = new RegExp(channelName + '[.: ]?');
-                    name = name.replace(reg, ' ').trim();
+                    const newName = name.replace(reg, ' ').trim();
+                    if (newName) {
+                        name = newName;
+                    }
                 }
 
                 if (name && name === name.toUpperCase()) {
@@ -431,7 +444,12 @@ class SmartGeneric extends Component {
                 } else if (!that.state[state.id]) {
                     return;
                 }
-                result.push((<Icon key={that.key + 'indicator-' + state.name.toLowerCase()} className={'indicator-' + state.name.toLowerCase()} style={Object.assign({}, Theme.tile.tileIndicator, {color: state.color})}/>));
+                result.push((<Icon
+                    key={that.key + 'indicator-' + state.name.toLowerCase()}
+                    className={'indicator-' + state.name.toLowerCase()}
+                    style={Object.assign({}, Theme.tile.tileIndicator, {color: state.color})}
+                    title={state.id.split('.').pop()}
+                />));
             }
         });
 

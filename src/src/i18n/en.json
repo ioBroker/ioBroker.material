@@ -45,8 +45,11 @@
   "close": "close",
   "closed": "closed",
   "color": "Color",
+  "colorOff": "OFF color",
   "colorOn": "ON color",
   "connecting": "connecting",
+  "debug": "Debug to console",
+  "default": "Default",
   "disabled": "disabled",
   "done": "done",
   "enabled": "enabled",
@@ -55,6 +58,8 @@
   "ignoreIndicators": "Шgnore шndicators",
   "instances": "Show instances",
   "loading...": "loading...",
+  "loadingBackground": "Loading screen background",
+  "menuBackground": "Menu background",
   "menuColor": "Menu background",
   "name": "Name",
   "newLine": "New group starts with new line",
@@ -65,9 +70,11 @@
   "running": "running",
   "sent": "sent",
   "start instance": "start instance",
+  "startEnum": "Start page",
   "stop instance": "stop instance",
   "stopped": "stopped",
   "tilted": "tilted",
   "unknown": "unknown",
-  "colorOff": "OFF color"
+  "unmute": "unmute",
+  "mute": "mute"
 }

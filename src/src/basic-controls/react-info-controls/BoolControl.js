@@ -20,12 +20,13 @@ const BoolControl = ({classes, label, value, onChange, language, icon}) => {
     }
 
     return (<div className={classes.line}>
-        <Typography className={classes.label}>
+        <Typography className={classes.label} style={{lineHeight: '45px'}}>
             {Icon}
             {label}
-            </Typography>
+        </Typography>
         <Switch
             className={classes.floatRight}
+            style={{float: 'right'}}
             checked={value && value.val}
             disabled={!onChange}
             onChange={() => onChange && onChange()}

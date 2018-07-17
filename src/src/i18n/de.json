@@ -45,8 +45,11 @@
   "close": "Zu",
   "closed": "zu",
   "color": "Farbe",
+  "colorOff": "Frabe-AUS",
   "colorOn": "Frabe-EIN",
   "connecting": "verbinden",
+  "debug": "Konsole-debug",
+  "default": "Default",
   "disabled": "deaktiviert",
   "done": "erledigt",
   "enabled": "aktiviert",
@@ -55,6 +58,8 @@
   "ignoreIndicators": "ignoreIndicators",
   "instances": "Zeige Instanzen",
   "loading...": "Wird geladen...",
+  "loadingBackground": "Hintergrund beim Laden",
+  "menuBackground": "Menu-Hintergrund",
   "menuColor": "Menühintergrund",
   "name": "Name",
   "newLine": "Neue Gruppe mit neuer Zeile beginnen",
@@ -65,9 +70,11 @@
   "running": "gestartet",
   "sent": "gesendet",
   "start instance": "Instanz starten",
+  "startEnum": "Startseite",
   "stop instance": "Instanz anhalten",
   "stopped": "gestoppt",
   "tilted": "gekippt",
   "unknown": "unbekannt",
-  "colorOff": "Frabe-AUS"
+  "unmute": "Unmute",
+  "mute": "Mute"
 }

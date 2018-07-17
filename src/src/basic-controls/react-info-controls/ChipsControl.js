@@ -37,7 +37,7 @@ class ChipsControl extends Component {
     static propTypes = {
         classes:        PropTypes.object.isRequired,
         label:          PropTypes.string.isRequired,
-        value:          PropTypes.object.isRequired,
+        value:          PropTypes.string.isRequired,
         onChange:       PropTypes.func.isRequired
     };
 

@@ -1,12 +1,18 @@
 import React from 'react'
 import {ChromePicker} from 'react-color'
 import TextField from '@material-ui/core/TextField';
+import IconButton from '@material-ui/core/IconButton';
+import IconDelete from 'react-icons/lib/md/delete';
 
 const styles = {
     color: {
         width: '36px',
         height: '14px',
         borderRadius: '2px',
+    },
+    delButton: {
+        width: 32,
+        height: 32
     },
     swatch: {
         padding: '5px',
@@ -15,6 +21,7 @@ const styles = {
         boxShadow: '0 0 0 1px rgba(0,0,0,.1)',
         display: 'inline-block',
         cursor: 'pointer',
+        verticalAlign: 'middle'
     },
     popover: {
         position: 'absolute',
@@ -59,7 +66,7 @@ class ColorPicker extends React.Component {
     }
 
     handleChange = (color) => {
-        this.setState({color: color.rgb});
+        this.setState({color});
         this.props.onChange && this.props.onChange(ColorPicker.getColor(color));
     };
 
@@ -69,12 +76,13 @@ class ColorPicker extends React.Component {
             <div style={this.props.style}>
                 <TextField
                     id="name"
-                    style={{width: 'calc(100% - 48px)'}}
+                    style={{width: 'calc(100% - 80px)'}}
                     label={this.props.name || 'color'}
                     value={color}
                     onChange={e => this.handleChange(e.target.value)}
                     margin="normal"
                 />
+                <IconButton onClick={() => this.handleChange('')} style={Object.assign({}, styles.delButton, color ? {} : {opacity: 0, cursor: 'default'})}><IconDelete/></IconButton>
                 <div style={styles.swatch} onClick={() => this.handleClick()}>
                     <div style={Object.assign({}, styles.color, {background: color})} />
                 </div>

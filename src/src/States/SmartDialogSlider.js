@@ -89,7 +89,7 @@ class SmartDialogSlider extends SmartDialogGeneric  {
     }
 
     eventToValue(e) {
-        const pageY = e.touches ? e.touches[e.touches.length - 1].clientY : e.pageY;
+        const pageY = e.touches ? e.touches[e.touches.length - 1].clientY : e.clientY;
 
         let value = 100 - Math.round((pageY - this.top) / this.height * 100);
 

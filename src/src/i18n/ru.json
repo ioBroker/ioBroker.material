@@ -45,8 +45,11 @@
   "close": "закрыть",
   "closed": "закр.",
   "color": "Цвет",
+  "colorOff": "Цвет ВЫКЛ.",
   "colorOn": "Цвет ВКЛ.",
   "connecting": "соединение",
+  "debug": "Отладочная информация",
+  "default": "По умолчанию",
   "disabled": "отключен",
   "done": "готово",
   "enabled": "активен",
@@ -55,6 +58,8 @@
   "ignoreIndicators": "Игнорировать индикаторы",
   "instances": "Показывать инстанции",
   "loading...": "загрузка ...",
+  "loadingBackground": "Фон загрузки",
+  "menuBackground": "Фон меню",
   "menuColor": "Фон меню",
   "name": "Имя",
   "newLine": "Начать новую группу с новой строки",
@@ -65,9 +70,11 @@
   "running": "запущен",
   "sent": "команда отдана",
   "start instance": "Остановить",
+  "startEnum": "Стартовая страница",
   "stop instance": "Запустить",
   "stopped": "остановлен",
   "tilted": "откинуто",
   "unknown": "неизв.",
-  "colorOff": "Цвет ВЫКЛ."
+  "unmute": "Вернуть звук",
+  "mute": "Убрать звук"
 }

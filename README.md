@@ -28,19 +28,17 @@ Better if every device belongs to both categories. Because every device has a ty
 * events (over extra Adapter)
 * Main screen
 * Weather
-* Media tile
-* Instances control
+* Media tile (shuffle, repeat)
 * Charts
 * Narrow menu
 * Background/Opacity of menu adjustable
-* Settings for On/Off color/opacity of tiles
-* Detect if the color must be inverted for background (menu, tiles)
 * Sort order of tiles
-* Set default view
 * vacuum cleaner
+* show bar for sliders to indicate position
+* text2command instance configurable
 
 ## Changelog
-### 0.8.7 (2018.07.16)
+### 0.8.8 (2018.07.17)
 * (bluefox) React app
 
 ### 0.5.7 (2018.01.24)

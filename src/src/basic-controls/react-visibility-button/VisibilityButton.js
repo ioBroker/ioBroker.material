@@ -19,9 +19,9 @@ const styles = {
         color: 'black'
     },
     buttonBig: {
-        width: 32,
-        height: 32,
-        borderRadius: 32
+        width: 24,
+        height: 24,
+        borderRadius: 24
     }
 };
 
@@ -51,10 +51,11 @@ class SmallVisibilityButton extends React.Component {
                 {this.state.visible ? <IconCheck width={'100%'}/> : <IconUncheck width={'100%'}/>}
             </IconButton>);
         } else {
+            const iconStyle = {marginTop: -3, verticalAlign: 'top'};
             return (
-                <ButtonBase style={Object.assign({}, styles.button, styles.buttonSmall)} onClick={e => this.toggleState(e)} className="small-visibility-button">
-                    {this.state.visible ? <IconCheck width={'100%'}/> : <IconUncheck width={'100%'}/>}
-                </ButtonBase>
+                <div style={Object.assign({}, styles.button, styles.buttonSmall)} onClick={e => this.toggleState(e)} className="small-visibility-button">
+                    {this.state.visible ? <IconCheck width={16} style={iconStyle}/> : <IconUncheck width={16} style={iconStyle}/>}
+                </div>
             )
         }
     }

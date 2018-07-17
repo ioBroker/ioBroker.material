@@ -73,6 +73,8 @@ class InputControl extends Component {
                     className={classes.input}
                     type={this.type}
                     label={label}
+                    min={this.props.min}
+                    max={this.props.max}
                     value={this.state.val}
                     onKeyDown={this.onKeyDown.bind(this)}
                     onChange={event => this.onChange(event.target.value)}

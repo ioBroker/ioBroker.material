@@ -17,17 +17,29 @@ const styles = () => (Theme.dialog.info);
 //      'item4'
 // }
 
-// todo rebuild with only on level
-function getOptions(options) {
-    return options.map(opt => {
+function getOptions(options, root, path) {
+    root = root || [];
+    path = path || '';
+
+    const items = options.map(opt => {
         if (typeof opt === 'object' && opt.hasOwnProperty('children')) {
-            return (<optgroup key={opt.label} label={opt.label}>{getOptions(opt.children)}</optgroup>);
+            const subItems = getOptions(opt.children, root, path + opt.label + '-');
+            if (subItems && subItems.length) {
+                root.push((<optgroup key={path + opt.label} label={opt.label}>{subItems}</optgroup>));
+            }
+            return null;
         } else if (typeof opt === 'object') {
-            return (<option key={opt.value} value={opt.value}>{opt.label}</option>);
+            return (<option key={path + opt.value} value={opt.value}>{opt.label}</option>);
         } else {
-            return (<option key={opt} value={opt}>{opt}</option>);
+            return (<option key={path + opt} value={opt}>{opt}</option>);
         }
-    })
+    });
+    if (!path) {
+        items.forEach(e => e && root.push(e));
+        return root;
+    } else {
+        return items.filter(e => e);
+    }
 }
 
 const SelectControl = ({classes, label, value, onChange, options}) => {
@@ -47,7 +59,7 @@ const SelectControl = ({classes, label, value, onChange, options}) => {
 SelectControl.propTypes = {
     classes:    PropTypes.object.isRequired,
     label:      PropTypes.string.isRequired,
-    value:      PropTypes.object.isRequired,
+    value:      PropTypes.string.isRequired,
     options:    PropTypes.array.isRequired,
     onChange:   PropTypes.func // if no onChange => readOnly
 };

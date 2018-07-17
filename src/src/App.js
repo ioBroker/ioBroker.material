@@ -420,9 +420,13 @@ class App extends Component {
 
         if (isMount) {
             let newIDs = [];
+            let oldIDs = [];
+
             ids.forEach(id => {
                 if (!this.subscribes[id]) {
                     newIDs.push(id);
+                } else {
+                    oldIDs.push({id, elem});
                 }
                 this.subscribes[id] = this.subscribes[id] || [];
                 this.subscribes[id].push(elem);
@@ -438,6 +442,15 @@ class App extends Component {
                     }
                     this.requestTimer = setTimeout(() => {this.updateIds()}, 200);
                 })
+            }
+            if (oldIDs.length) {
+                setTimeout(() => {
+                    oldIDs.forEach(item => {
+                        if (this.states[item.id]) {
+                            elem.updateState(item.id, this.states[item.id]);
+                        }
+                    });
+                }, 0);
             }
         } else {
             let nonIDs = [];
@@ -769,6 +782,12 @@ class App extends Component {
             type: 'select'
         });
 
+        settings.push({
+            name: 'debug',
+            value: this.state.appSettings.debug === undefined ? true : this.state.appSettings.debug ,
+            type: 'boolean'
+        });
+
         return settings;
     }
 
@@ -877,7 +896,7 @@ class App extends Component {
         );
     }
 
-    getDrawer() {
+    getMenu() {
         return (<Drawer
             variant={this.state.menuFixed ? 'permanent' : 'temporary'}
             open={this.state.open}
@@ -885,7 +904,8 @@ class App extends Component {
             classes={{paper: this.props.classes.menuBackground}}
             style={{
                 width: Theme.menu.width,
-                background: (this.state.appSettings && this.state.appSettings.menuBackground) || undefined}}>
+                background: (this.state.appSettings && this.state.appSettings.menuBackground) || 'white'
+            }}>
             <Toolbar style={this.state.appSettings && this.state.appSettings.menuBackground ? {background: this.state.appSettings.menuBackground} : {}}>
                 <IconButton onClick={this.onToggleMenu.bind(this)} style={{color: Theme.palette.textColor}}>
                     <IconClose width={Theme.iconSize} height={Theme.iconSize} />
@@ -906,6 +926,7 @@ class App extends Component {
             <MenuList
                 width={Theme.menu.width}
                 objects={this.objects}
+                debug={this.state.appSettings ? (this.state.appSettings.debug === undefined ? true : this.state.appSettings.debug) : true}
                 user={this.user}
                 instances={this.state.appSettings && this.state.appSettings.instances}
                 background={this.state.appSettings && this.state.appSettings.menuBackground}
@@ -979,6 +1000,7 @@ class App extends Component {
                 objects={this.state.viewEnum === Utils.INSTANCES ? this.instances : this.objects}
                 user={this.user}
                 states={this.states}
+                debug={this.state.appSettings ? (this.state.appSettings.debug === undefined ? true : this.state.appSettings.debug) : true}
                 connected={this.state.connected}
                 ignoreIndicators={((this.state.appSettings && this.state.appSettings.ignoreIndicators) || '').split(',')}
                 backgroundColor={(this.state.settings && this.state.settings.backgroundColor) || ''}
@@ -1044,7 +1066,7 @@ class App extends Component {
             return (
                 <div>
                     {this.getAppBar()}
-                    {this.getDrawer()}
+                    {this.getMenu()}
                     {this.getStateList()}
                     {this.getErrorDialog()}
                     {this.getSpeechDialog()}

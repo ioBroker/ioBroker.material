@@ -17,6 +17,7 @@ class StatesSubList extends Component {
         user:           PropTypes.string.isRequired,
         objects:        PropTypes.object.isRequired,
         editMode:       PropTypes.bool.isRequired,
+        debug:          PropTypes.bool,
         ignoreIndicators: PropTypes.array,
         windowWidth:    PropTypes.number,
         newLine:        PropTypes.bool,
@@ -155,7 +156,7 @@ class StatesSubList extends Component {
                     return {control: this.createControl(SmartTile, id, control, i), id: control.states.find(state => state.id).id};
                 });
             } else {
-                console.log('Nothing found for ' + id);
+                this.props.debug && console.log('Nothing found for ' + id);
             }
             if (!controls || !controls.length) {
                 return null;

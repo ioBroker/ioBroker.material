@@ -2,30 +2,51 @@
 
 var Types = {
     unknown: 'unknown',
-    socket: 'socket',
-    light: 'light',
+
     blind: 'blind',
-    valve: 'valve',
-    rgb: 'rgb',
-    dimmer: 'dimmer',
-    temperature: 'temperature',
-    humidity: 'humidity',
-    lock: 'lock',
     button: 'button',
-    door: 'door',
-    window: 'window',
-    windowTilt: 'windowTilt',
-    media: 'media',
-    slider: 'slider',
-    thermostat: 'thermostat',
     camera: 'camera',
-    motion: 'motion',
+    dimmer: 'dimmer',
+    door: 'door',
     fireAlarm: 'fireAlarm',
     floodAlarm: 'floodAlarm',
     gate: 'gate',
+    humidity: 'humidity',
     info: 'info',
-    instance: 'instance'
+    instance: 'instance',
+    light: 'light',
+    lock: 'lock',
+    media: 'media',
+    motion: 'motion',
+    rgb: 'rgb',
+    slider: 'slider',
+    socket: 'socket',
+    temperature: 'temperature',
+    thermostat: 'thermostat',
+    valve: 'valve',
+    volume: 'volume',
+    window: 'window',
+    windowTilt: 'windowTilt'
 };
+
+// Description of flags
+// role - RegEx to detect role
+// channelRole - RegEx to detect channel role of state
+// ignoreRole - RegEx to ignore some specific roles
+// indicator - is it will be shown like small icon or as a value
+// type - state type: 'number', 'string' or 'boolean'
+// name - own TAG of the state to process it in the logic
+// write - if set to true or false, it will be checked the write attribute, if no attribute, so "false" will be assumed
+// read - if set to true or false, it will be checked the write attribute, if no attribute, so "true" will be assumed
+// min - type of attribute: number', 'string' or 'boolean'. This attribute must exists in common
+// max - type of attribute: number', 'string' or 'boolean'. This attribute must exists in common
+// required - if required to detect the pattern as valid
+// noSubscribe - no automatic subscription for this state (e.g if write only)
+// searchInParent - if this pattern should be search in device to and not only in channel
+// enums - function to execute custom category detection
+// multiple - if more than one state may have this pattern in channel
+// noDeviceDetection - do not search indicators in parent device
+// single - this state may belong to more than one type simultaneously (e.g. volume tile and media with volume)
 
 function ChannelDetector() {
     if (!(this instanceof ChannelDetector)) return new ChannelDetector();
@@ -40,18 +61,24 @@ function ChannelDetector() {
     var patterns = {
         mediaPlayer: {
             states: [
-                {role: /button.play(\..*)?$/,          indicator: false,     write: true,  type: 'boolean',                                                   name: 'PLAY',               required: true},
-                {role: /button.pause(\..*)?$/,         indicator: false,     write: true,  type: 'boolean',                                                   name: 'PAUSE',              required: true},
-                {role: /button.stop(\..*)?$/,          indicator: false,     write: true,  type: 'boolean',                                                   name: 'STOP',               required: false},
-                {role: /button.next(\..*)?$/,          indicator: false,     write: true,  type: 'boolean',                                                   name: 'STOP',               required: false},
-                {role: /button.prev(\..*)?$/,          indicator: false,     write: true,  type: 'boolean',                                                   name: 'STOP',               required: false},
-                {role: /media.state(\..*)?$/,          indicator: false,     write: false,                                                                    name: 'STATE',              required: false},
-                {role: /media.artist(\..*)?$/,         indicator: false,     write: false, type: 'string',                                                    name: 'ARTIST',             required: false},
-                {role: /media.album(\..*)?$/,          indicator: false,     write: false, type: 'string',                                                    name: 'ARTIST',             required: false},
-                {role: /media.title(\..*)?$/,          indicator: false,     write: false, type: 'string',                                                    name: 'ARTIST',             required: false},
-                {role: /media.cover(\..*)?$/,          indicator: false,     write: false, type: 'string',                                                    name: 'ARTIST',             required: false},
-                {role: /media.duration(\..*)?$/,       indicator: false,     write: false, type: 'number',                                                    name: 'ARTIST',             required: false},
-                {role: /media.elapsed(\..*)?$/,        indicator: false,     write: false, type: 'number',                                                    name: 'ARTIST',             required: false},
+                {role: /^media.state(\..*)?$/,          indicator: false,                   type: 'boolean', name: 'STATE',    required: true},
+                {role: /^button.play(\..*)?$|^action.play(\..*)?$/,          indicator: false,     write: true,  type: 'boolean', name: 'PLAY',     required: false, noSubscribe: true},
+                {role: /^button.pause(\..*)?$|^action.pause(\..*)?$/,        indicator: false,     write: true,  type: 'boolean', name: 'PAUSE',    required: false, noSubscribe: true},
+                {role: /^button.stop(\..*)?$|^action.stop(\..*)?$/,          indicator: false,     write: true,  type: 'boolean', name: 'STOP',     required: false, noSubscribe: true},
+                {role: /^button.next(\..*)?$|^action.next(\..*)?$/,          indicator: false,     write: true,  type: 'boolean', name: 'NEXT',     required: false, noSubscribe: true},
+                {role: /^button.prev(\..*)?$|^action.prev(\..*)?$/,          indicator: false,     write: true,  type: 'boolean', name: 'PREV',     required: false, noSubscribe: true},
+                {role: /^media.mode.shuffle(\..*)?$/,   indicator: false,     write: true,  type: 'boolean', name: 'SHUFFLE',  required: false, noSubscribe: true},
+                {role: /^media.mode.repeat(\..*)?$/,    indicator: false,     write: true,  type: 'boolean', name: 'REPEAT',   required: false, noSubscribe: true},
+                {role: /^media.artist(\..*)?$/,         indicator: false,     write: false, type: 'string',  name: 'ARTIST',   required: false},
+                {role: /^media.album(\..*)?$/,          indicator: false,     write: false, type: 'string',  name: 'ALBUM',    required: false},
+                {role: /^media.title(\..*)?$/,          indicator: false,     write: false, type: 'string',  name: 'TITLE',    required: false},
+                {role: /^media.cover(\..*)?$/,          indicator: false,     write: false, type: 'string',  name: 'COVER',    required: false},
+                {role: /^media.duration(\..*)?$/,       indicator: false,     write: false, type: 'number',  name: 'DURATION', required: false, noSubscribe: true},
+                {role: /^media.elapsed(\..*)?$/,        indicator: false,                   type: 'number',  name: 'ELAPSED',  required: false, noSubscribe: true},
+                {role: /^media.seek(\..*)?$/,           indicator: false,     write: true,  type: 'number',  name: 'SEEK',     required: false, noSubscribe: true},
+                {role: /^level.volume(\..*)?$/,         indicator: false,                   type: 'number',  min: 'number', max: 'number', write: true,       name: 'VOLUME',         required: false, single: false, noSubscribe: true},
+                {role: /^value.volume(\..*)?$/,         indicator: false,                   type: 'number',  min: 'number', max: 'number', write: false,      name: 'VOLUME_ACTUAL',  required: false, single: false, noSubscribe: true},
+                {role: /^media.mute(\..*)?$/,           indicator: false,                   type: 'boolean',                               write: true,       name: 'MUTE',           required: false, single: false, noSubscribe: true},
                 patternLowbat,
                 patternMaintain,
                 patternError
@@ -175,6 +202,19 @@ function ChannelDetector() {
             ],
             type: Types.light
         },
+        volume: {
+            states: [
+                {role: /^level.volume(\..*)?$/,                   indicator: false, type: 'number',  min: 'number', max: 'number', write: true,       name: 'SET',         required: true},
+                {role: /^value.volume(\..*)?$/,                   indicator: false, type: 'number',  min: 'number', max: 'number', write: false,      name: 'ACTUAL',      required: false},
+                {role: /^media.mute(\..*)?$/,                     indicator: false, type: 'boolean',                               write: true,       name: 'MUTE',        required: false},
+                patternWorking,
+                patternUnreach,
+                patternLowbat,
+                patternMaintain,
+                patternError
+            ],
+            type: Types.volume
+        },
         levelSlider: {
             states: [
                 {role: /^level(\..*)?$/,                   indicator: false, type: 'number',  min: 'number', max: 'number', write: true,       name: 'SET',         required: true},
@@ -253,6 +293,7 @@ function ChannelDetector() {
         }
         return found;
     }
+
     function roleOrEnum(obj, enums, roles, words) {
         if (roles && roles.indexOf(obj.common.role) !== -1) {
             return true;
@@ -278,7 +319,7 @@ function ChannelDetector() {
         ru: [/ставни/i,     /рольставни/i,  /окна|окно/, /жалюзи/i]
     };
 
-    var blindRoles = ['blind', 'level.blind', 'value.blind'];
+    var blindRoles = ['blind', 'level.blind', 'value.blind', 'action.stop', 'button.stop'];
     function roleOrEnumBlind(obj, enums) {
         return roleOrEnum(obj, enums, blindRoles, blindWords);
     }
@@ -472,7 +513,7 @@ function ChannelDetector() {
                 patterns[pattern].states.forEach(function (state, i) {
                     var found = false;
                     channelStates.forEach(function (_id) {
-                        if ((state.indicator || (usedIds.indexOf(_id) === -1 && _usedIds.indexOf(_id) === -1)) && this._applyPattern(objects, _id, state)) {
+                        if ((state.indicator || (usedIds.indexOf(_id) === -1 && (state.single || _usedIds.indexOf(_id) === -1))) && this._applyPattern(objects, _id, state)) {
                             if (state.indicator && ignoreIndicators) {
                                 var parts = _id.split('.');
 
@@ -482,7 +523,7 @@ function ChannelDetector() {
                                 }
                             }
 
-                            if (!state.indicator){
+                            if (!state.indicator && !state.single){
                                 _usedIds.push(_id);
                             }
                             if (!result) {
@@ -504,8 +545,8 @@ function ChannelDetector() {
                                 var index = i + 1;
                                 channelStates.forEach(function (cid) {
                                     if (cid === _id) return;
-                                    if ((state.indicator || (usedIds.indexOf(cid) === -1 && _usedIds.indexOf(cid) === -1)) && this._applyPattern(objects, cid, state)) {
-                                        if (!state.indicator){
+                                    if ((state.indicator || (usedIds.indexOf(cid) === -1 && (state.single || _usedIds.indexOf(cid) === -1))) && this._applyPattern(objects, cid, state)) {
+                                        if (!state.indicator && !state.single){
                                             _usedIds.push(cid);
                                         }
                                         var newState = copyState(state);

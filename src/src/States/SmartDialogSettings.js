@@ -22,6 +22,7 @@ import ColorPicker from '../basic-controls/react-color-picker/ColorPicker';
 import ImageSelector from '../basic-controls/react-image-selector/ImageSelector';
 import ChipsControl from '../basic-controls/react-info-controls/ChipsControl';
 import SelectControl from '../basic-controls/react-info-controls/SelectControl';
+import BoolControl from '../basic-controls/react-info-controls/BoolControl';
 
 import SmartDialogGeneric from './SmartDialogGeneric';
 
@@ -153,20 +154,27 @@ class SmartDialogSettings extends SmartDialogGeneric  {
 
             let item;
             if (e.type === 'boolean') {
-                item = [(<span key={this.props.dialogKey + '-' + e.name + '-checkbox-name'}>{I18n.t(e.name)}</span>),
+                /*item = [(<span key={this.props.dialogKey + '-' + e.name + '-checkbox-name'}>{I18n.t(e.name)}</span>),
                     (<Switch
                         key={this.props.dialogKey + '-' + e.name + '-checkbox'}
                         checked={this.state.values[e.name] || false}
                         onChange={ev => this.handleToggle(e.name, ev)}
                         value={e.name}
-                    />)];
+                    />)];*/
+                item = (<BoolControl
+                            key={this.props.dialogKey + '-' + e.name + '-bool'}
+                            label={I18n.t(e.name)}
+                            onChange={color => this.handleValue(e.name, color)}
+                            language={this.props.language}
+                            value={this.state.values[e.name] || false}
+                        />);
             } else if (e.type === 'color') {
                 item = (<ColorPicker
-                        key={this.props.dialogKey + '-' + e.name + '-color'}
-                        name={I18n.t(e.name)}
-                        color={this.state.values[e.name] || Theme.tile.tile.background}
-                        onChange={color => this.handleValue(e.name, color)}
-                    />);
+                            key={this.props.dialogKey + '-' + e.name + '-color'}
+                            name={I18n.t(e.name)}
+                            color={this.state.values[e.name] || ''}
+                            onChange={color => this.handleValue(e.name, color)}
+                        />);
             } else if (e.type === 'chips') {
                 item = (<ChipsControl
                     label={I18n.t(e.name)}

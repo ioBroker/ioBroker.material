@@ -100,7 +100,8 @@ class SmartDialogInfo extends SmartDialogGeneric  {
                                     <Button variant="contained" style={{minWidth: '50%'}} onClick={event => this.handleButton(event, e.id)}>{e.name}</Button>
                                 </div>);
                     }
-                } else if (e.common.type === 'number' && e.common.min !== undefined && e.common.max !== undefined) {
+                } else
+                if (e.common.type === 'number' && e.common.min !== undefined && e.common.max !== undefined && e.common.max - e.common.min < 5000) {
                     // slider
                     item = [(<Typography key={this.props.dialogKey + '-' + e.id + '-title'}>{e.name} - {this.state[e.id] ? this.state[e.id].val : '?'}{e.unit}</Typography>),
                         (<Slider
@@ -126,7 +127,9 @@ class SmartDialogInfo extends SmartDialogGeneric  {
                         key={this.props.dialogKey + '-' + e.id + '-title'}
                         type={e.common && e.common.type === 'number' ? 'number' : 'text'}
                         icon={e.icon}
-                        label={e.name}
+                        label={e.name + (e.unit ? ' (' + e.unit.trim() + ')' : '')}
+                        min={e.common.min}
+                        max={e.common.max}
                         value={this.state[e.id]}
                         onChange={value => this.handleValue(e.id, value)}
                     />);

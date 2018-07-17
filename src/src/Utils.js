@@ -182,6 +182,10 @@ class Utils {
 
     // https://stackoverflow.com/questions/35969656/how-can-i-generate-the-opposite-color-according-to-current-color
     static invertColor(color) {
+        if (color === null || color === undefined || color === '') {
+            return true;
+        }
+        color = color.toString();
         if (color.indexOf('#') === 0) {
             color = color.slice(1);
         }
@@ -212,6 +216,24 @@ class Utils {
         // http://stackoverflow.com/a/3943023/112731
         return (r * 0.299 + g * 0.587 + b * 0.114) <= 186;
     };
+
+    static getTimeString(seconds) {
+        seconds = parseFloat(seconds);
+        if (isNaN(seconds)) {
+            return '--:--';
+        }
+        const hours = Math.floor(seconds / 3600);
+        let minutes = Math.floor((seconds % 3600) / 60);
+        let secs = seconds % 60;
+        if (hours) {
+            if (minutes < 10) minutes = '0' + minutes;
+            if (secs < 10) secs = '0' + secs;
+            return hours + ':' + minutes + ':' + seconds;
+        } else {
+            if (secs < 10) secs = '0' + secs;
+            return minutes + ':' + secs;
+        }
+    }
 }
 
 export default Utils;

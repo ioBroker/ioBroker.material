@@ -15,6 +15,7 @@ class StatesList extends Component {
         editMode:        PropTypes.bool.isRequired,
         states:          PropTypes.object.isRequired,
         connected:       PropTypes.bool.isRequired,
+        debug:           PropTypes.bool,
         background:      PropTypes.string.isRequired,
         backgroundId:    PropTypes.number,
         backgroundColor: PropTypes.string,
@@ -189,6 +190,7 @@ class StatesList extends Component {
                 ignoreIndicators={[]}
                 onVisibilityControl={this.onVisibilityControl.bind(this)}
                 editMode={false}
+                debug={this.props.debug}
                 windowWidth={this.props.windowWidth}
                 enumFunctions={this.enumFunctions}
                 enumID={this.state.enumID}
@@ -221,7 +223,7 @@ class StatesList extends Component {
                 }
 
                 if (column.length) {
-                    console.log('Add to ' + this.state.enumID + '_' + id + ': ' + column.join(', '));
+                    this.props.debug && console.log('Add to ' + this.state.enumID + '_' + id + ': ' + column.join(', '));
                     columns.push((<StatesSubList
                             key={this.state.enumID + '_' + id + '-list'}
                             objects={this.props.objects}
@@ -232,6 +234,7 @@ class StatesList extends Component {
                             invertColor={invertColor}
                             ignoreIndicators={this.props.ignoreIndicators}
                             onVisibilityControl={this.onVisibilityControl.bind(this)}
+                            debug={this.props.debug}
                             editMode={this.props.editMode}
                             windowWidth={this.props.windowWidth}
                             enumFunctions={this.enumFunctions}
@@ -254,7 +257,7 @@ class StatesList extends Component {
             });
 
             if (column.length) {
-                console.log('Add to others: ' + column.join(', '));
+                this.props.debug && console.log('Add to others: ' + column.join(', '));
                 columns.push(<StatesSubList
                     key={'others'}
                     objects={this.props.objects}
@@ -263,6 +266,7 @@ class StatesList extends Component {
                     items={column}
                     newLine={this.props.newLine}
                     editMode={this.props.editMode}
+                    debug={this.props.debug}
                     ignoreIndicators={this.props.ignoreIndicators}
                     onVisibilityControl={this.onVisibilityControl.bind(this)}
                     windowWidth={this.props.windowWidth}
