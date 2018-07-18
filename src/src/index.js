@@ -36,4 +36,8 @@ ReactDOM.render(
     document.getElementById('root')
 );
 
-registerServiceWorker();
+try {
+    registerServiceWorker();
+} catch (e) {
+    window.noServiceWorker = true;
+}

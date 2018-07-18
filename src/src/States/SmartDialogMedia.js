@@ -11,9 +11,30 @@ import IconStop from 'react-icons/lib/md/stop';
 import IconNext from 'react-icons/lib/md/skip-next';
 import IconPrev from 'react-icons/lib/md/skip-previous';
 
+import IconShuffle from 'react-icons/lib/md/shuffle';
+import IconRepeatAll from 'react-icons/lib/md/repeat';
+import IconRepeatOne from 'react-icons/lib/md/repeat-one';
+import IconVolume100 from "react-icons/lib/md/volume-up";
+import IconVolume0 from "react-icons/lib/md/volume-mute";
+
 import Utils from '../Utils';
 import SmartDialogGeneric from './SmartDialogGeneric';
-// import cover from '../assets/cover.png';
+import Theme from "../theme";
+import I18n from "../i18n";
+//import cover from '../assets/cover.png';
+
+const HEIGHT_HEADER = 48;
+const HEIGHT_VOLUME = 48;
+const HEIGHT_COVER = 365;
+const HEIGHT_INFO = 88;
+const HEIGHT_CONTROL = 48;
+const HEIGHT_TIME = 48;
+
+const REPEAT = {
+    NONE: 0,
+    ALL: 1,
+    ONE: 2
+};
 
 const styles = {
     info: {
@@ -50,7 +71,7 @@ const styles = {
             width: 'calc(100% + 1em)',
             bottom: 48,
             left: '-0.5em',
-            height: 48,
+            height: HEIGHT_CONTROL,
             textAlign: 'center',
             lineHeight: '48px',
             verticalAlign: 'middle'
@@ -82,6 +103,24 @@ const styles = {
         pause: {
             background: '#40EE40'
         },
+        repeat: {
+            position: 'absolute',
+            top: 5,
+            right: 54,
+            verticalAlign: 'middle',
+            boxShadow: 'none',
+            background: 'rgba(0,0,0,0)',
+            float: 'right'
+        },
+        shuffle: {
+            position: 'absolute',
+            top: 5,
+            right: 12,
+            verticalAlign: 'middle',
+            boxShadow: 'none',
+            background: 'rgba(0,0,0,0)',
+            float: 'right'
+        },
         name: {
             position: 'absolute',
             left: '1.2em',
@@ -98,7 +137,7 @@ const styles = {
             width: 'calc(100% + 1em)',
             bottom: 0,
             left: '-0.5em',
-            height: 48,
+            height: HEIGHT_TIME,
             lineHeight: '48px',
             textAlign: 'center',
             verticalAlign: 'middle',
@@ -120,15 +159,44 @@ const styles = {
             paddingRight: '1.2em'
         }
     },
+    volume: {
+        div: {
+            zIndex: 1,
+            background: 'rgba(255,255,255,0.9)',
+            position: 'absolute',
+            width: 'calc(100% + 1em)',
+            bottom: 0,
+            left: '-0.5em',
+            height: HEIGHT_TIME,
+            lineHeight: '48px',
+            textAlign: 'center',
+            verticalAlign: 'middle',
+            color: 'rgba(0,0,0,0.9)'
+        },
+        mute: {
+            display: 'inline-block',
+            position: 'absolute',
+            left: '1.5em',
+            top: 4,
+            boxShadow: 'none'
+        },
+        slider: {
+            display: 'inline-block',
+            width: 'calc(100% - 10em)',
+            verticalAlign: 'middle',
+        }
+    },
     cover: {
         div: {
             position: 'absolute',
             top: 48,
             width: 'calc(100% - 2em)',
             height: 'calc(100% - 2em)',
-            maxHeight: 360,
+            maxHeight: HEIGHT_COVER,
             zIndex: 0,
             backgroundSize: '100% auto',
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center'
         },
         img: {
             width: '100%',
@@ -139,8 +207,9 @@ const styles = {
         div: {
             position: 'absolute',
             fontSize: 16,
-            height: 48,
-            zIndex: 1
+            height: HEIGHT_HEADER -16,
+            zIndex: 1,
+            paddingTop: 16
         }
     }
 };
@@ -167,21 +236,56 @@ class SmartDialogMedia extends SmartDialogGeneric  {
     constructor(props) {
         super(props);
 
-        for (const type in this.props.ids) {
-            if (this.props.ids.hasOwnProperty(type) && type !== 'buttons') {
-                for (const id in this.props.ids[type]) {
-                    if (this.props.ids[type].hasOwnProperty(id)) {
+        this.ids = this.props.ids;
+
+        for (const type in this.ids) {
+            if (this.ids.hasOwnProperty(type) && type !== 'buttons') {
+                for (const id in this.ids[type]) {
+                    if (this.ids[type].hasOwnProperty(id)) {
                         this.subscribes = this.subscribes || [];
-                        this.subscribes.push(this.props.ids[type][id]);
+                        this.subscribes.push(this.ids[type][id]);
                     }
                 }
             }
         }
+        let maxHeight = 0;
+
+        this.divs = {
+            'header':  {height: HEIGHT_HEADER,  position: 'top',    visible: true},
+            'volume':  {height: HEIGHT_VOLUME,  position: 'top',    visible: this.ids.volume.set},
+            'cover':   {height: HEIGHT_COVER,   position: 'top',    visible: this.ids.info.cover},
+            'info':    {height: HEIGHT_INFO,    position: 'bottom', visible: this.ids.info.artist || this.ids.info.album || this.ids.info.title},
+            'control': {height: HEIGHT_CONTROL, position: 'bottom', visible: true},
+            'time':    {height: HEIGHT_TIME,    position: 'bottom', visible: this.ids.control.elapsed || this.ids.control.duration || this.ids.control.seek},
+        };
+        // calculate positions
+        let top = 0;
+        let bottom = 0;
+        for (const name in this.divs) {
+            if (this.divs.hasOwnProperty(name) && this.divs[name].visible) {
+                maxHeight += this.divs[name].height;
+                if (this.divs[name].position === 'top') {
+                    this.divs[name].points = top;
+                    top += this.divs[name].height;
+                }
+            }
+        }
+        const keys = Object.keys(this.divs);
+        for (let j = keys.length - 1; j >= 0; j--) {
+            if (this.divs[keys[j]].visible && this.divs[keys[j]].position === 'bottom') {
+                this.divs[keys[j]].points = bottom;
+                bottom += this.divs[keys[j]].height;
+            }
+        }
+        for (const name in this.divs) {
+            if (this.divs.hasOwnProperty(name) && this.divs[name].visible) {
+                this.divs[name].style = Object.assign({}, styles[name].div, {[this.divs[name].position] : this.divs[name].points});
+            }
+        }
 
         this.dialogStyle = {
-            maxHeight: 610
+            maxHeight: maxHeight
         };
-        this.ids = this.props.ids;
 
         const enums = [];
         this.props.enumNames.forEach(e => (enums.indexOf(e) === -1) && enums.push(e));
@@ -191,7 +295,9 @@ class SmartDialogMedia extends SmartDialogGeneric  {
         this.name = enums.join(' / ');
         this.collectState = null;
         this.collectTimer = null;
-        this.sliderVisible = this.ids.control.elapsed || this.ids.control.duration || this.ids.control.seek;
+
+        this.volumeTimer = null;
+        this.seekTimer   = null;
 
         this.refDialog = React.createRef();
 
@@ -212,6 +318,32 @@ class SmartDialogMedia extends SmartDialogGeneric  {
         }
     }
 
+    onVolume(value) {
+        if (value !== this.state[this.ids.volume.actual]){
+            this.setState({[this.ids.volume.actual]: value});
+
+            if (this.volumeTimer) {
+                clearTimeout(this.volumeTimer);
+            }
+            this.volumeTimer = setTimeout((_value) => {
+                this.volumeTimer = null;
+                this.props.onControl(this.ids.volume.set, _value);
+            }, 400, value);
+        }
+    }
+
+    onToggleMute() {
+        this.props.onControl(this.ids.volume.mute, !this.state[this.ids.volume.mute]);
+    }
+
+    onShuffle() {
+        this.props.onControl(this.ids.mode.shuffle, !this.state[this.ids.mode.shuffle]);
+    }
+
+    onRepeat() {
+        this.props.onControl(this.ids.mode.repeat, (this.state[this.ids.mode.repeat] + 1) % 3);
+    }
+
     onUpdateTimer() {
         this.collectTimer = null;
         if (this.collectState) {
@@ -225,7 +357,7 @@ class SmartDialogMedia extends SmartDialogGeneric  {
             this.collectState = this.collectState || {};
             let url = state && state.val;
             if (url) {
-                // url = cover;
+                //url = cover;
                 if (url.match(/\?.+$/)) {
                     url += '&ts=' + Date.now();
                 } else {
@@ -234,7 +366,11 @@ class SmartDialogMedia extends SmartDialogGeneric  {
             }
             this.setState({[id]: url});
         } else
-        if (id === this.ids.control.elapsed || id === this.ids.control.seek || id === this.ids.control.duration) {
+        if (id === this.ids.control.elapsed ||
+            id === this.ids.control.seek ||
+            id === this.ids.control.duration ||
+            id === this.ids.volume.set ||
+            id === this.ids.volume.actual) {
             this.collectState = this.collectState || {};
             this.collectState[id] = parseFloat(state.val);
             this.collectTimer && clearTimeout(this.collectTimer);
@@ -243,6 +379,39 @@ class SmartDialogMedia extends SmartDialogGeneric  {
         if (id === this.ids.info.album || id === this.ids.info.artist || id === this.ids.info.title) {
             this.collectState = this.collectState || {};
             this.collectState[id] = state.val;
+            this.collectTimer && clearTimeout(this.collectTimer);
+            this.collectTimer = setTimeout(() => this.onUpdateTimer(), 200);
+        }  else
+        if (id === this.ids.volume.mute || id === this.ids.mode.shuffle) {
+            this.collectState = this.collectState || {};
+
+            this.collectState[id] =
+                state.val === 'true' ||
+                state.val === true ||
+                state.val === 'mute' ||
+                state.val === 'shuffle' ||
+                state.val === 'muted' ||
+                state.val === 1 ||
+                state.val === '1';
+
+            this.collectTimer && clearTimeout(this.collectTimer);
+            this.collectTimer = setTimeout(() => this.onUpdateTimer(), 200);
+        } else
+        if (id === this.ids.mode.repeat) {
+            this.collectState = this.collectState || {};
+            let val;
+            if (state.val === true || state.val === 'true') {
+                val = REPEAT.ALL;
+            } else if (state.val === 'false' || state.val === false) {
+                val = REPEAT.NONE;
+            } else if (state.val === 'all' || state.val === 'ALL' || state.val === 1 || state.val === '1') {
+                val = REPEAT.ALL;
+            } else if (state.val === 'one' || state.val === 'ONE' || state.val === 2 || state.val === '2') {
+                val = REPEAT.ONE;
+            } else {
+                val = REPEAT.NONE;
+            }
+            this.collectState[id] = val;
             this.collectTimer && clearTimeout(this.collectTimer);
             this.collectTimer = setTimeout(() => this.onUpdateTimer(), 200);
         } else
@@ -271,6 +440,60 @@ class SmartDialogMedia extends SmartDialogGeneric  {
         this.props.onControl(id, true);
     }
 
+    getVolumeSlider() {
+        if (this.ids.volume.set) {
+            return (<Slider value={this.state[this.ids.volume.actual] || 0} style={styles.volume.slider} onChange={(event, value) => this.onVolume(value)} />);
+        } else if (this.ids.volume.actual) {
+            return (<Slider value={this.state[this.ids.volume.actual] || 0} style={styles.volume.slider} disabled />);
+        } else {
+            return null;
+        }
+    }
+
+    getMute() {
+        if (!this.ids.volume.mute) return null;
+        let Icon;
+        let text;
+        let background;
+        let color;
+        let title;
+
+        if (this.state[this.ids.volume.mute]) {
+            Icon = IconVolume0;
+            text = I18n.t('mute');
+            background = '#f50057';
+            color = 'white';
+            title = I18n.t('muted');
+        } else {
+            Icon = IconVolume100;
+            text = I18n.t('unmute');
+            background = 'inherit';
+            color = 'black';
+            title = I18n.t('unmuted');
+        }
+
+        return (
+            <Button variant="fab" mini
+                    title={title}
+                    onClick={this.onToggleMute.bind(this)}
+                    style={Object.assign({}, styles.volume.mute, {background, color})}
+                    aria-label={text}>
+                <Icon />
+            </Button>
+        );
+    }
+
+    getVolumeDiv() {
+        if (!this.divs.volume.visible) return null;
+
+        return (
+            <div key={this.key + 'tile-volume'} style={this.divs.volume.style}>
+                {this.getMute()}
+                {this.getVolumeSlider()}
+            </div>
+        );
+    }
+
     getSlider() {
         if (this.ids.control.seek) {
             return (<Slider value={this.state[this.ids.control.seek] || 0} style={styles.time.slider} onChange={(event, value) => this.onSeek(value)} />);
@@ -283,9 +506,9 @@ class SmartDialogMedia extends SmartDialogGeneric  {
     }
 
     getTimeDiv() {
-        if (!this.sliderVisible) return null;
+        if (!this.divs.time.visible) return null;
         return (
-            <div key={this.key + 'tile-time'} style={styles.time.div}>
+            <div key={this.key + 'tile-time'} style={this.divs.time.style}>
                 {this.ids.control.elapsed ? (<div style={styles.time.elapsed}>{Utils.getTimeString(this.state[this.ids.control.elapsed])}</div>) : null}
                 {this.getSlider()}
                 {this.ids.control.duration  ? (<div style={styles.time.duration}>{Utils.getTimeString(this.state[this.ids.control.duration])}</div>) : null}
@@ -293,10 +516,48 @@ class SmartDialogMedia extends SmartDialogGeneric  {
         );
     }
 
+    getRepeat() {
+        if (!this.ids.mode.repeat) return null;
+        let style;
+        let title;
+        if (this.state[this.ids.mode.repeat]) {
+            style = Object.assign({}, styles.control.repeat, {background: 'rgb(64, 238, 64)', color: 'white'});
+        } else {
+            style = styles.control.repeat;
+            title = I18n.t('No repeat');
+        }
+        let Icon;
+        if (this.state[this.ids.mode.repeat] === REPEAT.NONE || this.state[this.ids.mode.repeat] === REPEAT.ALL) {
+            title = title || I18n.t('Repeat mode: all');
+            Icon = IconRepeatAll;
+        } else {
+            Icon = IconRepeatOne;
+            title = title || I18n.t('Repeat mode: one');
+        }
+
+        return (<Button variant="fab" mini onClick={() => this.onRepeat()}  style={style} title={title} aria-label="repeat">
+            <Icon/>
+        </Button>);
+    }
+
+    getShuffle() {
+        if (!this.ids.mode.shuffle) return null;
+        let style;
+        if (this.state[this.ids.mode.shuffle]) {
+            style = Object.assign({}, styles.control.shuffle, {background: '#b6b6f3'});
+        } else {
+            style = styles.control.shuffle;
+        }
+
+        return (<Button variant="fab" mini onClick={() => this.onShuffle()} title={I18n.t('Shuffle mode')} style={style} aria-label="shuffle">
+            <IconShuffle/>
+        </Button>);
+
+    }
+
     getControlsDiv() {
         const state = this.state[this.ids.control.state];
-        const style = Object.assign({}, styles.control.div, !this.sliderVisible ? {bottom: 0} : {});
-        return (<div key={this.key + 'tile-control'} style={style}>
+        return (<div key={this.key + 'tile-control'} style={this.divs.control.style}>
             {this.ids.buttons.prev ? (<Button variant="fab" mini onClick={() => this.onButton(this.ids.buttons.prev)} style={styles.control.prev} aria-label="prev"><IconPrev/></Button>) : null}
             <Button variant="fab" mini
                     color={state ? 'primary' : 'secondary'}
@@ -305,25 +566,27 @@ class SmartDialogMedia extends SmartDialogGeneric  {
                 {state ? (<IconPause/>) : (<IconPlay/>)}
             </Button>
             {this.props.settings.showStop && this.ids.buttons.stop ? (<Button variant="fab" mini onClick={() => this.onButton(this.ids.buttons.stop)} style={styles.control.stop} aria-label="stop"><IconStop/></Button>) : null}
-            {this.ids.buttons.next ? (<Button variant="fab" mini onClick={() => this.onButton(this.ids.buttons.next)} style={styles.control.prev} aria-label="netx"><IconNext/></Button>) : null}
-        </div>);
+            {this.ids.buttons.next ? (<Button variant="fab" mini onClick={() => this.onButton(this.ids.buttons.next)} style={styles.control.prev} aria-label="next"><IconNext/></Button>) : null}
+            {this.getShuffle()}
+            {this.getRepeat()}
+       </div>);
     }
 
     getInfoDiv() {
-        if (!this.ids.info.artist && !this.ids.info.album && !this.ids.info.title) return null;
+        if (!this.divs.info.visible) return null;
 
-        const style = Object.assign({}, styles.info.div, !this.sliderVisible ? {bottom: 50} : {});
-
-        return (<div key={this.key + 'tile-info'} style={style}>
+        return (<div key={this.key + 'tile-info'} style={this.divs.info.style}>
             {this.ids.info.artist && this.state[this.ids.info.artist] ? (<div style={styles.info.artist}>{this.state[this.ids.info.artist]}</div>) : null}
             {this.ids.info.album  && this.state[this.ids.info.album]  ? (<div style={styles.info.album}>{this.state[this.ids.info.album]}</div>) : null}
             {this.ids.info.title  && this.state[this.ids.info.title]  ? (<div style={styles.info.title}>{this.state[this.ids.info.title]}</div>) : null}
         </div>);
     }
 
-    getCover() {
+    getCoverDiv() {
+        if (!this.divs.cover.visible) return null;
+
         if (this.state[this.ids.info.cover]) {
-            const style = Object.assign({}, styles.cover.div, {backgroundImage: 'url(' + this.state[this.ids.info.cover] + ')'});
+            const style = Object.assign({}, this.divs.cover.style, {backgroundImage: 'url(' + this.state[this.ids.info.cover] + ')'});
             return (
                 <div style={style}/>);
         } else {
@@ -337,14 +600,16 @@ class SmartDialogMedia extends SmartDialogGeneric  {
         }
     }
 
-    getHeader() {
-        return (<div style={styles.header.div}>{this.name}</div>);
+    getHeaderDiv() {
+        if (!this.divs.header.visible) return null;
+        return (<div style={this.divs.header.style}>{this.name}</div>);
     }
 
     generateContent() {
         return [
-            this.getHeader(),
-            this.getCover(),
+            this.getHeaderDiv(),
+            this.getVolumeDiv(),
+            this.getCoverDiv(),
             this.getInfoDiv(),
             this.getTimeDiv(),
             this.getControlsDiv()

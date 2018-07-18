@@ -135,8 +135,11 @@ class SmartState extends SmartGeneric {
 
     updateState(id, state) {
         if (id === this.id) {
-            const val = typeof state.val === 'number' ? !!state.val : state.val === true || state.val === 'true' || state.val === '1' || state.val === 'on' || state.val === 'ON';
+            let val = typeof state.val === 'number' ? !!state.val : state.val === true || state.val === 'true' || state.val === '1' || state.val === 'on' || state.val === 'ON';
             const newState = {};
+            if (this.state.settings.inverted) {
+                val = !val;
+            }
             newState[id] = val;
 
             if (this.showTime && state.lc) {
@@ -149,22 +152,34 @@ class SmartState extends SmartGeneric {
             this.props.tile.setState({
                 state: val
             });
+
+            if (this.hideOnFalse) {
+                let someIndicator = false;
+                if (this.indicators) {
+                    const ids = Object.keys(this.indicators).filter(_id => this.indicators[_id]);
+                    someIndicator = !!ids.find(_id => this.state[this.indicators[_id]]);
+                }
+
+                this.props.tile.setVisibility(val || someIndicator);
+            }
         } else if (this.secondary && this.secondary.id === id) {
             const newState = {};
             newState[id] = state.val;
             this.setState(newState);
-        } else{
+        } else {
             super.updateState(id, state);
         }
-        if (this.hideOnFalse) {
-            let someIndicator = false;
-            if (this.indicators) {
-                const ids = Object.keys(this.indicators).filter(_id => this.indicators[_id]);
-                someIndicator = !!ids.find(_id => this.state[this.indicators[_id]]);
-            }
+    }
 
-            this.props.tile.setVisibility(this.state[this.id] || someIndicator);
-        }
+    getDialogSettings () {
+        const settings = super.getDialogSettings();
+
+        settings.unshift({
+            name: 'inverted',
+            value: this.state.settings.inverted || false,
+            type: 'boolean'
+        });
+        return settings;
     }
 
     getIcon() {

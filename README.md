@@ -28,17 +28,15 @@ Better if every device belongs to both categories. Because every device has a ty
 * events (over extra Adapter)
 * Main screen
 * Weather
-* Media tile (shuffle, repeat) (seek does not work)
 * Charts
 * Narrow menu
-* Background/Opacity of menu adjustable
 * Sort order of tiles
 * vacuum cleaner
 * show bar for sliders to indicate position
 * text2command instance configurable
 
 ## Changelog
-### 0.8.8 (2018.07.17)
+### 0.8.9 (2018.07.17)
 * (bluefox) React app
 
 ### 0.5.7 (2018.01.24)

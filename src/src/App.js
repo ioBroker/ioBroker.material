@@ -89,7 +89,7 @@ class App extends Component {
         this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
     }
 
-    showError (err) {
+    showError(err) {
         this.setState({errorText: err, errorShow: true});
     }
 
@@ -855,7 +855,10 @@ class App extends Component {
         }
     }
 
-    static onUpdateVersion() {
+    onUpdateVersion() {
+        if (window.noServiceWorker) {
+            this.showError(I18n.t('Please erase cache manually.'));
+        } else
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.ready.then(registration => {
                 registration.update();
@@ -867,11 +870,11 @@ class App extends Component {
     getVersionControl() {
         if (!this.state.editMode) return null;
         if (this.state.actualVersion && this.state.actualVersion !== version) {
-            return (<Button onClick={() => App.onUpdateVersion()} variant="contained" size="small" color="secondary">
+            return (<Button onClick={() => this.onUpdateVersion()} variant="contained" size="small" color="secondary">
                 <IconRefresh style={{marginRight: 5}}/> {I18n.t('Update to')} {this.state.actualVersion}
             </Button>);
         } else {
-            return (<span onClick={() => App.onUpdateVersion()}>{version}</span>);
+            return (<span onClick={() => this.onUpdateVersion()}>{version}</span>);
         }
     }
 

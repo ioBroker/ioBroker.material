@@ -191,7 +191,7 @@ class SmartMedia extends SmartGeneric {
             this.ids.volume.set = state && state.id;
 
             state = this.channelInfo.states.find(state => state.id && state.name === 'VOLUME_ACTUAL');
-            this.ids.volume.actual = state && state.id;
+            this.ids.volume.actual = state ? state.id : this.ids.volume.set;
 
             state = this.channelInfo.states.find(state => state.id && state.name === 'MUTE');
             this.ids.volume.mute = state && state.id;
