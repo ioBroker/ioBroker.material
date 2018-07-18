@@ -231,6 +231,7 @@ class SmartTile extends Component {
                     Control = SmartSlider;
                     break;
                 case Types.volume:
+                case Types.volumeGroup:
                     Control = SmartVolume;
                     break;
                 case Types.lock:

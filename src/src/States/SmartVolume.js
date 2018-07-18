@@ -9,6 +9,7 @@ import IconVolume100 from 'react-icons/lib/md/volume-up';
 import Theme from '../theme';
 import SmartGeneric from './SmartGeneric';
 import Dialog from './SmartDialogSlider';
+import Types from './SmartTypes';
 
 import I18n from "../i18n";
 
@@ -17,6 +18,10 @@ const style = {
         fontSize: 'smaller',
         fontWeight: 'normal',
         paddingLeft: 10
+    },
+    groupText: {
+        fontSize: 10,
+        paddingLeft: 5
     }
 };
 
@@ -36,6 +41,10 @@ class SmartVolume extends SmartGeneric {
 
             state = this.channelInfo.states.find(state => state.id && state.name === 'MUTE');
             this.muteId = state && state.id;
+
+            if (this.channelInfo.type === Types.volumeGroup) {
+                this.group = true;
+            }
         }
 
         if (this.id) {
@@ -49,6 +58,7 @@ class SmartVolume extends SmartGeneric {
             this.unit = this.props.objects[this.actualId].common.unit;
             this.unit = this.unit ? ' ' + this.unit : '';
         }
+
 
         this.stateRx.showDialog = false; // support dialog in this tile used in generic class)
         this.stateRx.setValue = null;
@@ -172,7 +182,10 @@ class SmartVolume extends SmartGeneric {
                   style={{pointerEvents: 'none'}}>{this.getIcon()}</div>),
             this.muteId && this.getSecondaryDiv(),
             (<div key={this.key + 'tile-text'} className="tile-text" style={Theme.tile.tileText}>
-                <div className="tile-channel-name" style={Object.assign({}, Theme.tile.tileName, this.state.nameStyle)}>{this.state.settings.name}</div>
+                <div className="tile-channel-name" style={Object.assign({}, Theme.tile.tileName, this.state.nameStyle)}>
+                    {this.state.settings.name}
+                    {this.group ? (<span style={style.groupText}>{I18n.t('group')}</span>) : null}
+                </div>
                 <div className="tile-state-text"
                      style={Theme.tile.tileState}>{this.getStateText()}</div>
             </div>),

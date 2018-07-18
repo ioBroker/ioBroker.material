@@ -13,6 +13,7 @@ const additionalParameters = {
     'MAINTAIN':     {icon: IconMaintain,   color: Theme.tile.tileIndicatorsIcons.maintain},
     'ERROR':        {icon: IconError,      color: Theme.tile.tileIndicatorsIcons.error},
     'DIRECTION':    {                      color: Theme.tile.tileIndicatorsIcons.direction},
+    'CONNECTED':    {icon: IconUnreach,    color: Theme.tile.tileIndicatorsIcons.connected},
 };
 
 class IOBChannelDetector {

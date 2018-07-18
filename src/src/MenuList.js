@@ -256,6 +256,11 @@ class MenuList extends Component {
         }
         visibility[id] = !visibility[id];
         let settings = this.settings[id];
+        if (!settings) {
+            this.settings[id] = Utils.getSettings(this.props.objects[id], {user: this.props.user, language: this.props.language}, true);
+            settings = this.settings[id];
+        }
+
         settings.enabled = visibility[id];
         this.props.onSaveSettings(id, settings);
         this.setState({visibility});
@@ -274,6 +279,10 @@ class MenuList extends Component {
         return items.map(function (item, i) {
             const icon = icons[i];
             const children = this.getListItems(item.id);
+
+            if (!this.settings[item.id]) {
+                this.settings[item.id] = Utils.getSettings(this.props.objects[item.id], {user: this.props.user, language: this.props.language}, true);
+            }
 
             if (!this.props.editMode && !this.settings[item.id].enabled) return;
 

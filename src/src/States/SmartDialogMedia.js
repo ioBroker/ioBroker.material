@@ -204,11 +204,11 @@ class SmartDialogMedia extends SmartDialogGeneric  {
 
             if (this.seekTimer) {
                 clearTimeout(this.seekTimer);
-                this.seekTimer = setTimeout((_value) => {
-                    this.seekTimer = null;
-                    this.props.onControl(this.ids.control.seek, _value);
-                }, 400, value);
             }
+            this.seekTimer = setTimeout((_value) => {
+                this.seekTimer = null;
+                this.props.onControl(this.ids.control.seek, _value);
+            }, 400, value);
         }
     }
 

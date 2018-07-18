@@ -28,7 +28,7 @@ Better if every device belongs to both categories. Because every device has a ty
 * events (over extra Adapter)
 * Main screen
 * Weather
-* Media tile (shuffle, repeat)
+* Media tile (shuffle, repeat) (seek does not work)
 * Charts
 * Narrow menu
 * Background/Opacity of menu adjustable

@@ -25,6 +25,7 @@ var Types = {
     thermostat: 'thermostat',
     valve: 'valve',
     volume: 'volume',
+    volumeGroup: 'volumeGroup',
     window: 'window',
     windowTilt: 'windowTilt'
 };
@@ -46,7 +47,8 @@ var Types = {
 // enums - function to execute custom category detection
 // multiple - if more than one state may have this pattern in channel
 // noDeviceDetection - do not search indicators in parent device
-// single - this state may belong to more than one type simultaneously (e.g. volume tile and media with volume)
+// notSingle - this state may belong to more than one tile simultaneously (e.g. volume tile and media with volume)
+// inverted - is state of indicator must be inverted
 
 function ChannelDetector() {
     if (!(this instanceof ChannelDetector)) return new ChannelDetector();
@@ -57,6 +59,7 @@ function ChannelDetector() {
     var patternMaintain  = {role: /^indicator\.maintenance$/,             indicator: true,  type: 'boolean',                          name: 'MAINTAIN',           required: false};
     var patternError     = {role: /^indicator\.error$/,                   indicator: true,                                            name: 'ERROR',              required: false};
     var patternDirection = {role: /^indicator\.direction$/,               indicator: true,                                            name: 'DIRECTION',          required: false};
+    var patternReachable = {role: /^indicator\.reachable$/,               indicator: true,  type: 'boolean',                          name: 'CONNECTED',          required: false, inverted: true};
 
     var patterns = {
         mediaPlayer: {
@@ -67,7 +70,7 @@ function ChannelDetector() {
                 {role: /^button.stop(\..*)?$|^action.stop(\..*)?$/,          indicator: false,     write: true,  type: 'boolean', name: 'STOP',     required: false, noSubscribe: true},
                 {role: /^button.next(\..*)?$|^action.next(\..*)?$/,          indicator: false,     write: true,  type: 'boolean', name: 'NEXT',     required: false, noSubscribe: true},
                 {role: /^button.prev(\..*)?$|^action.prev(\..*)?$/,          indicator: false,     write: true,  type: 'boolean', name: 'PREV',     required: false, noSubscribe: true},
-                {role: /^media.mode.shuffle(\..*)?$/,   indicator: false,     write: true,  type: 'boolean', name: 'SHUFFLE',  required: false, noSubscribe: true},
+                {role: /^media.mode.shuffle(\..*)?$/,   indicator: false,     write: true,  type: 'number',  name: 'SHUFFLE',  required: false, noSubscribe: true},
                 {role: /^media.mode.repeat(\..*)?$/,    indicator: false,     write: true,  type: 'boolean', name: 'REPEAT',   required: false, noSubscribe: true},
                 {role: /^media.artist(\..*)?$/,         indicator: false,     write: false, type: 'string',  name: 'ARTIST',   required: false},
                 {role: /^media.album(\..*)?$/,          indicator: false,     write: false, type: 'string',  name: 'ALBUM',    required: false},
@@ -76,9 +79,10 @@ function ChannelDetector() {
                 {role: /^media.duration(\..*)?$/,       indicator: false,     write: false, type: 'number',  name: 'DURATION', required: false, noSubscribe: true},
                 {role: /^media.elapsed(\..*)?$/,        indicator: false,                   type: 'number',  name: 'ELAPSED',  required: false, noSubscribe: true},
                 {role: /^media.seek(\..*)?$/,           indicator: false,     write: true,  type: 'number',  name: 'SEEK',     required: false, noSubscribe: true},
-                {role: /^level.volume(\..*)?$/,         indicator: false,                   type: 'number',  min: 'number', max: 'number', write: true,       name: 'VOLUME',         required: false, single: false, noSubscribe: true},
-                {role: /^value.volume(\..*)?$/,         indicator: false,                   type: 'number',  min: 'number', max: 'number', write: false,      name: 'VOLUME_ACTUAL',  required: false, single: false, noSubscribe: true},
-                {role: /^media.mute(\..*)?$/,           indicator: false,                   type: 'boolean',                               write: true,       name: 'MUTE',           required: false, single: false, noSubscribe: true},
+                {role: /^level.volume?$/,               indicator: false,                   type: 'number',  min: 'number', max: 'number', write: true,       name: 'VOLUME',         required: false, notSingle: true, noSubscribe: true},
+                {role: /^value.volume?$/,               indicator: false,                   type: 'number',  min: 'number', max: 'number', write: false,      name: 'VOLUME_ACTUAL',  required: false, notSingle: true, noSubscribe: true},
+                {role: /^media.mute?$/,                 indicator: false,                   type: 'boolean',                               write: true,       name: 'MUTE',           required: false, notSingle: true, noSubscribe: true},
+                patternReachable,
                 patternLowbat,
                 patternMaintain,
                 patternError
@@ -204,9 +208,9 @@ function ChannelDetector() {
         },
         volume: {
             states: [
-                {role: /^level.volume(\..*)?$/,                   indicator: false, type: 'number',  min: 'number', max: 'number', write: true,       name: 'SET',         required: true},
-                {role: /^value.volume(\..*)?$/,                   indicator: false, type: 'number',  min: 'number', max: 'number', write: false,      name: 'ACTUAL',      required: false},
-                {role: /^media.mute(\..*)?$/,                     indicator: false, type: 'boolean',                               write: true,       name: 'MUTE',        required: false},
+                {role: /^level.volume$/,                   indicator: false, type: 'number',  min: 'number', max: 'number', write: true,       name: 'SET',         required: true},
+                {role: /^value.volume$/,                   indicator: false, type: 'number',  min: 'number', max: 'number', write: false,      name: 'ACTUAL',      required: false},
+                {role: /^media.mute$/,                     indicator: false, type: 'boolean',                               write: true,       name: 'MUTE',        required: false},
                 patternWorking,
                 patternUnreach,
                 patternLowbat,
@@ -214,6 +218,19 @@ function ChannelDetector() {
                 patternError
             ],
             type: Types.volume
+        },
+        volumeGroup: {
+            states: [
+                {role: /^level.volume.group?$/,            indicator: false, type: 'number',  min: 'number', max: 'number', write: true,       name: 'SET',         required: true},
+                {role: /^value.volume.group$/,             indicator: false, type: 'number',  min: 'number', max: 'number', write: false,      name: 'ACTUAL',      required: false},
+                {role: /^media.mute.group$/,               indicator: false, type: 'boolean',                               write: true,       name: 'MUTE',        required: false},
+                patternWorking,
+                patternUnreach,
+                patternLowbat,
+                patternMaintain,
+                patternError
+            ],
+            type: Types.volumeGroup
         },
         levelSlider: {
             states: [
@@ -513,7 +530,7 @@ function ChannelDetector() {
                 patterns[pattern].states.forEach(function (state, i) {
                     var found = false;
                     channelStates.forEach(function (_id) {
-                        if ((state.indicator || (usedIds.indexOf(_id) === -1 && (state.single || _usedIds.indexOf(_id) === -1))) && this._applyPattern(objects, _id, state)) {
+                        if ((state.indicator || (usedIds.indexOf(_id) === -1 && (state.notSingle || _usedIds.indexOf(_id) === -1))) && this._applyPattern(objects, _id, state)) {
                             if (state.indicator && ignoreIndicators) {
                                 var parts = _id.split('.');
 
@@ -523,7 +540,7 @@ function ChannelDetector() {
                                 }
                             }
 
-                            if (!state.indicator && !state.single){
+                            if (!state.indicator && !state.notSingle){
                                 _usedIds.push(_id);
                             }
                             if (!result) {
@@ -545,8 +562,8 @@ function ChannelDetector() {
                                 var index = i + 1;
                                 channelStates.forEach(function (cid) {
                                     if (cid === _id) return;
-                                    if ((state.indicator || (usedIds.indexOf(cid) === -1 && (state.single || _usedIds.indexOf(cid) === -1))) && this._applyPattern(objects, cid, state)) {
-                                        if (!state.indicator && !state.single){
+                                    if ((state.indicator || (usedIds.indexOf(cid) === -1 && (state.notSingle || _usedIds.indexOf(cid) === -1))) && this._applyPattern(objects, cid, state)) {
+                                        if (!state.indicator && !state.notSingle){
                                             _usedIds.push(cid);
                                         }
                                         var newState = copyState(state);

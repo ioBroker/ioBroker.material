@@ -333,12 +333,14 @@ export default {
             position: 'absolute',
             top: '1em',
             right: '1em',
-            width: 'calc(100% - ' + tileIconWidth + 'px)'
+            whiteSpace: 'nowrap',
+            //width: 'calc(100% - ' + tileIconWidth + 'px)'
         },
         tileIndicator: {
             width: '1em',
             height: '1em',
-            float: 'right'
+            float: 'right',
+            display: 'inline-block'
         },
         tileIndicatorsIcons: {
             working:   '#808080',
@@ -346,7 +348,8 @@ export default {
             lowbat:    'red',
             maintain:  'orange',
             error:     'red',
-            direction: 'green'
+            direction: 'green',
+            connected: 'red'
         },
         secondary: {
             icon: {

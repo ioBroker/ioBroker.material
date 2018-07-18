@@ -423,6 +423,7 @@ class SmartGeneric extends Component {
     getIndicators() {
         let result = [];
         const that = this;
+        let titles = [];
         this.channelInfo.states.forEach(state =>  {
             if (state.indicator && state.id) {
                 const pos = state.id.lastIndexOf('.');
@@ -441,20 +442,25 @@ class SmartGeneric extends Component {
                     } else {
                         return;
                     }
-                } else if (!that.state[state.id]) {
+                } else if ((!that.state[state.id] && !state.inverted) || (that.state[state.id] && state.inverted)) {
                     return;
                 }
+
+                titles.push(I18n.t(state.id.split('.').pop()));
+
                 result.push((<Icon
                     key={that.key + 'indicator-' + state.name.toLowerCase()}
                     className={'indicator-' + state.name.toLowerCase()}
                     style={Object.assign({}, Theme.tile.tileIndicator, {color: state.color})}
-                    title={state.id.split('.').pop()}
                 />));
             }
         });
 
         if (result.length) {
-            return (<div key={this.key + 'indicators'} style={Theme.tile.tileIndicators} title={this.errorText || ''}>{result}</div>);
+            if (this.errorText) {
+                titles.push(this.errorText)
+            }
+            return (<div key={this.key + 'indicators'} style={Theme.tile.tileIndicators} title={titles.join(', ')}>{result}</div>);
         } else {
             return null;
         }
