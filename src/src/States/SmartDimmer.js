@@ -1,9 +1,12 @@
 import React from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import SmartGeneric from './SmartGeneric';
+
 import Icon from 'react-icons/lib/ti/lightbulb'
+
+import SmartGeneric from './SmartGeneric';
 import Theme from '../theme';
 import Dialog from './SmartDialogSlider';
+import I18n from '../i18n';
 
 class SmartLight extends SmartGeneric {
     constructor(props) {
@@ -18,6 +21,12 @@ class SmartLight extends SmartGeneric {
 
             state = this.channelInfo.states.find(state => state.id && state.name === 'ACTUAL');
             this.actualId = state ? state.id : this.id;
+
+            state = this.channelInfo.states.find(state => state.id && state.name === 'ON_SET');
+            this.onId = state && state.id;
+
+            state = this.channelInfo.states.find(state => state.id && state.name === 'ON_ACTUAL');
+            this.onActualId = state ? state.id : this.onId;
         }
 
         if (this.id) {
@@ -66,23 +75,40 @@ class SmartLight extends SmartGeneric {
 
     updateState(id, state) {
         let newState = {};
-        const val = typeof state.val === 'number' ? state.val : parseFloat(state.val);
 
+        if (this.onActualId === id || (this.onId === id && this.onId === this.onActualId && state.ack)) {
+            let val = typeof state.val === 'number' ? !!state.val : state.val === true || state.val === 'true' || state.val === '1' || state.val === 'on' || state.val === 'ON' || state.val === 'ein' || state.val === 'EIN';
+            newState[id] = val;
+
+            this.setState(newState);
+
+            this.props.tile.setState({
+                state: val
+            });
+            if (state.ack && this.state.executing) {
+                this.setState({executing: false});
+            }
+        } else
         if (this.actualId === id || (this.id === id && this.id === this.actualId && state.ack)) {
+            const val = typeof state.val === 'number' ? state.val : parseFloat(state.val);
             if (!isNaN(val)) {
                 newState[id] = this.realValueToPercent(val);
                 this.setState(newState);
 
-                const tileState = val !== this.min;
-                this.props.tile.setState({
-                    state: tileState
-                });
+                if (!this.onActualId) {
+                    const tileState = val !== this.min;
+                    this.props.tile.setState({
+                        state: tileState
+                    });
+                }
             } else {
                 newState[id] = null;
                 this.setState(newState);
-                this.props.tile.setState({
-                    state: false
-                });
+                if (!this.onActualId) {
+                    this.props.tile.setState({
+                        state: false
+                    });
+                }
             }
 
             // hide desired value
@@ -94,7 +120,10 @@ class SmartLight extends SmartGeneric {
                 this.setState({executing: false});
             }
         } else if (id === this.id) {
-            newState[id] = val;
+            newState[id] = typeof state.val === 'number' ? state.val : parseFloat(state.val);
+            this.setState(newState);
+        } else if (id === this.onId) {
+            newState[id] = typeof state.val === 'number' ? !!state.val : state.val === true || state.val === 'true' || state.val === '1' || state.val === 'on' || state.val === 'ON' || state.val === 'ein' || state.val === 'EIN';
             this.setState(newState);
         } else {
             super.updateState(id, state);
@@ -117,14 +146,18 @@ class SmartLight extends SmartGeneric {
     }
 
     onToggleValue() {
-        const percent = this.realValueToPercent();
-        let newValue;
-        if (percent) {
-            newValue = 0;
+        if (this.onId) {
+            this.props.onControl(this.onId, !this.state[this.onActualId]);
         } else {
-            newValue = this.lastNotNullPercent || 100;
+            let newValue;
+            const percent = this.realValueToPercent();
+            if (percent) {
+                newValue = 0;
+            } else {
+                newValue = this.lastNotNullPercent || 100;
+            }
+            this.setValue(newValue);
         }
-        this.setValue(newValue);
     }
 
     getIcon() {
@@ -137,6 +170,9 @@ class SmartLight extends SmartGeneric {
     }
 
     getStateText() {
+        if (this.onActualId && this.state[this.onActualId] === false) {
+            return I18n.t('Off');
+        }
         if (this.state[this.actualId] === null || this.state[this.actualId] === undefined) {
             return '---';
         } else {
@@ -162,6 +198,8 @@ class SmartLight extends SmartGeneric {
                     windowWidth={this.props.windowWidth}
                     startValue={this.realValueToPercent()}
                     onValueChange={this.setValue.bind(this)}
+                    startToggleValue={this.onActualId ? this.state[this.onActualId] : false}
+                    onToggle={this.onId && this.onToggleValue.bind(this)}
                     onClose={this.onDialogClose.bind(this)}
                     type={Dialog.types.dimmer}
                 /> : null

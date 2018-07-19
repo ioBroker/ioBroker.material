@@ -186,6 +186,8 @@ function ChannelDetector() {
             states: [
                 {role: /^level(\.dimmer)?$/,                   indicator: false, type: 'number',  write: true,       enums: roleOrEnumLight, name: 'SET',         required: true},
                 {role: /^value(\.dimmer)?$/,                   indicator: false, type: 'number',  write: false,      enums: roleOrEnumLight, name: 'ACTUAL',      required: false},
+                {role: /^switch(\.light)?$|^state$/,           indicator: false, type: 'boolean', write: true,       enums: roleOrEnumLight, name: 'ON_SET',      required: false},
+                {role: /^switch(\.light)?$|^state$/,           indicator: false, type: 'boolean', write: false,      enums: roleOrEnumLight, name: 'ON_ACTUAL',   required: false},
                 patternWorking,
                 patternUnreach,
                 patternLowbat,

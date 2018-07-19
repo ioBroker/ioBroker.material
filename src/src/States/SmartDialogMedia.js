@@ -19,7 +19,6 @@ import IconVolume0 from "react-icons/lib/md/volume-mute";
 
 import Utils from '../Utils';
 import SmartDialogGeneric from './SmartDialogGeneric';
-import Theme from "../theme";
 import I18n from "../i18n";
 //import cover from '../assets/cover.png';
 
@@ -587,14 +586,13 @@ class SmartDialogMedia extends SmartDialogGeneric  {
 
         if (this.state[this.ids.info.cover]) {
             const style = Object.assign({}, this.divs.cover.style, {backgroundImage: 'url(' + this.state[this.ids.info.cover] + ')'});
-            return (
-                <div style={style}/>);
+            return (<div style={style}/>);
         } else {
             return (
-                <div style={styles.cover.div}>
-                    (<div key={this.key + 'icon'} style={styles.cover.img}>
+                <div style={this.divs.cover.style}>
+                    <div key={this.key + 'icon'} style={styles.cover.img}>
                         <IconNote width={'100%'} height={'100%'}/>
-                    </div>)
+                    </div>
                 </div>
             );
         }

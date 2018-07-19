@@ -54,9 +54,9 @@
         "onlyWWW":                  "true",
         "loglevel":                 "info",
         "dependencies":             ["web"],
-        "icon":                     "material.svg",
+        "icon":                     "material.png",
         "enabled":                  true,
-        "extIcon":                  "https://raw.githubusercontent.com/ioBroker/ioBroker.material/master/admin/material.svg",
+        "extIcon":                  "https://raw.githubusercontent.com/ioBroker/ioBroker.material/master/admin/material.png",
         "keywords":                 ["user", "interface", "webapp", "jquerymobile", "ui"],
         "readme":                   "https://github.com/ioBroker/ioBroker.material/blob/master/README.md",
         "singleton":                true,
@@ -72,7 +72,7 @@
         "type":                     "visualization",
         "license":                  "CC-BY-NC",
         "noConfig":                 true,
-		"welcomeScreen": 			{"link": "material/index.html", "name": "material", "img": "material.admin/material.svg", "color": "black", "order": 2}
+		"welcomeScreen": 			{"link": "material/index.html", "name": "material", "img": "material.admin/material.png", "color": "black", "order": 2}
     },
     "native": {
         "loadingBackground": ""

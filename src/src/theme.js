@@ -6,7 +6,6 @@ import Background from './assets/apartment.jpg';
 
 const appBarHeight = 64;
 const tileBorderRadius = '1em';
-const tileIconWidth = 40;
 
 export default {
     classes: {

@@ -22,8 +22,13 @@ class SmartDialogSlider extends SmartDialogGeneric  {
         windowWidth:        PropTypes.string,
 
         onClose:            PropTypes.func,
+
+        onStop:             PropTypes.func,
+        onToggle:           PropTypes.func,
+
         onValueChange:      PropTypes.func,
         startValue:         PropTypes.number,
+        startToggleValue:   PropTypes.bool,
         type:               PropTypes.number
     };
     static types = {
@@ -70,7 +75,8 @@ class SmartDialogSlider extends SmartDialogGeneric  {
 
     constructor(props) {
         super(props);
-        this.stateRx.value   = this.externalValue2localValue(this.props.startValue || 0);
+        this.stateRx.value       = this.externalValue2localValue(this.props.startValue || 0);
+        this.stateRx.toggleValue = this.props.startToggleValue || false;
         this.onMouseMoveBind = this.onMouseMove.bind(this);
         this.onMouseUpBind   = this.onMouseUp.bind(this);
 
@@ -86,6 +92,15 @@ class SmartDialogSlider extends SmartDialogGeneric  {
         };
         this.closeOnPaperClick = true; // used in generic
         this.componentReady();
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.startValue !== this.state.value) {
+            this.setState({value: nextProps.startValue});
+        }
+        if (nextProps.startToggleValue !== undefined && nextProps.startToggleValue !== this.state.toggleValue) {
+            this.setState({toggleValue: nextProps.startToggleValue});
+        }
     }
 
     eventToValue(e) {
@@ -286,6 +301,12 @@ class SmartDialogSlider extends SmartDialogGeneric  {
         this.props.onStop && this.props.onStop();
     }
 
+    onToggle(e) {
+        e && e.preventDefault();
+        e && e.stopPropagation();
+        this.props.onToggle && this.props.onToggle();
+    }
+
     getValueText() {
         let unit = '%';
         if (this.props.type !== SmartDialogSlider.types.blinds && this.props.type !== SmartDialogSlider.types.dimmer) {
@@ -296,6 +317,36 @@ class SmartDialogSlider extends SmartDialogGeneric  {
         } else {
             return this.state.value + unit;
         }
+    }
+
+    getToggleButton() {
+        if (!this.props.onToggle) return null;
+        const style = Object.assign({}, SmartDialogSlider.buttonStopStyle, this.state.toggleValue ? {background: Theme.palette.lampOn} : {});
+        return (
+           <Button key={this.props.dialogKey + '-toggle-button'}
+                     variant="fab"
+                     color="primary"
+                     aria-label="on off"
+                     style={style}
+                     onClick={this.onToggle.bind(this)}
+                     className="dimmer-button">
+               <IconLamp/>
+           </Button>);
+    }
+
+    getStopButton() {
+        if (!this.props.onStop) return null;
+
+        return (
+            <Button key={this.props.dialogKey + '-stop-button'}
+                     variant="fab"
+                     color="secondary"
+                     aria-label="stop"
+                     style={SmartDialogSlider.buttonStopStyle}
+                     onClick={this.onStop.bind(this)}
+                     className="dimmer-button">
+                <IconStop/>
+            </Button>);
     }
 
     generateContent() {
@@ -358,16 +409,8 @@ class SmartDialogSlider extends SmartDialogGeneric  {
                   onMouseUp={this.onButtonUp.bind(this)}
                   onClick={e => e.stopPropagation()}
                   style={Object.assign({}, SmartDialogSlider.buttonStyle, {bottom: '1.8em'})} className="dimmer-button">{this.getBottomButtonName()}</div>),
-            !this.props.onStop ? null :
-                (<Button key={this.props.dialogKey + '-stop-button'}
-                         variant="fab"
-                         color="secondary"
-                         aria-label="stop"
-                         style={SmartDialogSlider.buttonStopStyle}
-                         onClick={this.onStop.bind(this)}
-                         className="dimmer-button">
-                    <IconStop/>
-                </Button>)
+            this.getStopButton(),
+            this.getToggleButton()
         ];
     }
 }
