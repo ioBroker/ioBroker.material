@@ -29,7 +29,7 @@ class SmartDialogGeneric extends Component  {
 
         // disable context menu after long click
         window.addEventListener('contextmenu', SmartDialogGeneric.onContextMenu, false);
-        this.refDialog = React.createRef();
+        this.refModal = React.createRef();
         this.dialogStyle = {};
         this.closeOnPaperClick = false;
         this.savedParent = null;
@@ -37,6 +37,7 @@ class SmartDialogGeneric extends Component  {
         this.subscribes = null;
         this.subscribed = false;
         this.editMode   = this.props.editMode;
+        this.positionTuned = false;
 
     }
 
@@ -57,19 +58,24 @@ class SmartDialogGeneric extends Component  {
 
     componentDidMount() {
         // move this element to the top of body
-        if (this.refDialog) {
-            this.savedParent = this.refDialog.current.parentElement;
-            document.body.appendChild(this.refDialog.current);
+        if (this.refModal) {
+            this.savedParent = this.refModal.current.parentElement;
+            document.body.appendChild(this.refModal.current);
         }
 
         if (this.subscribes && !this.subscribed) {
             this.subscribed = true;
             this.props.onCollectIds(this, this.subscribes, true);
         }
+
+        if (!this.positionTuned) {
+            Object.assign(this.dialogStyle, {left: 'calc(50% - ' + (this.refModal.current.firstChild.offsetWidth / 2) + 'px)'});
+            this.forceUpdate();
+        }
     }
 
     componentWillUnmount() {
-        this.refDialog && this.savedParent.appendChild(this.refDialog.current);
+        this.refModal && this.savedParent.appendChild(this.refModal.current);
 
         if (this.props.onCollectIds && this.subscribed) {
             this.props.onCollectIds(this, this.subscribes, false);
@@ -129,27 +135,27 @@ class SmartDialogGeneric extends Component  {
 
     render() {
         return (<div key={this.props.dialogKey + '-dialog'}
-                     ref={this.refDialog}
-                     onClick={this.onClose.bind(this)}
+                     ref={this.refModal}
+                     onClick={() => this.onClose()}
                      style={Theme.dialog.back}>
-            <Paper onClick={this.onClick.bind(this)}
-                   style={Object.assign({}, Theme.dialog.inner, this.dialogStyle)}
-            >
-                {this.generateContent()}
-                <Snackbar
-                    key={this.props.dialogKey + '-toast'}
-                    anchorOrigin={{vertical: 'top', horizontal: 'right'}}
-                    open={!!this.state.toast}
-                    onClick={this.handleToastClose.bind(this)}
-                    onClose={this.handleToastClose.bind(this)}
-                    autoHideDuration={4000}
-                    ContentProps={{
-                        'aria-describedby': 'message-id',
-                    }}
-                    message={<span id="message-id">{this.state.toast}</span>}
-                />
-                {this.showCloseButton()}
-            </Paper>
+                <Paper onClick={this.onClick.bind(this)}
+                       style={Object.assign({}, Theme.dialog.inner, this.dialogStyle)}
+                >
+                    {this.generateContent()}
+                    <Snackbar
+                        key={this.props.dialogKey + '-toast'}
+                        anchorOrigin={{vertical: 'top', horizontal: 'right'}}
+                        open={!!this.state.toast}
+                        onClick={this.handleToastClose.bind(this)}
+                        onClose={this.handleToastClose.bind(this)}
+                        autoHideDuration={4000}
+                        ContentProps={{
+                            'aria-describedby': 'message-id',
+                        }}
+                        message={<span id="message-id">{this.state.toast}</span>}
+                    />
+                    {this.showCloseButton()}
+                </Paper>
 
             {this.getAdditionalElements && this.getAdditionalElements()}
 

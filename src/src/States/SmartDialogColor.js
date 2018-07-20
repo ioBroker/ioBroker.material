@@ -42,10 +42,9 @@ class SmartDialogColor extends SmartDialogGeneric  {
         // disable context menu after long click
         window.addEventListener('contextmenu', SmartDialogColor.onContextMenu, false);
 
-        this.refDialog = React.createRef();
-        this.refColor  = React.createRef();
+        this.refColor       = React.createRef();
         this.refColorCursor = React.createRef();
-        this.refColorImage = React.createRef();
+        this.refColorImage  = React.createRef();
 
         this.colorWidth = 0;
         this.colorTop = 0;
@@ -212,13 +211,6 @@ class SmartDialogColor extends SmartDialogGeneric  {
         }
     }
 
-    componentDidMount() {
-        // move this element to the top of body
-        this.savedParent = this.refDialog.current.parentElement;
-        document.body.appendChild(this.refDialog.current);
-        this.componentDidUpdate();
-    }
-
     componentDidUpdate() {
         if (!this.colorWidth) {
             const h = this.refColor.current.offsetHeight - 6 * 16;
@@ -235,9 +227,6 @@ class SmartDialogColor extends SmartDialogGeneric  {
             this.refColorCursor.current.style.left = this.colorLeft + pos.x + (pos.x > 0 ? 0 : -SmartDialogColor.handlerSize) + 'px';
             this.rect = this.refColorImage.current.getBoundingClientRect();
         }
-    }
-    componentWillUnmount() {
-        this.savedParent.appendChild(this.refDialog.current);
     }
 
     eventToValue(e) {

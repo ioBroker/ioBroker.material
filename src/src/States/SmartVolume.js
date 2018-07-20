@@ -8,10 +8,11 @@ import IconVolume100 from 'react-icons/lib/md/volume-up';
 
 import Theme from '../theme';
 import SmartGeneric from './SmartGeneric';
-import Dialog from './SmartDialogSlider';
 import Types from './SmartTypes';
+//import Dialog from './SmartDialogSlider';
+import Dialog from './SmartDialogKnob';
 
-import I18n from "../i18n";
+import I18n from '../i18n';
 
 const style = {
     mute: {
@@ -192,13 +193,15 @@ class SmartVolume extends SmartGeneric {
             this.state.showDialog ?
                 <Dialog key={this.key + 'dialog'}
                         startValue={this.state[this.id]}
+                        startMuteValue={this.muteId ? this.state[this.muteId] : false}
+                        onMute={this.muteId ? this.toggle.bind(this) : null}
                         windowWidth={this.props.windowWidth}
                         min={this.min}
                         max={this.max}
                         unit={this.unit}
                         onValueChange={this.setValue.bind(this)}
                         onClose={this.onDialogClose.bind(this)}
-                        type={Dialog.types.value}
+ //                       type={Dialog.types.value}
                 /> : null
         ]);
     }

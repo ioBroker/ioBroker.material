@@ -94,7 +94,7 @@ export default {
             top: '1em',
             left: 'calc(50% - 180px)',
             maxWidth: 360,
-            width: '100%',
+            width: 'calc(100% - 1em)',
             padding: '1em 0 1em 1em',
             overflow: 'hidden',
             boxSizing: 'border-box',

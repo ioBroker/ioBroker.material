@@ -19,7 +19,7 @@ class SmartDialogSlider extends SmartDialogGeneric  {
             PropTypes.object
         ]),
         dialogKey:          PropTypes.string,
-        windowWidth:        PropTypes.string,
+        windowWidth:        PropTypes.number,
 
         onClose:            PropTypes.func,
 
