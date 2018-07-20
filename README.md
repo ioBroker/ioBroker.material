@@ -27,8 +27,6 @@ Better if every device belongs to both categories. Because every device has a ty
 ### Volume
 ### Group volume
 
-
-
 ## ToDO
 * Cams (over extra Adapter)
 * events (over extra Adapter)
@@ -39,13 +37,15 @@ Better if every device belongs to both categories. Because every device has a ty
 * Sort order of tiles
 * vacuum cleaner
 * show bar for sliders to indicate position
-* text2command instance configurable
 
 ## Credits
 - Used icons from flaticon
 - Volume knob from [here](https://codepen.io/blucube/pen/cudAz) By [Ed Hicks](https://twitter.com/blucube) - Inspired by a [dribbble shot](https://dribbble.com/shots/753124-Volume-Knob)  by [Ricardo Salazar](https://twitter.com/rickss)
 
 ## Changelog
+### 0.9.0 (2018.07.20)
+* (bluefox) Volume control was implemented
+
 ### 0.8.9 (2018.07.17)
 * (bluefox) React app
 

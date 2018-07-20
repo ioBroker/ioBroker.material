@@ -84,6 +84,7 @@ const styles = theme => ({
         textShadow: '0 0 10px #a8d8f8'//'0 0 0.3em 0.08em #79c3f4',
     }
 });
+
 const activeTick = {
     backgroundColor: '#a8d8f8',
     boxShadow: '0 0 0.3em 0.08em #79c3f4',
@@ -236,7 +237,9 @@ class KnobControl extends Component {
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.value !== this.state.value) {
-            this.setState({value: nextProps.value});
+            if (!this.mouseDown) {
+                this.setState({value: nextProps.value});
+            }
         }
         if (nextProps.ticksNumber !== this.state.ticks) {
             this.setState({ticks: nextProps.ticksNumber});
@@ -294,7 +297,6 @@ class KnobControl extends Component {
             <div className={this.props.classes.knob} style={style}>
                 <div className={this.props.classes.knobBefore}/>
             </div>
-            //<div className={this.props.classes.knob}/>
         );
     }
 
@@ -310,10 +312,15 @@ class KnobControl extends Component {
         let pageX = e.touches ? e.touches[e.touches.length - 1].clientX : e.clientX;
         const halfSize = this.knobWidth / 2;
         const value = this.posToValue(pageX - this.rect.left - halfSize, pageY - this.rect.top - halfSize);
-        this.setState({
+
+        this.lastValue = Date.now();
+
+        /*this.setState({
             value: value,
             activeTick: this.calcActiveTick(value)
-        });
+        });*/
+
+        this.onValueChange(value);
     }
 
     onMouseMove(e) {
@@ -325,6 +332,9 @@ class KnobControl extends Component {
     onMouseDown(e) {
         e.preventDefault();
         e.stopPropagation();
+
+        this.mouseDown = true;
+
         this.eventToValue(e);
 
         document.addEventListener('mousemove',  this.onMouseMoveBind,   {passive: false, capture: true});
@@ -336,6 +346,8 @@ class KnobControl extends Component {
     onMouseUp(e) {
         e.preventDefault();
         e.stopPropagation();
+
+        this.mouseDown = false;
 
         console.log('Stopped');
 
@@ -363,7 +375,7 @@ class KnobControl extends Component {
         return [
             (<span key="min" className={this.props.classes.min} style={styleMin}>Min</span>),
             (<span key="max" className={this.props.classes.max} style={styleMax}>Max</span>)
-            ];
+        ];
 
     }
     render() {

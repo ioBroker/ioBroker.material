@@ -1,8 +1,19 @@
 {
     "common": {
         "name": "material",
-        "version": "0.8.9",
+        "version": "0.9.0",
         "news": {
+            "0.9.0": {
+                "en": "Volume control was implemented",
+                "de": "Lautstärkeregelung wurde implementiert",
+                "ru": "Регулятор громкости был реализован",
+                "pt": "Controle de volume foi implementado",
+                "nl": "Volumeregeling is geïmplementeerd",
+                "fr": "Le contrôle du volume a été implémenté",
+                "it": "Il controllo del volume è stato implementato",
+                "es": "Control de volumen fue implementado",
+                "pl": "Kontrola głośności została wdrożona"
+            },
             "0.8.9": {
                 "en": "React app"
             },

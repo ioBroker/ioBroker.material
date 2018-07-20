@@ -53,7 +53,7 @@ const styles = {
 class MenuList extends Component {
     static propTypes = {
         objects:        PropTypes.object.isRequired,
-        selectedId:     PropTypes.string,
+        viewEnum:       PropTypes.string,
         editMode:       PropTypes.bool.isRequired,
         user:           PropTypes.string.isRequired,
         root:           PropTypes.string.isRequired,
@@ -68,35 +68,95 @@ class MenuList extends Component {
         super(props);
         this.settings = {};
 
+        const {enums, roots} = this.fillEnums(this.props.objects);
+        this.enums = enums;
+
         this.state = {
             selectedIndex:  this.props.defaultValue,
             editMode:       this.props.editMode,
             visibility:     this.fillVisibility(this.props.root, this.props.objects, this.props.editMode).visibility,
             background:     this.props.background,
             instances:      this.props.instances,
-            root:           this.props.root
+            root:           this.props.root,
+            roots:          roots
         };
+    }
+
+    fillEnums(objects) {
+        objects = objects || this.props.objects;
+        let enums     = [];
+        let reg       = new RegExp('^enum\\.');
+
+        const ids = Object.keys(objects);
+        ids.sort();
+        for (let i = 0; i < ids.length; i++) {
+            if (ids[i] < 'enum.') continue;
+            if (ids[i] > 'enum.\u9999') break;
+            if (reg.test(ids[i])) {
+                // detect missing steps of enums: e.g. there is enum.rooms.EG.wc, but no enum.rooms.EG;
+                const parts = ids[i].split('.');
+                let index = enums.length;
+                while (parts.length > 2) {
+                    parts.pop();
+                    const parentId = parts.join('.');
+                    if (enums.indexOf(parentId) === -1) {
+                        enums.splice(index, 0, parentId);
+                    }
+                }
+
+                enums.push(ids[i]);
+            }
+        }
+
+        const roots = {};
+        for (let e = enums.length - 1; e >= 0 ; e--) {
+            const parts = enums[e].split('.');
+            parts.pop();
+            if (parts.length > 2) {
+                const id = parts.join('.');
+                if (roots[id] === undefined) {
+                    roots[id] = {
+                        expanded: (typeof localStorage !== 'undefined' && localStorage.getItem(id) === '1'),
+                        tiles: objects[id] && objects[id].common && objects[id].common.members && objects[id].common.members.length
+                    };
+
+                    if (this.props.viewEnum && this.props.viewEnum.substring(0, id.length) === id) {
+                        roots[id].expanded = true;
+                    }
+                }
+            }
+        }
+
+        enums.sort();
+        return {enums, roots};
     }
 
     fillVisibility(root, objects, editMode) {
         objects = objects || this.props.objects;
         editMode = (editMode === undefined) ? this.props.editMode : editMode;
+
+        // first take elements of enum
         let items = this.getElementsToShow('enum', objects, editMode);
         let changed = false;
         const visibility = {};
+
         items.forEach(function (e) {
             visibility[e.id] = !(e.settings.enabled === false);
             if (this.state && this.state.visibility[e.id] !== visibility[e.id]) {
                 changed = true;
             }
         }.bind(this));
-        items = this.getElementsToShow(root, objects, editMode);
-        items.forEach(function (e) {
-            visibility[e.id] = !(e.settings.enabled === false);
-            if (this.state && this.state.visibility[e.id] !== visibility[e.id]) {
-                changed = true;
-            }
-        }.bind(this));
+
+        if (root !== 'enum') {
+            items = this.getElementsToShow(root, objects, editMode);
+
+            items.forEach(function (e) {
+                visibility[e.id] = !(e.settings.enabled === false);
+                if (this.state && this.state.visibility[e.id] !== visibility[e.id]) {
+                    changed = true;
+                }
+            }.bind(this));
+        }
 
         return {changed, visibility};
     }
@@ -122,9 +182,13 @@ class MenuList extends Component {
             wasChanged = true;
         }
         if (nextProps.objects) {
+            const {enums, roots} = this.fillEnums(this.props.objects);
+            this.enums = enums;
             const {changed, visibility} = this.fillVisibility(nextProps.root, nextProps.objects, nextProps.editMode);
-            if (changed) {
+
+            if (changed || JSON.stringify(roots) !== this.state.roots) {
                 wasChanged = true;
+                newState.roots = roots;
                 newState.visibility = visibility;
             }
         }
@@ -142,7 +206,7 @@ class MenuList extends Component {
                     let settings = this.settings[item.id];
 
                     if (!settings || this.props.objects) {
-                        this.settings[item.id] = Utils.getSettings(this.props.objects[item.id], {user: this.props.user, language: this.props.language}, true);
+                        this.settings[item.id] = Utils.getSettings(this.props.objects[item.id], {user: this.props.user, language: this.props.language, id: item.id}, true);
                         settings = this.settings[item.id];
                     }
 
@@ -224,21 +288,24 @@ class MenuList extends Component {
     getElementsToShow(root, _objects, editMode) {
         root = root || this.props.root;
 
+        // special case: instances
         if (root === Utils.INSTANCES) {
             root = 'enum.rooms';
         }
 
         editMode = (editMode === undefined) ? this.props.editMode : editMode;
+
         let objects = _objects || this.props.objects;
         let items     = [];
         let reg       = root ? new RegExp('^' + root + '\\.') : new RegExp('^[^.]$');
         let rootParts = root.split('.');
 
-        for (let id in objects) {
-            if (objects.hasOwnProperty(id) && reg.test(id)) {
+        for (let i = 0; i < this.enums.length; i++) {
+            let id = this.enums[i];
+            if (reg.test(id)) {
                 let settings = this.settings[id];
                 if (!settings || _objects) {
-                    this.settings[id] = Utils.getSettings(objects[id], {user: this.props.user, language: this.props.language}, true);
+                    this.settings[id] = Utils.getSettings(objects[id], {user: this.props.user, language: this.props.language, id}, true);
                     settings = this.settings[id];
                 }
 
@@ -263,6 +330,7 @@ class MenuList extends Component {
 
     onToggleEnabled(e, id) {
         e && e.stopPropagation();
+
         const visibility = {};
         for (const id in this.state.visibility) {
             if (this.state.visibility.hasOwnProperty(id)) {
@@ -272,7 +340,7 @@ class MenuList extends Component {
         visibility[id] = !visibility[id];
         let settings = this.settings[id];
         if (!settings) {
-            this.settings[id] = Utils.getSettings(this.props.objects[id], {user: this.props.user, language: this.props.language}, true);
+            this.settings[id] = Utils.getSettings(this.props.objects[id], {user: this.props.user, language: this.props.language, id}, true);
             settings = this.settings[id];
         }
 
@@ -281,22 +349,25 @@ class MenuList extends Component {
         this.setState({visibility});
     }
 
-    getListItems(items) {
+    getListItems(items, level) {
+        level = level || 0;
+
         if (!items) {
             items = this.getElementsToShow();
         } else
         if (typeof items !== 'object') {
             items = this.getElementsToShow(items);
         }
+
         const icons = items.map(e => Utils.getIcon(e.settings, Theme.menuIcon));
         const anyIcons = !!icons.find(icon => icon);
 
         return items.map(function (item, i) {
             const icon = icons[i];
-            const children = this.getListItems(item.id);
+            const children = this.getListItems(item.id, level + 1);
 
             if (!this.settings[item.id]) {
-                this.settings[item.id] = Utils.getSettings(this.props.objects[item.id], {user: this.props.user, language: this.props.language}, true);
+                this.settings[item.id] = Utils.getSettings(this.props.objects[item.id], {user: this.props.user, language: this.props.language, id: item.id}, true);
             }
 
             if (!this.props.editMode && !this.settings[item.id].enabled) return;
@@ -306,36 +377,64 @@ class MenuList extends Component {
                 visible={this.state.visibility[item.id]}
                 onChange={() => this.onToggleEnabled(null, item.id)}/> : null;
 
-            return [(<ListItem
-                    style={{opacity: this.props.editMode && !this.state.visibility[item.id] ? 0.5 : 1}}
+            const style = {opacity: this.props.editMode && !this.state.visibility[item.id] ? 0.5 : 1};
+            style.marginLeft = 16 * level;
+            const expanded = this.state.roots[item.id] && this.state.roots[item.id].expanded;
+
+            return [
+                (<ListItem
+                    style={style}
                     button
-                    className={this.props.selectedId === item.id ? 'menu-selected' : ''}
+                    className={this.props.viewEnum === item.id ? 'menu-selected' : ''}
                     key={item.id}
                     onClick={el => this.onSelected(item.id, el)}
                 >
                     {icon ? (<ListItemIcon>{icon}</ListItemIcon>) : (anyIcons ? (<div style={{width: Theme.menuIcon.height + 1}}>&nbsp;</div>) : null)}
                     <ListItemText primary={item.settings.name}/>
                     {visibilityButton}
-                    {children && children.length ? (MenuList.isOpened(this.props.selectedId, item.id) ? <ExpandLess /> : <ExpandMore />) : ''}
+                    {children && children.length ? (expanded ? <ExpandLess onClick={e => this.onExpandMenu(e, item.id)}/> : <ExpandMore  onClick={e => this.onExpandMenu(e, item.id)} />) : ''}
                 </ListItem>),
-                children && children.length ? (<Collapse key={'sub_' + item.id} in={MenuList.isOpened(this.props.selectedId, item.id)} timeout="auto" unmountOnExit>
-                    <List component="div" disablePadding>
-                        {children}
-                    </List>
-                </Collapse>) : null
+
+                children && children.length ?
+                    (<Collapse key={'sub_' + item.id} in={expanded} timeout="auto" unmountOnExit>
+                        <List component="div" disablePadding>
+                            {children}
+                        </List>
+                    </Collapse>) : null
             ]
         }.bind(this));
     }
 
+    expandMenu(id, expanded) {
+        const roots = JSON.parse(JSON.stringify(this.state.roots));
+        roots[id].expanded = expanded;
+        this.setState({roots});
+        if (typeof localStorage !== 'undefined') {
+            localStorage.setItem(id, expanded ? '1' : '0');
+        }
+    }
+
     onSelected(id, el) {
+        if (this.state.roots[id] && !this.state.roots[id].tiles) {
+            this.expandMenu(id, !this.state.roots[id].expanded);
+        } else if (this.state.roots[id] && this.state.roots[id].tiles) {
+            this.props.onSelectedItemChanged && this.props.onSelectedItemChanged(id);
+        } else
         if (this.props.objects[id] || id === Utils.INSTANCES) {
             this.props.onSelectedItemChanged && this.props.onSelectedItemChanged(id);
         }
     }
 
+    onExpandMenu(e, id) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        this.expandMenu(id, !this.state.roots[id].expanded);
+    }
+
     getSelectedItem(items) {
-        if (this.props.selectedId) {
-            return this.props.selectedId;
+        if (this.props.viewEnum) {
+            return this.props.viewEnum;
         }
         items = items || this.getElementsToShow();
         return items[0].id || '';
@@ -353,11 +452,13 @@ class MenuList extends Component {
             if (this.state.instances && (this.props.root === 'enum.rooms' || this.props.root === Utils.INSTANCES)) {
                 list.push((<ListItem
                     button
-                    className={this.props.selectedId === Utils.INSTANCES ? 'menu-selected' : ''}
+                    className={this.props.viewEnum === Utils.INSTANCES ? 'menu-selected' : ''}
                     key={Utils.INSTANCES}
                     onClick={el => this.onSelected(Utils.INSTANCES, el)}
                 >
-                    <ListItemIcon><IconInstances style={Object.assign({}, Theme.menuIcon, {color: '#008000'})}/></ListItemIcon>
+                    <ListItemIcon>
+                        <IconInstances style={Object.assign({}, Theme.menuIcon, {color: '#008000'})}/>
+                    </ListItemIcon>
                     <ListItemText primary={I18n.t('Instances')}/>
                 </ListItem>));
             }

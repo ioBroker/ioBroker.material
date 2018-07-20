@@ -50,7 +50,6 @@ import LoadingIndicator from './basic-controls/react-loading-screen/LoadingIndic
 
 const isKeyboardAvailableOnFullScreen = (typeof Element !== 'undefined' && 'ALLOW_KEYBOARD_INPUT' in Element) && Element.ALLOW_KEYBOARD_INPUT;
 
-const text2CommandInstance = 0;
 const appConfigID = 'system.adapter.material.0';
 
 const styles = () => (Theme.classes);
@@ -214,7 +213,9 @@ class App extends Component {
                                 this.setState({loading: false});
                             }
 
-                            this.conn.subscribe(['text2command.' + text2CommandInstance + '.response']);
+                            if (this.state.appSettings.text2command || this.state.appSettings.text2command === 0) {
+                                this.conn.subscribe(['text2command.' + this.state.appSettings.text2command + '.response']);
+                            }
 
                             if (appSettings.instances) {
                                 this.conn._socket.emit('subscribeObjects', 'system.adapter.*');
@@ -272,8 +273,10 @@ class App extends Component {
                         this.subscribes[id].forEach(elem => elem.updateState(id, this.states[id]));
                     }
 
-                    if (state && !state.ack && state.val && id === 'text2command.' + text2CommandInstance + '.response') {
-                        this.speak(state.val);
+                    if (this.state.appSettings.text2command || this.state.appSettings.text2command === 0) {
+                        if (state && !state.ack && state.val && id === 'text2command.' + this.state.appSettings.text2command + '.response') {
+                            this.speak(state.val);
+                        }
                     }
                 }, 0);
             }.bind(this),
@@ -611,7 +614,7 @@ class App extends Component {
     }
 
     onSpeechRec(text) {
-        this.conn.setState('text2command.' + text2CommandInstance + '.text', text);
+        this.conn.setState('text2command.' + this.state.appSettings.text2command + '.text', text);
     }
 
     speak(text) {
@@ -665,7 +668,13 @@ class App extends Component {
     }
 
     editAppSettingsOpen() {
-        this.setState({editAppSettings: true});
+        if (!this.state.appSettings.instances) {
+            this.readInstancesData(true, function () {
+                this.setState({editAppSettings: true});
+            });
+        } else {
+            this.setState({editAppSettings: true});
+        }
     }
 
     editAppSettingsClose() {
@@ -770,6 +779,18 @@ class App extends Component {
             name: 'instances',
             value: this.state.appSettings.instances === undefined ? true : this.state.appSettings.instances,
             type: 'boolean'
+        });
+
+        const text2command = Object.keys(this.instances)
+            .filter(id => id.startsWith('system.adapter.text2command.'))
+            .map(id => id.substring('system.adapter.text2command.'.length));
+        text2command.unshift({label: I18n.t('disabled'), value: ''});
+
+        settings.push({
+            name: 'text2command',
+            value: this.state.appSettings.text2command || text2command[0] || '',
+            options: text2command,
+            type: 'select'
         });
 
         settings.push({
@@ -949,7 +970,7 @@ class App extends Component {
                 instances={this.state.appSettings && this.state.appSettings.instances}
                 background={this.state.appSettings && this.state.appSettings.menuBackground}
                 language={I18n.getLanguage()}
-                selectedId={this.state.viewEnum}
+                viewEnum={this.state.viewEnum}
                 editMode={this.state.editMode}
                 root={this.state.masterPath}
                 onSaveSettings={this.onSaveSettings.bind(this)}
@@ -959,10 +980,61 @@ class App extends Component {
         </Drawer>);
     }
 
+    getButtonFullScreen() {
+        if (App.isFullScreenSupported()) {
+            return (
+                <IconButton
+                    style={{color: Theme.palette.textColor}}
+                    onClick={this.onToggleFullScreen.bind(this)}>
+                    {this.state.fullScreen ?
+                        <IconFullScreenExit width={Theme.iconSize} height={Theme.iconSize} /> :
+                        <IconFullScreen width={Theme.iconSize} height={Theme.iconSize} />
+                    }
+                </IconButton>);
+        } else {
+            return null;
+        }
+    }
+
+    getButtonSpeech() {
+        if (this.state.connected &&
+            (this.state.appSettings.text2command || this.state.appSettings.text2command === 0) &&
+            SpeechDialog.isSpeechRecognitionSupported()) {
+            return (
+                <IconButton
+                    style={{color: Theme.palette.textColor}}
+                    onClick={() => this.onSpeech(true)}>
+                    <IconMic width={Theme.iconSize} height={Theme.iconSize}/>
+                </IconButton>);
+        } else {
+            return null;
+        }
+    }
+
+    getButtonVersion() {
+        if (this.state.connected && this.state.editMode) {
+            return (
+                <IconButton
+                    onClick={this.editEnumSettingsOpen.bind(this)}
+                    style={{color: this.state.editEnumSettings ? Theme.palette.editActive: Theme.palette.textColor}}>
+                    <IconSettings width={Theme.iconSize} height={Theme.iconSize}/>
+                </IconButton>);
+        } else {
+            return null;
+        }
+    }
+    getButtonSignal() {
+        if (this.state.connected) return null;
+        return (
+            <IconButton disabled={true}>
+                <IconSignalOff width={Theme.iconSize} height={Theme.iconSize}/>
+            </IconButton>
+        );
+    }
+
     getAppBar() {
         const toolbarBackground = this.state.settings ? this.state.settings.color : undefined;
         const notInvertColor = !toolbarBackground || Utils.invertColor(toolbarBackground);
-        const connected = this.state.connected;
 
         return (<AppBar
             position="fixed"
@@ -983,12 +1055,11 @@ class App extends Component {
                 </Typography>
                 <div style={{color: Theme.palette.textColor, whiteSpace: 'nowrap'}}>
                     {this.getVersionControl()}
-                    {connected ? null : (<IconButton disabled={true}><IconSignalOff width={Theme.iconSize} height={Theme.iconSize}/></IconButton>)}
-                    {connected && this.state.editMode ? (<IconButton onClick={this.editEnumSettingsOpen.bind(this)} style={{color: this.state.editEnumSettings ? Theme.palette.editActive: Theme.palette.textColor}}><IconSettings width={Theme.iconSize} height={Theme.iconSize}/></IconButton>) : null}
+                    {this.getButtonSignal()}
+                    {this.getButtonVersion()}
                     {this.getEditButton()}
-                    {connected && SpeechDialog.isSpeechRecognitionSupported() ? <IconButton style={{color: Theme.palette.textColor}} onClick={() => this.onSpeech(true)}><IconMic width={Theme.iconSize} height={Theme.iconSize}/></IconButton> : null}
-                    {App.isFullScreenSupported() ?
-                        <IconButton style={{color: Theme.palette.textColor}} onClick={this.onToggleFullScreen.bind(this)}>{this.state.fullScreen ? <IconFullScreenExit width={Theme.iconSize} height={Theme.iconSize} /> : <IconFullScreen width={Theme.iconSize} height={Theme.iconSize} />}</IconButton> : null}
+                    {this.getButtonSpeech()}
+                    {this.getButtonFullScreen()}
                 </div>
                 {this.state.editEnumSettings ? (<DialogSettings key={'enum-settings'}
                                                                 name={this.getTitle()}
@@ -1052,14 +1123,18 @@ class App extends Component {
     }
 
     getSpeechDialog() {
-        return (SpeechDialog.isSpeechRecognitionSupported() ?
-            <SpeechDialog
-                objects={this.objects}
-                isShow={this.state.isListening}
-                locale={this.getLocale()}
-                onSpeech={this.onSpeechRec.bind(this)}
-                onFinished={() => this.onSpeech(false)}
-            /> : null);
+        if (this.state.appSettings.text2command || this.state.appSettings.text2command === 0) {
+            return (SpeechDialog.isSpeechRecognitionSupported() ?
+                <SpeechDialog
+                    objects={this.objects}
+                    isShow={this.state.isListening}
+                    locale={this.getLocale()}
+                    onSpeech={this.onSpeechRec.bind(this)}
+                    onFinished={() => this.onSpeech(false)}
+                /> : null);
+        } else {
+            return null;
+        }
     }
 
     getLoadingScreen() {

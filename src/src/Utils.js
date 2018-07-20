@@ -71,7 +71,7 @@ class Utils {
             settings = obj.common.custom || {};
             settings = settings[NAMESPACE] && settings[NAMESPACE][options.user || 'admin'] ? JSON.parse(JSON.stringify(settings[NAMESPACE][options.user || 'admin'])) : {enabled: true};
         } else {
-            settings = {enabled: defaultEnabling === undefined ? true : defaultEnabling, useCustom: false};
+            settings = {enabled: defaultEnabling === undefined ? true : defaultEnabling, useCustom: false, name: options.id && Utils.CapitalWords(options.id.split('.').pop())};
         }
 
         if (!settings.hasOwnProperty('enabled')) {
@@ -114,6 +114,7 @@ class Utils {
 
         return settings;
     }
+
     static setSettings(obj, settings, options) {
         if (obj) {
             obj.common = obj.common || {};
