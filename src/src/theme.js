@@ -398,7 +398,7 @@ export default {
                 background: 'rgba(200,200,200,0.8)',
                 color: 'white',
                 borderRadius: '0 ' + tileBorderRadius + ' ' + tileBorderRadius + ' 0',
-                zIndex: 1,
+                zIndex: 3,
                 cursor: 'pointer'
             },
             editIcon: {
@@ -410,7 +410,7 @@ export default {
                 background: 'rgba(200,200,200,0.8)',
                 color: 'white',
                 borderRadius: tileBorderRadius + ' 0 0 ' + tileBorderRadius,
-                zIndex: 1,
+                zIndex: 3,
                 cursor: 'pointer'
             },
             removeIcon: {
@@ -422,7 +422,7 @@ export default {
                 background: 'rgba(80,80,80,0.8)',
                 color: 'gray',
                 borderRadius: tileBorderRadius,
-                zIndex: 1
+                zIndex: 3
             },
             buttonIcon: {
                 paddingTop: '100%'

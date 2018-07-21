@@ -42,7 +42,7 @@ const BoolControl = ({classes, label, value, onChange, language, icon}) => {
         <Switch
             className={classes.floatRight}
             style={{float: 'right'}}
-            checked={value && value.val}
+            checked={value && typeof value === 'object' ? value.val : !!value}
             disabled={!onChange}
             onChange={() => onChange && onChange()}
         />

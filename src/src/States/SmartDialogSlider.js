@@ -110,7 +110,7 @@ class SmartDialogSlider extends SmartDialogGeneric  {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.startValue !== this.state.value) {
+        if (nextProps.startValue !== this.state.value && !this.mouseDown) {
             this.setState({value: nextProps.startValue});
         }
         if (nextProps.startToggleValue !== undefined && nextProps.startToggleValue !== this.state.toggleValue) {

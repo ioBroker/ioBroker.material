@@ -66,21 +66,14 @@ class SmartDialogKnob extends SmartDialogGeneric  {
         this.stateRx.value     = this.externalValue2localValue(this.props.startValue || 0);
         this.stateRx.muteValue = this.props.startMuteValue || false;
 
-        this.refSlider = React.createRef();
-
-        this.button = {
-            time: 0,
-            name: '',
-            timer: null,
-            timeUp: 0
-        };
-        this.dialogStyle = {
+        this.dialogStyle = { // used in generic
             background: 'rgba(136,136,136,0.8)',
             maxHeight: 412,
             minHeight: 280,
         };
 
         this.closeOnPaperClick = true; // used in generic
+
         this.componentReady();
     }
 
@@ -92,20 +85,6 @@ class SmartDialogKnob extends SmartDialogGeneric  {
             this.setState({muteValue: nextProps.startMuteValue});
         }
     }
-
-    eventToValue(e) {
-        const pageY = e.touches ? e.touches[e.touches.length - 1].clientY : e.clientY;
-
-        let value = 100 - Math.round((pageY - this.top) / this.height * 100);
-
-        if (value > 100) {
-            value = 100;
-        } else if (value < 0) {
-            value = 0;
-        }
-        this.setState({value});
-    }
-
 
     localValue2externalValue(value) {
         if (this.props.min !== undefined && this.props.max !== undefined) {

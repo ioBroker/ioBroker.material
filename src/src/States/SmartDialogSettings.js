@@ -124,7 +124,7 @@ class SmartDialogSettings extends SmartDialogGeneric  {
     handleToggle(name, ev) {
         const newValue = {values: JSON.parse(JSON.stringify(this.state.values))};
         this.click = Date.now();
-        newValue.values[name] = ev.target.checked;
+        newValue.values[name] = ev ? ev.target.checked : !this.state.values[name];
         newValue.changed = this.isChanged(name, newValue.values[name]);
         this.setState(newValue);
     }
@@ -178,7 +178,7 @@ class SmartDialogSettings extends SmartDialogGeneric  {
                 item = (<BoolControl
                             key={this.props.dialogKey + '-' + e.name + '-bool'}
                             label={I18n.t(e.name)}
-                            onChange={color => this.handleValue(e.name, color)}
+                            onChange={() => this.handleToggle(e.name)}
                             language={this.props.language}
                             value={this.state.values[e.name] || false}
                         />);

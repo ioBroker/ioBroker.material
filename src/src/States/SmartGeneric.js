@@ -489,6 +489,7 @@ class SmartGeneric extends Component {
             value: this.state.settings.icon || '',
             type: 'icon'
         });
+        // If colors for on and for off
         if (this.doubleState) {
             settings.unshift({
                 name: 'colorOff',

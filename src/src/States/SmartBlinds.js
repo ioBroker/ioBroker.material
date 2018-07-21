@@ -20,6 +20,18 @@ import Icon from '../icons/Jalousie'
 import Theme from '../theme';
 import Dialog from './SmartDialogSlider';
 
+const styles = {
+    overlap: {
+        zIndex: 2,
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        opacity: 0.8,
+        background: '#FFF',
+        width: '100%'
+    }
+};
+
 class SmartBlinds extends SmartGeneric {
     // props = {
     //    objects: OBJECT
@@ -58,16 +70,18 @@ class SmartBlinds extends SmartGeneric {
             }
             this.min = parseFloat(this.min);
 
-            this.props.tile.setState({isPointer: true});
         }
         this.props.tile.setState({state: true});
 
         this.stateRx.showDialog = false; // support dialog in this tile used in generic class)
         this.stateRx.setValue = null;
         this.key = 'smart-blinds-' + this.id + '-';
-        this.doubleState = true; // used in generic
+        this.doubleState = true; // used in generic: If colors for on and for off
 
         this.componentReady();
+        if (this.state.settings.toggleOnClick) {
+            this.props.tile.setState({isPointer: true});
+        }
     }
 
     realValueToPercent(val) {
@@ -135,14 +149,16 @@ class SmartBlinds extends SmartGeneric {
     }
 
     onToggleValue() {
-        let newValue;
-        const percent = this.realValueToPercent();
-        if (percent) {
-            newValue = 0;
-        } else {
-            newValue = 100;
+        if (this.state.settings.toggleOnClick) {
+            let newValue;
+            const percent = this.realValueToPercent();
+            if (percent) {
+                newValue = 0;
+            } else {
+                newValue = 100;
+            }
+            this.setValue(newValue);
         }
-        this.setValue(newValue);
     }
 
     getIcon() {
@@ -150,18 +166,7 @@ class SmartBlinds extends SmartGeneric {
             <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, /*this.state[this.actualId] !== this.min ? {color: Theme.palette.lampOn} : */{}, {left: '1em'})} className="tile-icon">
                 <Icon width={'100%'} height={'100%'} style={{zIndex: 1}}/>
                 {this.state.executing ? <CircularProgress style={{zIndex: 3, position: 'absolute', top: 0, left: 0}} size={Theme.tile.tileIcon.width}/> : null}
-                <div style={{
-                    zIndex: 2,
-                    position: 'absolute',
-                    bottom: 0,
-                    left: 0,
-                    opacity: 0.9,
-                    background: '#FFF',
-                    width: '100%',
-                    height: this.realValueToPercent(this.state[this.id]) + '%'
-                }}>
-
-                </div>
+                <div style={Object.assign({}, styles.overlap, {height: this.realValueToPercent(this.state[this.id]) + '%'})} />
             </div>
         );
     }
@@ -174,7 +179,19 @@ class SmartBlinds extends SmartGeneric {
             value: this.state.settings.inverted || false,
             type: 'boolean'
         });
+
+        settings.unshift({
+            name: 'toggleOnClick',
+            value: this.state.settings.toggleOnClick || false,
+            type: 'boolean'
+        });
+
         return settings;
+    }
+
+    saveDialogSettings (settings) {
+        this.props.tile.setState({isPointer: settings.toggleOnClick});
+        super.saveDialogSettings(settings);
     }
 
     getStateText() {
@@ -202,6 +219,7 @@ class SmartBlinds extends SmartGeneric {
                 <Dialog key={this.key + 'dialog'}
                         startValue={this.realValueToPercent()}
                         onValueChange={this.setValue.bind(this)}
+                        windowWidth={this.props.windowWidth}
                         inverted={this.state.settings.inverted}
                         onStop={this.stopId ? this.onStop.bind(this) : null}
                         onClose={this.onDialogClose.bind(this)}

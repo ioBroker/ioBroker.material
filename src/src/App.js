@@ -669,7 +669,7 @@ class App extends Component {
 
     editAppSettingsOpen() {
         if (!this.state.appSettings.instances) {
-            this.readInstancesData(true, function () {
+            this.readInstancesData(true, () => {
                 this.setState({editAppSettings: true});
             });
         } else {
@@ -906,8 +906,8 @@ class App extends Component {
     getVersionControl() {
         if (!this.state.editMode) return null;
         if (this.state.actualVersion && this.state.actualVersion !== version) {
-            return (<Button onClick={() => this.onUpdateVersion()} variant="contained" size="small" color="secondary">
-                <IconRefresh style={{marginRight: 5}}/> {I18n.t('Update to')} {this.state.actualVersion}
+            return (<Button onClick={() => this.onUpdateVersion()} variant="contained" size="small" title={I18n.t('Update to') + ' ' + this.state.actualVersion} color="secondary">
+                <IconRefresh style={{marginRight: 5}}/> {parseFloat(this.state.width) > 500 ? I18n.t('Update to') + ' ' + this.state.actualVersion : ''}
             </Button>);
         } else {
             return (<span onClick={() => this.onUpdateVersion()}>{version}</span>);
@@ -1011,7 +1011,7 @@ class App extends Component {
         }
     }
 
-    getButtonVersion() {
+    getButtonEditSettings() {
         if (this.state.connected && this.state.editMode) {
             return (
                 <IconButton
@@ -1023,6 +1023,7 @@ class App extends Component {
             return null;
         }
     }
+    
     getButtonSignal() {
         if (this.state.connected) return null;
         return (
@@ -1056,7 +1057,7 @@ class App extends Component {
                 <div style={{color: Theme.palette.textColor, whiteSpace: 'nowrap'}}>
                     {this.getVersionControl()}
                     {this.getButtonSignal()}
-                    {this.getButtonVersion()}
+                    {this.getButtonEditSettings()}
                     {this.getEditButton()}
                     {this.getButtonSpeech()}
                     {this.getButtonFullScreen()}
