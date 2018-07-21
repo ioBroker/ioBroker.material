@@ -1,8 +1,19 @@
 {
     "common": {
         "name": "material",
-        "version": "0.9.1",
+        "version": "0.9.2",
         "news": {
+            "0.9.2": {
+                "en": "Update logic was implemented",
+                "de": "Update-Logik wurde implementiert",
+                "ru": "Была реализована логика обновления",
+                "pt": "A lógica de atualização foi implementada",
+                "nl": "Update logica is geïmplementeerd",
+                "fr": "La mise à jour a été implémentée",
+                "it": "La logica di aggiornamento è stata implementata",
+                "es": "Se implementó la lógica de actualización",
+                "pl": "Zaktualizowana logika została zaimplementowana"
+            },
             "0.9.1": {
                 "en": "Volume control was implemented",
                 "de": "Lautstärkeregelung wurde implementiert",
@@ -64,7 +75,6 @@
         "platform":                 "javascript/Node.js",
         "onlyWWW":                  "true",
         "loglevel":                 "info",
-        "dependencies":             ["web"],
         "icon":                     "material.png",
         "enabled":                  true,
         "extIcon":                  "https://raw.githubusercontent.com/ioBroker/ioBroker.material/master/admin/material.png",
@@ -79,10 +89,17 @@
         "authors": [
             "bluefox <dogafox@gmail.com>"
         ],
+        "dependencies": [
+            {
+                "web": ">=2.4.1"
+            }
+        ],
         "localLink":                "%web_protocol%://%ip%:%web_port%/material/index.html",
         "type":                     "visualization",
         "license":                  "CC-BY-NC",
         "noConfig":                 true,
+        "eraseOnUpload":            true,
+        "webByVersion":             true,
 		"welcomeScreen": 			{"link": "material/index.html", "name": "material", "img": "material.admin/material.png", "color": "black", "order": 2}
     },
     "native": {

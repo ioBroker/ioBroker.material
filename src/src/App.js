@@ -40,7 +40,7 @@ import IconRefresh from 'react-icons/lib/md/refresh';
 
 import Theme from './theme';
 import I18n from './i18n';
-import version from './version';
+import VERSION from './version';
 import Utils from './Utils';
 import MenuList from './MenuList';
 import StatesList from './StatesList';
@@ -101,6 +101,14 @@ class App extends Component {
         this.requestStates = [];
         this.conn = window.servConn;
         this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
+
+        this.urlVersion = App.getUrlVersion();
+    }
+
+    static getUrlVersion() {
+        let url = window.document.location.pathname;
+        let m = url.match(/material\/(\d+\.\d+\.\d+)\//);
+        return m && m[1];
     }
 
     showError(err) {
@@ -892,25 +900,25 @@ class App extends Component {
     }
 
     onUpdateVersion() {
-        if (window.noServiceWorker) {
-            this.showError(I18n.t('Please erase cache manually.'));
-        } else
-        if ('serviceWorker' in navigator) {
+        const newLocation = this.urlVersion ? '../' + this.state.actualVersion + '/' : this.state.actualVersion + '/';
+        console.log('redirect to ' + newLocation);
+        if (!window.noServiceWorker && 'serviceWorker' in navigator) {
             navigator.serviceWorker.ready.then(registration => {
                 registration.update();
-                setTimeout(() => document.location.reload(), 1000);
+                setTimeout(() => document.location = newLocation, 500);
             });
         }
+        setTimeout(() => document.location = newLocation, 2000);
     }
 
     getVersionControl() {
         if (!this.state.editMode) return null;
-        if (this.state.actualVersion && this.state.actualVersion !== version) {
+        if (this.state.actualVersion && (this.state.actualVersion !== VERSION || (this.urlVersion && this.state.actualVersion !== this.urlVersion))) {
             return (<Button onClick={() => this.onUpdateVersion()} variant="contained" size="small" title={I18n.t('Update to') + ' ' + this.state.actualVersion} color="secondary">
                 <IconRefresh style={{marginRight: 5}}/> {parseFloat(this.state.width) > 500 ? I18n.t('Update to') + ' ' + this.state.actualVersion : ''}
             </Button>);
         } else {
-            return (<span onClick={() => this.onUpdateVersion()}>{version}</span>);
+            return (<span onClick={() => this.onUpdateVersion()}>{VERSION}</span>);
         }
     }
 
@@ -920,7 +928,7 @@ class App extends Component {
         let style;
         if (this.state.editMode) {
             style = {color: Theme.palette.editActive};
-        } else if (this.state.actualVersion && this.state.actualVersion !== version) {
+        } else if (this.state.actualVersion && (this.state.actualVersion !== VERSION || (this.urlVersion && this.state.actualVersion !== this.urlVersion))) {
             style = {color: Theme.palette.updateAvailable};
         } else {
             style = {color: Theme.palette.textColor};
