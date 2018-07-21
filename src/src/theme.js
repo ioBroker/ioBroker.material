@@ -224,6 +224,8 @@ export default {
         disabledColor:      fade(fullWhite, 0.3),
         pickerHeaderColor:  fade(fullWhite, 0.12),
         clockCircleColor:   fade(fullWhite, 0.12),*/
+        textColorBright:    'white',
+        textColorDark:      'black',
         updateAvailable:    '#3fff3f',
         editActive:         'red',
         lampOn:             '#ffcc02',

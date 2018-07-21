@@ -94,6 +94,7 @@ class SmartDialogSlider extends SmartDialogGeneric  {
         this.stateRx.toggleValue = this.props.startToggleValue || false;
         this.onMouseMoveBind = this.onMouseMove.bind(this);
         this.onMouseUpBind   = this.onMouseUp.bind(this);
+        this.lastControl = 0;
 
         this.refSlider = React.createRef();
 
@@ -110,7 +111,7 @@ class SmartDialogSlider extends SmartDialogGeneric  {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.startValue !== this.state.value && !this.mouseDown) {
+        if (nextProps.startValue !== this.state.value && !this.mouseDown && Date.now() - this.lastControl > 1000) {
             this.setState({value: nextProps.startValue});
         }
         if (nextProps.startToggleValue !== undefined && nextProps.startToggleValue !== this.state.toggleValue) {
@@ -129,6 +130,10 @@ class SmartDialogSlider extends SmartDialogGeneric  {
             value = 0;
         }
         this.setState({value});
+        if (Date.now() - this.lastControl > 200 && this.type !== SmartDialogSlider.types.blinds) {
+            this.lastControl = Date.now();
+            this.props.onValueChange && this.props.onValueChange(this.localValue2externalValue(this.state.value));
+        }
     }
 
     onMouseMove(e) {
@@ -187,6 +192,7 @@ class SmartDialogSlider extends SmartDialogGeneric  {
         document.removeEventListener('touchmove',   this.onMouseMoveBind,   {passive: false, capture: true});
         document.removeEventListener('touchend',    this.onMouseUpBind,     {passive: false, capture: true});
 
+        this.lastControl = Date.now();
         this.props.onValueChange && this.props.onValueChange(this.localValue2externalValue(this.state.value));
     }
 

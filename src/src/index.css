@@ -61,7 +61,19 @@ body, #root, #root>div{
 *::-webkit-scrollbar-thumb {
   background-color: #575757;
 }
-
+/* ------------------ menu -------------------- */
+.menu-selected-bright span {
+  color: #1c8fe0 !important;
+}
+.menu-selected-dark span {
+  color: #3cc1ff !important;
+}
+.menu-text-bright span {
+  color: white !important;
+}
+.menu-text-dark span {
+  color: black !important;
+}
 
 /* ----------------------- animations --------------------------- */
 @-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }

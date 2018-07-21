@@ -15,6 +15,7 @@
  **/
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import {withStyles} from '@material-ui/core/styles';
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -48,10 +49,24 @@ const styles = {
         verticalAlign: 'top',
         color: 'gray'
     },
+    menuSelectedBright: {
+        color: '#1c8fe0 !important'
+    },
+    menuSelectedDark: {
+        color: '#3cc1ff !important'
+    },
+    menuTextBright: {
+        color: 'white !important'
+    },
+    menuTextDark: {
+        color: 'black !important'
+    }
 };
+const myStyles = () => (styles);
 
 class MenuList extends Component {
     static propTypes = {
+        classes:        PropTypes.object.isRequired,
         objects:        PropTypes.object.isRequired,
         viewEnum:       PropTypes.string,
         editMode:       PropTypes.bool.isRequired,
@@ -217,7 +232,7 @@ class MenuList extends Component {
 
                     const name = settings.name;
                     const visibilityButton = this.props.editMode ? <VisibilityButton visible={this.state.visibility[item.id]} onChange={() => this.onToggleEnabled(null, item.id)}/> : null;
-                    let style = item.id === this.props.root ? styles.iconsSelected : styles.icons;
+                    let style = {};
                     if (this.props.editMode && !this.state.visibility[item.id]) {
                         style = Object.assign({}, style, {opacity: 0.5});
                     }
@@ -225,6 +240,7 @@ class MenuList extends Component {
                     if (item.id === 'enum.rooms') {
                         return (<IconButton
                                     key={item.id}
+                                    className={item.id === this.props.root ? this.props.classes.iconsSelected : this.props.classes.icons}
                                     style={style}
                                     tooltip={name}
                                     onClick={() => this.onRootChanged('enum.rooms')}>
@@ -234,6 +250,7 @@ class MenuList extends Component {
                     } else if (item.id === 'enum.functions') {
                         return (<IconButton
                             key={item.id}
+                            className={item.id === this.props.root ? this.props.classes.iconsSelected : this.props.classes.icons}
                             style={style}
                             tooltip={name}
                             onClick={() => this.onRootChanged('enum.functions')}>
@@ -243,6 +260,7 @@ class MenuList extends Component {
                     } else if (item.id === 'enum.favorites') {
                         return (<IconButton
                             key={item.id}
+                            className={item.id === this.props.root ? this.props.classes.iconsSelected : this.props.classes.icons}
                             style={style}
                             tooltip={name}
                             onClick={() => this.onRootChanged('enum.favorites')}>
@@ -254,6 +272,7 @@ class MenuList extends Component {
 
                         return (<Button
                             variant="outlined"
+                            className={item.id === this.props.root ? this.props.classes.iconsSelected : this.props.classes.icons}
                             style={style}
                             key={item.id}
                             onClick={() => this.onRootChanged(item.id)}>
@@ -365,6 +384,8 @@ class MenuList extends Component {
         const icons = items.map(e => Utils.getIcon(e.settings, Theme.menuIcon));
         const anyIcons = !!icons.find(icon => icon);
 
+        const useBright = Utils.invertColor(this.state.background);
+
         return items.map(function (item, i) {
             const icon = icons[i];
             const children = this.getListItems(item.id, level + 1);
@@ -384,6 +405,7 @@ class MenuList extends Component {
             style.marginLeft = 16 * level;
             const expanded = this.state.roots[item.id] && this.state.roots[item.id].expanded;
 
+
             return [
                 (<ListItem
                     style={style}
@@ -393,7 +415,10 @@ class MenuList extends Component {
                     onClick={el => this.onSelected(item.id, el)}
                 >
                     {icon ? (<ListItemIcon>{icon}</ListItemIcon>) : (anyIcons ? (<div style={{width: Theme.menuIcon.height + 1}}>&nbsp;</div>) : null)}
-                    <ListItemText primary={item.settings.name}/>
+                    <ListItemText classes={{
+                        primary: this.props.viewEnum === item.id ? (useBright ? this.props.classes.menuSelectedBright : this.props.classes.menuSelectedDark) : (useBright ? this.props.classes.menuTextBright : this.props.classes.menuTextDark)
+                    }}
+                        primary={item.settings.name}/>
                     {visibilityButton}
                     {children && children.length ? (expanded ? <ExpandLess onClick={e => this.onExpandMenu(e, item.id)}/> : <ExpandMore  onClick={e => this.onExpandMenu(e, item.id)} />) : ''}
                 </ListItem>),
@@ -447,6 +472,7 @@ class MenuList extends Component {
         let items = this.getElementsToShow();
 
         const style = {width: this.props.width};
+        const useBright = Utils.invertColor(this.state.background);
         if (this.state.background) {
             style.background = this.state.background;
         }
@@ -455,14 +481,15 @@ class MenuList extends Component {
             if (this.state.instances && (this.props.root === 'enum.rooms' || this.props.root === Utils.INSTANCES)) {
                 list.push((<ListItem
                     button
-                    className={this.props.viewEnum === Utils.INSTANCES ? 'menu-selected' : ''}
                     key={Utils.INSTANCES}
                     onClick={el => this.onSelected(Utils.INSTANCES, el)}
                 >
                     <ListItemIcon>
                         <IconInstances style={Object.assign({}, Theme.menuIcon, {color: '#008000'})}/>
                     </ListItemIcon>
-                    <ListItemText primary={I18n.t('Instances')}/>
+                    <ListItemText classes={{
+                        primary: this.props.viewEnum === Utils.INSTANCES ? (useBright ? this.props.classes.menuSelectedBright : this.props.classes.menuSelectedDark) : (useBright ? this.props.classes.menuTextBright : this.props.classes.menuTextDark)
+                    }} primary={I18n.t('Instances')}/>
                 </ListItem>));
             }
 
@@ -489,5 +516,4 @@ class MenuList extends Component {
         }
     }
 }
-
-export default MenuList;
+export default withStyles(myStyles)(MenuList);

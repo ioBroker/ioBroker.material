@@ -796,7 +796,7 @@ class App extends Component {
 
         settings.push({
             name: 'text2command',
-            value: this.state.appSettings.text2command || text2command[0] || '',
+            value: this.state.appSettings.text2command || text2command[0].value || '',
             options: text2command,
             type: 'select'
         });
@@ -922,7 +922,7 @@ class App extends Component {
         }
     }
 
-    getEditButton() {
+    getEditButton(useBright) {
         if (!this.state.connected) return null;
 
         let style;
@@ -931,7 +931,7 @@ class App extends Component {
         } else if (this.state.actualVersion && (this.state.actualVersion !== VERSION || (this.urlVersion && this.state.actualVersion !== this.urlVersion))) {
             style = {color: Theme.palette.updateAvailable};
         } else {
-            style = {color: Theme.palette.textColor};
+            style = {color: useBright ? Theme.palette.textColorBright : Theme.palette.textColorDark};
         }
 
         return (
@@ -943,7 +943,7 @@ class App extends Component {
         );
     }
 
-    getMenu() {
+    getMenu(useBright) {
         return (<Drawer
             variant={this.state.menuFixed ? 'permanent' : 'temporary'}
             open={this.state.open}
@@ -954,17 +954,17 @@ class App extends Component {
                 background: (this.state.appSettings && this.state.appSettings.menuBackground) || 'white'
             }}>
             <Toolbar style={this.state.appSettings && this.state.appSettings.menuBackground ? {background: this.state.appSettings.menuBackground} : {}}>
-                <IconButton onClick={this.onToggleMenu.bind(this)} style={{color: Theme.palette.textColor}}>
+                <IconButton onClick={this.onToggleMenu.bind(this)} style={{color: useBright ? Theme.palette.textColorBright : Theme.palette.textColorDark}}>
                     <IconClose width={Theme.iconSize} height={Theme.iconSize} />
                 </IconButton>
 
-                {this.state.connected && this.state.editMode ? (<IconButton onClick={this.editAppSettingsOpen.bind(this)} style={{color: this.state.editEnumSettings ? Theme.palette.editActive: Theme.palette.textColor}}><IconSettings width={Theme.iconSize} height={Theme.iconSize}/></IconButton>) : null}
+                {this.state.connected && this.state.editMode ? (<IconButton onClick={this.editAppSettingsOpen.bind(this)} style={{color: this.state.editEnumSettings ? Theme.palette.editActive : (useBright ? Theme.palette.textColorBright : Theme.palette.textColorDark)}}><IconSettings width={Theme.iconSize} height={Theme.iconSize}/></IconButton>) : null}
 
                 <div style={{flex: 1}}>
                 </div>
 
                 {this.state.width > 500 && !this.state.menuFixed ?
-                    (<IconButton onClick={this.onToggleLock.bind(this)} style={{float: 'right', color: Theme.palette.textColor}}>
+                    (<IconButton onClick={this.onToggleLock.bind(this)} style={{float: 'right', color: useBright ? Theme.palette.textColorBright : Theme.palette.textColorDark}}>
                         <IconLock width={Theme.iconSize} height={Theme.iconSize}/>
                     </IconButton>)
                     : null
@@ -988,11 +988,11 @@ class App extends Component {
         </Drawer>);
     }
 
-    getButtonFullScreen() {
+    getButtonFullScreen(useBright) {
         if (App.isFullScreenSupported()) {
             return (
                 <IconButton
-                    style={{color: Theme.palette.textColor}}
+                    style={{color: useBright ? Theme.palette.textColorBright : Theme.palette.textColorDark}}
                     onClick={this.onToggleFullScreen.bind(this)}>
                     {this.state.fullScreen ?
                         <IconFullScreenExit width={Theme.iconSize} height={Theme.iconSize} /> :
@@ -1004,13 +1004,13 @@ class App extends Component {
         }
     }
 
-    getButtonSpeech() {
+    getButtonSpeech(useBright) {
         if (this.state.connected &&
             (this.state.appSettings.text2command || this.state.appSettings.text2command === 0) &&
             SpeechDialog.isSpeechRecognitionSupported()) {
             return (
                 <IconButton
-                    style={{color: Theme.palette.textColor}}
+                    style={{color: useBright ? Theme.palette.textColorBright : Theme.palette.textColorDark}}
                     onClick={() => this.onSpeech(true)}>
                     <IconMic width={Theme.iconSize} height={Theme.iconSize}/>
                 </IconButton>);
@@ -1019,12 +1019,12 @@ class App extends Component {
         }
     }
 
-    getButtonEditSettings() {
+    getButtonEditSettings(useBright) {
         if (this.state.connected && this.state.editMode) {
             return (
                 <IconButton
                     onClick={this.editEnumSettingsOpen.bind(this)}
-                    style={{color: this.state.editEnumSettings ? Theme.palette.editActive: Theme.palette.textColor}}>
+                    style={{color: this.state.editEnumSettings ? Theme.palette.editActive : (useBright ? Theme.palette.textColorBright : Theme.palette.textColorDark)}}>
                     <IconSettings width={Theme.iconSize} height={Theme.iconSize}/>
                 </IconButton>);
         } else {
@@ -1032,10 +1032,10 @@ class App extends Component {
         }
     }
     
-    getButtonSignal() {
+    getButtonSignal(useBright) {
         if (this.state.connected) return null;
         return (
-            <IconButton disabled={true}>
+            <IconButton disabled={true} style={{color: useBright ? Theme.palette.textColorBright : Theme.palette.textColorDark}}>
                 <IconSignalOff width={Theme.iconSize} height={Theme.iconSize}/>
             </IconButton>
         );
@@ -1043,17 +1043,17 @@ class App extends Component {
 
     getAppBar() {
         const toolbarBackground = this.state.settings ? this.state.settings.color : undefined;
-        const notInvertColor = !toolbarBackground || Utils.invertColor(toolbarBackground);
+        const useBright = !toolbarBackground || Utils.invertColor(toolbarBackground);
 
         return (<AppBar
             position="fixed"
             style={{
                 width: this.state.menuFixed ? 'calc(100% - ' +  Theme.menu.width + 'px)' : '100%',
-                color: Theme.palette.textColor,
+                color: useBright ? Theme.palette.textColorBright : Theme.palette.textColorDark,
                 marginLeft: this.state.menuFixed ? Theme.menu.width : 0
             }}
         >
-            <Toolbar style={{background: toolbarBackground, color: notInvertColor ? undefined : 'black'}}>
+            <Toolbar style={{background: toolbarBackground, color: useBright ? Theme.palette.textColorBright : Theme.palette.textColorDark}}>
                 {!this.state.menuFixed &&
                 (<IconButton color="inherit" aria-label="Menu" onClick={this.onToggleMenu.bind(this)} >
                     <IconMenu/>
@@ -1062,13 +1062,13 @@ class App extends Component {
                 <Typography variant="title" color="inherit" style={{flex: 1}}>
                     {this.getTitle()}
                 </Typography>
-                <div style={{color: Theme.palette.textColor, whiteSpace: 'nowrap'}}>
-                    {this.getVersionControl()}
-                    {this.getButtonSignal()}
-                    {this.getButtonEditSettings()}
-                    {this.getEditButton()}
-                    {this.getButtonSpeech()}
-                    {this.getButtonFullScreen()}
+                <div style={{color: useBright ? Theme.palette.textColorBright : Theme.palette.textColorDark, whiteSpace: 'nowrap'}}>
+                    {this.getVersionControl(useBright)}
+                    {this.getButtonSignal(useBright)}
+                    {this.getButtonEditSettings(useBright)}
+                    {this.getEditButton(useBright)}
+                    {this.getButtonSpeech(useBright)}
+                    {this.getButtonFullScreen(useBright)}
                 </div>
                 {this.state.editEnumSettings ? (<DialogSettings key={'enum-settings'}
                                                                 name={this.getTitle()}
@@ -1148,12 +1148,12 @@ class App extends Component {
 
     getLoadingScreen() {
         const background = window.materialBackground;
-        const invertColor = background && Utils.invertColor(background);
+        const useBright = background && Utils.invertColor(background);
 
         return (
             <div className={this.props.classes.loadingBackground} style={{background: window.materialBackground}}>
                 <LoadingIndicator
-                    color={invertColor ? 'white' : 'black' }
+                    color={useBright ? 'white' : 'black' }
                     value={100 * this.state.loadingProgress / App.LOADING_TOTAL}
                     label={I18n.t(this.state.loadingStep)}
                 />
@@ -1165,13 +1165,14 @@ class App extends Component {
         if (this.state.loading) {
             return this.getLoadingScreen();
         } else {
+            const useBright = this.state.appSettings && this.state.appSettings.menuBackground && Utils.invertColor(this.state.appSettings.menuBackground);
             return (
                 <div>
-                    {this.getAppBar()}
-                    {this.getMenu()}
-                    {this.getStateList()}
-                    {this.getErrorDialog()}
-                    {this.getSpeechDialog()}
+                    {this.getAppBar(useBright)}
+                    {this.getMenu(useBright)}
+                    {this.getStateList(useBright)}
+                    {this.getErrorDialog(useBright)}
+                    {this.getSpeechDialog(useBright)}
                 </div>
             );
         }

@@ -53,7 +53,10 @@ const BoolControl = ({classes, label, value, onChange, language, icon}) => {
 BoolControl.propTypes = {
     classes:    PropTypes.object.isRequired,
     label:      PropTypes.string.isRequired,
-    value:      PropTypes.object.isRequired,
+    value:      PropTypes.oneOfType([
+        PropTypes.bool,
+        PropTypes.object
+    ]),
     language:   PropTypes.string.isRequired,
     icon:       PropTypes.oneOfType([
         PropTypes.string,

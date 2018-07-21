@@ -66,6 +66,15 @@
   animation-name: back-red;
   animation-duration: 2s;
 }
-.menu-selected span {
-  color: #2196f3
+.menu-selected-bright span {
+    color: #1c8fe0 !important;
+}
+.menu-selected-dark span {
+    color: #3cc1ff !important;
+}
+.menu-text-bright span {
+    color: white !important;
+}
+.menu-text-dark span {
+    color: black !important;
 }
