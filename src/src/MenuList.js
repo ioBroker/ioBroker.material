@@ -74,12 +74,13 @@ class MenuList extends Component {
         this.state = {
             selectedIndex:  this.props.defaultValue,
             editMode:       this.props.editMode,
-            visibility:     this.fillVisibility(this.props.root, this.props.objects, this.props.editMode).visibility,
             background:     this.props.background,
             instances:      this.props.instances,
             root:           this.props.root,
-            roots:          roots
+            roots:          roots,
+            visibility:     {}
         };
+        this.state.visibility = this.fillVisibility(this.props.root, this.props.objects, this.props.editMode).visibility;
     }
 
     fillEnums(objects) {
@@ -302,9 +303,11 @@ class MenuList extends Component {
 
         for (let i = 0; i < this.enums.length; i++) {
             let id = this.enums[i];
-            if (reg.test(id)) {
+            if (reg.test(id) &&
+                ((objects[id] && objects[id].common && objects[id].common.members && objects[id].common.members.length) || this.state.roots[id])) {
                 let settings = this.settings[id];
-                if (!settings || _objects) {
+                // if no settings or properties were changed
+                if (!settings || _objects) { // here "_objects" and not objects
                     this.settings[id] = Utils.getSettings(objects[id], {user: this.props.user, language: this.props.language, id}, true);
                     settings = this.settings[id];
                 }

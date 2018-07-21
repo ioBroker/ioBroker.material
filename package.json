@@ -43,7 +43,7 @@
   },
   "main": "www/index.html",
   "scripts": {
-    "test": "echo \"No test specified\" && exit 0",
+    "test": "node node_modules/gulp/bin/gulp.js",
     "build": "node node_modules/gulp/bin/gulp.js",
     "prepare": "node node_modules/gulp/bin/gulp.js"
   },
