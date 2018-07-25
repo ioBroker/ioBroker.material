@@ -37,6 +37,8 @@ import IconSun7 from 'react-icons/lib/md/brightness-7';
 import Theme from '../theme';
 import I18n from '../i18n';
 import Types from '../States/SmartTypes';
+import IconLockOpened from "react-icons/lib/md/lock-open";
+import IconLockClosed from "react-icons/lib/md/lock";
 
 const IconSuns = [IconSun1, IconSun2, IconSun3, IconSun4, IconSun5, IconSun6, IconSun7];
 
@@ -199,16 +201,22 @@ class SmartState extends SmartGeneric {
 
     getIcon() {
         const isOn = this.state[this.id] === '1' || this.state[this.id] === 1 || this.state[this.id] === true || this.state[this.id] === 'true' || this.state[this.id] === 'on' || this.state[this.id] === 'ON';
-        const Icon = isOn ? this.iconOn : this.iconOff;
         const color = isOn ? this.iconColorOn : this.iconColorOff;
         let style = color ? {color} : {};
         if (this.style) {
             style = Object.assign(style, this.style);
         }
+        let customIcon;
 
+        if (this.state.settings.useDefaultIcon) {
+            customIcon = (<img src={this.getDefaultIcon()} style={{height: '100%', zIndex: 1}}/>);
+        } else {
+            const Icon = isOn ? this.iconOn : this.iconOff;
+            customIcon = (<Icon width={'100%'} height={'100%'} style={{zIndex: 1}}/>);
+        }
         return (
             <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, style)} className="tile-icon">
-                <Icon style={{zIndex: 1}} width={'100%'} height={'100%'}/>
+                {customIcon}
             </div>
         );
     }

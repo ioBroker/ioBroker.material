@@ -28,6 +28,7 @@ import Button from '@material-ui/core/Button';
 
 import Theme from '../theme';
 import I18n from '../i18n';
+import IconInfo from "react-icons/lib/md/info";
 
 const style = {
     icon: {
@@ -93,13 +94,20 @@ class SmartLock extends SmartGeneric {
 
     getIcon() {
         const isOn = this.state[this.id] === '1' || this.state[this.id] === 1 || this.state[this.id] === true || this.state[this.id] === 'true' || this.state[this.id] === 'on' || this.state[this.id] === 'ON';
-        const Icon = isOn ? IconLockOpened : IconLockClosed;
         const color = isOn ? this.iconColorOn : this.iconColorOff;
         let style = color ? {color} : {};
+        let customIcon;
+
+        if (this.state.settings.useDefaultIcon) {
+            customIcon = (<img src={this.getDefaultIcon()} style={{height: '100%', zIndex: 1}}/>);
+        } else {
+            const Icon = isOn ? IconLockOpened : IconLockClosed;
+            customIcon = (<Icon width={'100%'} height={'100%'} style={{zIndex: 1}}/>);
+        }
 
         return (
             <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, style)} className="tile-icon">
-                <Icon style={{zIndex: 1}} width={'100%'} height={'100%'}/>
+                {customIcon}
             </div>
         );
     }

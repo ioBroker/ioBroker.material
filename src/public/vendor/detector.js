@@ -1,18 +1,27 @@
 /**
  * Copyright 2018 bluefox <dogafox@gmail.com>
  *
- * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * The MIT License (MIT)
  *
- * https://creativecommons.org/licenses/by-nc/4.0/legalcode.txt
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  **/
+
 'use strict';
 
 var Types = {
@@ -50,7 +59,7 @@ var Types = {
 // channelRole - RegEx to detect channel role of state
 // ignoreRole - RegEx to ignore some specific roles
 // indicator - is it will be shown like small icon or as a value
-// type - state type: 'number', 'string' or 'boolean'
+// type - state type: 'number', 'string' or 'boolean' or array of possible values
 // name - own TAG of the state to process it in the logic
 // write - if set to true or false, it will be checked the write attribute, if no attribute, so "false" will be assumed
 // read - if set to true or false, it will be checked the write attribute, if no attribute, so "true" will be assumed
@@ -58,12 +67,13 @@ var Types = {
 // max - type of attribute: number', 'string' or 'boolean'. This attribute must exists in common
 // required - if required to detect the pattern as valid
 // noSubscribe - no automatic subscription for this state (e.g if write only)
-// searchInParent - if this pattern should be search in device to and not only in channel
+// searchInParent - if this pattern should be search in device too and not only in channel
 // enums - function to execute custom category detection
 // multiple - if more than one state may have this pattern in channel
 // noDeviceDetection - do not search indicators in parent device
 // notSingle - this state may belong to more than one tile simultaneously (e.g. volume tile and media with volume)
 // inverted - is state of indicator must be inverted
+// stateName - regex for state names (IDs). Not suggested
 
 function ChannelDetector() {
     if (!(this instanceof ChannelDetector)) return new ChannelDetector();
@@ -78,8 +88,10 @@ function ChannelDetector() {
 
     var patterns = {
         mediaPlayer: {
+            // receive the state of player via media.state. Controlling of the player via buttons
             states: [
-                {role: /^media.state(\..*)?$/,          indicator: false,                   type: 'boolean', name: 'STATE',    required: true},
+                // one of
+                {role: /^media.state(\..*)?$/,                               indicator: false,                   type: ['boolean', 'number'], name: 'STATE',    required: true},
                 {role: /^button.play(\..*)?$|^action.play(\..*)?$/,          indicator: false,     write: true,  type: 'boolean', name: 'PLAY',     required: false, noSubscribe: true},
                 {role: /^button.pause(\..*)?$|^action.pause(\..*)?$/,        indicator: false,     write: true,  type: 'boolean', name: 'PAUSE',    required: false, noSubscribe: true},
                 {role: /^button.stop(\..*)?$|^action.stop(\..*)?$/,          indicator: false,     write: true,  type: 'boolean', name: 'STOP',     required: false, noSubscribe: true},
@@ -90,13 +102,23 @@ function ChannelDetector() {
                 {role: /^media.artist(\..*)?$/,         indicator: false,     write: false, type: 'string',  name: 'ARTIST',   required: false},
                 {role: /^media.album(\..*)?$/,          indicator: false,     write: false, type: 'string',  name: 'ALBUM',    required: false},
                 {role: /^media.title(\..*)?$/,          indicator: false,     write: false, type: 'string',  name: 'TITLE',    required: false},
-                {role: /^media.cover(\..*)?$/,          indicator: false,     write: false, type: 'string',  name: 'COVER',    required: false},
+                // one of following
+                [
+                    {role: /^media.cover$|^media.cover.big$/, indicator: false,     write: false, type: 'string',  name: 'COVER',    required: false},
+                    {role: /^media.cover(\..*)$/,       indicator: false,     write: false, type: 'string',  name: 'COVER',    required: false},
+                ],
                 {role: /^media.duration(\..*)?$/,       indicator: false,     write: false, type: 'number',  name: 'DURATION', required: false, noSubscribe: true},
                 {role: /^media.elapsed(\..*)?$/,        indicator: false,                   type: 'number',  name: 'ELAPSED',  required: false, noSubscribe: true},
+                {role: /^media.season(\..*)?$/,         indicator: false,     write: true,  type: 'number',  name: 'SEEK',     required: false, noSubscribe: true},
                 {role: /^media.seek(\..*)?$/,           indicator: false,     write: true,  type: 'number',  name: 'SEEK',     required: false, noSubscribe: true},
+                {role: /^media.track(\..*)?$/,          indicator: false,                   type: 'string',  name: 'TRACK',    required: false, noSubscribe: true},
+                {role: /^media.episode(\..*)?$/,        indicator: false,                   type: 'string',  name: 'EPISODE',  required: false, noSubscribe: true},
+                {role: /^media.season(\..*)?$/,         indicator: false,                   type: 'string',  name: 'SEASON',   required: false, noSubscribe: true},
                 {role: /^level.volume?$/,               indicator: false,                   type: 'number',  min: 'number', max: 'number', write: true,       name: 'VOLUME',         required: false, notSingle: true, noSubscribe: true},
                 {role: /^value.volume?$/,               indicator: false,                   type: 'number',  min: 'number', max: 'number', write: false,      name: 'VOLUME_ACTUAL',  required: false, notSingle: true, noSubscribe: true},
                 {role: /^media.mute?$/,                 indicator: false,                   type: 'boolean',                               write: true,       name: 'MUTE',           required: false, notSingle: true, noSubscribe: true},
+                // Ignore following states of chromecast
+                {stateName: /\.paused$|\.playerState$/, indicator: false,                                                                                     name: 'IGNORE',         required: false, multiple: true,  noSubscribe: true},
                 patternReachable,
                 patternLowbat,
                 patternMaintain,
@@ -435,6 +457,10 @@ function ChannelDetector() {
                 return;
             }
 
+            if (statePattern.stateName && !statePattern.stateName.test(id)) {
+                return false;
+            }
+
             if (statePattern.ignoreRole && statePattern.ignoreRole.test(objects[id].common.role)) {
                 return;
             }
@@ -460,8 +486,24 @@ function ChannelDetector() {
             if (statePattern.read !== undefined && statePattern.read !== (objects[id].common.read === undefined ? true : objects[id].common.read)) {
                 return;
             }
-            if (statePattern.type && statePattern.type !== objects[id].common.type) {
-                return;
+
+            if (statePattern.type) {
+                if (typeof statePattern.type === 'string') {
+                    if (statePattern.type !== objects[id].common.type) {
+                        return;
+                    }
+                } else {
+                    var noOneOk = true;
+                    for (var t = 0; t < statePattern.type.length; t++) {
+                        if (statePattern.type[t] === objects[id].common.type) {
+                            noOneOk = false;
+                            break;
+                        }
+                    }
+                    if (noOneOk) {
+                        return;
+                    }
+                }
             }
 
             if (statePattern.enums && typeof statePattern.enums === 'function') {
@@ -519,6 +561,66 @@ function ChannelDetector() {
         return newState;
     }
 
+    this._testOneState = function (context) {
+        var objects = context.objects;
+        var pattern = context.pattern;
+        var state = context.state;
+        var i = context.i;
+        var channelStates = context.channelStates;
+        var usedIds = context.usedIds;
+        var _usedIds = context._usedIds;
+        var ignoreIndicators = context.ignoreIndicators;
+        var result = context.result;
+        var found = false;
+        channelStates.forEach(function (_id) {
+            if ((state.indicator || (usedIds.indexOf(_id) === -1 && (state.notSingle || _usedIds.indexOf(_id) === -1))) && this._applyPattern(objects, _id, state)) {
+                if (state.indicator && ignoreIndicators) {
+                    var parts = _id.split('.');
+
+                    if (ignoreIndicators.indexOf(parts.pop()) !== -1) {
+                        console.log(_id + ' ignored');
+                        return;
+                    }
+                }
+
+                if (!state.indicator && !state.notSingle){
+                    _usedIds.push(_id);
+                }
+                if (!result) {
+                    context.result = result = JSON.parse(JSON.stringify(patterns[pattern]));
+                    result.states.forEach(function (state, j) {
+                        copyState(patterns[pattern].states[j], state);
+                    });
+                }
+                if (!result.type) {
+                    debugger;
+                }
+
+                if (!result.states.find(function (e) {return e.id === _id;})) {
+                    result.states[i].id = _id;
+                }
+                found = true;
+                if (state.multiple && channelStates.length > 1) {
+                    // execute this rule for every state in this channel
+                    var index = i + 1;
+                    channelStates.forEach(function (cid) {
+                        if (cid === _id) return;
+                        if ((state.indicator || (usedIds.indexOf(cid) === -1 && (state.notSingle || _usedIds.indexOf(cid) === -1))) && this._applyPattern(objects, cid, state)) {
+                            if (!state.indicator && !state.notSingle){
+                                _usedIds.push(cid);
+                            }
+                            var newState = copyState(state);
+                            newState.id = cid;
+                            result.states.splice(index++, 0, newState);
+                        }
+                    }.bind(this));
+                }
+                return false; // stop iteration
+            }
+        }.bind(this));
+        return found;
+    };
+
     this._detectNext = function (objects, id, keys, usedIds, ignoreIndicators) {
         usedIds = usedIds || [];
 
@@ -534,74 +636,94 @@ function ChannelDetector() {
             if (id.indexOf('javascript.0.devices.valueSimple') !== -1) {
                 console.log('aaa');
             }
+            var context = {
+                objects:            objects,
+                channelStates:      channelStates,
+                usedIds:            usedIds,
+                ignoreIndicators:   ignoreIndicators
+            };
 
             for (var pattern in patterns) {
                 if (!patterns.hasOwnProperty(pattern)) continue;
-                var result = null;
+                context.result = null;
 
                 if (pattern === 'temperature') {
                     //console.log(pattern);
                 }
+                if (pattern === 'mediaPlayer' && id.indexOf('Большая') !== -1) {
+                    console.log(pattern);
+                }
 
                 var _usedIds = [];
+                context.pattern = pattern;
+                context._usedIds = _usedIds;
                 patterns[pattern].states.forEach(function (state, i) {
                     var found = false;
-                    channelStates.forEach(function (_id) {
-                        if ((state.indicator || (usedIds.indexOf(_id) === -1 && (state.notSingle || _usedIds.indexOf(_id) === -1))) && this._applyPattern(objects, _id, state)) {
-                            if (state.indicator && ignoreIndicators) {
-                                var parts = _id.split('.');
 
-                                if (ignoreIndicators.indexOf(parts.pop()) !== -1) {
-                                    console.log(_id + ' ignored');
-                                    return;
-                                }
-                            }
+                    context.i     = i;
 
-                            if (!state.indicator && !state.notSingle){
-                                _usedIds.push(_id);
+                    // one of following
+                    if (state instanceof Array) {
+                        for (var s = 0; s < state.length; s++) {
+                            context.state = state[s];
+                            if (this._testOneState(context)) {
+                                var __id = context.result.states[i].id;
+                                context.result.states[i] = copyState(state[s]);
+                                context.result.states[i].id = __id;
+                                // find one of the list
+                                found = true;
+                                break;
                             }
-                            if (!result) {
-                                result = JSON.parse(JSON.stringify(patterns[pattern]));
-                                result.states.forEach(function (state, j) {
-                                    copyState(patterns[pattern].states[j], state);
-                                });
-                            }
-                            if (!result.type) {
-                                debugger;
-                            }
-
-                            if (!result.states.find(function (e) {return e.id === _id;})) {
-                                result.states[i].id = _id;
-                            }
-                            found = true;
-                            if (state.multiple && channelStates.length > 1) {
-                                // execute this rule for every state in this channel
-                                var index = i + 1;
-                                channelStates.forEach(function (cid) {
-                                    if (cid === _id) return;
-                                    if ((state.indicator || (usedIds.indexOf(cid) === -1 && (state.notSingle || _usedIds.indexOf(cid) === -1))) && this._applyPattern(objects, cid, state)) {
-                                        if (!state.indicator && !state.notSingle){
-                                            _usedIds.push(cid);
-                                        }
-                                        var newState = copyState(state);
-                                        newState.id = cid;
-                                        result.states.splice(index++, 0, newState);
-                                    }
-                                }.bind(this));
-                            }
-                            return false; // stop iteration
                         }
-                    }.bind(this));
-                    if (state.required && !found) {
-                        result = null;
-                        return false;
+                        if (!found) {
+                            context.result = null;
+                            return false;
+                        }
+                    } else {
+                        context.state = state;
+                        if (this._testOneState(context)) {
+                            found = true;
+                        }
+                        if (state.required && !found) {
+                            context.result = null;
+                            return false;
+                        }
                     }
                 }.bind(this));
 
-                if (result && !result.states.find(function (state) {return state.required && !state.id;})) {
+                // if all required states found?
+                var allRequiredFound = true;
+                if (context.result) {
+                    for (var a = 0; a < context.result.states.length; a++) {
+                        if (context.result.states[a] instanceof Array) {
+                            // one of
+                            var oneOf = false;
+                            for (var b = 0; b < context.result.states[a].length; b++) {
+                                if (context.result.states[a][b].required && context.result.states[a].id) {
+                                    oneOf = true;
+                                    break;
+                                }
+                            }
+                            if (!oneOf) {
+                                allRequiredFound = false;
+                                break;
+                            }
+                        } else {
+                            if (context.result.states[a].required && !context.result.states[a].id) {
+                                allRequiredFound = false;
+                                break;
+                            }
+                        }
+                    }
+                } else {
+                    allRequiredFound = false;
+                }
+
+
+                if (allRequiredFound) {
                     _usedIds.forEach(function (id) {usedIds.push(id);});
-                    // result.id = id;
-                    //this.cache[id] = result;
+                    // context.result.id = id;
+                    //this.cache[id] = context.result;
                     var deviceStates;
 
                     if (pattern === 'info') {
@@ -616,10 +738,10 @@ function ChannelDetector() {
                             deviceStates = getAllStatesInDevice(keys, deviceId);
                             if (deviceStates) {
                                 deviceStates.forEach(function (_id) {
-                                    result.states.forEach(function (state, i) {
+                                    context.result.states.forEach(function (state, i) {
                                         if (!state.id && (state.indicator || state.searchInParent) && !state.noDeviceDetection) {
                                             if (this._applyPattern(objects, _id, state.original)) {
-                                                result.states[i].id = _id;
+                                                context.result.states[i].id = _id;
                                             }
                                         }
                                     }.bind(this));
@@ -627,7 +749,7 @@ function ChannelDetector() {
                             }
                         }
                     }
-                    result.states.forEach(function (state) {
+                    context.result.states.forEach(function (state) {
                         if (state.role) {
                             delete state.role;
                         }
@@ -642,7 +764,7 @@ function ChannelDetector() {
                         }
                     });
 
-                    return result;
+                    return context.result;
                 }
             }
         }

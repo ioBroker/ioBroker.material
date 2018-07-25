@@ -119,9 +119,16 @@ class SmartThermostat extends SmartGeneric {
     }
 
     getIcon() {
+        let customIcon;
+
+        if (this.state.settings.useDefaultIcon) {
+            customIcon = (<img src={this.getDefaultIcon()} style={{height: '100%', zIndex: 1}}/>);
+        } else {
+            customIcon = (<Icon width={'100%'} height={'100%'} style={{zIndex: 1}}/>);
+        }
         return (
             <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, {}, {left: '0.5em'})} className="tile-icon">
-                <Icon width={'100%'} height={'100%'} style={{zIndex: 1}}/>
+                {customIcon}
             </div>
         );
     }

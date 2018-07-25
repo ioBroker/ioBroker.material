@@ -43,6 +43,7 @@ class SmartGeneric extends Component {
         this.channelInfo = this.props.channelInfo;
         this.subscribes = null;
         this.subscribed = false;
+        this.defaultIcon = null;
 
         this.width = Theme.tile.width;
         this.height = Theme.tile.height;
@@ -420,9 +421,9 @@ class SmartGeneric extends Component {
         }
     }
 
-    roundValue(value) {
-        if (typeof this.state.settings.decimals !== 'undefined') {
-            return value.toFixed(this.state.settings.decimals);
+    roundValue(value, decimals) {
+        if (decimals !== undefined || typeof this.state.settings.decimals !== 'undefined') {
+            return value.toFixed(decimals !== undefined ? decimals : this.state.settings.decimals);
         } else {
             return value;
         }
@@ -481,6 +482,34 @@ class SmartGeneric extends Component {
         }
     }
 
+    getDefaultIcon() {
+        if (this.defaultIcon !== null) {
+            return this.defaultIcon;
+        }
+        if (this.id) {
+            let icon = Utils.getObjectIcon(this.id, this.props.objects[this.id]);
+            if (!icon) {
+                let parentId = SmartGeneric.getParentId(this.id);
+                if (this.props.objects[parentId] && this.props.objects[parentId].type === 'channel') {
+                    icon = Utils.getObjectIcon(parentId, this.props.objects[parentId]);
+                    if (!icon) {
+                        parentId = SmartGeneric.getParentId(parentId);
+                        if (this.props.objects[parentId] && this.props.objects[parentId].type === 'device') {
+                            icon = Utils.getObjectIcon(parentId, this.props.objects[parentId]);
+                        }
+                    }
+                }
+            }
+            if (icon) {
+                this.defaultIcon = icon;
+            } else {
+                this.defaultIcon = '';
+            }
+        } else {
+            this.defaultIcon = '';
+        }
+    }
+
     getDialogSettings(settings) {
         settings = settings || [];
 
@@ -512,6 +541,15 @@ class SmartGeneric extends Component {
             value: this.state.settings.useCommon || false,
             type: 'boolean'
         });*/
+        let icon;
+        if (this.id && (icon = this.getDefaultIcon())) {
+            settings.unshift({
+                name: 'useDefaultIcon',
+                value: this.state.settings.useDefaultIcon || '',
+                type: 'boolean',
+                icon
+            });
+        }
         return settings;
     }
 
@@ -573,7 +611,7 @@ class SmartGeneric extends Component {
     }
 
     static getNameFontSize(name) {
-        return name.length >= 15 ? 12 : (name.length > 10 ? 14 : 16);
+        return name && name.length >= 15 ? 12 : (name && name.length > 10 ? 14 : 16);
     }
 
     render() {

@@ -115,7 +115,7 @@ class ImageList extends React.Component {
                     }
                     return (
                         <ButtonBase
-                            tabindex={i}
+                            tabIndex={i}
                             onClick={() => this.onSelect(image, i)}
                             focusRipple
                             key={'images-' + i}

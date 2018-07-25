@@ -44,6 +44,7 @@ class SmallVisibilityButton extends React.Component {
     static propTypes = {
         visible:    PropTypes.bool,
         big:        PropTypes.bool,
+        useBright:  PropTypes.bool,
         onChange:   PropTypes.func.isRequired
     };
 
@@ -62,13 +63,13 @@ class SmallVisibilityButton extends React.Component {
 
     render() {
         if (this.props.big) {
-            return (<IconButton onClick={e => this.toggleState(e)}  style={Object.assign({}, styles.button, styles.buttonBig)}>
+            return (<IconButton onClick={e => this.toggleState(e)}  style={Object.assign({}, styles.button, styles.buttonBig, this.props.useBright ? {color: 'white'} : {color: 'black'})}>
                 {this.state.visible ? <IconCheck width={'100%'}/> : <IconUncheck width={'100%'}/>}
             </IconButton>);
         } else {
             const iconStyle = {marginTop: -3, verticalAlign: 'top'};
             return (
-                <div style={Object.assign({}, styles.button, styles.buttonSmall)} onClick={e => this.toggleState(e)} className="small-visibility-button">
+                <div style={Object.assign({}, styles.button, styles.buttonSmall, this.props.useBright ? {color: 'white'} : {color: 'black'})} onClick={e => this.toggleState(e)} className="small-visibility-button">
                     {this.state.visible ? <IconCheck width={16} style={iconStyle}/> : <IconUncheck width={16} style={iconStyle}/>}
                 </div>
             )

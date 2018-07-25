@@ -61,6 +61,7 @@
   "loadingBackground": "Loading screen background",
   "menuBackground": "Menu background",
   "menuColor": "Menu background",
+  "mute": "mute",
   "name": "Name",
   "newLine": "New group starts with new line",
   "opened": "opened",
@@ -76,5 +77,6 @@
   "tilted": "tilted",
   "unknown": "unknown",
   "unmute": "unmute",
-  "mute": "mute"
+  "Control ID is empty": "Control ID is empty",
+  "Error": "Error"
 }

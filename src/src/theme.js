@@ -22,6 +22,7 @@ import Background from './assets/apartment.jpg';
 
 const appBarHeight = 64;
 const tileBorderRadius = '1em';
+const tileSize = 128;
 
 export default {
     classes: {
@@ -261,8 +262,8 @@ export default {
             borderRadius: tileBorderRadius,
             padding: '1em',
             transition: 'all 0.2s',
-            width: 128,
-            height: 128,
+            width: tileSize,
+            height: tileSize,
             position: 'relative',
             fontSize: '1em',
             fontWeight: 'bold',
@@ -427,10 +428,10 @@ export default {
                 zIndex: 3
             },
             buttonIcon: {
-                paddingTop: '100%'
+                paddingTop: tileSize / 2
             },
             buttonIconRemoved: {
-                paddingTop: '30%'
+                paddingTop: tileSize / 4
             },
             editEnabled: {
                 backgroundColor: 'white',

@@ -213,7 +213,7 @@ class MenuList extends Component {
         }
     }
 
-    getListHeader() {
+    getListHeader(useBright) {
         let items = this.getElementsToShow('enum');
 
         if (items && items.length) {
@@ -231,7 +231,7 @@ class MenuList extends Component {
                     }
 
                     const name = settings.name;
-                    const visibilityButton = this.props.editMode ? <VisibilityButton visible={this.state.visibility[item.id]} onChange={() => this.onToggleEnabled(null, item.id)}/> : null;
+                    const visibilityButton = this.props.editMode ? <VisibilityButton useBright={useBright} visible={this.state.visibility[item.id]} onChange={() => this.onToggleEnabled(null, item.id)}/> : null;
                     let style = {};
                     if (this.props.editMode && !this.state.visibility[item.id]) {
                         style = Object.assign({}, style, {opacity: 0.5});
@@ -399,12 +399,12 @@ class MenuList extends Component {
             const visibilityButton = this.props.editMode ? <VisibilityButton
                 big={true}
                 visible={this.state.visibility[item.id]}
+                useBright={useBright}
                 onChange={() => this.onToggleEnabled(null, item.id)}/> : null;
 
             const style = {opacity: this.props.editMode && !this.state.visibility[item.id] ? 0.5 : 1};
             style.marginLeft = 16 * level;
             const expanded = this.state.roots[item.id] && this.state.roots[item.id].expanded;
-
 
             return [
                 (<ListItem
@@ -496,7 +496,7 @@ class MenuList extends Component {
             return (
                 <div style={style}>
                     <Divider />
-                    {this.getListHeader()}
+                    {this.getListHeader(useBright)}
                     <List style={this.state.background ? {background: this.state.background} : {}}>{list}</List>
                 </div>
             );
@@ -504,7 +504,7 @@ class MenuList extends Component {
             return (
                 <div style={style} >
                     <Divider />
-                    {this.getListHeader()}
+                    {this.getListHeader(useBright)}
                     <Divider />
                     <List >
                         <ListItem key="0" value="0">

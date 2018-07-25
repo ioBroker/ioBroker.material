@@ -91,25 +91,31 @@ const styles = {
             verticalAlign: 'middle'
         },
         prev: {
-            height: 32,
-            width: 32,
+            height: 24,
+            width: 24,
+            marginLeft: 3,
+            minHeight: 24,
             verticalAlign: 'middle',
             boxShadow: 'none',
-            background: 'rgba(0,0,0,0)'
+            background: 'rgba(255,255,255,1)'
         },
         next: {
-            height: 32,
-            width: 32,
+            height: 24,
+            width: 24,
+            marginLeft: 3,
+            minHeight: 24,
             verticalAlign: 'middle',
             boxShadow: 'none',
-            background: 'rgba(0,0,0,0)'
+            background: 'rgba(255,255,255,1)'
         },
         stop: {
-            height: 32,
-            width: 32,
+            height: 24,
+            width: 24,
+            marginLeft: 3,
+            minHeight: 24,
             verticalAlign: 'middle',
             boxShadow: 'none',
-            background: 'rgba(0,0,0,0)'
+            background: 'rgba(255,255,255,1)'
         },
         play: {
 
@@ -121,18 +127,26 @@ const styles = {
             position: 'absolute',
             top: 5,
             right: 54,
+            height: 24,
+            width: 24,
+            minHeight: 24,
+            marginLeft: 3,
             verticalAlign: 'middle',
             boxShadow: 'none',
-            background: 'rgba(0,0,0,0)',
+            background: 'rgba(255,255,255,1)',
             float: 'right'
         },
         shuffle: {
             position: 'absolute',
             top: 5,
             right: 12,
+            height: 24,
+            width: 24,
+            minHeight: 24,
+            marginLeft: 3,
             verticalAlign: 'middle',
             boxShadow: 'none',
-            background: 'rgba(0,0,0,0)',
+            background: 'rgba(255,255,255,1)',
             float: 'right'
         },
         name: {
@@ -386,7 +400,7 @@ class SmartDialogMedia extends SmartDialogGeneric  {
             id === this.ids.volume.set ||
             id === this.ids.volume.actual) {
             this.collectState = this.collectState || {};
-            this.collectState[id] = parseFloat(state.val);
+            this.collectState[id] = Math.round(parseFloat(state.val));
             this.collectTimer && clearTimeout(this.collectTimer);
             this.collectTimer = setTimeout(() => this.onUpdateTimer(), 200);
         } else
@@ -430,6 +444,7 @@ class SmartDialogMedia extends SmartDialogGeneric  {
             this.collectTimer = setTimeout(() => this.onUpdateTimer(), 200);
         } else
         if (this.ids.control.state === id && state.ack) {
+            this.collectState = this.collectState || {};
             const val =
                 state.val === 'true' ||
                 state.val === true ||
@@ -437,6 +452,10 @@ class SmartDialogMedia extends SmartDialogGeneric  {
                 state.val === 'play' ||
                 state.val === 1 ||
                 state.val === '1';
+
+            // here can be 'stop'
+            this.collectState.stop = (state.val === 'STOP' || state.val === 'stop' || state.val === 'stopped' || state.val === 'STOPPED');
+
             this.collectState = this.collectState || {};
             this.collectState[id] = val;
 
@@ -579,7 +598,7 @@ class SmartDialogMedia extends SmartDialogGeneric  {
                     style={state ? styles.control.pause : styles.control.play} aria-label="play pause">
                 {state ? (<IconPause/>) : (<IconPlay/>)}
             </Button>
-            {this.props.settings.showStop && this.ids.buttons.stop ? (<Button variant="fab" mini onClick={() => this.onButton(this.ids.buttons.stop)} style={styles.control.stop} aria-label="stop"><IconStop/></Button>) : null}
+            {this.props.settings.showStop && this.ids.buttons.stop ? (<Button variant="fab" mini onClick={() => this.onButton(this.ids.buttons.stop)} style={Object.assign({}, styles.control.stop, this.state.stop ? {color: 'red'} : {})} aria-label="stop"><IconStop/></Button>) : null}
             {this.ids.buttons.next ? (<Button variant="fab" mini onClick={() => this.onButton(this.ids.buttons.next)} style={styles.control.prev} aria-label="next"><IconNext/></Button>) : null}
             {this.getShuffle()}
             {this.getRepeat()}
@@ -592,6 +611,7 @@ class SmartDialogMedia extends SmartDialogGeneric  {
         return (<div key={this.key + 'tile-info'} style={this.divs.info.style}>
             {this.ids.info.artist && this.state[this.ids.info.artist] ? (<div style={styles.info.artist}>{this.state[this.ids.info.artist]}</div>) : null}
             {this.ids.info.album  && this.state[this.ids.info.album]  ? (<div style={styles.info.album}>{this.state[this.ids.info.album]}</div>) : null}
+            {this.ids.info.title  && this.state[this.ids.info.title]  ? (<div style={styles.info.title}>{this.state[this.ids.info.title]}</div>) : null}
             {this.ids.info.title  && this.state[this.ids.info.title]  ? (<div style={styles.info.title}>{this.state[this.ids.info.title]}</div>) : null}
         </div>);
     }

@@ -27,6 +27,8 @@ import IconPrev from 'react-icons/lib/md/skip-previous';
 import Theme from '../theme';
 // import cover from '../assets/cover.png';
 import Dialog from './SmartDialogMedia';
+import IconLockOpened from "react-icons/lib/md/lock-open";
+import IconLockClosed from "react-icons/lib/md/lock";
 
 const style = {
     info: {
@@ -72,25 +74,31 @@ const style = {
             verticalAlign: 'middle'
         },
         prev: {
-            height: 32,
-            width: 32,
+            height: 24,
+            width: 24,
+            marginLeft: 3,
+            minHeight: 24,
             verticalAlign: 'middle',
             boxShadow: 'none',
-            background: 'rgba(0,0,0,0)'
+            background: 'rgba(255,255,255,1)'
         },
         next: {
-            height: 32,
-            width: 32,
+            height: 24,
+            width: 24,
+            marginLeft: 3,
+            minHeight: 24,
             verticalAlign: 'middle',
             boxShadow: 'none',
-            background: 'rgba(0,0,0,0)'
+            background: 'rgba(255,255,255,1)'
         },
         stop: {
-            height: 32,
-            width: 32,
+            height: 24,
+            width: 24,
+            minHeight: 24,
+            marginLeft: 3,
             verticalAlign: 'middle',
             boxShadow: 'none',
-            background: 'rgba(0,0,0,0)'
+            background: 'rgba(255,255,255,1)'
         },
         play: {
 
@@ -280,9 +288,16 @@ class SmartMedia extends SmartGeneric {
         if (this.state[this.ids.info.cover]) {
             return null;
         } else {
+            let customIcon;
+
+            if (this.state.settings.useDefaultIcon) {
+                customIcon = (<img src={this.getDefaultIcon()} style={{height: '100%'}}/>);
+            } else {
+                customIcon = (<IconNote width={'100%'} height={'100%'}/>);
+            }
             return (
                 <div key={this.key + 'icon'} style={Theme.tile.tileIcon} className="tile-icon">
-                    <IconNote width={'100%'} height={'100%'}/>
+                    {customIcon}
                 </div>
             );
         }
@@ -302,11 +317,12 @@ class SmartMedia extends SmartGeneric {
                 type: 'boolean'
             });
         }
+        return settings;
     }
 
     getControlsDiv() {
         return (<div key={this.key + 'tile-control'} style={style.control.div}>
-            <div style={style.control.name}>{this.state.settings.name}</div>
+            <div style={style.control.name} title={this.state.settings.name}>{this.state.settings.name}</div>
            {this.ids.buttons.prev ? (<Button variant="fab" mini onClick={() => this.onButton(this.ids.buttons.prev)} style={style.control.prev} aria-label="prev"><IconPrev/></Button>) : null}
             <Button variant="fab" mini
                     onClick={() => this.onButton(this.state[this.id] ? this.ids.buttons.pause : this.ids.buttons.play)}

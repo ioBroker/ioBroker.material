@@ -45,8 +45,8 @@
   "close": "Zu",
   "closed": "zu",
   "color": "Farbe",
-  "colorOff": "Frabe-AUS",
-  "colorOn": "Frabe-EIN",
+  "colorOff": "Farbe-AUS",
+  "colorOn": "Farbe-EIN",
   "connecting": "verbinden",
   "debug": "Konsole-debug",
   "default": "Default",
@@ -61,6 +61,7 @@
   "loadingBackground": "Hintergrund beim Laden",
   "menuBackground": "Menu-Hintergrund",
   "menuColor": "Menühintergrund",
+  "mute": "Mute",
   "name": "Name",
   "newLine": "Neue Gruppe mit neuer Zeile beginnen",
   "opened": "auf",
@@ -76,5 +77,6 @@
   "tilted": "gekippt",
   "unknown": "unbekannt",
   "unmute": "Unmute",
-  "mute": "Mute"
+  "Control ID is empty": "Control ID is empty",
+  "Error": "Steuerelement-ID ist leer"
 }

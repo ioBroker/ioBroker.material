@@ -103,12 +103,20 @@ class SmartSlider extends SmartGeneric {
     }
 
     getIcon() {
-        let IconCustom = this.icon;
+        let customIcon;
 
-        if (IconCustom) {
+        if (this.state.settings.useDefaultIcon) {
+            customIcon = (<img src={this.getDefaultIcon()} style={{height: '100%'}}/>);
+        } else {
+            let IconCustom = this.icon;
+            if (IconCustom) {
+                customIcon = (<IconCustom width={'100%'} height={'100%'}/>);
+            }
+        }
+        if (customIcon) {
             return (
                 <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, this.state[this.actualId] !== this.min ? {color: Theme.palette.lampOn} : {})} className="tile-icon">
-                    <IconCustom width={'100%'} height={'100%'}/>
+                    {customIcon}
                     {this.state.executing ? <CircularProgress style={{position: 'absolute', top: 0, left: 0}} size={Theme.tile.tileIcon.width}/> : null}
                 </div>
             );

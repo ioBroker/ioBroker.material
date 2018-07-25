@@ -104,7 +104,7 @@ class SmartInstance extends SmartGeneric {
         const img = '/' + this.props.objects[this.instanceId].common.name + '.admin/' + this.props.objects[this.instanceId].common.icon;
         return (
             <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon)} className="tile-icon">
-                <img width={'100%'} height={'100%'} src={img} alt={'i' || this.state.settings.name}/>
+                <img height={'100%'} src={img} alt={'i' || this.state.settings.name}/>
             </div>
         );
     }

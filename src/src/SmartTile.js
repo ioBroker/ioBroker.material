@@ -100,12 +100,12 @@ class SmartTile extends Component {
                 {},
                 Theme.tile.tile,
                 Theme.tile.tileOn,
-                typeof this.state.colorOn === 'object' ? this.state.colorOn : {color:this.state.colorOn},
+                typeof this.state.colorOn === 'object' ? this.state.colorOn : {background: this.state.colorOn},
                 Theme.tile.editEnabled);
         } else {
             style = this.state.state ?
-                Object.assign({}, Theme.tile.tile, Theme.tile.tileOn, typeof this.state.colorOn === 'object' ? this.state.colorOn : {color:this.state.colorOn}) :
-                Object.assign({}, Theme.tile.tile, Theme.tile.tileOff, typeof this.state.colorOff === 'object' ? this.state.colorOff : {color:this.state.colorOff});
+                Object.assign({}, Theme.tile.tile, Theme.tile.tileOn, typeof this.state.colorOn === 'object' ? this.state.colorOn : {background: this.state.colorOn}) :
+                Object.assign({}, Theme.tile.tile, Theme.tile.tileOff, typeof this.state.colorOff === 'object' ? this.state.colorOff : {background: this.state.colorOff});
         }
         if (this.state.background) {
             style.backgroundImage = `url(${this.state.background})`;

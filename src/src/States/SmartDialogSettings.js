@@ -179,6 +179,7 @@ class SmartDialogSettings extends SmartDialogGeneric  {
                             key={this.props.dialogKey + '-' + e.name + '-bool'}
                             label={I18n.t(e.name)}
                             onChange={() => this.handleToggle(e.name)}
+                            icon={e.icon}
                             language={I18n.getLanguage()}
                             value={this.state.values[e.name] || false}
                         />);

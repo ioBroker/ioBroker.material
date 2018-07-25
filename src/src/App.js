@@ -26,6 +26,10 @@ import Dialog from '@material-ui/core/Dialog';
 import IconButton from '@material-ui/core/IconButton';
 import RaisedButton from '@material-ui/core/Button';
 import Button from '@material-ui/core/Button';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 import IconClose from 'react-icons/lib/md/close';
 import IconSettings from 'react-icons/lib/md/mode-edit';
@@ -500,6 +504,9 @@ class App extends Component {
     }
 
     onControl(id, val, objectAttribute) {
+        if (!id) {
+            this.showError(I18n.t('Control ID is empty'));
+        } else
         if (objectAttribute) {
             this.conn.getObject(id, (err, oldObj) => {
                 // todo
@@ -1118,16 +1125,20 @@ class App extends Component {
 
     getErrorDialog() {
         return (<Dialog
-            actions={(<RaisedButton
-                label="Ok"
-                primary={true}
-                onClick={() => this.setState({errorShow: false})}
-            />)}
-            modal={false}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+            onClose={() => this.setState({errorShow: false})}
             open={this.state.errorShow}
-            onRequestClose={() => this.setState({errorShow: false})}
         >
-            {this.state.errorText}
+            <DialogTitle id="alert-dialog-title">{I18n.t('Error')}</DialogTitle>
+            <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                    {this.state.errorText}
+                </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={() => this.setState({errorShow: false})} color="primary">OK</Button>
+            </DialogActions>
         </Dialog>);
     }
 

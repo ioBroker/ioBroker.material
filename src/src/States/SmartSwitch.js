@@ -103,14 +103,21 @@ class SmartSwitch extends SmartGeneric {
     }
 
     getIcon() {
-        const Icon = this.state[this.actualId] ? this.iconOn : this.iconOff;
         let style = this.state[this.actualId] ? {color: this.colorOn} : {color: this.colorOff};
         if (this.style) {
             style = Object.assign(style, this.style);
         }
+        let customIcon;
+
+        if (this.state.settings.useDefaultIcon) {
+            customIcon = (<img src={this.getDefaultIcon()} style={{height: '100%'}}/>);
+        } else {
+            const Icon = this.state[this.actualId] ? this.iconOn : this.iconOff;
+            customIcon = (<Icon width={'100%'} height={'100%'}/>);
+        }
         return (
             <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, style)} className="tile-icon">
-                <Icon width={'100%'} height={'100%'}/>
+                {customIcon}
                 {this.state.executing ? <CircularProgress style={{zIndex: 3, position: 'absolute', top: 0, left: 0}} size={Theme.tile.tileIcon.width}/> : null}
             </div>
         );

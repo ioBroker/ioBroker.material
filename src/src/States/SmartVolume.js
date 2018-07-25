@@ -75,7 +75,6 @@ class SmartVolume extends SmartGeneric {
             this.unit = this.unit ? ' ' + this.unit : '';
         }
 
-
         this.stateRx.showDialog = false; // support dialog in this tile used in generic class)
         this.stateRx.setValue = null;
         this.key = 'smart-slider-' + this.id + '-';
@@ -126,6 +125,9 @@ class SmartVolume extends SmartGeneric {
         if (this.actualId !== this.id) {
             this.setState({executing: true, setValue: value});
         }
+        if (this.max - this.min > 9) {
+            value = Math.round(value);
+        }
         this.props.onControl(this.id, value);
     }
 
@@ -147,29 +149,43 @@ class SmartVolume extends SmartGeneric {
             text = I18n.t('unmute');
             color = 'inherit'
         }
+        let customIcon;
+
+        if (this.state.settings.useDefaultIcon) {
+            customIcon = (<img src={this.getDefaultIcon()} style={{height: '100%', zIndex: 1}}/>);
+        } else {
+            customIcon = (<Icon width={'100%'} height={'100%'} style={{zIndex: 1}}/>);
+        }
 
         return (<div key={this.key + 'tile-secondary'} className="tile-text-second"
                      style={Theme.tile.secondary.button} title={text}>
             <Button variant="fab" mini onClick={this.toggle.bind(this)} style={{background: color, boxShadow: 'none'}} aria-label={text}>
-                <Icon />
+                {customIcon}
             </Button>
         </div>);
     }
 
     getIcon() {
-        let IconCustom;
-        const val = Math.round((this.state[this.actualId] - this.min) / (this.max - this.min) * 100);
-        if (val < 25) {
-            IconCustom = IconVolume0;
-        } else if (val < 75) {
-            IconCustom = IconVolume50;
-        } else {
-            IconCustom = IconVolume100;
-        }
 
+        let customIcon;
+
+        if (this.state.settings.useDefaultIcon) {
+            customIcon = (<img src={this.getDefaultIcon()} style={{height: '100%'}}/>);
+        } else {
+            let IconCustom;
+            const val = Math.round((this.state[this.actualId] - this.min) / (this.max - this.min) * 100);
+            if (val < 25) {
+                IconCustom = IconVolume0;
+            } else if (val < 75) {
+                IconCustom = IconVolume50;
+            } else {
+                IconCustom = IconVolume100;
+            }
+            customIcon = (<IconCustom width={'100%'} height={'100%'}/>);
+        }
         return (
             <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, this.state[this.actualId] !== this.min ? {color: Theme.palette.lampOn} : {})} className="tile-icon">
-                <IconCustom width={'100%'} height={'100%'}/>
+                {customIcon}
                 {this.state.executing ? <CircularProgress style={{position: 'absolute', top: 0, left: 0}} size={Theme.tile.tileIcon.width}/> : null}
             </div>
         );
@@ -181,9 +197,15 @@ class SmartVolume extends SmartGeneric {
             result = '---';
         } else {
             if (this.workingId && this.state[this.workingId] && this.state.setValue !== null && this.state.setValue !== undefined) {
-                result = this.roundValue(this.state[this.id]) + this.unit + ' → ' + this.state.setValue + this.unit;
+                if (this.max - this.min > 9) {
+                    result = Math.round(this.state[this.id]) + this.unit + ' → ' + Math.round(this.state.setValue) + this.unit;
+                } else {
+                    result = this.roundValue(this.state[this.id], 1) + this.unit + ' → ' + this.roundValue(this.state.setValue, 1) + this.unit;
+                }
+            } else if (this.max - this.min > 9) {
+                result = Math.round(this.state[this.id]) + this.unit;
             } else {
-                result = this.roundValue(this.state[this.id]) + this.unit;
+                result = this.roundValue(this.state[this.id], 1) + this.unit;
             }
         }
         if (this.muteId && this.state[this.muteId]) {

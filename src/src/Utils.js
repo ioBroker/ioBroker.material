@@ -159,6 +159,33 @@ class Utils {
         return null;
     }
 
+    static getObjectIcon(id, obj) {
+        if (obj && obj.common && obj.common.icon) {
+            let icon = obj.common.icon;
+            if (icon.startsWith('data:image')) {
+                return icon;
+            } else {
+                const parts = id.split('.');
+                if (parts[0] === 'system') {
+                    icon = 'adapter/' + parts[2] + icon;
+                } else {
+                    icon = 'adapter/' + parts[0] + icon;
+                }
+
+                if (window.location.pathname.match(/material\/[.\d]+/)) {
+                    icon = '../../' + icon;
+                } else
+                if (window.location.pathname.match(/material\//)) {
+                    icon = '../' + icon;
+                }
+                return icon;
+            }
+        } else {
+            return null;
+        }
+
+    }
+
     static splitCamelCase(text) {
         if (false && text !== text.toUpperCase()) {
             const words = text.split(/\s+/);
@@ -245,7 +272,7 @@ class Utils {
         if (hours) {
             if (minutes < 10) minutes = '0' + minutes;
             if (secs < 10) secs = '0' + secs;
-            return hours + ':' + minutes + ':' + seconds;
+            return hours + ':' + minutes + ':' + secs;
         } else {
             if (secs < 10) secs = '0' + secs;
             return minutes + ':' + secs;

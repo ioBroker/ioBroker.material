@@ -159,10 +159,17 @@ class SmartInfo extends SmartGeneric {
     }
 
     getIcon() {
-        let Icon = this.infos[0].icon || IconInfo;
+        let customIcon;
+        if (this.state.settings.useDefaultIcon) {
+            customIcon = (<img src={this.getDefaultIcon()} style={{height: '100%', zIndex: 1}}/>);
+        } else {
+            const Icon = this.infos[0].icon || IconInfo;
+            customIcon = (<Icon width={'100%'} height={'100%'} style={{zIndex: 1}}/>);
+        }
+
         return (
             <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, this.infos[0].iconStyle || {})} className="tile-icon">
-                <Icon style={{zIndex: 1}} width={'100%'} height={'100%'}/>
+                {customIcon}
             </div>
         );
     }
