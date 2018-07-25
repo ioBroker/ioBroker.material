@@ -1,8 +1,19 @@
 {
     "common": {
         "name": "material",
-        "version": "0.9.2",
+        "version": "0.9.3",
         "news": {
+            "0.9.3": {
+                "en": "Many changes",
+                "de": "Viele Veränderungen",
+                "ru": "Много изменений",
+                "pt": "Muitas mudanças",
+                "nl": "Veel veranderingen",
+                "fr": "Beaucoup de changements",
+                "it": "Molti cambiamenti",
+                "es": "Muchos cambios",
+                "pl": "Wiele zmian"
+            },
             "0.9.2": {
                 "en": "Update logic was implemented",
                 "de": "Update-Logik wurde implementiert",
