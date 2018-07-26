@@ -1,8 +1,19 @@
 {
     "common": {
         "name": "material",
-        "version": "0.9.3",
+        "version": "0.9.4",
         "news": {
+            "0.9.4": {
+                "en": "Bug-fixes",
+                "de": "Fehlerbehebung",
+                "ru": "Исправление ошибок",
+                "pt": "Correções de bugs",
+                "nl": "Bugfixes",
+                "fr": "Corrections de bogues",
+                "it": "Bug-fix",
+                "es": "Corrección de errores",
+                "pl": "Poprawki błędów"
+            },
             "0.9.3": {
                 "en": "Many changes",
                 "de": "Viele Veränderungen",

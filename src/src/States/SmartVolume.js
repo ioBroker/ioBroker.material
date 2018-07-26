@@ -172,16 +172,20 @@ class SmartVolume extends SmartGeneric {
         if (this.state.settings.useDefaultIcon) {
             customIcon = (<img src={this.getDefaultIcon()} style={{height: '100%'}}/>);
         } else {
-            let IconCustom;
-            const val = Math.round((this.state[this.actualId] - this.min) / (this.max - this.min) * 100);
-            if (val < 25) {
-                IconCustom = IconVolume0;
-            } else if (val < 75) {
-                IconCustom = IconVolume50;
+            if (this.state.settings.icon) {
+                customIcon = (<img src={this.state.settings.icon} style={{height: '100%'}}/>);
             } else {
-                IconCustom = IconVolume100;
+                let IconCustom;
+                const val = Math.round((this.state[this.actualId] - this.min) / (this.max - this.min) * 100);
+                if (val < 25) {
+                    IconCustom = IconVolume0;
+                } else if (val < 75) {
+                    IconCustom = IconVolume50;
+                } else {
+                    IconCustom = IconVolume100;
+                }
+                customIcon = (<IconCustom width={'100%'} height={'100%'}/>);
             }
-            customIcon = (<IconCustom width={'100%'} height={'100%'}/>);
         }
         return (
             <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, this.state[this.actualId] !== this.min ? {color: Theme.palette.lampOn} : {})} className="tile-icon">

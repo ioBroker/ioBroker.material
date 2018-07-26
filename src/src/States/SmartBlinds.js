@@ -166,7 +166,11 @@ class SmartBlinds extends SmartGeneric {
         if (this.state.settings.useDefaultIcon) {
             customIcon = (<img src={this.getDefaultIcon()} style={{height: '100%', zIndex: 1}}/>);
         } else {
-            customIcon = (<Icon width={'100%'} height={'100%'} style={{zIndex: 1}}/>);
+            if (this.state.settings.icon) {
+                customIcon = (<img src={this.state.settings.icon} style={{height: '100%', zIndex: 1}}/>);
+            } else {
+                customIcon = (<Icon width={'100%'} height={'100%'} style={{zIndex: 1}}/>);
+            }
         }
         return (
             <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, /*this.state[this.actualId] !== this.min ? {color: Theme.palette.lampOn} : */{}, {left: '1em'})} className="tile-icon">
@@ -216,7 +220,7 @@ class SmartBlinds extends SmartGeneric {
         return this.wrapContent([
             (<div key={this.key + 'tile-icon'} className="tile-icon"
                   style={{pointerEvents: 'none'}}>{this.getIcon()}</div>),
-            (<div key={this.key + 'tile-text'} className="tile-text" style={Object.assign({}, Theme.tile.tileText, this.state.nameStyle, {marginTop: '3.1em'})}>
+            (<div key={this.key + 'tile-text'} className="tile-text" style={Object.assign({}, Theme.tile.tileText, this.state.nameStyle)}>
                 <div className="tile-channel-name" style={Theme.tile.tileName}>{this.state.settings.name}</div>
                 <div className="tile-state-text"
                      style={Object.assign({}, Theme.tile.tileState, this.state[this.id] ? Theme.tile.tileStateOn : Theme.tile.tileStateOff)}>{this.getStateText()}</div>

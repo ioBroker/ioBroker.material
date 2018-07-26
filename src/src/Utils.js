@@ -225,9 +225,9 @@ class Utils {
     }
 
     // https://stackoverflow.com/questions/35969656/how-can-i-generate-the-opposite-color-according-to-current-color
-    static invertColor(color) {
+    static isUseBright(color, defaultValue) {
         if (color === null || color === undefined || color === '') {
-            return true;
+            return defaultValue === undefined ? true : defaultValue;
         }
         color = color.toString();
         if (color.indexOf('#') === 0) {

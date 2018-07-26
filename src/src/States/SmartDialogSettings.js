@@ -151,7 +151,15 @@ class SmartDialogSettings extends SmartDialogGeneric  {
         newValue.changed = this.isChanged(name, newValue.values[name]);
         this.setState(newValue);
     }
-    
+
+    handleIcon(name, file) {
+        const newValue = {values: JSON.parse(JSON.stringify(this.state.values))};
+        this.click = Date.now();
+        newValue.values[name] = typeof file === 'object' ? file.data : file;
+        newValue.changed = this.isChanged(name, newValue.values[name]);
+        this.setState(newValue);
+    }
+
     isChanged(name, newVal) {
         return !!this.props.settings.find(item => {
             if (item.name === name) {
@@ -214,7 +222,7 @@ class SmartDialogSettings extends SmartDialogGeneric  {
                     label={e.label ? I18n.t(e.label) : I18n.t(e.name)}
                     image={this.state.values[e.name]}
                     maxHeight={200}
-                    onUpload={file => this.handleDropImage(e.name, file)}
+                    onUpload={file => this.handleIcon(e.name, file)}
                     textAccepted={I18n.t('All files will be accepted')}
                     textRejected={I18n.t('Some files will be rejected')}
                     textWaiting={I18n.t('Drop some files here or click...')}

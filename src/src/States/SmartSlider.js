@@ -108,9 +108,13 @@ class SmartSlider extends SmartGeneric {
         if (this.state.settings.useDefaultIcon) {
             customIcon = (<img src={this.getDefaultIcon()} style={{height: '100%'}}/>);
         } else {
-            let IconCustom = this.icon;
-            if (IconCustom) {
-                customIcon = (<IconCustom width={'100%'} height={'100%'}/>);
+            if (this.state.settings.icon) {
+                customIcon = (<img src={this.state.settings.icon} style={{height: '100%'}}/>);
+            } else {
+                let IconCustom = this.icon;
+                if (IconCustom) {
+                    customIcon = (<IconCustom width={'100%'} height={'100%'}/>);
+                }
             }
         }
         if (customIcon) {

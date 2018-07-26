@@ -21,7 +21,7 @@
 import Background from './assets/apartment.jpg';
 
 const appBarHeight = 64;
-const tileBorderRadius = '1em';
+const tileBorderRadius = 16;
 const tileSize = 128;
 
 export default {
@@ -39,11 +39,11 @@ export default {
         loadingContainer: {
             position: 'absolute',
             textAlign: 'center',
-            top: 'calc(50% - 2.5em)'
+            top: 'calc(50% - 40px)'
         },
         loadingText: {
             color: 'rgba(0, 0, 0, .3)',
-            fontSize: '5em',
+            fontSize: 24,
             position: 'relative'
         }
     },
@@ -106,13 +106,13 @@ export default {
     },
     dialog: {
         inner: {
-            height: 'calc(100% - 2em)',
+            height: 'calc(100% - 32px)',
             position: 'absolute',
-            top: '1em',
+            top: 16,
             left: 'calc(50% - 180px)',
             maxWidth: 360,
-            width: 'calc(100% - 1em)',
-            padding: '1em 0 1em 1em',
+            width: 'calc(100% - 16px)',
+            padding: '16px 0 16px 16px',
             overflow: 'hidden',
             boxSizing: 'border-box',
             background: 'rgba(255, 255, 255, 0.8)'
@@ -132,7 +132,7 @@ export default {
             overflowX: 'hidden',
             overflowY: 'auto',
             paddingBottom: 20,
-            width: 'calc(100% - 1em)'
+            width: 'calc(100% - 16px)'
         },
         divider: {
             paddingTop: 0,
@@ -243,29 +243,29 @@ export default {
         title: {
             fontSize: 20,
             color: 'white',
-            margin: '0.5em',
-            padding: '0 0 0 1em',
+            margin: 8,
+            padding: '0 0 0 16px',
         },
         row: {
-            paddingLeft: '1em',
-            paddingRight: '1em',
+            paddingLeft: 16,
+            paddingRight: 16,
             display: 'inline-block',
-            borderRadius: '2em',
+            borderRadius: 32,
             border: '1px dashed #c7c7c7',
-            margin: '0.5em'
+            margin: 8
         }
 
     },
     tile: {
         tile: {
-            margin: '0.5em',
+            margin: 8,
             borderRadius: tileBorderRadius,
-            padding: '1em',
+            padding: 16,
             transition: 'all 0.2s',
             width: tileSize,
             height: tileSize,
             position: 'relative',
-            fontSize: '1em',
+            fontSize: 16,
             fontWeight: 'bold',
             color: 'black',
             background: 'white',
@@ -301,23 +301,24 @@ export default {
             width: 40, // 2.5em
             height: 40,
             position: 'absolute',
-            top: '0.9em',
-            left: '0.5em',
+            top: 14,
+            left: 8,
             color: '#2f3440',
             pointerEvents: 'none'
         },
         tileName: {
             overflow: 'hidden',
             width: '100%',
-            height: '2.3em',
+            height: 37,
         },
         tileNameSmall: {
             fontSize: 8,
         },
         tileText: {
-            marginTop: '2.8em',
+            marginTop: 45,
             pointerEvents: 'none',
-            position: 'relative'
+            position: 'relative',
+            height: 64
         },
         tileNumber: {
             position: 'absolute',
@@ -333,7 +334,9 @@ export default {
             textAlign: 'center'
         },
         tileState: {
-            marginTop: '0.2em',
+            position: 'absolute',
+            bottom: 8,
+            left: 0,
             whiteSpace: 'nowrap',
             width: '100%',
             overflow: 'hidden',
@@ -349,14 +352,14 @@ export default {
         },
         tileIndicators: {
             position: 'absolute',
-            top: '1em',
-            right: '1em',
+            top: 16,
+            right: 16,
             whiteSpace: 'nowrap',
             //width: 'calc(100% - ' + tileIconWidth + 'px)'
         },
         tileIndicator: {
-            width: '1em',
-            height: '1em',
+            width: 16,
+            height: 16,
             float: 'right',
             display: 'inline-block'
         },
@@ -382,13 +385,13 @@ export default {
             },
             div: {
                 position: 'absolute',
-                top: '2em',
-                right: '1em'
+                top: 32,
+                right: 16
             },
             button: {
                 position: 'absolute',
-                top: '1em',
-                right: '0.5em'
+                top: 16,
+                right: 8
             }
         },
         editMode: {

@@ -6,11 +6,13 @@
   "App settings": "App settings",
   "Changes are not saved.": "Changes are not saved.",
   "Changes not saved!": "Changes not saved!",
+  "Control ID is empty": "Control ID is empty",
   "Current": "Current",
   "Decision Value": "Decision Value",
   "Discard changes": "Discard changes",
   "Drop some files here or click...": "Drop some files here or click...",
   "Environment values": "Environment values",
+  "Error": "Error",
   "Favorites": "Favorites",
   "Functions": "Functions",
   "Ignore changes?": "Ignore changes?",
@@ -38,6 +40,7 @@
   "Speech recognition running...": "Speech recognition running...",
   "State": "State",
   "Stay edit": "Stay edit",
+  "Update to": "Update to",
   "Valve State": "Valve State",
   "add indicator": "add indicator",
   "background": "Background",
@@ -55,6 +58,7 @@
   "enabled": "enabled",
   "fire": "fire",
   "icon": "Icon",
+  "iconOff": "Icon OFF",
   "ignoreIndicators": "Шgnore шndicators",
   "instances": "Show instances",
   "loading...": "loading...",
@@ -76,7 +80,5 @@
   "stopped": "stopped",
   "tilted": "tilted",
   "unknown": "unknown",
-  "unmute": "unmute",
-  "Control ID is empty": "Control ID is empty",
-  "Error": "Error"
+  "unmute": "unmute"
 }

@@ -513,6 +513,13 @@ class SmartGeneric extends Component {
     getDialogSettings(settings) {
         settings = settings || [];
 
+        if (this.doubleState) {
+            settings.unshift({
+                name: 'iconOff',
+                value: this.state.settings.iconOff || '',
+                type: 'icon'
+            });
+        }
         settings.unshift({
             name: 'icon',
             value: this.state.settings.icon || '',

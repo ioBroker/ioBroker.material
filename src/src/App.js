@@ -181,14 +181,14 @@ class App extends Component {
                                 type: objects[keys[k]].type
                             };
                         }
-                        const appSettings = Utils.getSettings(appConfig || {_id: appConfigID}, {
+                        let appSettings = Utils.getSettings(appConfig || {_id: appConfigID}, {
                             user: this.user,
                             language: I18n.getLanguage()
                         });
 
                         // add loadingBackground & co
                         if (appConfig.native) {
-                            Object.assign(appSettings, appConfig.native);
+                            appSettings = Object.assign(appSettings || {}, appConfig.native);
                         }
 
                         if (!viewEnum) {
@@ -225,8 +225,8 @@ class App extends Component {
                                 this.setState({loading: false});
                             }
 
-                            if (this.state.appSettings.text2command || this.state.appSettings.text2command === 0) {
-                                this.conn.subscribe(['text2command.' + this.state.appSettings.text2command + '.response']);
+                            if (appSettings && (appSettings.text2command || appSettings.text2command === 0)) {
+                                this.conn.subscribe(['text2command.' + appSettings.text2command + '.response']);
                             }
 
                             if (appSettings.instances) {
@@ -285,7 +285,7 @@ class App extends Component {
                         this.subscribes[id].forEach(elem => elem.updateState(id, this.states[id]));
                     }
 
-                    if (this.state.appSettings.text2command || this.state.appSettings.text2command === 0) {
+                    if (this.state.appSettings && (this.state.appSettings.text2command || this.state.appSettings.text2command === 0)) {
                         if (state && !state.ack && state.val && id === 'text2command.' + this.state.appSettings.text2command + '.response') {
                             this.speak(state.val);
                         }
@@ -399,7 +399,7 @@ class App extends Component {
             // load settings for this enum
             this.setState(states);
         } else {
-            states.settings = this.state.appSettings.instancesSettings || {};
+            states.settings = (this.state.appSettings && this.state.appSettings.instancesSettings) || {};
             this.readInstancesData(true, () => {
                 if (!this.subscribeInstances) {
                     this.conn._socket.emit('subscribeObjects', 'system.adapter.*');
@@ -629,7 +629,7 @@ class App extends Component {
     }
 
     onSpeechRec(text) {
-        this.conn.setState('text2command.' + this.state.appSettings.text2command + '.text', text);
+        this.conn.setState('text2command.' + ((this.state.appSettings && this.state.appSettings.text2command) || 0) + '.text', text);
     }
 
     speak(text) {
@@ -683,7 +683,7 @@ class App extends Component {
     }
 
     editAppSettingsOpen() {
-        if (!this.state.appSettings.instances) {
+        if (!this.state.appSettings || !this.state.appSettings.instances) {
             this.readInstancesData(true, () => {
                 this.setState({editAppSettings: true});
             });
@@ -734,6 +734,17 @@ class App extends Component {
                 type: 'boolean'
             });
         }
+        settings.unshift({
+            name: 'align',
+            value: this.state.settings.align || '',
+            options: [
+                {label: I18n.t('left'), value: 'left'},
+                {label: I18n.t('center'), value: 'center'},
+                {label: I18n.t('right'), value: 'right'}
+            ],
+            type: 'select'
+        });
+
         return settings;
     }
 
@@ -789,10 +800,11 @@ class App extends Component {
 
     getAppSettings(settings) {
         settings = settings || [];
+        const appSettings = this.state.appSettings || {};
 
         settings.push({
             name: 'instances',
-            value: this.state.appSettings.instances === undefined ? true : this.state.appSettings.instances,
+            value: appSettings.instances === undefined ? true : appSettings.instances,
             type: 'boolean'
         });
 
@@ -803,39 +815,39 @@ class App extends Component {
 
         settings.push({
             name: 'text2command',
-            value: this.state.appSettings.text2command || text2command[0].value || '',
+            value: appSettings.text2command || text2command[0].value || '',
             options: text2command,
             type: 'select'
         });
 
         settings.push({
             name: 'menuBackground',
-            value: this.state.appSettings.menuBackground || '',
+            value: appSettings.menuBackground || '',
             type: 'color'
         });
 
         settings.push({
             name: 'loadingBackground',
-            value: this.state.appSettings.loadingBackground || '',
+            value: appSettings.loadingBackground || '',
             type: 'color'
         });
 
         settings.push({
             name: 'ignoreIndicators',
-            value: this.state.appSettings.ignoreIndicators === undefined ? 'UNREACH_ALARM,STICKY_UNREACH_ALARM,STICKY_UNREACH' : this.state.appSettings.ignoreIndicators,
+            value: appSettings.ignoreIndicators === undefined ? 'UNREACH_ALARM,STICKY_UNREACH_ALARM,STICKY_UNREACH' : appSettings.ignoreIndicators,
             type: 'chips'
         });
 
         settings.push({
             name: 'startEnum',
-            value: this.state.appSettings.startEnum || '',
+            value: appSettings.startEnum || '',
             options: this.getEnums(),
             type: 'select'
         });
 
         settings.push({
             name: 'debug',
-            value: this.state.appSettings.debug === undefined ? true : this.state.appSettings.debug ,
+            value: appSettings.debug === undefined ? true : appSettings.debug ,
             type: 'boolean'
         });
 
@@ -861,7 +873,7 @@ class App extends Component {
                 } else {
                     settings.background = fileName;
                     if (this.state.viewEnum === Utils.INSTANCES) {
-                        const appSettings = JSON.parse(JSON.stringify(this.state.appSettings));
+                        const appSettings = JSON.parse(JSON.stringify(this.state.appSettings || {}));
                         appSettings.instancesSettings = settings;
                         this.setState({appSettings, settings, backgroundId: this.state.backgroundId + 1});
                         this.saveAppSettings(appSettings);
@@ -873,7 +885,7 @@ class App extends Component {
             }.bind(this));
         } else {
             if (this.state.viewEnum === Utils.INSTANCES) {
-                const appSettings = JSON.parse(JSON.stringify(this.state.appSettings));
+                const appSettings = JSON.parse(JSON.stringify(this.state.appSettings || {}));
                 appSettings.instancesSettings = settings;
                 this.setState({appSettings, settings});
                 this.saveAppSettings(appSettings);
@@ -885,7 +897,7 @@ class App extends Component {
     }
 
     saveAppSettings(appSettings) {
-        appSettings = appSettings || this.state.appSettings;
+        appSettings = appSettings || this.state.appSettings || {};
         const nativeSettings = {
             loadingBackground: appSettings.loadingBackground
         };
@@ -967,8 +979,7 @@ class App extends Component {
 
                 {this.state.connected && this.state.editMode ? (<IconButton onClick={this.editAppSettingsOpen.bind(this)} style={{color: this.state.editEnumSettings ? Theme.palette.editActive : (useBright ? Theme.palette.textColorBright : Theme.palette.textColorDark)}}><IconSettings width={Theme.iconSize} height={Theme.iconSize}/></IconButton>) : null}
 
-                <div style={{flex: 1}}>
-                </div>
+                <div style={{flex: 1}}/>
 
                 {this.state.width > 500 && !this.state.menuFixed ?
                     (<IconButton onClick={this.onToggleLock.bind(this)} style={{float: 'right', color: useBright ? Theme.palette.textColorBright : Theme.palette.textColorDark}}>
@@ -1012,7 +1023,7 @@ class App extends Component {
     }
 
     getButtonSpeech(useBright) {
-        if (this.state.connected &&
+        if (this.state.connected && this.state.appSettings &&
             (this.state.appSettings.text2command || this.state.appSettings.text2command === 0) &&
             SpeechDialog.isSpeechRecognitionSupported()) {
             return (
@@ -1050,7 +1061,7 @@ class App extends Component {
 
     getAppBar() {
         const toolbarBackground = this.state.settings ? this.state.settings.color : undefined;
-        const useBright = !toolbarBackground || Utils.invertColor(toolbarBackground);
+        const useBright = !toolbarBackground || Utils.isUseBright(toolbarBackground);
 
         return (<AppBar
             position="fixed"
@@ -1105,6 +1116,7 @@ class App extends Component {
                 objects={this.state.viewEnum === Utils.INSTANCES ? this.instances : this.objects}
                 user={this.user}
                 states={this.states}
+                align={this.state.settings && this.state.settings.align}
                 debug={this.state.appSettings ? (this.state.appSettings.debug === undefined ? true : this.state.appSettings.debug) : true}
                 connected={this.state.connected}
                 ignoreIndicators={((this.state.appSettings && this.state.appSettings.ignoreIndicators) || '').split(',')}
@@ -1143,7 +1155,7 @@ class App extends Component {
     }
 
     getSpeechDialog() {
-        if (this.state.appSettings.text2command || this.state.appSettings.text2command === 0) {
+        if (this.state.appSettings && (this.state.appSettings.text2command || this.state.appSettings.text2command === 0)) {
             return (SpeechDialog.isSpeechRecognitionSupported() ?
                 <SpeechDialog
                     objects={this.objects}
@@ -1159,7 +1171,7 @@ class App extends Component {
 
     getLoadingScreen() {
         const background = window.materialBackground;
-        const useBright = background && Utils.invertColor(background);
+        const useBright = background && Utils.isUseBright(background);
 
         return (
             <div className={this.props.classes.loadingBackground} style={{background: window.materialBackground}}>
@@ -1176,7 +1188,7 @@ class App extends Component {
         if (this.state.loading) {
             return this.getLoadingScreen();
         } else {
-            const useBright = this.state.appSettings && this.state.appSettings.menuBackground && Utils.invertColor(this.state.appSettings.menuBackground);
+            const useBright = this.state.appSettings && this.state.appSettings.menuBackground && Utils.isUseBright(this.state.appSettings.menuBackground);
             return (
                 <div>
                     {this.getAppBar(useBright)}

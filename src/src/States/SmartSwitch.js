@@ -16,6 +16,8 @@
 import React from 'react';
 import SmartGeneric from './SmartGeneric';
 import IconLight from 'react-icons/lib/ti/lightbulb';
+import IconCheck from 'react-icons/lib/md/check';
+import IconCancel from 'react-icons/lib/md/cancel';
 import IconSwitch from '../icons/Socket';
 import Types from './SmartTypes';
 import Theme from '../theme';
@@ -48,8 +50,13 @@ class SmartSwitch extends SmartGeneric {
 
                 case Types.socket:
                 default:
-                    this.iconOn = IconSwitch;
-                    this.iconOff = IconSwitch;
+                    if (this.props.objects[this.id] && this.props.objects[this.id].common && this.props.objects[this.id].common.role ==='switch.active') {
+                        this.iconOn = IconCheck;
+                        this.iconOff = IconCancel;
+                    } else {
+                        this.iconOn = IconSwitch;
+                        this.iconOff = IconSwitch;
+                    }
                     this.colorOn = Theme.palette.lampOn;
                     this.colorOff = 'inherit';
                     this.backOn = Theme.palette.lampOn;
@@ -103,7 +110,8 @@ class SmartSwitch extends SmartGeneric {
     }
 
     getIcon() {
-        let style = this.state[this.actualId] ? {color: this.colorOn} : {color: this.colorOff};
+        const state = !!this.state[this.actualId];
+        let style = state ? {color: this.colorOn} : {color: this.colorOff};
         if (this.style) {
             style = Object.assign(style, this.style);
         }
@@ -112,8 +120,12 @@ class SmartSwitch extends SmartGeneric {
         if (this.state.settings.useDefaultIcon) {
             customIcon = (<img src={this.getDefaultIcon()} style={{height: '100%'}}/>);
         } else {
-            const Icon = this.state[this.actualId] ? this.iconOn : this.iconOff;
-            customIcon = (<Icon width={'100%'} height={'100%'}/>);
+            if (this.state.settings.icon) {
+                customIcon = (<img src={state ? this.state.settings.icon : this.state.settings.iconOff || this.state.settings.icon} style={{height: '100%'}}/>);
+            } else {
+                const Icon = this.state[this.actualId] ? this.iconOn : this.iconOff;
+                customIcon = (<Icon width={'100%'} height={'100%'}/>);
+            }
         }
         return (
             <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, style)} className="tile-icon">

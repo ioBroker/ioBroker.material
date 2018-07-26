@@ -115,7 +115,7 @@ class SmartTile extends Component {
         }
 
         style.width = style.width * this.state.width;
-        style.color = Utils.invertColor(style.background) ? 'white' : 'black';
+        style.color = Utils.isUseBright(style.background) ? 'white' : 'black';
 
         if (!this.channelInfo) {
             style.paddingTop = 50;
@@ -187,9 +187,7 @@ class SmartTile extends Component {
     }
 
     registerHandler(eventName, handler) {
-        if (!this.props.editMode) {
-            this.handlers[eventName] = handler;
-        }
+        this.handlers[eventName] = handler;
     }
 
     createControl(control, channelInfo, tile) {

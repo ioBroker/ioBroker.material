@@ -163,8 +163,12 @@ class SmartInfo extends SmartGeneric {
         if (this.state.settings.useDefaultIcon) {
             customIcon = (<img src={this.getDefaultIcon()} style={{height: '100%', zIndex: 1}}/>);
         } else {
-            const Icon = this.infos[0].icon || IconInfo;
-            customIcon = (<Icon width={'100%'} height={'100%'} style={{zIndex: 1}}/>);
+            if (this.state.settings.icon) {
+                customIcon = (<img src={this.state.settings.icon} style={{height: '100%', zIndex: 1}}/>);
+            } else {
+                const Icon = this.infos[0].icon || IconInfo;
+                customIcon = (<Icon width={'100%'} height={'100%'} style={{zIndex: 1}}/>);
+            }
         }
 
         return (

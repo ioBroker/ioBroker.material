@@ -114,7 +114,20 @@ class ImageSelector extends React.Component {
     static readFile(file, cb) {
         const reader = new FileReader();
         reader.onload = () => {
-            cb(null, {data: btoa(reader.result), ext: file.name.split('.').pop().toLowerCase(), preview: file.preview});
+            const pos = file.name.lastIndexOf('.');
+            const ext = file.name.substring(pos + 1).toLowerCase();
+            let prefix = 'data:image/png;base64,';
+            if (ext === 'svg') {
+                prefix = 'data:image/svg+xml;base64,';
+            } else if (ext === 'jpg' || ext === 'jpeg') {
+                prefix = 'data:image/jpeg;base64,';
+            } else if (ext === 'gif') {
+                prefix = 'data:image/gif;base64,';
+            } else if (ext === 'bmp') {
+                prefix = 'data:image/bmp;base64,';
+            }
+
+            cb(null, {data: prefix + btoa(reader.result), ext: ext, preview: file.preview});
         };
         reader.onabort = () => {
             console.error('file reading was aborted');
@@ -129,14 +142,17 @@ class ImageSelector extends React.Component {
     }
 
     handleSelectImage(file) {
-        this.setState({image: file});
-        this.props.onUpload && this.props.onUpload(file);
+        this.setState({image: typeof file ==='object' ? file.data : file});
+        this.props.onUpload && this.props.onUpload(file ==='object' ? file.data : file);
     }
 
     handleDropImage(files) {
         if (!files && !files.length) return;
         const file = files[files.length - 1];
 
+        if (!file) {
+            return;
+        }
         ImageSelector.readFile(file, (err, result) => {
             if (err) {
                 alert(err);

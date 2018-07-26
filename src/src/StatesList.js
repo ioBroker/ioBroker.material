@@ -34,6 +34,7 @@ class StatesList extends Component {
         background:      PropTypes.string.isRequired,
         backgroundId:    PropTypes.number,
         backgroundColor: PropTypes.string,
+        align:           PropTypes.string,
         ignoreIndicators: PropTypes.array,
         windowWidth:     PropTypes.number,
         windowHeight:    PropTypes.number,
@@ -47,6 +48,7 @@ class StatesList extends Component {
             visible: false,
             newLine: false,
             enumID: this.props.enumID,
+            align: this.props.align,
             background: this.props.background,
             backgroundId: this.props.backgroundId,
             visibleChildren: {}
@@ -74,6 +76,10 @@ class StatesList extends Component {
         }
         if (nextProps.background !== this.state.background) {
             newState.background = nextProps.background;
+            changed = true;
+        }
+        if (nextProps.align !== this.state.align) {
+            newState.align = nextProps.align;
             changed = true;
         }
         if (nextProps.backgroundId !== this.state.backgroundId) {
@@ -192,7 +198,7 @@ class StatesList extends Component {
         }
 
         const background = this.props.backgroundColor;
-        const invertColor = !background || Utils.invertColor(background);
+        const isUseBright = !background || Utils.isUseBright(background);
 
         if (this.props.enumID === Utils.INSTANCES) {
             columns.push((<StatesSubList
@@ -201,10 +207,11 @@ class StatesList extends Component {
                 user={this.props.user}
                 states={this.props.states}
                 items={items}
-                invertColor={invertColor}
+                isUseBright={isUseBright}
                 ignoreIndicators={[]}
                 onVisibilityControl={this.onVisibilityControl.bind(this)}
                 editMode={false}
+                align={this.state.align}
                 debug={this.props.debug}
                 windowWidth={this.props.windowWidth}
                 enumFunctions={this.enumFunctions}
@@ -246,10 +253,11 @@ class StatesList extends Component {
                             states={this.props.states}
                             newLine={this.props.newLine}
                             items={column}
-                            invertColor={invertColor}
+                            isUseBright={isUseBright}
                             ignoreIndicators={this.props.ignoreIndicators}
                             onVisibilityControl={this.onVisibilityControl.bind(this)}
                             debug={this.props.debug}
+                            align={this.state.align}
                             editMode={this.props.editMode}
                             windowWidth={this.props.windowWidth}
                             enumFunctions={this.enumFunctions}
@@ -282,11 +290,12 @@ class StatesList extends Component {
                     newLine={this.props.newLine}
                     editMode={this.props.editMode}
                     debug={this.props.debug}
+                    align={this.state.align}
                     ignoreIndicators={this.props.ignoreIndicators}
                     onVisibilityControl={this.onVisibilityControl.bind(this)}
                     windowWidth={this.props.windowWidth}
                     enumFunctions={this.enumFunctions}
-                    invertColor={invertColor}
+                    isUseBright={isUseBright}
                     enumID={this.state.enumID}
                     enumSubID="others"
                     keys={this.keys}
@@ -337,6 +346,10 @@ class StatesList extends Component {
             style = Object.assign({}, Theme.mainPanel, {background: this.state.backgroundColor, backgroundImage: 'none'});
         } else {
             style = Object.assign({}, Theme.mainPanel, {backgroundSize: this.props.windowWidth > this.props.windowHeight ? '100% auto' : 'auto 100%'});
+        }
+
+        if (this.state.align) {
+            style.textAlign = this.state.align;
         }
 
         return (<div style={Object.assign({marginLeft: this.props.marginLeft}, style)}>{columns}</div>);

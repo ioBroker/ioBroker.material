@@ -285,8 +285,8 @@ function ChannelDetector() {
         },
         socket: {
             states: [
-                {role: /^switch$|^state$/,           indicator: false, type: 'boolean', write: true,       name: 'SET',         required: true},
-                {role: /^switch$|^state$/,           indicator: false, type: 'boolean', write: false,      name: 'ACTUAL',      required: false},
+                {role: /^switch$|^state$|^switch\.active$/,           indicator: false, type: 'boolean', write: true,       name: 'SET',         required: true},
+                {role: /^state$|^state\.active$/,                     indicator: false, type: 'boolean', write: false,      name: 'ACTUAL',      required: false},
                 patternWorking,
                 patternUnreach,
                 patternLowbat,

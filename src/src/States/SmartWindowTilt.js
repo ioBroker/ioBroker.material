@@ -158,7 +158,11 @@ class SmartWindowTilt extends SmartGeneric {
         if (this.state.settings.useDefaultIcon) {
             customIcon = (<img src={this.getDefaultIcon()} style={{width: '100%', zIndex: 1}}/>);
         } else {
-            customIcon = (<Icon width={'100%'} style={{zIndex: 1}}/>);
+            if (this.state.settings.icon) {
+                customIcon = (<img src={this.state.settings.icon} style={{height: '100%', zIndex: 1}}/>);
+            } else {
+                customIcon = (<Icon width={'100%'} style={{zIndex: 1}}/>);
+            }
         }
         return (
             <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, iconStyle)} className="tile-icon">

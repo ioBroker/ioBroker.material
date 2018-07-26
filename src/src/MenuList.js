@@ -217,7 +217,7 @@ class MenuList extends Component {
         let items = this.getElementsToShow('enum');
 
         if (items && items.length) {
-            return (<ListSubheader style={{background: this.state.background || 'white', borderBottom: '1px solid rgba(0, 0, 0, 0.12)'}}>{
+            return (<ListSubheader style={{background: this.state.background || 'white', borderBottom: useBright ? '1px solid rgba(255, 255, 255, 0.12)' : '1px solid rgba(0, 0, 0, 0.12)'}}>{
                 items.map(function (item) {
                     let settings = this.settings[item.id];
 
@@ -384,7 +384,7 @@ class MenuList extends Component {
         const icons = items.map(e => Utils.getIcon(e.settings, Theme.menuIcon));
         const anyIcons = !!icons.find(icon => icon);
 
-        const useBright = Utils.invertColor(this.state.background);
+        const useBright = Utils.isUseBright(this.state.background, false);
 
         return items.map(function (item, i) {
             const icon = icons[i];
@@ -420,7 +420,9 @@ class MenuList extends Component {
                     }}
                         primary={item.settings.name}/>
                     {visibilityButton}
-                    {children && children.length ? (expanded ? <ExpandLess onClick={e => this.onExpandMenu(e, item.id)}/> : <ExpandMore  onClick={e => this.onExpandMenu(e, item.id)} />) : ''}
+                    {children && children.length ? (expanded ?
+                        (<ExpandLess style={(useBright ? this.props.classes.menuTextBright : this.props.classes.menuTextDark)} onClick={e => this.onExpandMenu(e, item.id)} />) :
+                        (<ExpandMore style={(useBright ? this.props.classes.menuTextBright : this.props.classes.menuTextDark)} onClick={e => this.onExpandMenu(e, item.id)} />)) : ''}
                 </ListItem>),
 
                 children && children.length ?
@@ -472,10 +474,11 @@ class MenuList extends Component {
         let items = this.getElementsToShow();
 
         const style = {width: this.props.width};
-        const useBright = Utils.invertColor(this.state.background);
+        const useBright = Utils.isUseBright(this.state.background, false);
         if (this.state.background) {
             style.background = this.state.background;
         }
+        const dividerStyle = useBright ? {backgroundColor: 'rgba(255,255,255,0.12)'} : {};
         if (items && items.length) {
             const list = this.getListItems(items);
             if (this.state.instances && (this.props.root === 'enum.rooms' || this.props.root === Utils.INSTANCES)) {
@@ -495,7 +498,7 @@ class MenuList extends Component {
 
             return (
                 <div style={style}>
-                    <Divider />
+                    <Divider className='divider' style={dividerStyle}/>
                     {this.getListHeader(useBright)}
                     <List style={this.state.background ? {background: this.state.background} : {}}>{list}</List>
                 </div>
@@ -503,9 +506,9 @@ class MenuList extends Component {
         } else {
             return (
                 <div style={style} >
-                    <Divider />
+                    <Divider className='divider' style={dividerStyle}/>
                     {this.getListHeader(useBright)}
-                    <Divider />
+                    <Divider className='divider' style={dividerStyle}/>
                     <List >
                         <ListItem key="0" value="0">
                             <ListItemText>{I18n.t('No elements')}</ListItemText>

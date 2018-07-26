@@ -6,11 +6,13 @@
   "App settings": "App Einstellungen",
   "Changes are not saved.": "Änderungen werden nicht gespeichert.",
   "Changes not saved!": "Änderungen nicht gespeichert!",
+  "Control ID is empty": "Control ID is empty",
   "Current": "Strom",
   "Decision Value": "Entscheidungswert",
   "Discard changes": "Änderungen verwerfen",
   "Drop some files here or click...": "Dateien hierher schieben oder klicken ...",
   "Environment values": "Umwelt",
+  "Error": "Steuerelement-ID ist leer",
   "Favorites": "Favorite",
   "Functions": "Funktionen",
   "Ignore changes?": "Änderungen ignorieren?",
@@ -38,6 +40,7 @@
   "Speech recognition running...": "Spracherkennung läuft...",
   "State": "Zustand",
   "Stay edit": "Weiter bearbeiten",
+  "Update to": "Update bis",
   "Valve State": "Ventilzustand",
   "add indicator": "Indikator hinzufügen",
   "background": "Hintergrund",
@@ -55,6 +58,7 @@
   "enabled": "aktiviert",
   "fire": "Feuer",
   "icon": "Symbol",
+  "iconOff": "Symbol AUS",
   "ignoreIndicators": "ignoreIndicators",
   "instances": "Zeige Instanzen",
   "loading...": "Wird geladen...",
@@ -76,7 +80,5 @@
   "stopped": "gestoppt",
   "tilted": "gekippt",
   "unknown": "unbekannt",
-  "unmute": "Unmute",
-  "Control ID is empty": "Control ID is empty",
-  "Error": "Steuerelement-ID ist leer"
+  "unmute": "Unmute"
 }

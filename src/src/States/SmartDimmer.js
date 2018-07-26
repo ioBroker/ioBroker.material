@@ -180,7 +180,11 @@ class SmartLight extends SmartGeneric {
         if (this.state.settings.useDefaultIcon) {
             customIcon = (<img src={this.getDefaultIcon()} style={{height: '100%'}}/>);
         } else {
-            customIcon = (<Icon width={'100%'} height={'100%'}/>);
+            if (this.state.settings.icon) {
+                customIcon = (<img src={this.state.settings.icon} style={{height: '100%'}}/>);
+            } else {
+                customIcon = (<Icon width={'100%'} height={'100%'}/>);
+            }
         }
         return (
             <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, this.state[this.actualId] !== this.min ? {color: Theme.palette.lampOn} : {})} className="tile-icon">

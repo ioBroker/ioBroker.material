@@ -34,8 +34,9 @@ class StatesSubList extends Component {
         debug:          PropTypes.bool,
         ignoreIndicators: PropTypes.array,
         windowWidth:    PropTypes.number,
+        align:          PropTypes.string,
         newLine:        PropTypes.bool,
-        invertColor:    PropTypes.bool,
+        isUseBright:    PropTypes.bool,
         states:         PropTypes.object.isRequired,
         keys:           PropTypes.array.isRequired
     };
@@ -46,6 +47,7 @@ class StatesSubList extends Component {
         this.state = {
             visible: false,
             newLine: false,
+            align: this.props.align,
             enumID: this.props.enumID,
             enumSubID: this.props.enumSubID,
             visibleChildren: {}
@@ -65,6 +67,11 @@ class StatesSubList extends Component {
 
         if (nextProps.newLine !== this.state.newLine) {
             newState.newLine = nextProps.newLine;
+            changed = true;
+        }
+
+        if (nextProps.align !== this.state.align) {
+            newState.align = nextProps.align;
             changed = true;
         }
 
@@ -209,10 +216,14 @@ class StatesSubList extends Component {
 
                 const display = !visible ? {display: 'none'} : (this.state.newLine ? {display: 'block', border: 'none'} : {display: 'inline-block'});
 
+                if (this.state.align) {
+                    display.textAlign = this.state.align;
+                }
+
                 //style={Object.assign({}, Theme.list.row, {display: display})}
                 return (<div key={(this.state.enumID + '-' + this.state.enumSubID).replace(/[^\w\d]/g, '_') + '-title'}
                              style={Object.assign({}, Theme.list.row, display)}><h3
-                    style={Object.assign({}, Theme.list.title, {color: this.props.invertColor ? 'white' : 'black'})}>{this.name}</h3>
+                    style={Object.assign({}, Theme.list.title, {color: this.props.isUseBright ? 'white' : 'black'})}>{this.name}</h3>
                     <div style={{width: '100%'}}>{items}</div>
                 </div>);
             } else {
