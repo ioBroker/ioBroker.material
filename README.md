@@ -31,7 +31,7 @@ Better if every device belongs to both categories. Because every device has a ty
 * Cams (over extra Adapter)
 * events (over extra Adapter)
 * Main screen
-* Weather
+* Weather chart in dialog
 * Charts
 * Narrow menu
 * Sort order of tiles
