@@ -16,7 +16,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import I18n from '../i18n';
-import ThermostatControl from '../basic-controls/react-nest-thermostat';
+import ThermostatControl from '../basic-controls/react-nest-thermostat/dist/react-nest-thermostat';
 import Button from '@material-ui/core/Button';
 import SmartDialogGeneric from './SmartDialogGeneric';
 

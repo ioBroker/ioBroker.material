@@ -29,12 +29,12 @@ import IconPrev from 'react-icons/lib/md/skip-previous';
 import IconShuffle from 'react-icons/lib/md/shuffle';
 import IconRepeatAll from 'react-icons/lib/md/repeat';
 import IconRepeatOne from 'react-icons/lib/md/repeat-one';
-import IconVolume100 from "react-icons/lib/md/volume-up";
-import IconVolume0 from "react-icons/lib/md/volume-mute";
+import IconVolume100 from 'react-icons/lib/md/volume-up';
+import IconVolume0 from 'react-icons/lib/md/volume-mute';
 
 import Utils from '../Utils';
 import SmartDialogGeneric from './SmartDialogGeneric';
-import I18n from "../i18n";
+import I18n from '../i18n';
 //import cover from '../assets/cover.png';
 
 const HEIGHT_HEADER = 48;
@@ -326,8 +326,6 @@ class SmartDialogMedia extends SmartDialogGeneric  {
 
         this.volumeTimer = null;
         this.seekTimer   = null;
-
-        this.refDialog = React.createRef();
 
         this.componentReady();
     }

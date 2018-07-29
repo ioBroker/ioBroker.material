@@ -14,46 +14,58 @@
  * limitations under the License.
  **/
 .App {
-  text-align: center;
+    text-align: center;
 }
 
 .App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
+    animation: App-logo-spin infinite 20s linear;
+    height: 80px;
 }
 
 .App-header {
-/*  background-color: #222;*/
-  height: 150px;
-  padding: 20px;
-  color: white;
+    /*  background-color: #222;*/
+    height: 150px;
+    padding: 20px;
+    color: white;
 }
 
 .App-intro {
-  font-size: large;
+    font-size: large;
 }
 
 @keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .corner:hover {
-  border-width: 0 32px 32px 0 !important;
+    border-width: 0 32px 32px 0 !important;
 }
+
 .edit-buttons:hover {
-  background: rgba(200, 200, 200, 0.8) !important;
-  color: black !important;
+    background: rgba(200, 200, 200, 0.8) !important;
+    color: black !important;
 }
+
 .small-visibility-button:hover {
-  background: #ff6a5b;
+    background: #ff6a5b;
 }
 
 /* The animation code */
 @keyframes back-red {
-    0%   {background-color: red;}
-    50%  {background-color: red;}
-    100% {background-color: white;}
+    0% {
+        background-color: red;
+    }
+    50% {
+        background-color: red;
+    }
+    100% {
+        background-color: white;
+    }
 }
 
 .just-enabled-disabled-1 {
@@ -61,20 +73,25 @@
     animation-name: back-red;
     animation-duration: 2s;
 }
+
 .just-enabled-disabled-2 {
-  background-color: white;
-  animation-name: back-red;
-  animation-duration: 2s;
+    background-color: white;
+    animation-name: back-red;
+    animation-duration: 2s;
 }
+
 .menu-selected-bright span {
     color: #1c8fe0 !important;
 }
+
 .menu-selected-dark span {
     color: #3cc1ff !important;
 }
+
 .menu-text-bright span {
     color: white !important;
 }
+
 .menu-text-dark span {
     color: black !important;
 }

@@ -37,6 +37,7 @@ import SmartLock from './States/SmartLock';
 import SmartInstance from './States/SmartInstance';
 import SmartMedia from './States/SmartMedia';
 import SmartVolume from "./States/SmartVolume";
+import SmartWeatherForecast from "./States/SmartWeatherForecast";
 
 class SmartTile extends Component {
     static propTypes = {
@@ -261,6 +262,9 @@ class SmartTile extends Component {
                 case Types.door:
                 case Types.motion:
                     Control = SmartState;
+                    break;
+                case Types.weatherForecast:
+                    Control = SmartWeatherForecast;
                     break;
                 default:
                     break;

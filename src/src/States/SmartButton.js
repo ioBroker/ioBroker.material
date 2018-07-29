@@ -93,10 +93,10 @@ class SmartButton extends SmartGeneric {
     getIcon() {
         let customIcon;
         if (this.state.settings.useDefaultIcon) {
-            customIcon = (<img src={this.getDefaultIcon()} style={{height: '100%'}}/>);
+            customIcon = (<img src={this.getDefaultIcon()} alt="icon" style={{height: '100%'}}/>);
         } else {
             if (this.state.settings.icon) {
-                customIcon = (<img src={this.state.settings.icon} style={{height: '100%'}}/>);
+                customIcon = (<img src={this.state.settings.icon} alt="icon" style={{height: '100%'}}/>);
             } else {
                 const Icon = this.icon;
                 customIcon = (<Icon width={'100%'} height={'100%'}/>);

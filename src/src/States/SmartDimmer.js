@@ -20,7 +20,7 @@ import Icon from 'react-icons/lib/ti/lightbulb'
 
 import SmartGeneric from './SmartGeneric';
 import Theme from '../theme';
-import Dialog from './SmartDialogSlider';
+import Dialog from '../Dialogs/SmartDialogSlider';
 import I18n from '../i18n';
 
 class SmartLight extends SmartGeneric {
@@ -178,10 +178,10 @@ class SmartLight extends SmartGeneric {
     getIcon() {
         let customIcon;
         if (this.state.settings.useDefaultIcon) {
-            customIcon = (<img src={this.getDefaultIcon()} style={{height: '100%'}}/>);
+            customIcon = (<img src={this.getDefaultIcon()} alt="icon" style={{height: '100%'}}/>);
         } else {
             if (this.state.settings.icon) {
-                customIcon = (<img src={this.state.settings.icon} style={{height: '100%'}}/>);
+                customIcon = (<img src={this.state.settings.icon} alt="icon" style={{height: '100%'}}/>);
             } else {
                 customIcon = (<Icon width={'100%'} height={'100%'}/>);
             }

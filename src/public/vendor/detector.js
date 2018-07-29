@@ -51,7 +51,9 @@ var Types = {
     volume: 'volume',
     volumeGroup: 'volumeGroup',
     window: 'window',
-    windowTilt: 'windowTilt'
+    windowTilt: 'windowTilt',
+    weatherCurrent: 'weatherCurrent',
+    weatherForecast: 'weatherForecast'
 };
 
 // Description of flags
@@ -92,6 +94,7 @@ function ChannelDetector() {
             states: [
                 // one of
                 {role: /^media.state(\..*)?$/,                               indicator: false,                   type: ['boolean', 'number'], name: 'STATE',    required: true},
+                // optional
                 {role: /^button.play(\..*)?$|^action.play(\..*)?$/,          indicator: false,     write: true,  type: 'boolean', name: 'PLAY',     required: false, noSubscribe: true},
                 {role: /^button.pause(\..*)?$|^action.pause(\..*)?$/,        indicator: false,     write: true,  type: 'boolean', name: 'PAUSE',    required: false, noSubscribe: true},
                 {role: /^button.stop(\..*)?$|^action.stop(\..*)?$/,          indicator: false,     write: true,  type: 'boolean', name: 'STOP',     required: false, noSubscribe: true},
@@ -126,9 +129,52 @@ function ChannelDetector() {
             ],
             type: Types.media
         },
+        weatherForecast : {
+            states: [
+                {role: /^weather.icon$|^weather.icon.forecast.0$/,                   indicator: false, type: 'string',  name: 'ICON',          required: true},
+                {role: /^value.temperature.min.forecast.0$/,                         indicator: false, type: 'number',  name: 'TEMP_MIN',      required: true},
+                {role: /^value.temperature.max.forecast.0$/,                         indicator: false, type: 'number',  name: 'TEMP_MAX',      required: true},
+                // optional
+                {role: /^value.precipitation$|^value.precipitation.forecast.0$/,     indicator: false, type: 'number',  name: 'PRECIPITATION_CHANCE',     unit: '%', required: false},
+                {role: /^date$|^date.forecast.0$/,                                   indicator: false, type: 'string',  name: 'DATE',          required: false},
+                {role: /^weather.state$|^weather.state.forecast.0$/,                 indicator: false, type: 'string',  name: 'STATE',         required: false},
+                {role: /^value.temperature$|^value.temperature.forecast.0$/,         indicator: false, type: 'number',  name: 'TEMP',          required: false},
+                {role: /^value.pressure$/,                                           indicator: false, type: 'number',  name: 'PRESSURE',      required: false},
+
+                {role: /^value.humidity$|value.humidity.forecast.0$/,                indicator: false, type: 'number',  name: 'HUMIDITY',      required: false},
+
+                {role: /^value.temperature.windchill$|^value.temperature.windchill.forecast.0$/,           indicator: false, type: 'number',  name: 'WIND_CHILL',    required: false},
+                {role: /^value.speed.wind$|^value.speed.wind.forecast.0$/,           indicator: false, type: 'number',  name: 'WIND_SPEED',    required: false},
+                {role: /^value.direction.wind$|^value.direction.wind.forecast.0$/,   indicator: false, type: 'number',  name: 'WIND_DIRECTION',required: false},
+                {role: /^weather.icon.wind$|^weather.icon.wind.forecast.0$/,         indicator: false, type: 'string',  name: 'WIND_ICON',     required: false},
+                {role: /^weather.direction.wind$|^weather.direction.wind.forecast.0$/, indicator: false, type: 'string',  name: 'WIND_DIRECTION_STR',required: false},
+
+                // other days
+                {role: /^weather.icon.forecast.(\d)$/,                               indicator: false, type: 'string',  name: 'ICON%d',          required: false, searchInParent: true, multiple: true, noSubscribe: true},
+
+                {role: /^value.temperature.min.forecast.(\d)$/,                      indicator: false, type: 'number',  name: 'TEMP_MIN%d',      required: false, searchInParent: true, multiple: true, noSubscribe: true},
+                {role: /^value.temperature.max.forecast.(\d)$/,                      indicator: false, type: 'number',  name: 'TEMP_MAX%d',      required: false, searchInParent: true, multiple: true, noSubscribe: true},
+
+                {role: /^date.forecast.(\d)$/,                                       indicator: false, type: 'string',  name: 'DATE%d',          required: false, searchInParent: true, multiple: true, noSubscribe: true},
+                {role: /^weather.state.forecast.(\d)$/,                              indicator: false, type: 'string',  name: 'STATE%d',         required: false, searchInParent: true, multiple: true, noSubscribe: true},
+                {role: /^value.temperature.forecast.(\d)$/,                          indicator: false, type: 'number',  name: 'TEMP%d',          required: false, searchInParent: true, multiple: true, noSubscribe: true},
+
+                {role: /^value.humidity.forecast.(\d)$/,                             indicator: false, type: 'number',  name: 'HUMIDITY%d',      required: false, searchInParent: true, multiple: true, noSubscribe: true},
+                {role: /^value.humidity.max.forecast.(\d)$/,                         indicator: false, type: 'number',  name: 'HUMIDITY_MAX%d',  required: false, searchInParent: true, multiple: true, noSubscribe: true},
+
+                {role: /^value.precipitation.forecast.(\d)$/,                        indicator: false, type: 'number',  unit: '%', name: 'PRECIPITATION_CHANCE%d', required: false, searchInParent: true, multiple: true, noSubscribe: true},
+
+                {role: /^value.speed.wind.forecast.(\d)$/,                           indicator: false, type: 'number',  name: 'WIND_SPEED%d',    required: false, searchInParent: true, multiple: true, noSubscribe: true},
+                {role: /^value.direction.wind.forecast.(\d)$/,                       indicator: false, type: 'number',  name: 'WIND_DIRECTION%d',required: false, searchInParent: true, multiple: true, noSubscribe: true},
+
+                {role: /^location$/,                                                 indicator: false, type: 'string',  name: 'LOCATION',      required: false, multiple: true},
+            ],
+            type: Types.weatherForecast
+        },
         thermostat: {
             states: [
                 {role: /temperature(\..*)?$/,          indicator: false,     write: true,  type: 'number',                                                    name: 'SET',                required: true},
+                // optional
                 {role: /temperature(\..*)?$/,          indicator: false,     write: false, type: 'number',    searchInParent: true,                           name: 'ACTUAL',             required: false},
                 {role: /humidity(\..*)?$/,             indicator: false,     write: false, type: 'number',    searchInParent: true,                           name: 'HUMIDITY',           required: false},
                 {role: /^switch\.boost(\..*)?$/,       indicator: false,     write: true,  type: 'number',    searchInParent: true,                           name: 'BOOST',              required: false},
@@ -143,6 +189,7 @@ function ChannelDetector() {
         blinds: {
             states: [
                 {role: /^level(\.blind)?$/,                   indicator: false, type: 'number',  write: true, enums: roleOrEnumBlind, name: 'SET',                 required: true},
+                // optional
                 {role: /^value(\.blind)?$/,                   indicator: false, type: 'number',               enums: roleOrEnumBlind, name: 'ACTUAL',              required: false},
                 {role: /^button\.stop$|^action\.stop$/,       indicator: false, type: 'boolean', write: true, enums: roleOrEnumBlind, name: 'STOP',                required: false, noSubscribe: true},
                 patternDirection,
@@ -157,6 +204,7 @@ function ChannelDetector() {
         lock: {
             states: [
                 {role: /^switch.lock$/,                       indicator: false, type: 'boolean',  write: true,              name: 'SET',                 required: true},
+                // optional
                 {role: /^state$/,                             indicator: false, type: 'boolean',  write: false,             name: 'ACTUAL',              required: false},
                 {                                             indicator: false, type: 'boolean',  write: true, read: false, name: 'OPEN',                required: false, noSubscribe: true},
                 patternDirection,
@@ -171,6 +219,7 @@ function ChannelDetector() {
         motion: {
             states: [
                 {role: /^state\.motion$|^sensor\.motion$/,                   indicator: false, type: 'boolean', name: 'ACTUAL',     required: true},
+                // optional
                 {role: /brightness$/,                                        indicator: false, type: 'number',  name: 'SECOND',     required: false},
                 patternUnreach,
                 patternLowbat,
@@ -182,6 +231,7 @@ function ChannelDetector() {
         window: {
             states: [
                 {role: /^state(\.window)?$|^sensor(\.window)?/,                   indicator: false, type: 'boolean', enums: roleOrEnumWindow, name: 'ACTUAL',     required: true},
+                // optional
                 patternUnreach,
                 patternLowbat,
                 patternMaintain,
@@ -192,6 +242,7 @@ function ChannelDetector() {
         windowTilt: {
             states: [
                 {role: /^state?$|^value(\.window)?$/,                             indicator: false, type: 'number',  enums: roleOrEnumWindow, name: 'ACTUAL',     required: true},
+                // optional
                 patternUnreach,
                 patternLowbat,
                 patternMaintain,
@@ -202,6 +253,7 @@ function ChannelDetector() {
         fireAlarm: {
             states: [
                 {role: /^state?$|^sensor(\.alarm)?\.fire/,                        indicator: false, type: 'boolean', name: 'ACTUAL',     required: true, channelRole: /^sensor(\.alarm)?\.fire$/},
+                // optional
                 patternUnreach,
                 patternLowbat,
                 patternMaintain,
@@ -212,6 +264,7 @@ function ChannelDetector() {
         door: {
             states: [
                 {role: /^state?$|^state(\.door)?$|^sensor(\.door)?/,              indicator: false, type: 'boolean', write: false, enums: roleOrEnumDoor, name: 'ACTUAL',     required: true},
+                // optional
                 patternUnreach,
                 patternLowbat,
                 patternMaintain,
@@ -222,6 +275,7 @@ function ChannelDetector() {
         dimmer: {
             states: [
                 {role: /^level(\.dimmer)?$/,                   indicator: false, type: 'number',  write: true,       enums: roleOrEnumLight, name: 'SET',         required: true},
+                // optional
                 {role: /^value(\.dimmer)?$/,                   indicator: false, type: 'number',  write: false,      enums: roleOrEnumLight, name: 'ACTUAL',      required: false},
                 {role: /^switch(\.light)?$|^state$/,           indicator: false, type: 'boolean', write: true,       enums: roleOrEnumLight, name: 'ON_SET',      required: false},
                 {role: /^switch(\.light)?$|^state$/,           indicator: false, type: 'boolean', write: false,      enums: roleOrEnumLight, name: 'ON_ACTUAL',   required: false},
@@ -236,6 +290,7 @@ function ChannelDetector() {
         light: {
             states: [
                 {role: /^switch(\.light)?$|^state$/,           indicator: false, type: 'boolean', write: true,       enums: roleOrEnumLight, name: 'SET',         required: true},
+                // optional
                 {role: /^switch(\.light)?$|^state$/,           indicator: false, type: 'boolean', write: false,      enums: roleOrEnumLight, name: 'ACTUAL',      required: false},
                 patternWorking,
                 patternUnreach,
@@ -248,6 +303,7 @@ function ChannelDetector() {
         volume: {
             states: [
                 {role: /^level.volume$/,                   indicator: false, type: 'number',  min: 'number', max: 'number', write: true,       name: 'SET',         required: true},
+                // optional
                 {role: /^value.volume$/,                   indicator: false, type: 'number',  min: 'number', max: 'number', write: false,      name: 'ACTUAL',      required: false},
                 {role: /^media.mute$/,                     indicator: false, type: 'boolean',                               write: true,       name: 'MUTE',        required: false},
                 patternWorking,
@@ -460,6 +516,9 @@ function ChannelDetector() {
             if (statePattern.stateName && !statePattern.stateName.test(id)) {
                 return false;
             }
+            if (statePattern.unit && statePattern.unit !== objects[id].common.unit) {
+                return false;
+            }
 
             if (statePattern.ignoreRole && statePattern.ignoreRole.test(objects[id].common.role)) {
                 return;
@@ -565,7 +624,6 @@ function ChannelDetector() {
         var objects = context.objects;
         var pattern = context.pattern;
         var state = context.state;
-        var i = context.i;
         var channelStates = context.channelStates;
         var usedIds = context.usedIds;
         var _usedIds = context._usedIds;
@@ -597,21 +655,21 @@ function ChannelDetector() {
                 }
 
                 if (!result.states.find(function (e) {return e.id === _id;})) {
-                    result.states[i].id = _id;
+                    result.states.find(function (st) {return st.name === state.name}).id = _id;
                 }
                 found = true;
                 if (state.multiple && channelStates.length > 1) {
                     // execute this rule for every state in this channel
-                    var index = i + 1;
                     channelStates.forEach(function (cid) {
                         if (cid === _id) return;
-                        if ((state.indicator || (usedIds.indexOf(cid) === -1 && (state.notSingle || _usedIds.indexOf(cid) === -1))) && this._applyPattern(objects, cid, state)) {
+                        if ((state.indicator || (usedIds.indexOf(cid) === -1 && (state.notSingle || _usedIds.indexOf(cid) === -1))) &&
+                            this._applyPattern(objects, cid, state)) {
                             if (!state.indicator && !state.notSingle){
                                 _usedIds.push(cid);
                             }
                             var newState = copyState(state);
                             newState.id = cid;
-                            result.states.splice(index++, 0, newState);
+                            result.states.push(newState);
                         }
                     }.bind(this));
                 }
@@ -629,7 +687,9 @@ function ChannelDetector() {
 
             if (objects[id].type === 'state') {
                 channelStates = [id];
-            } else {
+            } else if (objects[id].type === 'device') {
+                channelStates = getAllStatesInDevice(keys, id);
+            } else { // channel
                 channelStates = getAllStatesInChannel(keys, id);
             }
 
@@ -647,29 +707,31 @@ function ChannelDetector() {
                 if (!patterns.hasOwnProperty(pattern)) continue;
                 context.result = null;
 
-                if (pattern === 'temperature') {
-                    //console.log(pattern);
-                }
-                if (pattern === 'mediaPlayer' && id.indexOf('Большая') !== -1) {
+                if (pattern === 'weatherForecast' && id.indexOf('forecast') !== -1) {
                     console.log(pattern);
                 }
 
                 var _usedIds = [];
                 context.pattern = pattern;
                 context._usedIds = _usedIds;
-                patterns[pattern].states.forEach(function (state, i) {
+                patterns[pattern].states.forEach(function (state) {
                     var found = false;
-
-                    context.i     = i;
 
                     // one of following
                     if (state instanceof Array) {
                         for (var s = 0; s < state.length; s++) {
                             context.state = state[s];
                             if (this._testOneState(context)) {
-                                var __id = context.result.states[i].id;
-                                context.result.states[i] = copyState(state[s]);
-                                context.result.states[i].id = __id;
+                                var num;
+                                context.result.states.find(function (st, i) {
+                                    if (st instanceof Array) {
+                                        num = i;
+                                        return true;
+                                    }
+                                });
+                                var __id = context.result.states[num].id;
+                                context.result.states[num] = copyState(state[s]);
+                                context.result.states[num].id = __id;
                                 // find one of the list
                                 found = true;
                                 break;
@@ -750,6 +812,12 @@ function ChannelDetector() {
                         }
                     }
                     context.result.states.forEach(function (state) {
+                        if (state.name.indexOf('%d') !== -1 && state.role && state.id) {
+                            var m = state.role.exec(context.objects[state.id].common.role);
+                            if (m) {
+                                state.name = state.name.replace('%d', m[1]);
+                            }
+                        }
                         if (state.role) {
                             delete state.role;
                         }

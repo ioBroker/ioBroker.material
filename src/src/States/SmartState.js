@@ -37,8 +37,8 @@ import IconSun7 from 'react-icons/lib/md/brightness-7';
 import Theme from '../theme';
 import I18n from '../i18n';
 import Types from '../States/SmartTypes';
-import IconLockOpened from "react-icons/lib/md/lock-open";
-import IconLockClosed from "react-icons/lib/md/lock";
+// import IconLockOpened from "react-icons/lib/md/lock-open";
+// import IconLockClosed from "react-icons/lib/md/lock";
 
 const IconSuns = [IconSun1, IconSun2, IconSun3, IconSun4, IconSun5, IconSun6, IconSun7];
 
@@ -209,10 +209,10 @@ class SmartState extends SmartGeneric {
         let customIcon;
 
         if (this.state.settings.useDefaultIcon) {
-            customIcon = (<img src={this.getDefaultIcon()} style={{height: '100%', zIndex: 1}}/>);
+            customIcon = (<img src={this.getDefaultIcon()} alt="icon" style={{height: '100%', zIndex: 1}}/>);
         } else {
             if (this.state.settings.icon) {
-                customIcon = (<img src={isOn ? this.state.settings.icon : this.state.settings.iconOff || this.state.settings.icon} style={{height: '100%', zIndex: 1}}/>);
+                customIcon = (<img alt="icon" src={isOn ? this.state.settings.icon : this.state.settings.iconOff || this.state.settings.icon} style={{height: '100%', zIndex: 1}}/>);
             } else {
                 const Icon = isOn ? this.iconOn : this.iconOff;
                 customIcon = (<Icon width={'100%'} height={'100%'} style={{zIndex: 1}}/>);

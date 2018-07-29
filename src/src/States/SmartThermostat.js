@@ -19,7 +19,7 @@ import Icon from '../icons/Thermometer'
 import IconThermometer from '../icons/ThermometerSimple';
 import IconHydro from '../icons/Humidity';
 import Theme from '../theme';
-import Dialog from './SmartDialogThermostat';
+import Dialog from '../Dialogs/SmartDialogThermostat';
 import I18n from "../i18n";
 
 class SmartThermostat extends SmartGeneric {
@@ -122,10 +122,10 @@ class SmartThermostat extends SmartGeneric {
         let customIcon;
 
         if (this.state.settings.useDefaultIcon) {
-            customIcon = (<img src={this.getDefaultIcon()} style={{height: '100%', zIndex: 1}}/>);
+            customIcon = (<img alt="icon" src={this.getDefaultIcon()} style={{height: '100%', zIndex: 1}}/>);
         } else {
             if (this.state.settings.icon) {
-                customIcon = (<img src={this.state.settings.icon} style={{height: '100%', zIndex: 1}}/>);
+                customIcon = (<img alt="icon" src={this.state.settings.icon} style={{height: '100%', zIndex: 1}}/>);
             } else {
                 customIcon = (<Icon width={'100%'} height={'100%'} style={{zIndex: 1}}/>);
             }

@@ -25,7 +25,7 @@ import Theme from '../theme';
 import SmartGeneric from './SmartGeneric';
 import Types from './SmartTypes';
 //import Dialog from './SmartDialogSlider';
-import Dialog from './SmartDialogKnob';
+import Dialog from '../Dialogs/SmartDialogKnob';
 
 import I18n from '../i18n';
 
@@ -152,7 +152,7 @@ class SmartVolume extends SmartGeneric {
         let customIcon;
 
         if (this.state.settings.useDefaultIcon) {
-            customIcon = (<img src={this.getDefaultIcon()} style={{height: '100%', zIndex: 1}}/>);
+            customIcon = (<img alt="icon" src={this.getDefaultIcon()} style={{height: '100%', zIndex: 1}}/>);
         } else {
             customIcon = (<Icon width={'100%'} height={'100%'} style={{zIndex: 1}}/>);
         }
@@ -170,10 +170,10 @@ class SmartVolume extends SmartGeneric {
         let customIcon;
 
         if (this.state.settings.useDefaultIcon) {
-            customIcon = (<img src={this.getDefaultIcon()} style={{height: '100%'}}/>);
+            customIcon = (<img alt="icon" src={this.getDefaultIcon()} style={{height: '100%'}}/>);
         } else {
             if (this.state.settings.icon) {
-                customIcon = (<img src={this.state.settings.icon} style={{height: '100%'}}/>);
+                customIcon = (<img alt="icon" src={this.state.settings.icon} style={{height: '100%'}}/>);
             } else {
                 let IconCustom;
                 const val = Math.round((this.state[this.actualId] - this.min) / (this.max - this.min) * 100);

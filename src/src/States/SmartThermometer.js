@@ -93,11 +93,11 @@ class SmartThermometer extends SmartGeneric {
         let customIcon;
 
         if (this.state.settings.useDefaultIcon) {
-            customIcon = (<img src={this.getDefaultIcon()} style={{height: '100%', zIndex: 1}}/>);
+            customIcon = (<img alt="icon" src={this.getDefaultIcon()} style={{height: '100%', zIndex: 1}}/>);
         } else {
             if (this.state.settings.icon) {
-                customIcon = (<img src={this.state.settings.icon} style={{height: '100%', zIndex: 1}}/>);
-            } else {zIndex: 1
+                customIcon = (<img alt="icon" src={this.state.settings.icon} style={{height: '100%', zIndex: 1}}/>);
+            } else {
                 customIcon = (<IconThermometer width={'100%'} height={'100%'} style={{zIndex: 1}}/>);
             }
         }

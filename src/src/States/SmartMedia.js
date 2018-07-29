@@ -26,9 +26,7 @@ import IconPrev from 'react-icons/lib/md/skip-previous';
 
 import Theme from '../theme';
 // import cover from '../assets/cover.png';
-import Dialog from './SmartDialogMedia';
-import IconLockOpened from "react-icons/lib/md/lock-open";
-import IconLockClosed from "react-icons/lib/md/lock";
+import Dialog from '../Dialogs/SmartDialogMedia';
 
 const style = {
     info: {
@@ -291,7 +289,7 @@ class SmartMedia extends SmartGeneric {
             let customIcon;
 
             if (this.state.settings.useDefaultIcon) {
-                customIcon = (<img src={this.getDefaultIcon()} style={{height: '100%'}}/>);
+                customIcon = (<img alt="icon" src={this.getDefaultIcon()} style={{height: '100%'}}/>);
             } else {
                 customIcon = (<IconNote width={'100%'} height={'100%'}/>);
             }

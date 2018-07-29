@@ -18,7 +18,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import SmartGeneric from './SmartGeneric';
 import Icon from '../icons/Jalousie'
 import Theme from '../theme';
-import Dialog from './SmartDialogSlider';
+import Dialog from '../Dialogs/SmartDialogSlider';
 
 const styles = {
     overlap: {
@@ -164,10 +164,10 @@ class SmartBlinds extends SmartGeneric {
     getIcon() {
         let customIcon;
         if (this.state.settings.useDefaultIcon) {
-            customIcon = (<img src={this.getDefaultIcon()} style={{height: '100%', zIndex: 1}}/>);
+            customIcon = (<img src={this.getDefaultIcon()} alt="icon" style={{height: '100%', zIndex: 1}}/>);
         } else {
             if (this.state.settings.icon) {
-                customIcon = (<img src={this.state.settings.icon} style={{height: '100%', zIndex: 1}}/>);
+                customIcon = (<img src={this.state.settings.icon} alt="icon" style={{height: '100%', zIndex: 1}}/>);
             } else {
                 customIcon = (<Icon width={'100%'} height={'100%'} style={{zIndex: 1}}/>);
             }

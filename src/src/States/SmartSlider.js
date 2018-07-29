@@ -18,7 +18,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import SmartGeneric from './SmartGeneric';
 import Icon from 'react-icons/lib/ti/lightbulb';
 import Theme from '../theme';
-import Dialog from './SmartDialogSlider';
+import Dialog from '../Dialogs/SmartDialogSlider';
 
 class SmartSlider extends SmartGeneric {
     constructor(props) {
@@ -106,10 +106,10 @@ class SmartSlider extends SmartGeneric {
         let customIcon;
 
         if (this.state.settings.useDefaultIcon) {
-            customIcon = (<img src={this.getDefaultIcon()} style={{height: '100%'}}/>);
+            customIcon = (<img src={this.getDefaultIcon()} alt="icon" style={{height: '100%'}}/>);
         } else {
             if (this.state.settings.icon) {
-                customIcon = (<img src={this.state.settings.icon} style={{height: '100%'}}/>);
+                customIcon = (<img src={this.state.settings.icon} alt="icon" style={{height: '100%'}}/>);
             } else {
                 let IconCustom = this.icon;
                 if (IconCustom) {

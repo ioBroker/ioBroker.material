@@ -118,10 +118,10 @@ class SmartSwitch extends SmartGeneric {
         let customIcon;
 
         if (this.state.settings.useDefaultIcon) {
-            customIcon = (<img src={this.getDefaultIcon()} style={{height: '100%'}}/>);
+            customIcon = (<img alt="icon" src={this.getDefaultIcon()} style={{height: '100%'}}/>);
         } else {
             if (this.state.settings.icon) {
-                customIcon = (<img src={state ? this.state.settings.icon : this.state.settings.iconOff || this.state.settings.icon} style={{height: '100%'}}/>);
+                customIcon = (<img alt="icon" src={state ? this.state.settings.icon : this.state.settings.iconOff || this.state.settings.icon} style={{height: '100%'}}/>);
             } else {
                 const Icon = this.state[this.actualId] ? this.iconOn : this.iconOff;
                 customIcon = (<Icon width={'100%'} height={'100%'}/>);

@@ -156,10 +156,10 @@ class SmartWindowTilt extends SmartGeneric {
         let customIcon;
 
         if (this.state.settings.useDefaultIcon) {
-            customIcon = (<img src={this.getDefaultIcon()} style={{width: '100%', zIndex: 1}}/>);
+            customIcon = (<img alt="icon" src={this.getDefaultIcon()} style={{width: '100%', zIndex: 1}}/>);
         } else {
             if (this.state.settings.icon) {
-                customIcon = (<img src={this.state.settings.icon} style={{height: '100%', zIndex: 1}}/>);
+                customIcon = (<img alt="icon" src={this.state.settings.icon} style={{height: '100%', zIndex: 1}}/>);
             } else {
                 customIcon = (<Icon width={'100%'} style={{zIndex: 1}}/>);
             }

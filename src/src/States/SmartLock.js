@@ -28,7 +28,6 @@ import Button from '@material-ui/core/Button';
 
 import Theme from '../theme';
 import I18n from '../i18n';
-import IconInfo from "react-icons/lib/md/info";
 
 const style = {
     icon: {
@@ -99,10 +98,10 @@ class SmartLock extends SmartGeneric {
         let customIcon;
 
         if (this.state.settings.useDefaultIcon) {
-            customIcon = (<img src={this.getDefaultIcon()} style={{height: '100%', zIndex: 1}}/>);
+            customIcon = (<img src={this.getDefaultIcon()} alt="icon" style={{height: '100%', zIndex: 1}}/>);
         } else {
             if (this.state.settings.icon) {
-                customIcon = (<img src={isOn ? this.state.settings.icon : this.state.settings.iconOff || this.state.settings.icon} style={{height: '100%', zIndex: 1}}/>);
+                customIcon = (<img alt="icon" src={isOn ? this.state.settings.icon : this.state.settings.iconOff || this.state.settings.icon} style={{height: '100%', zIndex: 1}}/>);
             } else {
                 const Icon = isOn ? IconLockOpened : IconLockClosed;
                 customIcon = (<Icon width={'100%'} height={'100%'} style={{zIndex: 1}}/>);

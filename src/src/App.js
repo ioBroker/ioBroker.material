@@ -24,7 +24,6 @@ import Typography from '@material-ui/core/Typography';
 import Drawer from '@material-ui/core/Drawer';
 import Dialog from '@material-ui/core/Dialog';
 import IconButton from '@material-ui/core/IconButton';
-import RaisedButton from '@material-ui/core/Button';
 import Button from '@material-ui/core/Button';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -49,7 +48,7 @@ import Utils from './Utils';
 import MenuList from './MenuList';
 import StatesList from './StatesList';
 import SpeechDialog from './SpeechDialog';
-import DialogSettings from './States/SmartDialogSettings';
+import DialogSettings from './Dialogs/SmartDialogSettings';
 import LoadingIndicator from './basic-controls/react-loading-screen/LoadingIndicator';
 
 const isKeyboardAvailableOnFullScreen = (typeof Element !== 'undefined' && 'ALLOW_KEYBOARD_INPUT' in Element) && Element.ALLOW_KEYBOARD_INPUT;
@@ -453,6 +452,11 @@ class App extends Component {
             let oldIDs = [];
 
             ids.forEach(id => {
+                if (!id) {
+                    console.warn('Invalid ID!');
+                    return;
+                }
+
                 if (!this.subscribes[id]) {
                     newIDs.push(id);
                 } else {

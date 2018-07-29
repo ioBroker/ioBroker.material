@@ -22,7 +22,7 @@ import Utils from '../Utils';
 
 import Theme from '../theme';
 import I18n from '../i18n';
-import Dialog from './SmartDialogInfo';
+import Dialog from '../Dialogs/SmartDialogInfo';
 import PropTypes from 'prop-types';
 
 const invisibleDefaultRoles = [
@@ -161,10 +161,10 @@ class SmartInfo extends SmartGeneric {
     getIcon() {
         let customIcon;
         if (this.state.settings.useDefaultIcon) {
-            customIcon = (<img src={this.getDefaultIcon()} style={{height: '100%', zIndex: 1}}/>);
+            customIcon = (<img src={this.getDefaultIcon()} alt="icon" style={{height: '100%', zIndex: 1}}/>);
         } else {
             if (this.state.settings.icon) {
-                customIcon = (<img src={this.state.settings.icon} style={{height: '100%', zIndex: 1}}/>);
+                customIcon = (<img src={this.state.settings.icon} alt="icon" style={{height: '100%', zIndex: 1}}/>);
             } else {
                 const Icon = this.infos[0].icon || IconInfo;
                 customIcon = (<Icon width={'100%'} height={'100%'} style={{zIndex: 1}}/>);

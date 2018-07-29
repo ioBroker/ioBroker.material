@@ -24,7 +24,7 @@ import IconEdit from 'react-icons/lib/md/edit';
 import IconDirectionUp from 'react-icons/lib/md/arrow-upward';
 import IconDirectionDown from 'react-icons/lib/md/arrow-downward';
 import IconDirection from 'react-icons/lib/md/swap-vert';
-import Dialog from './SmartDialogSettings';
+import Dialog from '../Dialogs/SmartDialogSettings';
 
 class SmartGeneric extends Component {
     static propTypes = {
