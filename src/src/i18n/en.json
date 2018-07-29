@@ -102,5 +102,7 @@
   "month_Sep": "Sep",
   "month_Oct": "Oct",
   "month_Nov": "Nov",
-  "month_Dec": "Dec"
+  "month_Dec": "Dec",
+  "Pressure": "Pressure",
+  "km/h": "km/h"
 }

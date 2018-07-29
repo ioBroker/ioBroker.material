@@ -165,6 +165,7 @@ class SmartWeatherForecast extends SmartGeneric {
                     humidityMin: null,
                     humidityMax: null,
                     windSpeed: null,
+                    windIcon: null,
                     windDirection: null,
                     precipitation: null,
                     pressure: null
@@ -203,14 +204,21 @@ class SmartWeatherForecast extends SmartGeneric {
 
             state = this.channelInfo.states.find(state => state.id && state.name === 'PRESSURE');
             this.ids.current.pressure = state && state.id;
+            this.pressureUnit = '';
+            if (this.ids.current.pressure) {
+                const obj = this.props.objects[this.ids.current.pressure];
+                if (obj && obj.common && obj.common.unit) {
+                    this.pressureUnit = ' ' + I18n.t(obj.common.unit);
+                }
+            }
 
             state = this.channelInfo.states.find(state => state.id && state.name === 'WIND_SPEED');
             this.ids.current.windSpeed = state && state.id;
+            this.windUnit = '';
             if (this.ids.current.windSpeed) {
                 const obj = this.props.objects[this.ids.current.windSpeed];
-                this.windUnit = '';
                 if (obj && obj.common && obj.common.unit) {
-                    this.windUnit = ' ' + obj.common.unit;
+                    this.windUnit = ' ' + I18n.t(obj.common.unit);
                 }
             }
 
@@ -220,9 +228,10 @@ class SmartWeatherForecast extends SmartGeneric {
             state = this.channelInfo.states.find(state => state.id && state.name === 'WIND_ICON');
             this.ids.current.windIcon = state && state.id;
 
-            state = this.channelInfo.states.find(state => state.id && state.name === 'WIND_DIRECTION');
-            this.ids.current.windDirection = state && state.id;
-
+            if (!this.ids.current.windDirection) {
+                state = this.channelInfo.states.find(state => state.id && state.name === 'WIND_DIRECTION');
+                this.ids.current.windDirection = state && state.id;
+            } else
             if (!this.ids.current.windDirection) {
                 state = this.channelInfo.states.find(state => state.id && state.name === 'WIND_DIRECTION_STR');
                 this.ids.current.windDirection = state && state.id;
@@ -269,6 +278,9 @@ class SmartWeatherForecast extends SmartGeneric {
 
                 state = this.channelInfo.states.find(state => state.id && state.name === 'WIND_SPEED' + d);
                 this.ids.days[d].windSpeed = state && state.id;
+
+                state = this.channelInfo.states.find(state => state.id && state.name === 'WIND_ICON' + d);
+                this.ids.days[d].windIcon = state && state.id;
 
                 state = this.channelInfo.states.find(state => state.id && state.name === 'WIND_DIRECTION' + d);
                 this.ids.days[d].windDirection = state && state.id;
@@ -347,10 +359,10 @@ class SmartWeatherForecast extends SmartGeneric {
             }
             this.collectTimer && clearTimeout(this.collectTimer);
             this.collectTimer = setTimeout(() => this.onUpdateTimer(), 200);
-        } else if (id === this.ids.current.windDirection) {
+        } else if (id === this.ids.current.windDirection || id === this.ids.current.windDegrees) {
             let dir = '';
             if (state && state.val !== null && state.val !== '' && state.val !== undefined && (typeof state.val === 'number' || parseInt(state.val, 10).toString() === state.val.toString())) {
-                dir = I18n.t('wind_' + Utils.getWindDirection(dir)).replace('wind_', '');
+                dir = I18n.t('wind_' + Utils.getWindDirection(state.val)).replace('wind_', '');
             } else {
                 dir = state.val;
             }
@@ -465,7 +477,9 @@ class SmartWeatherForecast extends SmartGeneric {
                 tempMin = tempMax;
             }
             temp = (<span key="max" className={classes['todayTemp-temperatureMax']}>{tempMin}°</span>);
-        } else {
+        }
+
+        if (!temp && !precipitation && precipitation !== 0) {
             return null;
         }
 
@@ -497,6 +511,8 @@ class SmartWeatherForecast extends SmartGeneric {
                         name={this.state.settings.name}
                         enumNames={this.props.enumNames}
                         settings={this.state.settings}
+                        windUnit={this.windUnit}
+                        pressureUnit={this.pressureUnit}
                         onCollectIds={this.props.onCollectIds}
                         ids={this.ids}
                         windowWidth={this.props.windowWidth}

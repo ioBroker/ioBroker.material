@@ -96,11 +96,13 @@
   "month_Mar": "Мар",
   "month_Apr": "Апр",
   "month_Mai": "Май",
-  "month_Jun": "Июнь",
-  "month_Jul": "Июль",
+  "month_Jun": "Июн",
+  "month_Jul": "Июл",
   "month_Aug": "Авг",
   "month_Sep": "Сен",
   "month_Oct": "Окт",
   "month_Nov": "Ноя",
-  "month_Dec": "Дек"
+  "month_Dec": "Дек",
+  "Pressure": "Атм. давление",
+  "km/h": "км/ч"
 }

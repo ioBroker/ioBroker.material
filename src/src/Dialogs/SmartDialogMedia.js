@@ -269,7 +269,7 @@ class SmartDialogMedia extends SmartDialogGeneric  {
         for (const type in this.ids) {
             if (this.ids.hasOwnProperty(type) && type !== 'buttons') {
                 for (const id in this.ids[type]) {
-                    if (this.ids[type].hasOwnProperty(id)) {
+                    if (this.ids[type].hasOwnProperty(id) && this.ids[type][id]) {
                         this.subscribes = this.subscribes || [];
                         this.subscribes.push(this.ids[type][id]);
                     }
