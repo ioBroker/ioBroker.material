@@ -888,6 +888,7 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric  {
 
     getDaysDiv() {
         let days = this.ids.days.map(function (day, d) {
+            if (!d && this.props.settings.hideFirstDay) return null;
             return day && this.getDayDiv(d);
         }.bind(this));
         if (this.props.settings.chartLast) {

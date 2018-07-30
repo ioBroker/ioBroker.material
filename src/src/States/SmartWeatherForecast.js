@@ -443,6 +443,11 @@ class SmartWeatherForecast extends SmartGeneric {
             value: this.state.settings.locationText || '',
             type: 'string'
         });
+        settings.push({
+            name: 'hideFirstDay',
+            value: this.state.settings.hideFirstDay || false,
+            type: 'boolean'
+        });
         return settings;
     }
 
