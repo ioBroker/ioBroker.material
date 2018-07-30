@@ -73,6 +73,7 @@
   "read config": "reading configuration",
   "read objects": "reading objects",
   "running": "running",
+  "connected": "connected",
   "sent": "sent",
   "start instance": "start instance",
   "startEnum": "Start page",

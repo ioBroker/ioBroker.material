@@ -73,6 +73,7 @@
   "read config": "чтение настроек",
   "read objects": "считываю объекты",
   "running": "запущен",
+  "connected": "соединён",
   "sent": "команда отдана",
   "start instance": "Остановить",
   "startEnum": "Стартовая страница",

@@ -73,6 +73,7 @@
   "read config": "lese Konfiguration",
   "read objects": "Objekte lesen",
   "running": "gestartet",
+  "connected": "verbunden",
   "sent": "gesendet",
   "start instance": "Instanz starten",
   "startEnum": "Startseite",

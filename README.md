@@ -40,13 +40,14 @@ Better if every device belongs to both categories. Because every device has a ty
 * configurable humidity ID and temperature ID for weather widget
 * do not load at reconnection all objects, just subscribed states
 * Show images / URL
+* Do not close menu if clicked on group
 
 ## Credits
 - Used icons from flaticon
 - Volume knob from [here](https://codepen.io/blucube/pen/cudAz) By [Ed Hicks](https://twitter.com/blucube) - Inspired by a [dribbble shot](https://dribbble.com/shots/753124-Volume-Knob)  by [Ricardo Salazar](https://twitter.com/rickss)
 
 ## Changelog
-### 0.9.5 (2018.07.30)
+### 0.9.6 (2018.07.30)
 * (bluefox) Implemented the weather widget
 
 ### 0.9.4 (2018.07.26)

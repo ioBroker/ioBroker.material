@@ -609,19 +609,39 @@ function ChannelDetector() {
         if (!newState) {
             newState = JSON.parse(JSON.stringify(oldState));
         }
-        newState.original = oldState.original || oldState;
-        if (oldState.enums) {
-            newState.enums = oldState.enums;
+
+        if (newState instanceof Array) {
+            for (var t = 0; t < newState.length; t++) {
+                newState[t].original = oldState[t].original || oldState[t];
+                if (oldState[t].enums) {
+                    newState[t].enums = oldState[t].enums;
+                }
+                if (oldState[t].role) {
+                    newState[t].role = oldState[t].role;
+                }
+                if (oldState[t].channelRole) {
+                    newState[t].channelRole = oldState[t].channelRole;
+                }
+                if (oldState[t].icon) {
+                    newState[t].icon = oldState[t].icon;
+                }
+            }
+        } else {
+            newState.original = oldState.original || oldState;
+            if (oldState.enums) {
+                newState.enums = oldState.enums;
+            }
+            if (oldState.role) {
+                newState.role = oldState.role;
+            }
+            if (oldState.channelRole) {
+                newState.channelRole = oldState.channelRole;
+            }
+            if (oldState.icon) {
+                newState.icon = oldState.icon;
+            }
         }
-        if (oldState.role) {
-            newState.role = oldState.role;
-        }
-        if (oldState.channelRole) {
-            newState.channelRole = oldState.channelRole;
-        }
-        if (oldState.icon) {
-            newState.icon = oldState.icon;
-        }
+
         return newState;
     }
 
@@ -636,7 +656,8 @@ function ChannelDetector() {
         var result = context.result;
         var found = false;
         channelStates.forEach(function (_id) {
-            if ((state.indicator || (usedIds.indexOf(_id) === -1 && (state.notSingle || _usedIds.indexOf(_id) === -1))) && this._applyPattern(objects, _id, state)) {
+            if ((state.indicator || (usedIds.indexOf(_id) === -1 && (state.notSingle || _usedIds.indexOf(_id) === -1))) &&
+                this._applyPattern(objects, _id, state)) {
                 if (state.indicator && ignoreIndicators) {
                     var parts = _id.split('.');
 
@@ -660,7 +681,31 @@ function ChannelDetector() {
                 }
 
                 if (!result.states.find(function (e) {return e.id === _id;})) {
-                    result.states.find(function (st) {return st.name === state.name}).id = _id;
+                    var _found = false;
+                    for (var u = 0; u < result.states.length; u++) {
+                        if (result.states[u] instanceof Array)  {
+                            for (var c = 0; c < result.states[u].length; c++) {
+                                if (result.states[u][c].name === state.name && result.states[u][c].role === state.role) {
+                                    result.states[u] = result.states[u][c];
+                                    result.states[u].id = _id;
+                                    _found = true;
+                                    break;
+                                }
+                            }
+                            if (_found) {
+                                break;
+                            }
+                        } else {
+                            if (result.states[u].name === state.name) {
+                                result.states[u].id = _id;
+                                _found = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (!_found) {
+                        console.error('Cannot find state for ' + _id);
+                    }
                 }
                 found = true;
                 if (state.multiple && channelStates.length > 1) {
@@ -727,17 +772,6 @@ function ChannelDetector() {
                         for (var s = 0; s < state.length; s++) {
                             context.state = state[s];
                             if (this._testOneState(context)) {
-                                var num;
-                                context.result.states.find(function (st, i) {
-                                    if (st instanceof Array) {
-                                        num = i;
-                                        return true;
-                                    }
-                                });
-                                var __id = context.result.states[num].id;
-                                context.result.states[num] = copyState(state[s]);
-                                context.result.states[num].id = __id;
-                                // find one of the list
                                 found = true;
                                 break;
                             }

@@ -28,7 +28,7 @@ const styles = {
         width: 90,
         height: 90,
         zIndex: 0,
-        left: -3,
+        left: 3,
         top: 24
     },
     'currentIcon-icon': {
@@ -333,11 +333,11 @@ class SmartWeatherForecast extends SmartGeneric {
     applySettings(settings) {
         settings = settings || (this.state && this.state.settings);
         if (settings) {
-            if (settings.tempID && !this.subscribes || this.subscribes.indexOf(settings.tempID) === -1)  {
+            if (settings.tempID && (!this.subscribes || this.subscribes.indexOf(settings.tempID) === -1))  {
                 this.subscribes = this.subscribes || [];
                 this.subscribes.push(settings.tempID);
             }
-            if (settings.humidityID && !this.subscribes || this.subscribes.indexOf(settings.humidityID) === -1)  {
+            if (settings.humidityID && (!this.subscribes || this.subscribes.indexOf(settings.humidityID) === -1))  {
                 this.subscribes = this.subscribes || [];
                 this.subscribes.push(settings.humidityID);
             }

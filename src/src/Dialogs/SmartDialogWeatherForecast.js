@@ -49,7 +49,7 @@ const styles = {
         width: 128,
         height: 128,
         zIndex: 0,
-        left: -3,
+        left: 3,
         top: 24
     },
     'currentIcon-icon': {
@@ -745,7 +745,12 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric  {
 
     getCurrentIconDiv() {
         const classes = this.props.classes;
-        const temp = this.ids.current.temperature && this.state[this.ids.current.temperature];
+        let temp;
+        temp = this.props.settings.tempID && this.state[this.props.settings.tempID];
+        if (!temp && temp !== 0) {
+            temp = this.ids.current.temperature && this.state[this.ids.current.temperature];
+        }
+
         return (<div  key="todayIcon" className={classes['currentIcon-div']}>
             <img className={classes['currentIcon-icon']} src={this.state[this.ids.current.icon]} alt={this.state[this.ids.current.state] || ''}/>
             {temp !== null && temp !== undefined ? (<div className={classes['currentIcon-temperature']}>{temp}°</div>) : null}
@@ -904,9 +909,19 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric  {
         }
     }
 
+    onOpenHistory() {
+        if (this.ids.current.chart && this.state[this.ids.current.chart]) {
+            const win = window.open(this.state[this.ids.current.chart], '_blank');
+            win.focus();
+        }
+    }
+
     getCurrentDiv() {
         return (
-            <Paper key="current" className={this.props.classes['current-div']}>
+            <Paper key="current"
+                   className={this.props.classes['current-div']}
+                   style={this.ids.current.chart && this.state[this.ids.current.chart] ? {cursor: 'pointer'} : {}}
+                   onClick={() => this.onOpenHistory()}>
                 {this.getCurrentIconDiv()}
                 {this.getCurrentDateLocationDiv()}
                 {this.getTodayWindDiv()}
