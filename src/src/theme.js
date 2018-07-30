@@ -232,7 +232,8 @@ export default {
         lampOn:             '#ffcc02',
         lampOff:            'inherit',
         instanceRunning:    '#52af19',
-        instanceStopped:    '#7b3d29'
+        instanceStopped:    '#7b3d29',
+        browserBar:         '#3f51b5'
     },
     iconSize: '24px',
     indicatorSize: '20px',

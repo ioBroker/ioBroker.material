@@ -41,6 +41,7 @@ Better if every device belongs to both categories. Because every device has a ty
 * do not load at reconnection all objects, just subscribed states
 * Show images / URL
 * Do not close menu if clicked on group
+* dwd
 
 ## Credits
 - Used icons from flaticon

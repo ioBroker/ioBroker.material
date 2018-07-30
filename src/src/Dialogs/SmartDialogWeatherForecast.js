@@ -306,7 +306,8 @@ const styles = {
     },
     'dayState-windIcon': {
         display: 'inline-block',
-        marginLeft: 5
+        marginLeft: 5,
+        width: 16
     },
     'dayState-windChill': {
     },

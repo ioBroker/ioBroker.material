@@ -341,6 +341,13 @@ class Utils {
     }
     static date2string(now) {
         if (typeof now === 'string') {
+            now = now.trim();
+            if (!now) return '';
+            // only letters
+            if (now.match(/^[\w\s]+$/)) {
+                // Day of week
+                return now;
+            }
             let m = now.match(/(\d{1,4})[-.\/](\d{1,2})[-.\/](\d{1,4})/);
             if (m) {
                 let a = [parseInt(m[1], 10), parseInt(m[2], 10), parseInt(m[3], 10)];

@@ -138,6 +138,7 @@ function ChannelDetector() {
                 // optional
                 {role: /^value.precipitation$|^value.precipitation.forecast.0$/,     indicator: false, type: 'number',  name: 'PRECIPITATION_CHANCE',     unit: '%', required: false},
                 {role: /^date$|^date.forecast.0$/,                                   indicator: false, type: 'string',  name: 'DATE',          required: false},
+                {role: /^dayofweek$|^dayofweek.forecast.0$/,                         indicator: false, type: 'string',  name: 'DOW',           required: false},
                 {role: /^weather.state$|^weather.state.forecast.0$/,                 indicator: false, type: 'string',  name: 'STATE',         required: false},
                 {role: /^value.temperature$|^value.temperature.forecast.0$/,         indicator: false, type: 'number',  name: 'TEMP',          required: false},
                 {role: /^value.pressure$/,                                           indicator: false, type: 'number',  name: 'PRESSURE',      required: false},
@@ -154,7 +155,6 @@ function ChannelDetector() {
                 {role: /^weather.chart.url.forecast$/,                               indicator: false, type: 'string',  name: 'FORECAST_CHART',  required: false, noSubscribe: true},
                 {role: /^location$/,                                                 indicator: false, type: 'string',  name: 'LOCATION',        required: false, multiple: true},
 
-
                 // other days
                 {role: /^weather.icon.forecast.(\d)$/,                               indicator: false, type: 'string',  name: 'ICON%d',          required: false, searchInParent: true, multiple: true, noSubscribe: true, notSingle: true},
 
@@ -162,6 +162,7 @@ function ChannelDetector() {
                 {role: /^value.temperature.max.forecast.(\d)$/,                      indicator: false, type: 'number',  name: 'TEMP_MAX%d',      required: false, searchInParent: true, multiple: true, noSubscribe: true},
 
                 {role: /^date.forecast.(\d)$/,                                       indicator: false, type: 'string',  name: 'DATE%d',          required: false, searchInParent: true, multiple: true, noSubscribe: true},
+                {role: /^dayofweek.forecast.(\d)$/,                                  indicator: false, type: 'string',  name: 'DOW%d',           required: false, searchInParent: true, multiple: true, noSubscribe: true},
                 {role: /^weather.state.forecast.(\d)$/,                              indicator: false, type: 'string',  name: 'STATE%d',         required: false, searchInParent: true, multiple: true, noSubscribe: true},
                 {role: /^value.temperature.forecast.(\d)$/,                          indicator: false, type: 'number',  name: 'TEMP%d',          required: false, searchInParent: true, multiple: true, noSubscribe: true},
 

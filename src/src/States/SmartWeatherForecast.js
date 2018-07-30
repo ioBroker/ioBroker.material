@@ -196,6 +196,11 @@ class SmartWeatherForecast extends SmartGeneric {
             state = this.channelInfo.states.find(state => state.id && state.name === 'DATE');
             this.ids.current.date = state && state.id;
 
+            if (!this.ids.current.date) {
+                state = this.channelInfo.states.find(state => state.id && state.name === 'DOW');
+                this.ids.current.date = state && state.id;
+            }
+
             state = this.channelInfo.states.filter(state => state.id && state.name === 'LOCATION').map(state => state.id);
             this.ids.current.location = state && state.length && state;
 
@@ -263,8 +268,12 @@ class SmartWeatherForecast extends SmartGeneric {
                 state = this.channelInfo.states.find(state => state.id && state.name === 'DATE' + d);
                 this.ids.days[d].date = state && state.id;
 
+                if (!this.ids.days[d].date) {
+                    state = this.channelInfo.states.find(state => state.id && state.name === 'DOW' + d);
+                    this.ids.days[d].date = state && state.id;
+                }
                 state = this.channelInfo.states.find(state => state.id && state.name === 'ICON' + d);
-                this.ids.days[d].icon = state && state.id;
+                this.ids.days[d].icon = state && (state.id !== this.id) && state.id ;
 
                 state = this.channelInfo.states.find(state => state.id && state.name === 'STATE' + d);
                 this.ids.days[d].state = state && state.id;

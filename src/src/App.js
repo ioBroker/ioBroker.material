@@ -148,6 +148,15 @@ class App extends Component {
         }
     }
 
+    setBarColor(settings) {
+        const metas = window.document.getElementsByClassName('theme-color');
+        if (metas) {
+            for (let m = 0; m < metas.length; m++) {
+                metas[m] && metas[m].setAttribute && metas[m].setAttribute('content', (settings || this.state.settings).background || Theme.palette.browserBar);
+            }
+        }
+    }
+
     readAllData() {
         this.loadingStep('read objects');
         this.user = this.conn.getUser().replace(/^system\.user\./, '');
@@ -210,17 +219,19 @@ class App extends Component {
                         this.readInstancesData(appSettings.instances, function () {
                             this.loadingStep('done');
                             if (viewEnum) {
+                                const settings = viewEnum === Utils.INSTANCES ?
+                                    appSettings.instancesSettings || {}
+                                    : Utils.getSettings((result || {})[viewEnum], {
+                                        user: this.user,
+                                        language: I18n.getLanguage()
+                                    });
                                 this.setState({
                                     viewEnum: viewEnum,
                                     loading: false,
-                                    settings: viewEnum === Utils.INSTANCES ?
-                                        appSettings.instancesSettings || {}
-                                        : Utils.getSettings((result || {})[viewEnum], {
-                                        user: this.user,
-                                        language: I18n.getLanguage()
-                                    }),
+                                    settings: settings,
                                     appSettings
                                 });
+                                this.setBarColor(settings);
                             } else {
                                 this.setState({loading: false});
                             }
@@ -396,6 +407,7 @@ class App extends Component {
                 this.conn._socket.emit('unsubscribeObjects', 'system.adapter.*');
                 this.subscribeInstances = false;
             }
+            this.setBarColor(states.settings);
             // load settings for this enum
             this.setState(states);
         } else {
