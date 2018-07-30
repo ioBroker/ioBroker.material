@@ -23,6 +23,7 @@ const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', '
 class Utils {
     static namespace = NAMESPACE;
     static INSTANCES = 'instances';
+    static dateFormat = ['DD', 'MM'];
 
     static CapitalWords(name) {
         return (name || '').split(/[\s_]/)
@@ -319,7 +320,61 @@ class Utils {
         }
     }
 
+    static padding(num) {
+        if (typeof num === 'string') {
+            if (num.length < 2) {
+                return '0' + num;
+            } else {
+                return num;
+            }
+        } else if (num < 10) {
+            return '0' + num;
+        } else {
+            return num;
+        }
+    }
+    static setDataFormat(format) {
+        if (format) {
+            Utils.dateFormat = format.toUpperCase().split(/[.-\/]/);
+            Utils.dateFormat.splice(Utils.dateFormat.indexOf('YYYY'), 1);
+        }
+    }
     static date2string(now) {
+        if (typeof now === 'string') {
+            let m = now.match(/(\d{1,4})[-.\/](\d{1,2})[-.\/](\d{1,4})/);
+            if (m) {
+                let a = [parseInt(m[1], 10), parseInt(m[2], 10), parseInt(m[3], 10)];
+                let year = a.find(y => y > 31);
+                a.splice(a.indexOf(year), 1);
+                let day = a.find(m => m > 12);
+                if (day) {
+                    a.splice(a.indexOf(day), 1);
+                    now = new Date(year, a[0] - 1, day);
+                } else {
+                    // MM DD
+                    if (Utils.dateFormat[0][0] === 'M' && Utils.dateFormat[1][0] === 'D') {
+                        now = new Date(year, a[0] - 1, a[1]);
+                        if (Math.abs(now.getTime - Date.now()) > 3600000 * 24 * 10) {
+                            now = new Date(year, a[1] - 1, a[0]);
+                        }
+                    } else
+                    // DD MM
+                    if (Utils.dateFormat[0][0] === 'D' && Utils.dateFormat[1][0] === 'M') {
+                        now = new Date(year, a[1] - 1, a[0]);
+                        if (Math.abs(now.getTime - Date.now()) > 3600000 * 24 * 10) {
+                            now = new Date(year, a[0] - 1, a[1]);
+                        }
+                    } else {
+                        now = new Date(now);
+                    }
+                }
+            } else {
+                now = new Date(now);
+            }
+        } else {
+            now = new Date(now);
+        }
+
         let date = I18n.t('dow_' + days[now.getDay()]).replace('dow_', '');
         date += '. ' + now.getDate() + ' ' + I18n.t('month_' + months[now.getMonth()]).replace('month_', '');
         return date;

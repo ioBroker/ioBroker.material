@@ -205,6 +205,7 @@ class App extends Component {
                         }
 
                         this.objects = result || {};
+                        Utils.setDataFormat(this.getDateFormat());
 
                         this.readInstancesData(appSettings.instances, function () {
                             this.loadingStep('done');
@@ -660,6 +661,16 @@ class App extends Component {
         } else {
             console.log('No suitable language');
         }
+    }
+
+    getDateFormat() {
+        let format = 'DD.MM.YYYY';
+        if (this.objects['system.config'] && this.objects['system.config'].common) {
+            if (this.objects['system.config'].common.format === 'en') {
+                format = this.objects['system.config'].common.format;
+            }
+        }
+        return format;
     }
 
     getLocale() {

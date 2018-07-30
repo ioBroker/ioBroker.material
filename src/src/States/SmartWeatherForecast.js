@@ -407,13 +407,7 @@ class SmartWeatherForecast extends SmartGeneric {
             let date = '';
 
             if (state && state.val) {
-                const m = state.val.match(/(\d{2})\.(\d{2})\.(\d{4})/);
-                if (m) {
-                    date = new Date(m[3] + '-' + m[2] + '-' + m[1]);
-                } else {
-                    date = new Date(state.val);
-                }
-                date = Utils.date2string(new Date(date)) || '';
+                date = Utils.date2string(state.val) || '';
             }
 
             this.collectState = this.collectState || {};
