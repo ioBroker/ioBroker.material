@@ -31,7 +31,6 @@ Better if every device belongs to both categories. Because every device has a ty
 * Cams (over extra Adapter)
 * events (over extra Adapter)
 * Main screen
-* Weather chart in dialog
 * Charts
 * Narrow menu
 * Sort order of tiles
@@ -40,6 +39,7 @@ Better if every device belongs to both categories. Because every device has a ty
 * support of quality codes
 * configurable humidity ID and temperature ID for weather widget
 * do not load at reconnection all objects, just subscribed states
+* Show images / URL
 
 ## Credits
 - Used icons from flaticon

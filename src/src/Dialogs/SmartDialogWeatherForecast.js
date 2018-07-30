@@ -17,14 +17,20 @@ import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 import Utils from '../Utils';
 import SmartDialogGeneric from './SmartDialogGeneric';
 import I18n from '../i18n';
 
 const HEIGHT_HEADER  = 64;
-const HEIGHT_CURRENT = 150;
-const HEIGHT_DAY     = 128;
+const HEIGHT_CURRENT = 200;
+const HEIGHT_DAY     = 140;
+const HEIGHT_CHART   = 160;
 
 const styles = {
     'header-div': {
@@ -122,12 +128,12 @@ const styles = {
         fontWeight: 'normal',
         bottom: 16,
         left: 118,
-        textAlign: 'left'
+        textAlign: 'left',
+        fontSize: 14
     },
     'todayState-wind': {
         whiteSpace: 'nowrap',
         overflow: 'hidden',
-        fontSize: 14
     },
     'todayState-windTitle': {
     },
@@ -148,10 +154,46 @@ const styles = {
     },
     'todayState-windChillValue': {
     },
-    'todayState-state': {
-        fontSize: 14
+    'todayState-humidity': {
     },
-
+    'todayState-humidityTitle': {
+        paddingRight: 5
+    },
+    'todayState-humidityValue': {
+    },
+    'todayState-state': {
+    },
+    'chart-div': {
+        height: HEIGHT_CHART,
+        width: 'calc(100% - 1em)',
+        overflowX: 'hidden',
+        overflowY: 'auto',
+        marginBottom: 16,
+        padding: '0 16px',
+        cursor: 'pointer'
+    },
+    'chart-header': {
+        width: '100%',
+        fontSize: 16,
+        paddingTop: 16,
+        fontWeight: 'bold'
+    },
+    'chart-img': {
+        width: 'calc(100% - 16px)',
+    },
+    'chart-dialog': {
+        zIndex: 2101
+    },
+    'chart-dialog-paper': {
+        width: 'calc(100% - 4em)',
+        maxWidth: 'calc(100% - 4em)',
+    },
+    'chart-dialog-img': {
+        width: '100%',
+    },
+    'chart-dialog-content': {
+        textAlign: 'center',
+    },
 
     'days-div': {
         height: 'calc(100% - ' + HEIGHT_CURRENT + 'px - ' + HEIGHT_HEADER + 'px)',
@@ -196,17 +238,8 @@ const styles = {
         left: 16
     },
     'dayDate-date': {
-        fontWeight: 'normal',
+        fontWeight: 'bold',
         display: 'inline-block',
-    },
-    'dayDate-location': {
-        display: 'inline-block',
-        position: 'absolute',
-        textOverflow: 'ellipsis',
-        width: 'calc(100% - 75px)',
-        whiteSpace: 'nowrap',
-        right: 0,
-        textAlign: 'right'
     },
     'dayTemp-div': {
         position: 'absolute',
@@ -233,6 +266,13 @@ const styles = {
     'dayTemp-precipitationTitle': {
     },
     'dayTemp-precipitationValue': {
+        paddingLeft: 2
+    },
+    'dayTemp-humidity': {
+    },
+    'dayTemp-humidityTitle': {
+    },
+    'dayTemp-humidityValue': {
         paddingLeft: 2
     },
     'dayTemp-pressure': {
@@ -295,7 +335,6 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric  {
         states:             PropTypes.object,
         onCollectIds:       PropTypes.func,
         enumNames:          PropTypes.array,
-        onControl:          PropTypes.func,
         ids:                PropTypes.object.isRequired,
         settings:           PropTypes.object
     };
@@ -324,30 +363,20 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric  {
                 }
             }
         }
-
-        let maxHeight = 0;
-
-        this.divs = {
-            'header':  {height: HEIGHT_HEADER,   position: 'top',    visible: true},
-            'current': {height: HEIGHT_CURRENT,  position: 'top',    visible: true}
-        };
-        for (let d = 0; d < this.ids.days.length; d++) {
-            if (this.ids.days[d]) {
-                this.divs['day' + d] = {height: HEIGHT_DAY,      position: 'top',    visible: true};
+        if (this.props.settings) {
+            if (this.props.settings.tempID && this.subscribes.indexOf(this.props.settings.tempID) === -1)  {
+                this.subscribes = this.subscribes || [];
+                this.subscribes.push(this.props.settings.tempID);
             }
-        }
-        // calculate positions
-        let top = 0;
-        let bottom = 0;
-        for (const name in this.divs) {
-            if (this.divs.hasOwnProperty(name) && this.divs[name].visible) {
-                maxHeight += this.divs[name].height + 16;
+            if (this.props.settings.humidityID && this.subscribes.indexOf(this.props.settings.humidityID) === -1)  {
+                this.subscribes = this.subscribes || [];
+                this.subscribes.push(this.props.settings.humidityID);
             }
         }
 
-        this.dialogStyle = {
-            maxHeight: maxHeight
-        };
+        this.stateRx.chartOpened = false;
+
+        this.setMaxHeight();
 
         const enums = [];
         this.props.enumNames.forEach(e => (enums.indexOf(e) === -1) && enums.push(e));
@@ -361,9 +390,37 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric  {
         this.componentReady();
     }
 
+    setMaxHeight(states) {
+        let maxHeight = 0;
+        states = states || this.state;
+
+        this.divs = {
+            'header':  {height: HEIGHT_HEADER,  visible: true},
+            'current': {height: HEIGHT_CURRENT, visible: true},
+            'chart':   {height: HEIGHT_CHART,
+                visible: states && states[this.ids.current.chart] && !states[this.ids.current.chart].match(/\.html$|\.htm/)}
+        };
+        for (let d = 0; d < this.ids.days.length; d++) {
+            if (this.ids.days[d]) {
+                this.divs['day' + d] = {height: HEIGHT_DAY, visible: true};
+            }
+        }
+        // calculate positions
+        for (const name in this.divs) {
+            if (this.divs.hasOwnProperty(name) && this.divs[name].visible) {
+                maxHeight += this.divs[name].height + 16;
+            }
+        }
+
+        if (this.dialogStyle.maxHeight !== maxHeight) {
+            this.dialogStyle = {maxHeight: maxHeight};
+        }
+    }
+
     onUpdateTimer() {
         this.collectTimer = null;
         if (this.collectState) {
+            this.setMaxHeight(this.collectState);
             this.setState(this.collectState);
             this.collectState = null;
         }
@@ -389,6 +446,14 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric  {
                     this.collectTimer && clearTimeout(this.collectTimer);
                     this.collectTimer = setTimeout(() => this.onUpdateTimer(), 200);
                 }
+                return;
+            } else
+            if (id === this.ids.days[d].icon ||
+                id === this.ids.days[d].state) {
+                this.collectState = this.collectState || {};
+                this.collectState[id] = state.val || '';
+                this.collectTimer && clearTimeout(this.collectTimer);
+                this.collectTimer = setTimeout(() => this.onUpdateTimer(), 200);
                 return;
             } else
             if (id === this.ids.days[d].icon ||
@@ -437,6 +502,8 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric  {
             id === this.ids.current.humidity ||
             id === this.ids.current.windChill ||
             id === this.ids.current.windSpeed ||
+            id === this.props.settings.tempID ||
+            id === this.props.settings.humidityID ||
             id === this.ids.current.temperatureMin ||
             id === this.ids.current.temperatureMax ||
             id === this.ids.current.precipitation ||
@@ -450,6 +517,8 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric  {
             }
         } else
         if (id === this.ids.current.icon ||
+            id === this.ids.current.history ||
+            id === this.ids.current.chart ||
             id === this.ids.current.state ||
             id === this.ids.current.windIcon) {
             this.collectState = this.collectState || {};
@@ -503,6 +572,7 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric  {
         if (!this.divs.header.visible) return null;
         return (<div key="header" className={this.props.classes['header-div']}>{this.name}</div>);
     }
+
     getDayIconDiv(d) {
         const classes = this.props.classes;
         const temp = this.ids.days[d].temperature && this.state[this.ids.days[d].temperature];
@@ -574,6 +644,36 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric  {
         let tempMax = this.ids.days[d].temperatureMax && this.state[this.ids.days[d].temperatureMax];
         let precipitation = this.ids.days[d].precipitation && this.state[this.ids.days[d].precipitation];
         let pressure = this.ids.days[d].pressure && this.state[this.ids.days[d].pressure];
+        let humidity = this.ids.days[d].humidity && this.state[this.ids.days[d].humidity];
+
+        if (!humidity && humidity !== 0 &&
+            this.ids.current.humidity &&
+            this.props.objects[this.ids.current.humidity] &&
+            this.props.objects[this.ids.current.humidity].common &&
+            this.props.objects[this.ids.current.humidity].common.role &&
+            this.props.objects[this.ids.current.humidity].common.role.indexOf('forecast.0') !== -1) {
+            humidity = this.state[this.ids.current.humidity];
+        }
+        if (!tempMin && tempMin !== 0 &&
+            this.ids.current.temperatureMin) {
+            const obj = this.props.objects[this.ids.current.temperatureMin];
+            if (obj &&
+                obj.common &&
+                obj.common.role &&
+                obj.common.role.indexOf('forecast.0') !== -1) {
+                tempMin = this.state[this.ids.current.temperatureMin];
+            }
+        }
+        if (!tempMax && tempMax !== 0 &&
+            this.ids.current.temperatureMax) {
+            const obj = this.props.objects[this.ids.current.temperatureMax];
+            if (obj &&
+                obj.common &&
+                obj.common.role &&
+                obj.common.role.indexOf('forecast.0') !== -1) {
+                tempMax = this.state[this.ids.current.temperatureMax];
+            }
+        }
 
         let temp;
         if (tempMin !== null && tempMin !== undefined &&
@@ -592,7 +692,10 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric  {
             temp = (<span key="max" className={classes['dayTemp-temperatureMax']}>{tempMin}°</span>);
         }
 
-        if (!temp && !precipitation && precipitation !== 0 && !pressure && pressure !== 0) {
+        if (!temp &&
+            !precipitation && precipitation !== 0 &&
+            !pressure && pressure !== 0 &&
+            !humidity && humidity !== 0) {
             return null;
         }
 
@@ -610,6 +713,12 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric  {
                 </div>)
                 : null}
 
+            {humidity !== null && humidity !== undefined ?
+                (<div key={'humidity' + d} className={classes['dayTemp-humidity']}>
+                    <span key={'windTitle' + d} className={classes['dayTemp-humidityTitle']}>{I18n.t('Humidity')}:</span>
+                    <span className={classes['dayTemp-humidityValue']}>{precipitation}%</span>
+                </div>)
+                : null}
             {pressure !== null && pressure !== undefined ?
                 (<div key={'pressure' + d} className={classes['dayTemp-pressure']}>
                     <span key={'windTitle' + d} className={classes['dayTemp-pressureTitle']}>{I18n.t('Pressure')}:</span>
@@ -631,9 +740,7 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric  {
             return null;
         }
 
-        return (<Paper key={'day' + d} className={this.props.classes['day-div']}>
-            {parts}
-        </Paper>);
+        return (<Paper key={'day' + d} className={this.props.classes['day-div']}>{parts}</Paper>);
     }
 
     getCurrentIconDiv() {
@@ -648,11 +755,10 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric  {
     getCurrentDateLocationDiv() {
         const classes = this.props.classes;
         let date = this.ids.current.date && this.state[this.ids.current.date];
-        let location = this.state.location;
-
+        let location = this.props.settings.locationText;
+        location = location || this.state.location;
         location = location || I18n.t('Weather');
         date = date || Utils.date2string(new Date());
-
 
         return (<div key="location" className={classes['currentDate-div']}>
             <div className={classes['currentDate-date']}>{date},</div>
@@ -669,6 +775,10 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric  {
         }
         let windSpeed = this.ids.current.windSpeed && this.state[this.ids.current.windSpeed];
         let windIcon = this.ids.current.windIcon && this.state[this.ids.current.windIcon];
+        let humidity = this.props.settings.humidityID && this.state[this.props.settings.humidityID];
+        if (!humidity && humidity !== 0) {
+            humidity = this.ids.current.humidity && this.state[this.ids.current.humidity];
+        }
 
         let state = this.ids.current.state && this.state[this.ids.current.state];
         return (<div key="todayWind" className={classes['todayState-div']}>
@@ -686,6 +796,13 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric  {
                     {windIcon ? (<img className={classes['todayState-windIcon']} src={windIcon} alt="state"/>) : null}
                     {windDir ? (<span className={classes['todayState-windDir']}>{windDir}</span>) : null}
                     {windSpeed !== null && windSpeed !== undefined && !isNaN(windSpeed) ? (<span key="windSpeed" className={classes['todayState-windSpeed']}>{windSpeed}{this.props.windUnit}</span>) : null}
+                </div>)
+                : null}
+
+            {humidity || humidity === 0 ?
+                (<div key="humidity" className={classes['todayState-humidity']}>
+                    <span className={classes['todayState-humidityTitle']}>{I18n.t('Humidity')}: </span>
+                    <span className={classes['todayState-humidityValue']}>{humidity}%</span>
                 </div>)
                 : null}
 
@@ -733,13 +850,57 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric  {
         </div>);
     }
 
+    getChartDiv() {
+        const classes = this.props.classes;
+        let chart = this.ids.current.chart && this.state[this.ids.current.chart];
+        if (chart && chart.toLowerCase().match(/\.svg$|\.jpg$|\.jpeg$|\.gif$|\.png$/)) {
+            if (chart.indexOf('?') === -1) {
+                chart += '?ts=' + Date.now();
+            } else {
+                chart += '&ts=' + Date.now();
+            }
+            return [
+                (<Paper key="chart" className={this.props.classes['chart-div']} onClick={() => this.setState({chartOpened: true})}>
+                    <div className={classes['chart-header']}>{I18n.t('Chart')}</div>
+                    <img className={classes['chart-img']} src={this.state[this.ids.current.chart]} alt={I18n.t('Chart')}/>
+                </Paper>),
+                this.state.chartOpened ? (<Dialog
+                        key="chart-dialog"
+                        open={true}
+                        classes={{paper: this.props.classes['chart-dialog-paper']}}
+                        onClose={() => this.setState({chartOpened: false})}
+                        className={this.props.classes['chart-dialog']}
+                        aria-labelledby="alert-dialog-title"
+                        aria-describedby="alert-dialog-description"
+                    >
+                        <DialogTitle id="alert-dialog-title">{I18n.t('Chart')}</DialogTitle>
+                        <DialogContent className={this.props.classes['chart-dialog-content']}>
+                            <img className={classes['chart-dialog-img']} src={chart} alt={I18n.t('Chart')}/>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={() => this.setState({chartOpened: false})} color="primary" autoFocus>{I18n.t('Close')}</Button>
+                        </DialogActions>
+                    </Dialog>) : null];
+        } else {
+            return null;
+        }
+    }
+
     getDaysDiv() {
-        const days = this.ids.days.map(function (day, d) {
+        let days = this.ids.days.map(function (day, d) {
             return day && this.getDayDiv(d);
         }.bind(this));
-        return (<div key="days" className={this.props.classes['days-div']}>
-                    {days}
-                </div>);
+        if (this.props.settings.chartLast) {
+            days.push(this.getChartDiv());
+        } else {
+            days.unshift(this.getChartDiv());
+        }
+        days = days.filter(day => day);
+        if (days.length) {
+            return (<div key="allDays" className={this.props.classes['days-div']}>{days}</div>);
+        } else {
+            return null;
+        }
     }
 
     getCurrentDiv() {

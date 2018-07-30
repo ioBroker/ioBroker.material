@@ -32,7 +32,7 @@ const style = {
     info: {
         div: {
             background: 'rgba(0,0,0,0.55)',
-            position: 'absolute',
+            position: 'agetDialogSettingsbsolute',
             bottom: 50,
             width: 'calc(100% + 1em)',
             left: '-0.5em',

@@ -30,6 +30,7 @@ var Types = {
     blind: 'blind',
     button: 'button',
     camera: 'camera',
+    image: 'image',
     dimmer: 'dimmer',
     door: 'door',
     fireAlarm: 'fireAlarm',
@@ -107,8 +108,8 @@ function ChannelDetector() {
                 {role: /^media.title(\..*)?$/,          indicator: false,     write: false, type: 'string',  name: 'TITLE',    required: false},
                 // one of following
                 [
-                    {role: /^media.cover$|^media.cover.big$/, indicator: false,     write: false, type: 'string',  name: 'COVER',    required: false},
-                    {role: /^media.cover(\..*)$/,       indicator: false,     write: false, type: 'string',  name: 'COVER',    required: false},
+                    {role: /^media.cover$|^media.cover.big$/, indicator: false,     write: false, type: 'string',  name: 'COVER',    required: false, notSingle: true},
+                    {role: /^media.cover(\..*)$/,             indicator: false,     write: false, type: 'string',  name: 'COVER',    required: false, notSingle: true},
                 ],
                 {role: /^media.duration(\..*)?$/,       indicator: false,     write: false, type: 'number',  name: 'DURATION', required: false, noSubscribe: true},
                 {role: /^media.elapsed(\..*)?$/,        indicator: false,                   type: 'number',  name: 'ELAPSED',  required: false, noSubscribe: true},
@@ -146,11 +147,15 @@ function ChannelDetector() {
                 {role: /^value.temperature.windchill$|^value.temperature.windchill.forecast.0$/,           indicator: false, type: 'number',  name: 'WIND_CHILL',    required: false},
                 {role: /^value.speed.wind$|^value.speed.wind.forecast.0$/,           indicator: false, type: 'number',  name: 'WIND_SPEED',    required: false},
                 {role: /^value.direction.wind$|^value.direction.wind.forecast.0$/,   indicator: false, type: 'number',  name: 'WIND_DIRECTION',required: false},
-                {role: /^weather.icon.wind$|^weather.icon.wind.forecast.0$/,         indicator: false, type: 'string',  name: 'WIND_ICON',     required: false},
                 {role: /^weather.direction.wind$|^weather.direction.wind.forecast.0$/, indicator: false, type: 'string',  name: 'WIND_DIRECTION_STR',required: false},
+                {role: /^weather.icon.wind$|^weather.icon.wind.forecast.0$/,         indicator: false, type: 'string',  name: 'WIND_ICON',     required: false},
+                {role: /^weather.chart.url$/,                                        indicator: false, type: 'string',  name: 'HISTORY_CHART',   required: false, noSubscribe: true},
+                {role: /^weather.chart.url.forecast$/,                               indicator: false, type: 'string',  name: 'FORECAST_CHART',  required: false, noSubscribe: true},
+                {role: /^location$/,                                                 indicator: false, type: 'string',  name: 'LOCATION',        required: false, multiple: true},
+
 
                 // other days
-                {role: /^weather.icon.forecast.(\d)$/,                               indicator: false, type: 'string',  name: 'ICON%d',          required: false, searchInParent: true, multiple: true, noSubscribe: true},
+                {role: /^weather.icon.forecast.(\d)$/,                               indicator: false, type: 'string',  name: 'ICON%d',          required: false, searchInParent: true, multiple: true, noSubscribe: true, notSingle: true},
 
                 {role: /^value.temperature.min.forecast.(\d)$/,                      indicator: false, type: 'number',  name: 'TEMP_MIN%d',      required: false, searchInParent: true, multiple: true, noSubscribe: true},
                 {role: /^value.temperature.max.forecast.(\d)$/,                      indicator: false, type: 'number',  name: 'TEMP_MAX%d',      required: false, searchInParent: true, multiple: true, noSubscribe: true},
@@ -166,8 +171,8 @@ function ChannelDetector() {
 
                 {role: /^value.speed.wind.forecast.(\d)$/,                           indicator: false, type: 'number',  name: 'WIND_SPEED%d',    required: false, searchInParent: true, multiple: true, noSubscribe: true},
                 {role: /^value.direction.wind.forecast.(\d)$/,                       indicator: false, type: 'number',  name: 'WIND_DIRECTION%d',required: false, searchInParent: true, multiple: true, noSubscribe: true},
-
-                {role: /^location$/,                                                 indicator: false, type: 'string',  name: 'LOCATION',      required: false, multiple: true},
+                {role: /^weather.direction.wind.forecast.(\d)$/,                     indicator: false, type: 'string',  name: 'WIND_DIRECTION_STR%d',required: false, searchInParent: true, multiple: true, noSubscribe: true},
+                {role: /^weather.icon.wind.forecast.(\d)$/,                          indicator: false, type: 'string',  name: 'WIND_ICON%d',     required: false, searchInParent: true, multiple: true, noSubscribe: true},
             ],
             type: Types.weatherForecast
         },

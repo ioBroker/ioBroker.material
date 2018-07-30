@@ -61,7 +61,7 @@ const styles = {
         display: 'inline-block',
         position: 'absolute',
         textOverflow: 'ellipsis',
-        width: 'calc(100% - 75px)',
+        width: 'calc(100% - 78px)',
         whiteSpace: 'nowrap',
         right: 0,
         textAlign: 'right'
@@ -246,6 +246,12 @@ class SmartWeatherForecast extends SmartGeneric {
             state = this.channelInfo.states.find(state => state.id && state.name === 'PRECIPITATION_CHANCE');
             this.ids.current.precipitation = state && state.id;
 
+            state = this.channelInfo.states.find(state => state.id && state.name === 'HISTORY_CHART');
+            this.ids.current.history = state && state.id;
+
+            state = this.channelInfo.states.find(state => state.id && state.name === 'FORECAST_CHART');
+            this.ids.current.chart = state && state.id;
+
             for (let d = 0; d < 6; d++) {
                 this.ids.days[d] = this.ids.days[d] || {};
 
@@ -285,6 +291,11 @@ class SmartWeatherForecast extends SmartGeneric {
                 state = this.channelInfo.states.find(state => state.id && state.name === 'WIND_DIRECTION' + d);
                 this.ids.days[d].windDirection = state && state.id;
 
+                if (!this.ids.days[d].windDirection) {
+                    state = this.channelInfo.states.find(state => state.id && state.name === 'WIND_DIRECTION_STR' + d);
+                    this.ids.days[d].windDirection = state && state.id;
+                }
+
                 state = this.channelInfo.states.find(state => state.id && state.name === 'PRECIPITATION_CHANCE' + d);
                 this.ids.days[d].precipitation = state && state.id;
 
@@ -319,6 +330,20 @@ class SmartWeatherForecast extends SmartGeneric {
         this.componentReady();
     }
 
+    applySettings(settings) {
+        settings = settings || (this.state && this.state.settings);
+        if (settings) {
+            if (settings.tempID && !this.subscribes || this.subscribes.indexOf(settings.tempID) === -1)  {
+                this.subscribes = this.subscribes || [];
+                this.subscribes.push(settings.tempID);
+            }
+            if (settings.humidityID && !this.subscribes || this.subscribes.indexOf(settings.humidityID) === -1)  {
+                this.subscribes = this.subscribes || [];
+                this.subscribes.push(settings.humidityID);
+            }
+        }
+    }
+
     onUpdateTimer() {
         this.collectTimer = null;
         if (this.collectState) {
@@ -332,6 +357,8 @@ class SmartWeatherForecast extends SmartGeneric {
             id === this.ids.current.humidity ||
             id === this.ids.current.windChill ||
             id === this.ids.current.windSpeed ||
+            id === this.state.settings.tempID ||
+            id === this.state.settings.humidityID ||
             id === this.ids.current.temperatureMin ||
             id === this.ids.current.temperatureMax ||
             id === this.ids.current.precipitation ||
@@ -396,12 +423,36 @@ class SmartWeatherForecast extends SmartGeneric {
 
     getDialogSettings() {
         const settings = super.getDialogSettings();
+        settings.push({
+            name: 'chartLast',
+            value: this.state.settings.chartLast || false,
+            type: 'boolean'
+        });
+        settings.push({
+            name: 'tempID',
+            value: this.state.settings.tempID || '',
+            type: 'string'
+        });
+        settings.push({
+            name: 'humidityID',
+            value: this.state.settings.humidityID || '',
+            type: 'string'
+        });
+        settings.push({
+            name: 'locationText',
+            value: this.state.settings.locationText || '',
+            type: 'string'
+        });
         return settings;
     }
 
     getCurrentIconDiv() {
         const classes = this.props.classes;
-        const temp = this.ids.current.temperature && this.state[this.ids.current.temperature];
+        let temp;
+        temp = this.state.settings.tempID && this.state[this.state.settings.tempID];
+        if (!temp && temp !== 0) {
+            temp = this.ids.current.temperature && this.state[this.ids.current.temperature];
+        }
         return (<div  key="todayIcon" className={classes['currentIcon-div']}>
             <img className={classes['currentIcon-icon']} src={this.state[this.ids.current.icon]} alt={this.state[this.ids.current.state] || ''}/>
             {temp !== null && temp !== undefined ? (<div className={classes['currentIcon-temperature']}>{temp}°</div>) : null}
@@ -411,11 +462,11 @@ class SmartWeatherForecast extends SmartGeneric {
     getCurrentDateLocationDiv() {
         const classes = this.props.classes;
         let date = this.ids.current.date && this.state[this.ids.current.date];
-        let location = this.state.location;
+        let location = this.state.settings.locationText;
+        location = location || this.state.location;
 
         location = location || I18n.t('Weather');
         date = date || Utils.date2string(new Date());
-
 
         return (<div key="location" className={classes['currentDate-div']}>
             <div className={classes['currentDate-date']}>{date},</div>
@@ -511,6 +562,7 @@ class SmartWeatherForecast extends SmartGeneric {
                         name={this.state.settings.name}
                         enumNames={this.props.enumNames}
                         settings={this.state.settings}
+                        objects={this.props.objects}
                         windUnit={this.windUnit}
                         pressureUnit={this.pressureUnit}
                         onCollectIds={this.props.onCollectIds}

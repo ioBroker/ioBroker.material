@@ -182,6 +182,9 @@ class SmartGeneric extends Component {
                     this.defaultEnabling
                 );
             }
+            if (typeof this.applySettings === 'function') {
+                this.applySettings(this.stateRx.settings);
+            }
         }
 
         this.stateRx.nameStyle = {fontSize: SmartGeneric.getNameFontSize(this.stateRx.settings.name)};
