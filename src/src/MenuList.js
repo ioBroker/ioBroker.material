@@ -302,7 +302,7 @@ class MenuList extends Component {
             });
             page = pages.find(item => pages[0]);
         }
-        this.props.onRootChanged && this.props.onRootChanged(id, page && page.id);
+        this.props.onRootChanged && this.props.onRootChanged(id, page && page.id, true);
     }
 
     getElementsToShow(root, _objects, editMode) {

@@ -379,12 +379,12 @@ class App extends Component {
         this.setState({fullScreen: !this.state.fullScreen});
     }
 
-    onItemSelected(enumId, masterPath) {
+    onItemSelected(enumId, masterPath, doNotCloseMenu) {
         window.location.hash = encodeURIComponent(enumId.replace(/^enum\./, ''));
 
         const states = {
             viewEnum: enumId,
-            open: this.state.menuFixed
+            open: doNotCloseMenu || this.state.menuFixed
         };
         if (masterPath !== undefined) {
             states.masterPath = masterPath;
@@ -410,9 +410,9 @@ class App extends Component {
         }
     }
 
-    onRootChanged(root, page) {
+    onRootChanged(root, page, doNotCloseMenu) {
         if (page) {
-            this.onItemSelected(page, root);
+            this.onItemSelected(page, root, doNotCloseMenu);
         } else {
             this.setState({masterPath: root});
         }
@@ -966,11 +966,14 @@ class App extends Component {
         );
     }
 
+    onMenuClose() {
+        this.setState({open: false});
+    }
     getMenu(useBright) {
         return (<Drawer
             variant={this.state.menuFixed ? 'permanent' : 'temporary'}
             open={this.state.open}
-            onClose={() => this.setState({open: false})}
+            onClose={() => this.onMenuClose()}
             classes={{paper: this.props.classes.menuBackground}}
             style={{
                 width: Theme.menu.width,

@@ -1,9 +1,9 @@
 {
     "common": {
         "name": "material",
-        "version": "0.9.5",
+        "version": "0.9.7",
         "news": {
-            "0.9.6": {
+            "0.9.7": {
                 "en": "Implemented the weather widget",
                 "de": "Implementiert das Wetter Widget",
                 "ru": "Реализован погодный виджет",

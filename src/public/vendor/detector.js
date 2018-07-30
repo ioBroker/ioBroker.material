@@ -145,6 +145,7 @@ function ChannelDetector() {
                 {role: /^value.humidity$|value.humidity.forecast.0$/,                indicator: false, type: 'number',  name: 'HUMIDITY',      required: false},
 
                 {role: /^value.temperature.windchill$|^value.temperature.windchill.forecast.0$/,           indicator: false, type: 'number',  name: 'WIND_CHILL',    required: false},
+                {role: /^value.temperature.feelslike$|^value.temperature.feelslike$.forecast.0$/,          indicator: false, type: 'number',  name: 'FEELS_LIKE',    required: false},
                 {role: /^value.speed.wind$|^value.speed.wind.forecast.0$/,           indicator: false, type: 'number',  name: 'WIND_SPEED',    required: false},
                 {role: /^value.direction.wind$|^value.direction.wind.forecast.0$/,   indicator: false, type: 'number',  name: 'WIND_DIRECTION',required: false},
                 {role: /^weather.direction.wind$|^weather.direction.wind.forecast.0$/, indicator: false, type: 'string',  name: 'WIND_DIRECTION_STR',required: false},

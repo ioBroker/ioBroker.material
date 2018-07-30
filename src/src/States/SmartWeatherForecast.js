@@ -225,6 +225,11 @@ class SmartWeatherForecast extends SmartGeneric {
             state = this.channelInfo.states.find(state => state.id && state.name === 'WIND_CHILL');
             this.ids.current.windChill = state && state.id;
 
+            if (!this.ids.current.windChill) {
+                state = this.channelInfo.states.find(state => state.id && state.name === 'FEELS_LIKE');
+                this.ids.current.windChill = state && state.id;
+            }
+
             state = this.channelInfo.states.find(state => state.id && state.name === 'WIND_ICON');
             this.ids.current.windIcon = state && state.id;
 
