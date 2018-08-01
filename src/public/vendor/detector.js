@@ -54,7 +54,8 @@ var Types = {
     window: 'window',
     windowTilt: 'windowTilt',
     weatherCurrent: 'weatherCurrent',
-    weatherForecast: 'weatherForecast'
+    weatherForecast: 'weatherForecast',
+    warning: 'warning'
 };
 
 // Description of flags
@@ -178,6 +179,22 @@ function ChannelDetector() {
             ],
             type: Types.weatherForecast
         },
+        warning: {
+            states: [
+                {role: /^value.warning$/,                                 indicator: false,                  name: 'LEVEL',         required: true},
+                // optional
+                {role: /^weather.title.short$/,                           indicator: false, type: 'string',  name: 'TITLE',         required: false},
+                {role: /^weather.title$/,                                 indicator: false, type: 'string',  name: 'INFO',          required: false},
+                {role: /^date.start$/,                                    indicator: false, type: 'string',  name: 'START',         required: false},
+                {role: /^date.end$/,                                      indicator: false, type: 'string',  name: 'END',           required: false},
+                {role: /^date$/,                                          indicator: false, type: 'string',  name: 'START',         required: false},
+                {role: /^weather.chart.url/,                              indicator: false, type: 'string',  name: 'ICON',          required: false},
+
+                // For detailed screen
+                {role: /^weather.state$/,                                 indicator: false, type: 'string',  name: 'DESC',          required: false, noSubscribe: true},
+            ],
+            type: Types.warning
+        },
         thermostat: {
             states: [
                 {role: /temperature(\..*)?$/,          indicator: false,     write: true,  type: 'number',                                                    name: 'SET',                required: true},
@@ -281,7 +298,7 @@ function ChannelDetector() {
         },
         dimmer: {
             states: [
-                {role: /^level(\.dimmer)?$/,                   indicator: false, type: 'number',  write: true,       enums: roleOrEnumLight, name: 'SET',         required: true},
+                {role: /^level(\.dimmer)?|^level.brightness$/, indicator: false, type: 'number',  write: true,       enums: roleOrEnumLight, name: 'SET',         required: true},
                 // optional
                 {role: /^value(\.dimmer)?$/,                   indicator: false, type: 'number',  write: false,      enums: roleOrEnumLight, name: 'ACTUAL',      required: false},
                 {role: /^switch(\.light)?$|^state$/,           indicator: false, type: 'boolean', write: true,       enums: roleOrEnumLight, name: 'ON_SET',      required: false},
@@ -731,7 +748,7 @@ function ChannelDetector() {
         return found;
     };
 
-    this._detectNext = function (objects, id, keys, usedIds, ignoreIndicators) {
+    this._detectNext = function (objects, id, keys, usedIds, ignoreIndicators, allowedTypes) {
         usedIds = usedIds || [];
 
         if (objects[id] && objects[id].common) {
@@ -756,10 +773,10 @@ function ChannelDetector() {
             };
 
             for (var pattern in patterns) {
-                if (!patterns.hasOwnProperty(pattern)) continue;
+                if (!patterns.hasOwnProperty(pattern) || (allowedTypes && allowedTypes.indexOf(patterns[pattern].type) === -1)) continue;
                 context.result = null;
 
-                if (pattern === 'weatherForecast' && id.indexOf('forecast') !== -1) {
+                if (pattern === 'warning' && id.indexOf('warning') !== -1) {
                     console.log(pattern);
                 }
 
@@ -880,7 +897,7 @@ function ChannelDetector() {
         return null;
     };
 
-    this.detect = function (objects, id, _keysOptional, _usedIdsOptional, ignoreIndicators) {
+    this.detect = function (objects, id, _keysOptional, _usedIdsOptional, ignoreIndicators, allowedTypes) {
         if (this.cache[id] !== undefined) {
             return this.cache[id];
         }
@@ -895,7 +912,7 @@ function ChannelDetector() {
 
         var detected;
 
-        while((detected = this._detectNext(objects, id, _keysOptional, _usedIdsOptional, ignoreIndicators))) {
+        while((detected = this._detectNext(objects, id, _keysOptional, _usedIdsOptional, ignoreIndicators, allowedTypes))) {
             result.push(detected);
         }
 

@@ -36,8 +36,9 @@ import SmartWindowTilt from './States/SmartWindowTilt';
 import SmartLock from './States/SmartLock';
 import SmartInstance from './States/SmartInstance';
 import SmartMedia from './States/SmartMedia';
-import SmartVolume from "./States/SmartVolume";
-import SmartWeatherForecast from "./States/SmartWeatherForecast";
+import SmartVolume from './States/SmartVolume';
+import SmartWeatherForecast from './States/SmartWeatherForecast';
+import SmartWarning from './States/SmartWarning';
 
 class SmartTile extends Component {
     static propTypes = {
@@ -256,6 +257,9 @@ class SmartTile extends Component {
                     break;
                 case Types.media:
                     Control = SmartMedia;
+                    break;
+                case Types.warning:
+                    Control = SmartWarning;
                     break;
                 case Types.window:
                 case Types.fireAlarm:

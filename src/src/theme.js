@@ -267,6 +267,7 @@ export default {
             height: tileSize,
             position: 'relative',
             fontSize: 16,
+            textAlign: 'left',
             fontWeight: 'bold',
             color: 'black',
             background: 'white',

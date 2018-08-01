@@ -70,11 +70,15 @@ class Utils {
 
     static getSettings(obj, options, defaultEnabling) {
         let settings;
-        if (obj && obj.common && obj.common.custom) {
-            settings = obj.common.custom || {};
+        const id = (obj && obj._id) || (options && options.id);
+        if (obj && obj.hasOwnProperty('common')) {
+            obj = obj.common;
+        }
+        if (obj && obj.custom) {
+            settings = obj.custom || {};
             settings = settings[NAMESPACE] && settings[NAMESPACE][options.user || 'admin'] ? JSON.parse(JSON.stringify(settings[NAMESPACE][options.user || 'admin'])) : {enabled: true};
         } else {
-            settings = {enabled: defaultEnabling === undefined ? true : defaultEnabling, useCustom: false, name: options.id && Utils.CapitalWords(options.id.split('.').pop())};
+            settings = {enabled: defaultEnabling === undefined ? true : defaultEnabling, useCustom: false};
         }
 
         if (!settings.hasOwnProperty('enabled')) {
@@ -82,9 +86,9 @@ class Utils {
         }
 
         if (false && settings.useCommon) {
-            if (obj.common.color) settings.color = obj.common.color;
-            if (obj.common.icon)  settings.icon  = obj.common.icon;
-            if (obj.common.name)  settings.name  = obj.common.name;
+            if (obj.color) settings.color = obj.color;
+            if (obj.icon)  settings.icon  = obj.icon;
+            if (obj.name)  settings.name  = obj.name;
         } else {
             if (options) {
                 if (!settings.name  && options.name)  settings.name  = options.name;
@@ -92,10 +96,10 @@ class Utils {
                 if (!settings.color && options.color) settings.color = options.color;
             }
 
-            if (obj && obj.common) {
-                if (!settings.color && obj.common.color) settings.color = obj.common.color;
-                if (!settings.icon  && obj.common.icon)  settings.icon  = obj.common.icon;
-                if (!settings.name  && obj.common.name)  settings.name  = obj.common.name;
+            if (obj) {
+                if (!settings.color && obj.color) settings.color = obj.color;
+                if (!settings.icon  && obj.icon)  settings.icon  = obj.icon;
+                if (!settings.name  && obj.name)  settings.name  = obj.name;
             }
         }
 
@@ -108,9 +112,9 @@ class Utils {
                 settings.name = settings.name[0] + settings.name.substring(1).toLowerCase();
             }
         }
-        if (!settings.name && obj) {
-            let pos = obj._id.lastIndexOf('.');
-            settings.name = obj._id.substring(pos + 1).replace(/[_.]/g, ' ');
+        if (!settings.name && id) {
+            let pos = id.lastIndexOf('.');
+            settings.name = id.substring(pos + 1).replace(/[_.]/g, ' ');
             settings.name = (settings.name || '').replace(/_/g, ' ');
             settings.name = Utils.CapitalWords(settings.name);
         }
@@ -335,7 +339,7 @@ class Utils {
     }
     static setDataFormat(format) {
         if (format) {
-            Utils.dateFormat = format.toUpperCase().split(/[.-\/]/);
+            Utils.dateFormat = format.toUpperCase().split(/[.-/]/);
             Utils.dateFormat.splice(Utils.dateFormat.indexOf('YYYY'), 1);
         }
     }
@@ -348,7 +352,7 @@ class Utils {
                 // Day of week
                 return now;
             }
-            let m = now.match(/(\d{1,4})[-.\/](\d{1,2})[-.\/](\d{1,4})/);
+            let m = now.match(/(\d{1,4})[-./](\d{1,2})[-./](\d{1,4})/);
             if (m) {
                 let a = [parseInt(m[1], 10), parseInt(m[2], 10), parseInt(m[3], 10)];
                 let year = a.find(y => y > 31);

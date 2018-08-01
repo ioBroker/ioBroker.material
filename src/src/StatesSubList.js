@@ -15,13 +15,23 @@
  **/
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
+
+import IconUnreach from 'react-icons/lib/md/perm-scan-wifi';
+
 import Utils from './Utils';
 import Theme from './theme';
 import I18n from './i18n';
 import SmartTile from './SmartTile';
 import SmartDetector from './States/SmartDetector';
 import Types from './States/SmartTypes';
-import IconUnreach from "react-icons/lib/md/perm-scan-wifi";
+
+const styles = {
+    'drag-item': {
+        display: 'inline-block'
+    }
+};
 
 class StatesSubList extends Component {
 
@@ -59,6 +69,7 @@ class StatesSubList extends Component {
         }
         this.collectVisibility = null;
         this.collectVisibilityTimer = null;
+        this.onDragEnd = this.onDragEnd.bind(this);
     }
 
     componentWillUpdate(nextProps, nextState) {
@@ -91,6 +102,24 @@ class StatesSubList extends Component {
         if (changed) {
             this.setState(newState);
         }
+    }
+
+    onDragEnd(result) {
+        // dropped outside the list
+        if (!result.destination) {
+            return;
+        }
+
+        /*const items = reorder(
+            this.state.items,
+            result.source.index,
+            result.destination.index
+        );
+
+        this.setState({
+            items,
+        });*/
+        this.forceUpdate();
     }
 
     onVisibilityTimer() {
@@ -207,6 +236,49 @@ class StatesSubList extends Component {
         }.bind(this)).map(e => e.control);
     }
 
+    wrapItem(item, index) {
+        return (<Draggable key={'item-' + index} draggableId={index} index={index}>
+            {(provided, snapshot) => (
+                <div
+                    className={this.props.classes['drag-item']}
+                    style={{display: 'inline-block'}}
+                    ref={provided.innerRef}
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                >
+                    {item}
+                </div>
+            )}
+        </Draggable>);
+    }
+    onDragStart() {
+        console.log('start');
+        console.log(JSON.stringify(this.myEl.getBoundingClientRect()));
+
+    }
+    attachRef(el, provided) {
+        this.myEl = el;
+        return provided.innerRef(el);
+    }
+    wrapAllItems(items, provided, snapshot) {
+        return (<div style={{display: 'flex'}} ref={el => this.attachRef(el, provided)} {...provided.droppableProps}>
+                {items.map((item, index) => this.wrapItem(item, index))}
+                {provided.placeholder}
+            </div>);
+    }
+    wrapContent(items) {
+        if (this.props.editMode) {
+            return(
+                <DragDropContext onDragEnd={this.onDragEnd} onDragStart={() => this.onDragStart()}>
+                    <Droppable droppableId="droppable" direction="horizontal">
+                        {(provided, snapshot) => this.wrapAllItems(items, provided, snapshot)}
+                    </Droppable>
+                </DragDropContext>
+            );
+        } else {
+            return (<div>{items}</div>);
+        }
+    }
     render() {
         if (this.props.items && this.props.items.length) {
             let items = this.getListItems(this.props.items);
@@ -224,7 +296,7 @@ class StatesSubList extends Component {
                 return (<div key={(this.state.enumID + '-' + this.state.enumSubID).replace(/[^\w\d]/g, '_') + '-title'}
                              style={Object.assign({}, Theme.list.row, display)}><h3
                     style={Object.assign({}, Theme.list.title, {color: this.props.isUseBright ? 'white' : 'black'})}>{this.name}</h3>
-                    <div style={{width: '100%'}}>{items}</div>
+                    {this.wrapContent(items)}
                 </div>);
             } else {
                 // console.log('NO one element for ' + this.state.enumID + ': ' + this.props.items.join(', '));
@@ -236,4 +308,4 @@ class StatesSubList extends Component {
     }
 }
 
-export default StatesSubList;
+export default withStyles(styles)(StatesSubList);

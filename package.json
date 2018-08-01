@@ -47,5 +47,8 @@
     "build": "node node_modules/gulp/bin/gulp.js",
     "prepare": "node node_modules/gulp/bin/gulp.js"
   },
-  "license": "CC-BY-NC-4.0"
+  "license": "CC-BY-NC-4.0",
+  "dependencies": {
+    "react-beautiful-dnd": "^8.0.7"
+  }
 }

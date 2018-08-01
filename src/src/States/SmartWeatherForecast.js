@@ -117,7 +117,9 @@ const styles = {
     },
     'todayState-windIcon': {
         display: 'inline-block',
-        marginLeft: 5
+        marginLeft: 5,
+        width: 16,
+        maxHeight: 16
     },
     'todayState-windChill': {
     },
@@ -230,21 +232,28 @@ class SmartWeatherForecast extends SmartGeneric {
             state = this.channelInfo.states.find(state => state.id && state.name === 'WIND_CHILL');
             this.ids.current.windChill = state && state.id;
 
+            state = this.channelInfo.states.find(state => state.id && state.name === 'FEELS_LIKE');
             if (!this.ids.current.windChill) {
-                state = this.channelInfo.states.find(state => state.id && state.name === 'FEELS_LIKE');
                 this.ids.current.windChill = state && state.id;
+            } else if (state) {
+                const pos = this.subscribes.indexOf(state.id);
+                this.subscribes.splice(pos, 1);
+                state.id = null;
             }
 
             state = this.channelInfo.states.find(state => state.id && state.name === 'WIND_ICON');
             this.ids.current.windIcon = state && state.id;
 
+            state = this.channelInfo.states.find(state => state.id && state.name === 'WIND_DIRECTION');
+            this.ids.current.windDirection = state && state.id;
+
+            state = this.channelInfo.states.find(state => state.id && state.name === 'WIND_DIRECTION_STR');
             if (!this.ids.current.windDirection) {
-                state = this.channelInfo.states.find(state => state.id && state.name === 'WIND_DIRECTION');
                 this.ids.current.windDirection = state && state.id;
-            } else
-            if (!this.ids.current.windDirection) {
-                state = this.channelInfo.states.find(state => state.id && state.name === 'WIND_DIRECTION_STR');
-                this.ids.current.windDirection = state && state.id;
+            } else if (state) {
+                const pos = this.subscribes.indexOf(state.id);
+                this.subscribes.splice(pos, 1);
+                state.id = null;
             }
 
             state = this.channelInfo.states.find(state => state.id && state.name === 'TEMP_MIN');

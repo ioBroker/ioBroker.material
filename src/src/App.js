@@ -98,12 +98,19 @@ class App extends Component {
         this.instances = null;
         this.tasks = [];
         this.user = 'admin';
+        this.gotObjects = false;
 
         this.subscribeInstances = false;
         this.subscribes = {};
         this.requestStates = [];
         this.conn = window.servConn;
         this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
+
+        window.addEventListener('pageshow', () => {
+            if (this.gotObjects) {
+                this.tryToConnect();
+            }
+        }, false);
 
         this.urlVersion = App.getUrlVersion();
     }
@@ -247,6 +254,7 @@ class App extends Component {
                                 this.conn._socket.emit('unsubscribeObjects', 'system.adapter.*');
                                 this.subscribeInstances = false;
                             }
+                            this.gotObjects = true;
                         }.bind(this));
                     }.bind(this));
                 }.bind(this));
@@ -254,13 +262,7 @@ class App extends Component {
         }.bind(this));
     }
 
-    componentDidMount () {
-        this.updateWindowDimensions();
-        window.addEventListener('resize', this.updateWindowDimensions);
-
-        this.conn.namespace   = 'mobile.0';
-        this.conn._useStorage = false;
-
+    tryToConnect() {
         this.loadingStep('connecting');
 
         this.conn.init({
@@ -271,8 +273,13 @@ class App extends Component {
             onConnChange: function (isConnected) { // no lambda here
                 if (isConnected) {
                     this.setState({connected: true, loading: true});
-                    this.readAllData();
+                    if (this.gotObjects) {
+                        this.resubscribe();
+                    } else {
+                        this.readAllData();
+                    }
                 } else {
+                    this.subscribeInstances = false;
                     this.setState({
                         connected: false,
                         loadingProgress: 1,
@@ -317,6 +324,14 @@ class App extends Component {
                 }
             }.bind(this)
         }, false, false);
+    }
+    componentDidMount () {
+        this.updateWindowDimensions();
+        window.addEventListener('resize', this.updateWindowDimensions);
+
+        this.conn.namespace   = 'mobile.0';
+        this.conn._useStorage = false;
+        this.tryToConnect();
     }
 
     componentWillUnmount() {
@@ -433,10 +448,10 @@ class App extends Component {
 
     updateIds(ids) {
         this.requestTimer = null;
-        let _ids = this.requestStates;
+        ids = ids || this.requestStates;
         this.requestStates = [];
 
-        this.conn.getStates(_ids, (err, states) => {
+        this.conn.getStates(ids, (err, states) => {
             Object.keys(states).forEach(id => {
                 this.states[id] = states[id];
                 if (!this.states[id]) delete this.states[id];
@@ -454,6 +469,23 @@ class App extends Component {
      * @param {array} ids string or array of strings with IDs that must be subscribed or un-subscribed
      * @param {boolean} isMount true if subscribe and false if un-sibscribe
      */
+
+    resubscribe() {
+        const ids = (this.subscribes && Object.keys(this.subscribes));
+        if (this.state.appSettings.instances) {
+            this.conn._socket.emit('subscribeObjects', 'system.adapter.*');
+            this.subscribeInstances = true;
+        }
+        if (ids && ids.length) {
+            this.conn.subscribe(ids);
+            if (this.requestTimer) {
+                clearTimeout(this.requestTimer);
+            }
+            this.requestTimer = setTimeout(() => {this.updateIds(ids)}, 200);
+        }
+        this.loadingStep('done');
+        this.setState({loading: false});
+    }
 
     onCollectIds(elem, ids, isMount) {
         if (typeof ids !== 'object') {
@@ -484,11 +516,14 @@ class App extends Component {
                     if (this.requestStates.indexOf(id) === -1) {
                         this.requestStates.push(id);
                     }
-                    if (this.requestTimer) {
-                        clearTimeout(this.requestTimer);
-                    }
+                });
+                if (this.requestTimer) {
+                    clearTimeout(this.requestTimer);
+                    this.requestTimer = null;
+                }
+                if (this.requestStates.length) {
                     this.requestTimer = setTimeout(() => {this.updateIds()}, 200);
-                })
+                }
             }
             if (oldIDs.length) {
                 setTimeout(() => {
@@ -1206,6 +1241,7 @@ class App extends Component {
         return (
             <div className={this.props.classes.loadingBackground} style={{background: window.materialBackground}}>
                 <LoadingIndicator
+                    variant={this.gotObjects ? 'indeterminate' : 'determinate'}
                     color={useBright ? 'white' : 'black' }
                     value={100 * this.state.loadingProgress / App.LOADING_TOTAL}
                     label={I18n.t(this.state.loadingStep)}

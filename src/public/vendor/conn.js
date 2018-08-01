@@ -254,6 +254,14 @@ var servConn = {
                 url = location.protocol + '//' + location.host;
             }
 
+            if (this._socket) {
+                try {
+                    this._socket.close();
+                    this._socket = null;
+                } catch (e) {
+                    console.log('Cannot close connection: ' + e);
+                }
+            }
             this._socket = io.connect(url, {
                 query:                          'key=' + connOptions.socketSession,
                 'reconnection limit':           10000,

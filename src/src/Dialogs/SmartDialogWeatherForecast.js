@@ -42,7 +42,8 @@ const styles = {
         height: HEIGHT_CURRENT,
         width: 'calc(100% - 1em)',
         position: 'relative',
-        marginBottom: 16
+        marginBottom: 16,
+        overflow: 'hidden'
     },
     'currentIcon-div': {
         position: 'absolute',
@@ -180,6 +181,10 @@ const styles = {
     },
     'chart-img': {
         width: 'calc(100% - 16px)',
+        height: 'calc(100% - 40px)',
+        backgroundSize: 'contain',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center center',
     },
     'chart-dialog': {
         zIndex: 2101
@@ -187,12 +192,16 @@ const styles = {
     'chart-dialog-paper': {
         width: 'calc(100% - 4em)',
         maxWidth: 'calc(100% - 4em)',
-    },
-    'chart-dialog-img': {
-        width: '100%',
+        height: 'calc(100% - 4em)',
+        maxHeight: 'calc(100% - 4em)',
     },
     'chart-dialog-content': {
-        textAlign: 'center',
+        width: 'calc(100% - 5em)',
+        height: 'calc(100% - 4em)',
+        marginLeft: '1em',
+        backgroundSize: 'contain',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center center',
     },
 
     'days-div': {
@@ -213,7 +222,10 @@ const styles = {
         height: 90,
         zIndex: 0,
         left: 16,
-        top: 30
+        top: 30,
+        backgroundSize: 'contain',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center center',
     },
     'dayIcon-icon': {
         width: '100%',
@@ -307,7 +319,8 @@ const styles = {
     'dayState-windIcon': {
         display: 'inline-block',
         marginLeft: 5,
-        width: 16
+        width: 16,
+        maxHeight: 16
     },
     'dayState-windChill': {
     },
@@ -856,7 +869,9 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric  {
             return [
                 (<Paper key="chart" className={this.props.classes['chart-div']} onClick={() => this.setState({chartOpened: true})}>
                     <div className={classes['chart-header']}>{I18n.t('Chart')}</div>
-                    <img className={classes['chart-img']} src={this.state[this.ids.current.chart]} alt={I18n.t('Chart')}/>
+                    <div className={classes['chart-img']} style={{
+                        backgroundImage: 'url(' + this.state[this.ids.current.chart] + ')'
+                    }}/>
                 </Paper>),
                 this.state.chartOpened ? (<Dialog
                         key="chart-dialog"
@@ -868,9 +883,8 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric  {
                         aria-describedby="alert-dialog-description"
                     >
                         <DialogTitle id="alert-dialog-title">{I18n.t('Chart')}</DialogTitle>
-                        <DialogContent className={this.props.classes['chart-dialog-content']}>
-                            <img className={classes['chart-dialog-img']} src={chart} alt={I18n.t('Chart')}/>
-                        </DialogContent>
+                        <DialogContent className={this.props.classes['chart-dialog-content']}
+                        style={{backgroundImage: 'url(' + chart + ')'}}/>
                         <DialogActions>
                             <Button onClick={() => this.setState({chartOpened: false})} color="primary" autoFocus>{I18n.t('Close')}</Button>
                         </DialogActions>

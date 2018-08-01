@@ -37,11 +37,7 @@ Better if every device belongs to both categories. Because every device has a ty
 * vacuum cleaner
 * show bar for sliders to indicate position
 * support of quality codes
-* configurable humidity ID and temperature ID for weather widget
-* do not load at reconnection all objects, just subscribed states
 * Show images / URL
-* Do not close menu if clicked on group
-* dwd
 
 ## Credits
 - Used icons from flaticon

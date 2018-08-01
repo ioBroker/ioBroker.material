@@ -33,9 +33,9 @@ const styles = {
         textAlign: 'center'
     }
 };
-const LoadingIndicator = ({classes, label, value, color}) => {
+const LoadingIndicator = ({classes, label, value, color, variant}) => {
     return [
-        (<LinearProgress key="progress" variant="determinate" className={classes.progress} value={value} />),
+        (<LinearProgress key="progress" variant={variant || 'determinate'} className={classes.progress} value={value} />),
         (<div key="text" className={classes.progressText} style={{color: color}}>{label}</div>)
     ];
 };
@@ -43,6 +43,7 @@ const LoadingIndicator = ({classes, label, value, color}) => {
 LoadingIndicator.propTypes = {
     classes:    PropTypes.object.isRequired,
     label:      PropTypes.string.isRequired,
+    variant:    PropTypes.string,
     value:      PropTypes.number.isRequired,
     background: PropTypes.string
 };
