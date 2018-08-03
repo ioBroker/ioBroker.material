@@ -14,16 +14,17 @@
  * limitations under the License.
  **/
 import React from 'react';
-import Theme from '../theme';
+import PropTypes from 'prop-types';
 import IconUp from 'react-icons/lib/fa/angle-double-up';
 import IconDown from 'react-icons/lib/fa/angle-double-down';
 import IconLamp from 'react-icons/lib/ti/lightbulb';
 import IconStop from 'react-icons/lib/md/stop'
-import I18n from '../i18n';
 import {darken} from '@material-ui/core/styles/colorManipulator';
 import Button from '@material-ui/core/Button';
+
+import Theme from '../theme';
+import I18n from '../i18n';
 import SmartDialogGeneric from './SmartDialogGeneric';
-import PropTypes from 'prop-types';
 
 class SmartDialogSlider extends SmartDialogGeneric  {
     // expected:

@@ -33,7 +33,6 @@ Better if every device belongs to both categories. Because every device has a ty
 * Main screen
 * Charts
 * Narrow menu
-* Sort order of tiles
 * vacuum cleaner
 * show bar for sliders to indicate position
 * support of quality codes
@@ -44,6 +43,10 @@ Better if every device belongs to both categories. Because every device has a ty
 - Volume knob from [here](https://codepen.io/blucube/pen/cudAz) By [Ed Hicks](https://twitter.com/blucube) - Inspired by a [dribbble shot](https://dribbble.com/shots/753124-Volume-Knob)  by [Ricardo Salazar](https://twitter.com/rickss)
 
 ## Changelog
+### 0.9.8 (2018.08.03)
+* (bluefox) Order of tiles is implemented
+* (bluefox) Support of dwd data
+
 ### 0.9.7 (2018.07.30)
 * (bluefox) Implemented the weather widget
 

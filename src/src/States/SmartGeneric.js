@@ -182,9 +182,6 @@ class SmartGeneric extends Component {
                     this.defaultEnabling
                 );
             }
-            if (typeof this.applySettings === 'function') {
-                this.applySettings(this.stateRx.settings);
-            }
         }
 
         this.stateRx.nameStyle = {fontSize: SmartGeneric.getNameFontSize(this.stateRx.settings.name)};
@@ -366,7 +363,6 @@ class SmartGeneric extends Component {
             this.timer = null;
             this.onToggleValue && this.onToggleValue();
         }
-        console.log('Stopped');
     }
 
     onTileMouseDown(e) {
@@ -389,22 +385,24 @@ class SmartGeneric extends Component {
 
     saveSettings(newSettings) {
         const settings = newSettings || this.state.settings;
-        this.props.onSaveSettings && this.props.onSaveSettings(this.settingsId, settings, {enabled: this.defaultEnabling});
+        if (this.props.onSaveSettings) {
+            this.props.onSaveSettings(this.settingsId, settings, {enabled: this.defaultEnabling}, () => {
+                // subscribe if enabled and was not subscribed
+                if (settings.enabled && !this.subscribed) {
+                    this.subscribed = true;
+                    this.props.onCollectIds(this, this.subscribes, true);
+                } else
+                // unsubscribe if disabled and was subscribed
+                if (!settings.enabled && this.subscribed) {
+                    this.subscribed = false;
+                    this.props.onCollectIds(this, this.subscribes, false);
+                }
 
-        // subscribe if enabled and was not subscribed
-        if (settings.enabled && !this.subscribed) {
-            this.subscribed = true;
-            this.props.onCollectIds(this, this.subscribes, true);
-        } else
-        // unsubscribe if disabled and was subscribed
-        if (!settings.enabled && this.subscribed) {
-            this.subscribed = false;
-            this.props.onCollectIds(this, this.subscribes, false);
+                this.props.tile.setColorOn(settings.colorOn   || Theme.tile.tileOn);
+                this.props.tile.setColorOff(settings.colorOff || Theme.tile.tileOff);
+                this.props.tile.setVisibility(settings.enabled);
+            });
         }
-
-        this.props.tile.setColorOn(settings.colorOn   || Theme.tile.tileOn);
-        this.props.tile.setColorOff(settings.colorOff || Theme.tile.tileOff);
-        this.props.tile.setVisibility(settings.enabled);
     }
 
     toggleEnabled() {

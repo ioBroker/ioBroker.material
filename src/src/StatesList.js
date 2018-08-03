@@ -16,10 +16,41 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import SmartTile from './SmartTile';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import { withStyles } from '@material-ui/core/styles';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
+import IconVertical from 'react-icons/lib/fa/arrows-v'
+import IconHorizontal from 'react-icons/lib/fa/arrows-h'
+import Button from '@material-ui/core/Button';
+
 import Theme from './theme';
-import StatesSubList from './StatesSubList';
 import Utils from './Utils';
+import I18n from './i18n';
+import StatesSubList from './StatesSubList';
+
+const styles = {
+    'drag-item': {
+        display: 'inline-block',
+        width: '100%'
+    },
+    'drag-item-overlay': {
+        backgroundColor: 'green',
+        borderRadius: '1em'
+    },
+    'sub-list-disabled-overflow': {
+        top: 0,
+        bottom: 0,
+        position: 'absolute',
+        right: 0,
+        left: 0,
+        zIndex: 2,
+        backgroundColor: 'rgba(90,90,90,0.5)'
+    },
+    'drag-button': {
+        position: 'fixed',
+        top: 70,
+        right: 30
+    }
+};
 
 class StatesList extends Component {
 
@@ -44,15 +75,22 @@ class StatesList extends Component {
     constructor(props) {
         super(props);
         this.enumFunctions = [];
+
         this.state = {
             visible: false,
             newLine: false,
+            dragging: false,
+            subDragging: false,
             enumID: this.props.enumID,
             align: this.props.align,
+            order: Utils.getSettingsOrder(this.props.objects[this.props.enumID], null, {user: this.props.user}),
             background: this.props.background,
             backgroundId: this.props.backgroundId,
             visibleChildren: {}
         };
+        if (this.state.order !== null && !(this.state.order instanceof Array)) {
+            this.state.order = null;
+        }
         this.keys = null;
         this.collectVisibility = null;
         this.collectVisibilityTimer = null;
@@ -88,6 +126,11 @@ class StatesList extends Component {
         }
         if (nextProps.enumID !== this.state.enumID) {
             newState.enumID = nextProps.enumID;
+            newState.order = Utils.getSettingsOrder(this.props.objects[newState.enumID], null, {user: this.props.user});
+            if (newState.order !== null && !(newState.order instanceof Array)) {
+                newState.order = null;
+            }
+            this.order = null;
             newState.visibleChildren = {};
             newState.visible = false;
             this.keys = null;
@@ -97,6 +140,21 @@ class StatesList extends Component {
         if (changed) {
             this.setState(newState);
         }
+    }
+
+    onDragEnd(result) {
+        const newState = {dragging: false};
+
+        if (result.destination && result.destination.index !== result.source.index) {
+            this.order = Utils.reorder(this.order, result.source.index, result.destination.index);
+            newState.order = this.order;
+            const settings = Utils.getSettings(this.props.objects[this.props.enumID], {user: this.props.user});
+            settings.order = settings.order || {};
+            settings.order = this.order.filter(id => this.state.visibleChildren[id]);
+            this.props.onSaveSettings && this.props.onSaveSettings(this.props.enumID, settings);
+        }
+
+        this.setState(newState);
     }
 
     getElementsToShow() {
@@ -181,11 +239,151 @@ class StatesList extends Component {
         return this.getEnums('enum.functions.');
     }
 
+    wrapItem(id, items, isUseBright, index) {
+        if (!this.state.subDragging && this.props.editMode && id !== 'nothing' && id !== Utils.INSTANCES) {
+            return (<Draggable
+                key={this.state.enumID + '_' + id + '-list1'}
+                draggableId={this.state.enumID + '_' + id + '-list'} index={index}>
+                {(provided, snapshot) => (
+                    <div
+                        key={this.state.enumID + '_' + id + '-list2'}
+                        className={this.props.classes['drag-item'] + (snapshot.isDragging ? ' ' + this.props.classes['drag-item-overlay'] : '')}
+                        style={{display: 'inline-block'}}
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                       // {...provided.dragHandleProps}
+                    ><StatesSubList
+                        key={this.state.enumID + '_' + id + '-list'}
+                        objects={this.props.objects}
+                        user={this.props.user}
+                        states={this.props.states}
+                        newLine={this.props.newLine}
+                        items={items}
+                        isUseBright={isUseBright}
+                        ignoreIndicators={this.props.ignoreIndicators}
+                        onVisibilityControl={this.onVisibilityControl.bind(this)}
+                        debug={this.props.debug}
+                        align={this.state.align}
+                        editMode={this.props.editMode}
+                        windowWidth={this.props.windowWidth}
+                        enumFunctions={this.enumFunctions}
+                        enumID={id === Utils.INSTANCES ? Utils.INSTANCES : this.state.enumID}
+                        enumSubID={id === Utils.INSTANCES ? '' : id}
+                        keys={this.keys}
+                        onSaveSettings={this.props.onSaveSettings}
+                        onControl={this.props.onControl}
+                        onCollectIds={this.props.onCollectIds}
+                        dragHandleProps={provided.dragHandleProps}
+                        subDragging={false}
+                    />
+                    </div>
+                )}
+            </Draggable>);
+        } else {
+            const control = (<StatesSubList
+                key={this.state.enumID + '_' + id + '-list'}
+                objects={this.props.objects}
+                user={this.props.user}
+                states={this.props.states}
+                newLine={this.props.newLine}
+                items={items}
+                isUseBright={isUseBright}
+                ignoreIndicators={this.props.ignoreIndicators}
+                onVisibilityControl={this.onVisibilityControl.bind(this)}
+                debug={this.props.debug}
+                align={this.state.align}
+                editMode={this.props.editMode}
+                windowWidth={this.props.windowWidth}
+                enumFunctions={this.enumFunctions}
+                enumID={id === Utils.INSTANCES ? Utils.INSTANCES : this.state.enumID}
+                enumSubID={id === Utils.INSTANCES ? '' : id}
+                keys={this.keys}
+                onSaveSettings={this.props.onSaveSettings}
+                onControl={this.props.onControl}
+                onCollectIds={this.props.onCollectIds}
+                subDragging={true}
+            />);
+            if (this.props.editMode) {
+                return (<div
+                    key={this.state.enumID + '_' + id + '-list2'}
+                    className={this.props.classes['drag-item']}
+                    style={{display: 'inline-block'}}
+                >{control}</div>);
+            } else {
+                return control;
+            }
+
+        }
+    }
+
+    wrapAllItems(columns, provided, snapshot, style) {
+        style = Object.assign({marginLeft: this.props.marginLeft, width: 'calc(100% - ' + this.props.marginLeft + 'px)'}, style);
+
+        return (
+            <div style={style} ref={provided.innerRef} {...provided.droppableProps}>
+                {columns}
+                {provided.placeholder}
+                {this.getToggleDragButton()}
+            </div>);
+    }
+
+    getToggleDragButton() {
+        if (this.props.editMode) {
+            return (<Button key={this.props.dialogKey + '-stop-button'}
+                    variant="fab"
+                    title={I18n.t('Drag direction')}
+                    style={{fontSize: 24}}
+                    onClick={() => this.setState({subDragging: !this.state.subDragging})}
+                    className={this.props.classes['drag-button']}>
+                {this.state.subDragging ? <IconHorizontal/> : <IconVertical/>}
+            </Button>);
+        } else {
+            return null;
+        }
+    }
+
+    wrapContent(columns, isNothing) {
+        let style;
+        if (this.state.background) {
+            if (this.state.background.match(/\.jpg$|\.gif$|\.png$|\.jpeg$/)) {
+                style = Object.assign({}, Theme.mainPanel, {
+                    backgroundSize: this.props.windowWidth > this.props.windowHeight ? '100% auto' : 'auto 100%',
+                    backgroundImage: 'url(' + this.state.background + (this.state.backgroundId ? '?ts=' + Date.now() : '') + ')'});
+            } else {
+                style = Object.assign({}, Theme.mainPanel, {background: this.state.background, backgroundImage: 'none'});
+            }
+        } else if (this.state.backgroundColor) {
+            style = Object.assign({}, Theme.mainPanel, {background: this.state.backgroundColor, backgroundImage: 'none'});
+        } else {
+            style = Object.assign({}, Theme.mainPanel, {backgroundSize: this.props.windowWidth > this.props.windowHeight ? '100% auto' : 'auto 100%'});
+        }
+
+        if (this.state.align && !this.state.dragging) {
+            style.textAlign = this.state.align;
+        }
+
+        if (!this.state.subDragging && this.props.editMode && this.props.enumID !== Utils.INSTANCES && !isNothing) {
+            return (
+                <DragDropContext onDragEnd={result => this.onDragEnd(result)} onDragStart={() => this.setState({dragging: true})}>
+                    <Droppable droppableId="mainList" direction="vertical">
+                        {(provided, snapshot) => this.wrapAllItems(columns, provided, snapshot, style)}
+                    </Droppable>
+                </DragDropContext>
+            );
+        } else {
+            return (<div style={Object.assign({marginLeft: this.props.marginLeft}, style)}>
+                {columns}
+                {this.getToggleDragButton()}
+                </div>);
+        }
+    }
+
     render() {
         let items = this.getElementsToShow();
         if (items.length > 300) {
             return null; // something is wrong
         }
+        let index = 0;
 
         let columns = [];
 
@@ -197,30 +395,10 @@ class StatesList extends Component {
             this.getEnumFunctions(this.props.objects).forEach(e => this.enumFunctions.push(e));
         }
 
-        const background = this.props.backgroundColor;
-        const isUseBright = !background || Utils.isUseBright(background);
 
         if (this.props.enumID === Utils.INSTANCES) {
-            columns.push((<StatesSubList
-                key={this.state.enumID + '_' + Utils.INSTANCES + '-list'}
-                objects={this.props.objects}
-                user={this.props.user}
-                states={this.props.states}
-                items={items}
-                isUseBright={isUseBright}
-                ignoreIndicators={[]}
-                onVisibilityControl={this.onVisibilityControl.bind(this)}
-                editMode={false}
-                align={this.state.align}
-                debug={this.props.debug}
-                windowWidth={this.props.windowWidth}
-                enumFunctions={this.enumFunctions}
-                enumID={this.state.enumID}
-                enumSubID={''}
-                keys={this.keys}
-                onSaveSettings={this.props.onSaveSettings}
-                onControl={this.props.onControl}
-                onCollectIds={this.props.onCollectIds}/>));
+            columns.push({items, id: Utils.INSTANCES});
+            index++;
         } else
         if (items && items.length) {
             let orderEnums;
@@ -246,28 +424,9 @@ class StatesList extends Component {
 
                 if (column.length) {
                     this.props.debug && console.log('Add to ' + this.state.enumID + '_' + id + ': ' + column.join(', '));
-                    columns.push((<StatesSubList
-                            key={this.state.enumID + '_' + id + '-list'}
-                            objects={this.props.objects}
-                            user={this.props.user}
-                            states={this.props.states}
-                            newLine={this.props.newLine}
-                            items={column}
-                            isUseBright={isUseBright}
-                            ignoreIndicators={this.props.ignoreIndicators}
-                            onVisibilityControl={this.onVisibilityControl.bind(this)}
-                            debug={this.props.debug}
-                            align={this.state.align}
-                            editMode={this.props.editMode}
-                            windowWidth={this.props.windowWidth}
-                            enumFunctions={this.enumFunctions}
-                            enumID={this.state.enumID}
-                            enumSubID={id}
-                            keys={this.keys}
-                            onSaveSettings={this.props.onSaveSettings}
-                            onControl={this.props.onControl}
-                            onCollectIds={this.props.onCollectIds}/>));
+                    columns.push({id, items: column});
                     column.forEach(id => used.push(id));
+                    index++;
                 }
             });
 
@@ -281,79 +440,73 @@ class StatesList extends Component {
 
             if (column.length) {
                 this.props.debug && console.log('Add to others: ' + column.join(', '));
-                columns.push(<StatesSubList
-                    key={'others'}
-                    objects={this.props.objects}
-                    user={this.props.user}
-                    states={this.props.states}
-                    items={column}
-                    newLine={this.props.newLine}
-                    editMode={this.props.editMode}
-                    debug={this.props.debug}
-                    align={this.state.align}
-                    ignoreIndicators={this.props.ignoreIndicators}
-                    onVisibilityControl={this.onVisibilityControl.bind(this)}
-                    windowWidth={this.props.windowWidth}
-                    enumFunctions={this.enumFunctions}
-                    isUseBright={isUseBright}
-                    enumID={this.state.enumID}
-                    enumSubID="others"
-                    keys={this.keys}
-                    onSaveSettings={this.props.onSaveSettings}
-                    onControl={this.props.onControl}
-                    onCollectIds={this.props.onCollectIds}/>);
+                columns.push({id: 'others', items: column});
+                index++;
             }
 
             if (!this.state.visible) {
-                columns.push((<SmartTile
-                    key="nothing"
-                    editMode={this.props.editMode}
-                    user={this.props.user}
-                    states={this.props.states}
-                    objects={this.props.objects}
-                    id=""/>));
+                columns.push({id: 'nothing'});
             }
-
-            // sort items
-            // If functions => by rooms
-            // If rooms => by functions
-            // else => by functions
-            //columns = columns.map((items, i) => <Col key={'col' + i} style={{width: '9em'}}>{items}</Col>);
-        } else if (this.props.connected) {
-            // no connection
-            columns.push((<CircularProgress key="wait-circle" size={60} thickness={7} color="primary" style={{padding: 20}}/>));
         } else  {
             // no items
-            columns.push((<SmartTile
+            columns.push({control: (<SmartTile
                 key="nothing"
                 editMode={this.props.editMode}
                 user={this.props.user}
                 states={this.props.states}
                 objects={this.props.objects}
-                id=""/>));
+                id=""/>), id: 'nothing'});
+
+            return this.wrapContent(columns, true);
         }
 
-        let style;
-        if (this.state.background) {
-            if (this.state.background.match(/\.jpg$|\.gif$|\.png$|\.jpeg$/)) {
-                style = Object.assign({}, Theme.mainPanel, {
-                    backgroundSize: this.props.windowWidth > this.props.windowHeight ? '100% auto' : 'auto 100%',
-                    backgroundImage: 'url(' + this.state.background + (this.state.backgroundId ? '?ts=' + Date.now() : '') + ')'});
+        if (!this.order) {
+            this.order = this.state.order;
+            if (!this.order) {
+                this.order = columns.map(c => c.id);
             } else {
-                style = Object.assign({}, Theme.mainPanel, {background: this.state.background, backgroundImage: 'none'});
+                // add missing IDs
+                columns.forEach(c => this.order.indexOf(c.id) === -1 && this.order.push(c.id));
+
+                // remove deleted IDs
+                for (let i = this.order.length - 1; i >= 0; i--) {
+                    // if ID does not exist any more
+                    if (!columns.find(c => this.order[i] === c.id)) {
+                        this.order.splice(i, 1);
+                    }
+                }
             }
-        } else if (this.state.backgroundColor) {
-            style = Object.assign({}, Theme.mainPanel, {background: this.state.backgroundColor, backgroundImage: 'none'});
-        } else {
-            style = Object.assign({}, Theme.mainPanel, {backgroundSize: this.props.windowWidth > this.props.windowHeight ? '100% auto' : 'auto 100%'});
         }
 
-        if (this.state.align) {
-            style.textAlign = this.state.align;
+        let pos = this.order.indexOf('nothing');
+        if (pos !== -1 && pos != this.order.length - 1) {
+            this.order.splice(pos, 1);
+            this.order.push('nothing');
         }
+        const background = this.props.backgroundColor;
+        const isUseBright = !background || Utils.isUseBright(background);
 
-        return (<div style={Object.assign({marginLeft: this.props.marginLeft}, style)}>{columns}</div>);
+        const orderedColumns = this.order.map(function (id, i) {
+            const elem = columns.find(c => c.id === id);
+            if (elem) {
+                if (elem.id === 'nothing') {
+                    return (<SmartTile
+                        key="nothing"
+                        editMode={this.props.editMode}
+                        user={this.props.user}
+                        states={this.props.states}
+                        objects={this.props.objects}
+                        id=""/>);
+                } else {
+                    return this.wrapItem(elem.id, elem.items, isUseBright, i);
+                }
+            } else {
+                return null;
+            }
+        }.bind(this)).filter(e => e);
+
+        return this.wrapContent(orderedColumns);
     }
 }
 
-export default StatesList;
+export default withStyles(styles)(StatesList);

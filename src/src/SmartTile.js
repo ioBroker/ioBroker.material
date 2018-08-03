@@ -42,15 +42,19 @@ import SmartWarning from './States/SmartWarning';
 
 class SmartTile extends Component {
     static propTypes = {
-        id:          PropTypes.string.isRequired,
-        user:        PropTypes.string.isRequired,
-        objects:     PropTypes.object.isRequired,
-        states:      PropTypes.object.isRequired,
-        editMode:    PropTypes.bool.isRequired,
-        windowWidth: PropTypes.number,
-        ignoreIndicators: PropTypes.array,
-        enumNames:   PropTypes.array,
-        channelInfo: PropTypes.object
+        id:                 PropTypes.string.isRequired,
+        user:               PropTypes.string.isRequired,
+        objects:            PropTypes.object.isRequired,
+        states:             PropTypes.object.isRequired,
+        editMode:           PropTypes.bool.isRequired,
+        windowWidth:        PropTypes.number,
+        onVisibilityControl: PropTypes.func,
+        onSaveSettings:     PropTypes.func,
+        onCollectIds:       PropTypes.func,
+        onControl:          PropTypes.func,
+        ignoreIndicators:   PropTypes.array,
+        enumNames:          PropTypes.array,
+        channelInfo:        PropTypes.object
     };
 
     constructor(props) {

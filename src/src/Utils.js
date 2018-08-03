@@ -68,6 +68,36 @@ class Utils {
         return text.trim();
     }
 
+    static getSettingsOrder(obj, forEnumId, options) {
+        if (obj && obj.hasOwnProperty('common')) {
+            obj = obj.common;
+        }
+        let settings;
+        if (obj && obj.custom) {
+            settings = (obj.custom || {})[NAMESPACE];
+            const user = options.user || 'admin';
+            if (settings[user]) {
+                if (forEnumId) {
+                    if (settings[user].subOrder && settings[user].subOrder[forEnumId]) {
+                        return JSON.parse(JSON.stringify(settings[user].subOrder[forEnumId]));
+                    }
+                } else {
+                    if (settings[user].order) {
+                        return JSON.parse(JSON.stringify(settings[user].order));
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    static reorder(list, source, dest) {
+        const result = Array.from(list);
+        const [removed] = result.splice(source, 1);
+        result.splice(dest, 0, removed);
+        return result;
+    };
+
     static getSettings(obj, options, defaultEnabling) {
         let settings;
         const id = (obj && obj._id) || (options && options.id);

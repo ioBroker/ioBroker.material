@@ -137,6 +137,9 @@ class SmartWeatherForecast extends SmartGeneric {
     onUpdateTimer() {
         this.collectTimer = null;
         if (this.collectState) {
+            if (this.collectState[this.id] !== undefined) {
+                this.props.tile.setVisibility(!!this.collectState[this.id]);
+            }
             this.setState(this.collectState);
             this.collectState = null;
         }

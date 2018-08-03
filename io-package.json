@@ -3,6 +3,17 @@
         "name": "material",
         "version": "0.9.7",
         "news": {
+            "0.9.8": {
+                "en": "Order of tiles is implemented\nSupport of dwd data",
+                "de": "Reihenfolge der Kacheln ist implementiert\nUnterstützung von DWD-Daten",
+                "ru": "Выполняется заказ плитки\nПоддержка данных dwd",
+                "pt": "Ordem de telhas é implementada\nSuporte de dados do dwd",
+                "nl": "Orde van tegels is geïmplementeerd\nOndersteuning van dwd-gegevens",
+                "fr": "L'ordre des carreaux est implémenté\nPrise en charge des données DWD",
+                "it": "L'ordine delle piastrelle è implementato\nSupporto di dati DWD",
+                "es": "Se implementa el orden de las fichas\nSoporte de datos dwd",
+                "pl": "Kolejność płytek jest zaimplementowana\nObsługa danych DWD"
+            },
             "0.9.7": {
                 "en": "Implemented the weather widget",
                 "de": "Implementiert das Wetter Widget",

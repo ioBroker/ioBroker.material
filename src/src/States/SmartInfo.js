@@ -77,8 +77,6 @@ class SmartInfo extends SmartGeneric {
 
         if (!this.infos.find(state => !invisibleDefaultRoles.find(test => !test.test(state.role)))) {
             this.defaultEnabling = false;
-        } else {
-            console.log('Visible!');
         }
 
         // make tile with opacity 1

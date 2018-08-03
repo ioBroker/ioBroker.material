@@ -266,7 +266,7 @@ class App extends Component {
         this.loadingStep('connecting');
 
         this.conn.init({
-            name:          'mobile.0',  // optional - default 'vis.0'
+            name:          'material.0',  // optional - default 'vis.0'
             connLink:      (typeof socketUrl === 'undefined') ? '/' : undefined,  // optional URL of the socket.io adapter
 //            socketSession: ''           // optional - used by authentication
         }, {
@@ -325,11 +325,12 @@ class App extends Component {
             }.bind(this)
         }, false, false);
     }
+
     componentDidMount () {
         this.updateWindowDimensions();
         window.addEventListener('resize', this.updateWindowDimensions);
 
-        this.conn.namespace   = 'mobile.0';
+        this.conn.namespace   = 'material.0';
         this.conn._useStorage = false;
         this.tryToConnect();
     }
@@ -651,6 +652,7 @@ class App extends Component {
             defaultSettings = {};
         }
 
+        //Utils.setSettings(objects[id], settings, {user: this.user, language: I18n.getLanguage()});
         this.tasks.push({name: 'saveSettings', id, settings, defaultSettings, cb});
 
         if (this.tasks.length === 1) {
@@ -917,7 +919,7 @@ class App extends Component {
     }
 
     readImageNames(cb) {
-        const dir = `/${Utils.namespace}/${this.user}/`;
+        const dir = `/${Utils.namespace}.0/${this.user}/`;
         this.conn.readDir(dir, (err, files) => {
             cb(files.map(file => dir + file.file));
         });
@@ -926,8 +928,11 @@ class App extends Component {
     saveDialogSettings(settings) {
         settings = settings || this.state.settings;
         if (settings.background && typeof settings.background === 'object') {
-            let fileName = `/${Utils.namespace}/${this.user}/${this.state.viewEnum}.${settings.background.ext}`;
+            let fileName = `/${Utils.namespace}.0/${this.user}/${this.state.viewEnum}.${settings.background.ext}`;
 
+            if (settings.background.data.startsWith('data:')) {
+                settings.background.data = settings.background.data.split(',')[1];
+            }
             // upload image
             this.conn.writeFile64(fileName, settings.background.data, function (err) {
                 if (err) {

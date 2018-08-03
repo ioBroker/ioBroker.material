@@ -335,7 +335,7 @@ class SmartWeatherForecast extends SmartGeneric {
             }
 
             let max = this.ids.days.length - 1;
-            while (!this.ids.days[max]) {
+            while (!this.ids.days[max] && max >= 0) {
                 max--;
             }
             if (max < this.ids.days.length && !this.ids.days[max + 1]) {

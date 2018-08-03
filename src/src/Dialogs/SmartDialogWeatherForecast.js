@@ -718,7 +718,7 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric  {
             {humidity !== null && humidity !== undefined ?
                 (<div key={'humidity' + d} className={classes['dayTemp-humidity']}>
                     <span key={'windTitle' + d} className={classes['dayTemp-humidityTitle']}>{I18n.t('Humidity')}:</span>
-                    <span className={classes['dayTemp-humidityValue']}>{precipitation}%</span>
+                    <span className={classes['dayTemp-humidityValue']}>{humidity}%</span>
                 </div>)
                 : null}
             {pressure !== null && pressure !== undefined ?
