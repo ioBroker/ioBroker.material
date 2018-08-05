@@ -1,9 +1,9 @@
 {
     "common": {
         "name": "material",
-        "version": "0.9.7",
+        "version": "0.9.9",
         "news": {
-            "0.9.8": {
+            "0.9.9": {
                 "en": "Order of tiles is implemented\nSupport of dwd data",
                 "de": "Reihenfolge der Kacheln ist implementiert\nUnterstützung von DWD-Daten",
                 "ru": "Выполняется заказ плитки\nПоддержка данных dwd",

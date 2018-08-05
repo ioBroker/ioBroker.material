@@ -48,7 +48,8 @@ const styles = {
     'drag-button': {
         position: 'fixed',
         top: 70,
-        right: 30
+        right: 30,
+        zIndex: 4
     }
 };
 

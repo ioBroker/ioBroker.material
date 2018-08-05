@@ -191,6 +191,10 @@ class SmartGeneric extends Component {
         this.props.tile.setColorOn(this.stateRx.settings.colorOn   || Theme.tile.tileOn.background);
         this.props.tile.setColorOff(this.stateRx.settings.colorOff || Theme.tile.tileOff.background);
 
+        if (this.stateRx.settings && this.stateRx.settings.doubleSize) {
+            this.width = 2;
+        }
+
         if (this.width > 1) {
             this.props.tile.setSize(this.width);
         }
@@ -534,6 +538,13 @@ class SmartGeneric extends Component {
                 type: 'color'
             });
         }
+
+        settings.unshift({
+            name: 'doubleSize',
+            value: this.state.settings.doubleSize || '',
+            type: 'boolean'
+        });
+
         settings.unshift({
             name: 'colorOn',
             value: this.state.settings.colorOn || '',

@@ -18,6 +18,7 @@ import Dropzone from 'react-dropzone';
 import IconDelete from 'react-icons/lib/md/delete';
 import IconOpen from 'react-icons/lib/md/file-upload';
 import IconClose from 'react-icons/lib/md/close';
+import IconCam from 'react-icons/lib/md/camera-alt';
 import Button from '@material-ui/core/Button';
 import PropTypes from 'prop-types';
 import ImageList from './ImageList';
@@ -104,6 +105,7 @@ class ImageSelector extends React.Component {
         if (this.props.icons) {
             this.icons = IconList.List;
         }
+        this.inputRef = React.createRef();
         this.state = state;
     }
     componentWillUpdate(nextProps, nextState) {
@@ -111,6 +113,7 @@ class ImageSelector extends React.Component {
             this.setState({images: nextProps.images});
         }
     }
+
     static readFile(file, cb) {
         const reader = new FileReader();
         reader.onload = () => {
@@ -167,6 +170,13 @@ class ImageSelector extends React.Component {
         this.props.onUpload && this.props.onUpload('');
     }
 
+    static isMobile() {
+        return /iPhone|iPad|iPod|Android/i.test(window.navigator.userAgent);
+    }
+
+    onCamera() {
+        this.inputRef.current.click();
+    }
     render() {
         const _style = Object.assign({}, style.dropzone, this.state.imageStatus === 'accepted' ? style.dropzoneAccepted : (this.state.imageStatus === 'accepted' ? style.dropzoneRejected : {}));
 
@@ -187,11 +197,17 @@ class ImageSelector extends React.Component {
             {this.state.opened &&
                 [
                     ((this.state.images && this.state.images.length) || this.icons) && (<ImageList key={'image-list'} images={this.state.images || this.icons} onSelect={this.handleSelectImage.bind(this)}/>),
+                    ImageSelector.isMobile() ?
+                        (<Button key={'image-camera'} onClick={() => this.onCamera()}
+                                  style={Object.assign({}, style.camIcon)} variant="fab" mini aria-label="camera">
+                            <IconCam />
+                            <input ref={this.inputRef}type="file" accept="image/*" capture style="display:none"/>
+                        </Button>) : null,
                     (<Dropzone key={'image-drop'}
-                               maxSize={this.props.maxSize}
-                               onDrop={files => this.handleDropImage(files)}
-                               accept={this.props.accept || 'image/jpeg, image/png'}
-                               style={_style}>
+                           maxSize={this.props.maxSize}
+                           onDrop={files => this.handleDropImage(files)}
+                           accept={this.props.accept || 'image/jpeg, image/png'}
+                           style={_style}>
                         {
                             ({isDragActive, isDragReject}) => {
                                 if (isDragActive) {
