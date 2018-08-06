@@ -67,15 +67,11 @@ class SmartSlider extends SmartGeneric {
                 this.setState(newState);
 
                 const tileState = val !== this.min;
-                this.props.tile.setState({
-                    state: tileState
-                });
+                this.props.tile.setState({state: tileState});
             } else {
                 newState[id] = null;
                 this.setState(newState);
-                this.props.tile.setState({
-                    state: false
-                });
+                this.props.tile.setState({state: false});
             }
 
             // hide desired value
@@ -156,13 +152,7 @@ class SmartSlider extends SmartGeneric {
 
     render() {
         return this.wrapContent([
-            (<div key={this.key + 'tile-icon'} className="tile-icon"
-                  style={{pointerEvents: 'none'}}>{this.getIcon()}</div>),
-            (<div key={this.key + 'tile-text'} className="tile-text" style={Theme.tile.tileText}>
-                <div className="tile-channel-name" style={Object.assign({}, Theme.tile.tileName, this.state.nameStyle)}>{this.state.settings.name}</div>
-                <div className="tile-state-text"
-                     style={Theme.tile.tileState}>{this.getStateText()}</div>
-            </div>),
+            this.getStandardContent(null, true),
             this.state.showDialog ?
                 <Dialog dialogKey={this.key + 'dialog'}
                         key={this.key + 'dialog'}

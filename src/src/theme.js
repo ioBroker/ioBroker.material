@@ -210,6 +210,13 @@ export default {
             }
         }
     },
+    buttonAllLight: {
+        height: 24,
+        width: 24,
+        borderRadius: '50%',
+        marginLeft: 10,
+        boxShadow: '0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 6px 10px 0px rgba(0, 0, 0, 0.14), 0px 1px 18px 0px rgba(0, 0, 0, 0.12)'
+    },
     palette: {
         /*primary1Color:      blue700,
         primary2Color:      blue600,
@@ -310,17 +317,33 @@ export default {
         },
         tileName: {
             overflow: 'hidden',
-            width: '100%',
+            width: 'calc(100% - 32px)',
             height: 37,
+        },
+        tileName2: {
+            overflow: 'hidden',
+            float: 'left'
         },
         tileNameSmall: {
             fontSize: 8,
         },
         tileText: {
-            marginTop: 45,
             pointerEvents: 'none',
-            position: 'relative',
-            height: 64
+            bottom: 0,
+            left: 0,
+            width: 'calc(100% - 32px)',
+            position: 'absolute',
+            padding: '0 16px',
+            height: 67
+        },
+        tileText2: {
+            height: 32,
+            bottom: 0,
+            left: 0,
+            width: 'calc(100% - 32px)',
+            padding: '16px 16px 0 16px',
+            pointerEvents: 'none',
+            position: 'absolute',
         },
         tileNumber: {
             position: 'absolute',
@@ -337,10 +360,16 @@ export default {
         },
         tileState: {
             position: 'absolute',
-            bottom: 8,
-            left: 0,
+            bottom: 10,
+            left: 16,
             whiteSpace: 'nowrap',
             width: '100%',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis'
+        },
+        tileState2: {
+            float: 'right',
+            whiteSpace: 'nowrap',
             overflow: 'hidden',
             textOverflow: 'ellipsis'
         },

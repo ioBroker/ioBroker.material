@@ -180,13 +180,7 @@ class SmartWindowTilt extends SmartGeneric {
     }
 
     render() {
-        return this.wrapContent([
-            (<div key={this.key + 'tile-icon'} className="tile-icon">{this.getIcon()}</div>),
-            (<div key={this.key + 'tile-text'} className="tile-text" style={Theme.tile.tileText}>
-                <div className="tile-channel-name" style={Object.assign({}, Theme.tile.tileName, this.state.nameStyle)}>{this.state.settings.name}</div>
-                <div className="tile-state-text"  style={Object.assign({}, Theme.tile.tileState, this.state[this.actualId] ? Theme.tile.tileStateOn : Theme.tile.tileStateOff)}>{this.getStateText()}</div>
-            </div>)
-        ]);
+        return this.wrapContent(this.getStandardContent(this.actualId));
     }
 }
 

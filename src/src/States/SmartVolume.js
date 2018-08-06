@@ -218,19 +218,14 @@ class SmartVolume extends SmartGeneric {
         return result;
     }
 
+    getAdditionalName() {
+        return this.group ? (<span style={style.groupText}>{I18n.t('group')}</span>) : null;
+    }
+
     render() {
         return this.wrapContent([
-            (<div key={this.key + 'tile-icon'} className="tile-icon"
-                  style={{pointerEvents: 'none'}}>{this.getIcon()}</div>),
+            this.getStandardContent(null, true),
             this.muteId && this.getSecondaryDiv(),
-            (<div key={this.key + 'tile-text'} className="tile-text" style={Theme.tile.tileText}>
-                <div className="tile-channel-name" style={Object.assign({}, Theme.tile.tileName, this.state.nameStyle)}>
-                    {this.state.settings.name}
-                    {this.group ? (<span style={style.groupText}>{I18n.t('group')}</span>) : null}
-                </div>
-                <div className="tile-state-text"
-                     style={Theme.tile.tileState}>{this.getStateText()}</div>
-            </div>),
             this.state.showDialog ?
                 <Dialog key={this.key + 'dialog'}
                         startValue={this.state[this.id]}

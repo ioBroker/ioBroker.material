@@ -14,6 +14,7 @@
  * limitations under the License.
  **/
 import React from 'react';
+import { withStyles } from '@material-ui/core/styles';
 import Dropzone from 'react-dropzone';
 import IconDelete from 'react-icons/lib/md/delete';
 import IconOpen from 'react-icons/lib/md/file-upload';
@@ -22,9 +23,16 @@ import IconCam from 'react-icons/lib/md/camera-alt';
 import Button from '@material-ui/core/Button';
 import PropTypes from 'prop-types';
 import ImageList from './ImageList';
+import ReactCrop, { makeAspectCrop } from 'react-image-crop';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import 'react-image-crop/dist/ReactCrop.css'
 
 // Icons
 import IconList from '../../icons/icons';
+import I18n from "../../i18n";
 
 const style = {
     label: {
@@ -61,7 +69,15 @@ const style = {
         color: 'white',
         opacity: 0.9,
         position: 'absolute',
-        right: 10
+        right: 10,
+        zIndex: 10
+    },
+    camIcon: {
+        position: 'absolute',
+        bottom: 8,
+        right: 3,
+        zIndex: 10,
+        cursor: 'pointer'
     },
     imageBar: {
         bar: {
@@ -73,7 +89,28 @@ const style = {
         image: {
 
         }
-    }
+    },
+    'chart-dialog': {
+        zIndex: 2101
+    },
+    'chart-dialog-paper': {
+        width: 'calc(100% - 2em)',
+        maxWidth: 'calc(100% - 2em)',
+        height: 'calc(100% - 2em)',
+        maxHeight: 'calc(100% - 2em)'
+    },
+    'chart-dialog-img': {
+
+    },
+    'chart-dialog-content': {
+        width: 'calc(100% - 4em)',
+        height: 'calc(100% - 4em)',
+        cursor: 'pointer',
+        textAlign: 'center',
+        backgroundSize: 'contain',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center center',
+    },
 };
 
 class ImageSelector extends React.Component {
@@ -91,7 +128,8 @@ class ImageSelector extends React.Component {
         accept:          PropTypes.string,
         textAccepted:    PropTypes.string,
         textRejected:    PropTypes.string,
-        textWaiting:     PropTypes.string
+        textWaiting:     PropTypes.string,
+        aspect:          PropTypes.number // if set, the crop function will be called
     };
 
     constructor(props) {
@@ -99,38 +137,65 @@ class ImageSelector extends React.Component {
         const state = {
             imageStatus: 'wait',
             image:  this.props.image,
+            beforeCrop: null,
             images: this.props.images,
-            opened: !this.props.image
+            opened: !this.props.image,
+            cropOpened: false,
+            crop: null,
+            cropWidth: 100,
+            cropHeight: 100
         };
         if (this.props.icons) {
             this.icons = IconList.List;
         }
+        this.cropPixels = null;
         this.inputRef = React.createRef();
+        this.cropRef = React.createRef();
         this.state = state;
     }
+
     componentWillUpdate(nextProps, nextState) {
         if (!this.props.icons && JSON.stringify(nextProps.images) !== JSON.stringify(this.state.images)) {
             this.setState({images: nextProps.images});
         }
     }
 
-    static readFile(file, cb) {
+    /**
+     * Crop image in the browser.
+     *
+     * @param {Object} imageData - Image File Object
+     * @param {Object} crop - crop Object provided by react-image-crop
+     * @param {Function} cb - Callback
+     */
+    static cropImage(imageData, crop, fileName, cb) {
+        const canvas = document.createElement('canvas');
+        canvas.width = crop.width;
+        canvas.height = crop.height;
+
+        const ctx = canvas.getContext('2d');
+        const image = new Image();
+        image.onload = function() {
+            ctx.drawImage(
+                image,
+                crop.x,
+                crop.y,
+                crop.width,
+                crop.height,
+                0,
+                0,
+                crop.width,
+                crop.height
+            );
+
+            cb(null, {data: canvas.toDataURL('image/jpeg'), name: fileName});
+        };
+        image.src = imageData;
+    }
+
+    static readFileDataUrl(file, cb) {
         const reader = new FileReader();
         reader.onload = () => {
-            const pos = file.name.lastIndexOf('.');
-            const ext = file.name.substring(pos + 1).toLowerCase();
-            let prefix = 'data:image/png;base64,';
-            if (ext === 'svg') {
-                prefix = 'data:image/svg+xml;base64,';
-            } else if (ext === 'jpg' || ext === 'jpeg') {
-                prefix = 'data:image/jpeg;base64,';
-            } else if (ext === 'gif') {
-                prefix = 'data:image/gif;base64,';
-            } else if (ext === 'bmp') {
-                prefix = 'data:image/bmp;base64,';
-            }
-
-            cb(null, {data: prefix + btoa(reader.result), ext: ext, preview: file.preview});
+            cb(null, {data: reader.result, name: file.name});
         };
         reader.onabort = () => {
             console.error('file reading was aborted');
@@ -141,12 +206,20 @@ class ImageSelector extends React.Component {
             cb('file reading has failed: ' + e);
         };
 
-        reader.readAsBinaryString(file);
+        reader.readAsDataURL(file)
     }
 
     handleSelectImage(file) {
-        this.setState({image: typeof file ==='object' ? file.data : file});
-        this.props.onUpload && this.props.onUpload(file ==='object' ? file.data : file);
+        if (typeof file === 'object') {
+            if (this.props.aspect) {
+                this.setState({beforeCrop: file, cropOpened: true});
+            } else {
+                this.setState({image: file.data});
+                this.props.onUpload && this.props.onUpload(file);
+            }
+        } else {
+            this.setState({image: file});
+        }
     }
 
     handleDropImage(files) {
@@ -156,7 +229,7 @@ class ImageSelector extends React.Component {
         if (!file) {
             return;
         }
-        ImageSelector.readFile(file, (err, result) => {
+        ImageSelector.readFileDataUrl(file, (err, result) => {
             if (err) {
                 alert(err);
             } else {
@@ -177,6 +250,39 @@ class ImageSelector extends React.Component {
     onCamera() {
         this.inputRef.current.click();
     }
+
+    onCropEnd(){
+        ImageSelector.cropImage(this.state.beforeCrop.data, this.cropPixels, this.state.beforeCrop.name, (err, file) => {
+            this.setState({cropOpened: false, image: file.data});
+            this.props.onUpload && this.props.onUpload(file);
+        });
+    }
+
+    onImageLoaded(image) {
+        let cropHeight;
+        let cropWidth;
+        if (this.cropRef.current) {
+            if (this.cropRef.current.clientWidth > this.cropRef.current.clientHeight) {
+                cropHeight = this.cropRef.current.clientHeight;
+                cropWidth = this.cropRef.current.clientHeight * (image.width / image.height);
+            } else {
+                cropHeight = this.cropRef.current.clientWidth * (image.height / image.width);
+                cropWidth = this.cropRef.current.clientWidth;
+            }
+        }
+
+        this.setState({
+            cropHeight,
+            cropWidth,
+            crop: makeAspectCrop({
+                x: 0,
+                y: 0,
+                aspect: this.props.aspect || 1,
+                width: 100,
+            }, image.width / image.height)
+        });
+    }
+
     render() {
         const _style = Object.assign({}, style.dropzone, this.state.imageStatus === 'accepted' ? style.dropzoneAccepted : (this.state.imageStatus === 'accepted' ? style.dropzoneRejected : {}));
 
@@ -197,11 +303,11 @@ class ImageSelector extends React.Component {
             {this.state.opened &&
                 [
                     ((this.state.images && this.state.images.length) || this.icons) && (<ImageList key={'image-list'} images={this.state.images || this.icons} onSelect={this.handleSelectImage.bind(this)}/>),
-                    ImageSelector.isMobile() ?
+                    ImageSelector.isMobile() && !this.props.icons ?
                         (<Button key={'image-camera'} onClick={() => this.onCamera()}
                                   style={Object.assign({}, style.camIcon)} variant="fab" mini aria-label="camera">
                             <IconCam />
-                            <input ref={this.inputRef}type="file" accept="image/*" capture style="display:none"/>
+                            <input ref={this.inputRef} type="file" accept="image/*" onChange={files => this.handleDropImage(files)} capture style={{display: 'none'}}/>
                         </Button>) : null,
                     (<Dropzone key={'image-drop'}
                            maxSize={this.props.maxSize}
@@ -233,8 +339,34 @@ class ImageSelector extends React.Component {
                     </Dropzone>)
                 ]
             }
+            {this.state.cropOpened ? (<Dialog
+                key="crop-dialog"
+                open={true}
+                classes={{paper: this.props.classes['chart-dialog-paper']}}
+                onClose={() => this.setState({cropOpened: false})}
+                className={this.props.classes['chart-dialog']}
+                aria-labelledby="alert-dialog-title"
+            >
+                <DialogTitle id="alert-dialog-title">{I18n.t('Crop image')}</DialogTitle>
+                <DialogContent className={this.props.classes['chart-dialog-content']}>
+                    <div ref={this.cropRef} style={{width: '100%', height: '100%'}}>
+                        <ReactCrop style={{width: this.state.cropWidth, height: this.state.cropHeight}}
+                                   onChange={crop => this.setState({crop})}
+                                   onComplete={(crop, pixelCrop) => this.cropPixels = pixelCrop}
+                                   crop={this.state.crop}
+                                   keepSelection={true}
+                                   onImageLoaded={this.onImageLoaded.bind(this)}
+                                   aspect={this.props.aspect || 1}
+                                   src={this.state.beforeCrop.data} />
+                    </div>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => this.onCropEnd(true)} color="primary" autoFocus>{I18n.t('Crop')}</Button>
+                    <Button onClick={() => this.setState({cropOpened: false})} autoFocus>{I18n.t('Cancel')}</Button>
+                </DialogActions>
+            </Dialog>): null}
         </div>);
     }
 }
 
-export default ImageSelector;
+export default withStyles(style)(ImageSelector);

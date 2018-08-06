@@ -233,6 +233,7 @@ class SmartDialogSettings extends SmartDialogGeneric  {
                     images={this.state.images}
                     key={this.props.dialogKey + '-' + e.name + '-image'}
                     label={e.label ? I18n.t(e.label) : I18n.t(e.name)}
+                    aspect={this.state.values.hasOwnProperty('doubleSize') ? (this.state.values.doubleSize ? 2 : 1) : e.aspect}
                     maxHeight={200}
                     image={this.state.values[e.name]}
                     onUpload={file => this.handleDropImage(e.name, file)}

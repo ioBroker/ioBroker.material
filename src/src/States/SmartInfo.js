@@ -221,13 +221,9 @@ class SmartInfo extends SmartGeneric {
 
     render() {
         return this.wrapContent([
-            (<div key={this.key + 'tile-icon'} className="tile-icon">{this.getIcon()}</div>),
+            this.getStandardContent(this.actualId),
             this.getSecondaryDiv(),
             this.getNumberOfValuesIndicator(),
-            (<div key={this.key + 'tile-text'} className="tile-text" style={Theme.tile.tileText}>
-                <div className="tile-channel-name" style={Object.assign({}, Theme.tile.tileName, this.state.nameStyle)} title={this.id}>{this.getFirstName()}</div>
-                <div className="tile-state-text"  style={Object.assign({}, Theme.tile.tileState, this.state[this.actualId] ? Theme.tile.tileStateOn : Theme.tile.tileStateOff, {fontSize: 18})}>{this.getStateText()}</div>
-            </div>),
             this.state.showDialog ?
                 <Dialog key={this.key + 'dialog'}
                         dialogKey={this.key + 'dialog'}

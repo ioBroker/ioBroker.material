@@ -51,6 +51,7 @@ class SmartGeneric extends Component {
 
         this.showCorner = false; // set it to true to show the corner
         this.stateRx = {
+            backgroundId: 0,
             executing: false,
             settings: {},
             showSettings: false,
@@ -181,6 +182,9 @@ class SmartGeneric extends Component {
                     },
                     this.defaultEnabling
                 );
+            }
+            if (this.stateRx.settings.background) {
+                this.props.tile.setBackgroundImage(this.stateRx.settings.background || '', true);
             }
         }
 
@@ -361,7 +365,6 @@ class SmartGeneric extends Component {
         document.removeEventListener('mouseup',     this.onMouseUpBind,     {passive: false, capture: true});
         document.removeEventListener('touchend',    this.onMouseUpBind,     {passive: false, capture: true});
 
-
         if (this.timer) {
             clearTimeout(this.timer);
             this.timer = null;
@@ -387,7 +390,7 @@ class SmartGeneric extends Component {
         }
     }
 
-    saveSettings(newSettings) {
+    saveSettings(newSettings, cb) {
         const settings = newSettings || this.state.settings;
         if (this.props.onSaveSettings) {
             this.props.onSaveSettings(this.settingsId, settings, {enabled: this.defaultEnabling}, () => {
@@ -405,6 +408,9 @@ class SmartGeneric extends Component {
                 this.props.tile.setColorOn(settings.colorOn   || Theme.tile.tileOn);
                 this.props.tile.setColorOff(settings.colorOff || Theme.tile.tileOff);
                 this.props.tile.setVisibility(settings.enabled);
+                this.props.tile.setSize(this.width);
+                this.width = settings.doubleSize ? 2 : 1;
+                cb && cb();
             });
         }
     }
@@ -413,7 +419,7 @@ class SmartGeneric extends Component {
         let settings = JSON.parse(JSON.stringify(this.state.settings));
         settings.enabled = !settings.enabled;
 
-        this.setState({settings}, () => this.saveSettings(settings));
+        this.saveSettings(settings, () => this.setState({settings}));
     }
 
     componentWillReceiveProps(nextProps) {
@@ -518,6 +524,13 @@ class SmartGeneric extends Component {
     getDialogSettings(settings) {
         settings = settings || [];
 
+        settings.unshift({
+            name: 'background',
+            value: this.state.settings.background || '',
+            aspect: this.state.settings.doubleSize ? 2 : 1,
+            type: 'image'
+        });
+
         if (this.doubleState) {
             settings.unshift({
                 name: 'iconOff',
@@ -569,13 +582,25 @@ class SmartGeneric extends Component {
                 icon
             });
         }
+
         return settings;
     }
 
     saveDialogSettings(settings) {
         settings.enabled = this.state.settings.enabled;
-        this.setState({settings});
-        this.saveSettings(settings);
+        if (settings.background && typeof settings.background === 'object') {
+            settings.background.name = this.settingsId.replace(/[\s*?./\\]/g, '_') + '.' + settings.background.name.toLowerCase().split('.').pop();
+        }
+        this.saveSettings(settings, () => {
+            this.setState({settings});
+            if (settings.background) {
+                this.state.backgroundId++;
+                this.props.tile.setBackgroundImage(settings.background + '?ts=' + Date.now(), true);
+            } else {
+                this.props.tile.setBackgroundImage('', false);
+            }
+
+        });
     }
 
     showSettings() {
@@ -584,6 +609,55 @@ class SmartGeneric extends Component {
 
     onSettingsClose() {
         this.setState({showSettings: false});
+    }
+
+    getAdditionalName() {
+        return null;
+    }
+
+    // following function used
+    //  getStateText
+    //  getIcon
+    //  getFirstName
+    //  getAdditionalName
+    //
+    getStandardContent(stateId, noPointerEvents) {
+        let styleState;
+        let styleName;
+        let styleText;
+        if (this.width === 2) {
+            styleText = Object.assign({}, Theme.tile.tileText2);
+            styleName = Object.assign({}, Theme.tile.tileName2, this.state.nameStyle || {});
+            styleState = this.getStateText ? Object.assign(
+                {},
+                Theme.tile.tileState2,
+                stateId ? (this.state[stateId] ? Theme.tile.tileStateOn : Theme.tile.tileStateOff) : {}
+            ) : null;
+        } else {
+            styleText = Object.assign({}, Theme.tile.tileText);
+            styleName = Object.assign({}, Theme.tile.tileName, this.state.nameStyle || {});
+            styleState = this.getStateText ? Object.assign(
+                {},
+                Theme.tile.tileState,
+                stateId ? (this.state[stateId] ? Theme.tile.tileStateOn : Theme.tile.tileStateOff) : {}
+            ) : null;
+            if (this.state.settings.background) {
+                styleName.marginTop = 4;
+            }
+        }
+
+        if (this.state.settings.background) {
+            styleText.color = 'black';
+            styleText.background = 'rgba(255,255,255,0.7)';
+        }
+
+        return [
+            this.getIcon ? (<div key={this.key + 'tile-icon'} style={noPointerEvents ? {pointerEvents: 'none'} : {}}>{this.getIcon()}</div>): null,
+            (<div key={this.key + 'tile-text'} style={styleText}>
+                <div style={styleName}>{this.getFirstName ? this.getFirstName() : this.state.settings.name}{this.getAdditionalName()}</div>
+                {this.getStateText ? (<div style={styleState}>{this.getStateText()}</div>) : null}
+            </div>)
+        ];
     }
 
     wrapContent(content) {

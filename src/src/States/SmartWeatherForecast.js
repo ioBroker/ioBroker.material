@@ -465,6 +465,13 @@ class SmartWeatherForecast extends SmartGeneric {
             value: this.state.settings.hideFirstDay || false,
             type: 'boolean'
         });
+        // remove doubleSize from list
+        settings.forEach((item, i) => {
+            if (item.name === 'doubleSize') {
+                settings.splice(i, 1);
+                return false
+            }
+        });
         return settings;
     }
 

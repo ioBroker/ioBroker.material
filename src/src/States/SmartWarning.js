@@ -19,7 +19,6 @@ import PropTypes from 'prop-types';
 
 import SmartGeneric from './SmartGeneric';
 import Dialog from '../Dialogs/SmartDialogWarning';
-import I18n from '../i18n';
 
 const styles = {
     'icon-div': {
@@ -180,7 +179,13 @@ class SmartWeatherForecast extends SmartGeneric {
 
     getDialogSettings() {
         const settings = super.getDialogSettings();
-
+        // remove doubleSize from list
+        settings.forEach((item, i) => {
+            if (item.name === 'doubleSize') {
+                settings.splice(i, 1);
+                return false
+            }
+        });
         return settings;
     }
 

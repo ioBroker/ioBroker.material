@@ -308,6 +308,14 @@ class SmartMedia extends SmartGeneric {
     getDialogSettings() {
         const settings = super.getDialogSettings();
 
+        // remove doubleSize from list
+        settings.forEach((item, i) => {
+            if (item.name === 'doubleSize') {
+                settings.splice(i, 1);
+                return false
+            }
+        });
+
         if (this.ids.buttons.stop) {
             settings.unshift({
                 name: 'showStop',

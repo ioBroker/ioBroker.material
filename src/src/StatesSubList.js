@@ -17,9 +17,11 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
+import ButtonBase from '@material-ui/core/ButtonBase';
 
 import IconUnreach from 'react-icons/lib/md/perm-scan-wifi';
 import IconGrip from 'react-icons/lib/md/drag-handle';
+import IconLight from 'react-icons/lib/ti/lightbulb';
 
 import Utils from './Utils';
 import Theme from './theme';
@@ -84,13 +86,14 @@ class StatesSubList extends Component {
             enabled: settings && settings.subEnabled ? (settings.subEnabled[this.props.enumID] === undefined ? true : settings.subEnabled[this.props.enumID]) : true,
             order: Utils.getSettingsOrder(this.props.objects[this.props.enumSubID], this.props.enumID, {user: this.props.user}),
             dragging: false,
-            visibleChildren: {},
+            visibleChildren: {}
         };
         if (this.state.enumID === Utils.INSTANCES) {
             this.name = I18n.t('All instances');
         } else {
             this.name = this.state.enumSubID && this.state.enumSubID !== 'others' ? Utils.getObjectName(this.props.objects, this.state.enumSubID, false, {language: I18n.getLanguage()}) : I18n.t('Others');
         }
+        this.widgetTypes = {};
         this.collectVisibility = null;
         this.collectVisibilityTimer = null;
     }
@@ -252,9 +255,24 @@ class StatesSubList extends Component {
 
             let controls = this.detector.detect(this.props.objects, id, this.props.keys, usedIds, this.props.ignoreIndicators);
             if (controls) {
-                controls = controls.map(control => {
-                    return {control, id: control.states.find(state => state.id).id};
-                });
+                controls = controls.map(function (control) {
+                    const id = control.states.find(state => state.id).id;
+                    if (id) {
+                        this.widgetTypes[id] = {
+                            type:   control.type,
+                            SET:    control.states.find(state => state.name === 'SET'),
+                            ON_SET: control.states.find(state => state.name === 'ON_SET'),
+                            STOP:   control.states.find(state => state.name === 'STOP'),
+                        };
+                        for (let a in this.widgetTypes[id]) {
+                            if (this.widgetTypes[id].hasOwnProperty(a) && a !== 'type' && this.widgetTypes[id][a]) {
+                                this.widgetTypes[id][a] = this.widgetTypes[id][a].id;
+                            }
+                        }
+
+                        return {control, id};
+                    }
+                }.bind(this));
             } else {
                 this.props.debug && console.log('Nothing found for ' + id);
             }
@@ -371,6 +389,42 @@ class StatesSubList extends Component {
         }
     }
 
+    controlAllLights(isOn) {
+        for (let id in this.widgetTypes) {
+            if (!this.widgetTypes.hasOwnProperty(id)) continue;
+            if (this.widgetTypes[id].type === Types.dimmer) {
+                if (this.widgetTypes[id].ON_SET) {
+                    this.props.onControl(this.widgetTypes[id].ON_SET, isOn);
+                } else if (this.widgetTypes[id].SET) {
+                    this.props.onControl(this.widgetTypes[id].SET, isOn ? this.props.objects[this.widgetTypes[id].SET].common.max : this.props.objects[this.widgetTypes[id].SET].common.min);
+                }
+            } else if (this.widgetTypes[id].type === Types.light && this.widgetTypes[id].SET) {
+                this.props.onControl(this.widgetTypes[id].SET, isOn);
+            }
+        }
+    }
+
+    getControlAll() {
+        if (this.props.editMode) return null;
+
+        let countLights = 0;
+        for (let id in this.widgetTypes) {
+            if (this.widgetTypes.hasOwnProperty(id) &&
+                (this.widgetTypes[id].type === Types.light || this.widgetTypes[id].type === Types.dimmer))
+            {
+                countLights++;
+            }
+        }
+        if (countLights > 1) {
+            return [
+                (<ButtonBase variant="fab" mini aria-label="Off" onClick={() => this.controlAllLights(false)} style={Object.assign({}, Theme.buttonAllLight, {background: Theme.palette.lampOff})} title={I18n.t('All lights off')}><IconLight /></ButtonBase>),
+                (<ButtonBase variant="fab" mini aria-label="On"  onClick={() => this.controlAllLights(true)}  style={Object.assign({}, Theme.buttonAllLight, {background: Theme.palette.lampOn})} title={I18n.t('All lights on')}><IconLight /></ButtonBase>)
+            ];
+        } else {
+            return null;
+        }
+    }
+
     render() {
         if (this.props.items && this.props.items.length) {
             let items = this.getListItems(this.props.items);
@@ -398,6 +452,7 @@ class StatesSubList extends Component {
                         <h3 {...this.props.dragHandleProps} style={Object.assign({}, Theme.list.title, {color: this.props.isUseBright ? 'white' : 'black'})}>
                             {this.props.editMode ? (<IconGrip style={{color: this.props.isUseBright ? 'white' : 'black', width: 24, height: 24, float: 'left', opacity: this.state.subDragging ? 0 : 1}}/>) : null}
                             {this.name}
+                            {this.getControlAll()}
                             {visibilityButton}
                         </h3>
                         {this.wrapContent(items)}

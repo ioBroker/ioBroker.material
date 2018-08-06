@@ -384,7 +384,6 @@ class StatesList extends Component {
         if (items.length > 300) {
             return null; // something is wrong
         }
-        let index = 0;
 
         let columns = [];
 
@@ -399,7 +398,6 @@ class StatesList extends Component {
 
         if (this.props.enumID === Utils.INSTANCES) {
             columns.push({items, id: Utils.INSTANCES});
-            index++;
         } else
         if (items && items.length) {
             let orderEnums;
@@ -427,7 +425,6 @@ class StatesList extends Component {
                     this.props.debug && console.log('Add to ' + this.state.enumID + '_' + id + ': ' + column.join(', '));
                     columns.push({id, items: column});
                     column.forEach(id => used.push(id));
-                    index++;
                 }
             });
 
@@ -442,7 +439,6 @@ class StatesList extends Component {
             if (column.length) {
                 this.props.debug && console.log('Add to others: ' + column.join(', '));
                 columns.push({id: 'others', items: column});
-                index++;
             }
 
             if (!this.state.visible) {
@@ -480,7 +476,7 @@ class StatesList extends Component {
         }
 
         let pos = this.order.indexOf('nothing');
-        if (pos !== -1 && pos != this.order.length - 1) {
+        if (pos !== -1 && pos !== this.order.length - 1) {
             this.order.splice(pos, 1);
             this.order.push('nothing');
         }

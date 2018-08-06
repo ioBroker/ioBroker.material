@@ -464,12 +464,6 @@ class App extends Component {
         });
     }
 
-    /**
-     *
-     * @param {object} elem React visual element
-     * @param {array} ids string or array of strings with IDs that must be subscribed or un-subscribed
-     * @param {boolean} isMount true if subscribe and false if un-sibscribe
-     */
 
     resubscribe() {
         const ids = (this.subscribes && Object.keys(this.subscribes));
@@ -488,6 +482,12 @@ class App extends Component {
         this.setState({loading: false});
     }
 
+    /**
+     *
+     * @param {object} elem React visual element
+     * @param {array} ids string or array of strings with IDs that must be subscribed or un-subscribed
+     * @param {boolean} isMount true if subscribe and false if un-sibscribe
+     */
     onCollectIds(elem, ids, isMount) {
         if (typeof ids !== 'object') {
             ids = [ids];
@@ -652,11 +652,32 @@ class App extends Component {
             defaultSettings = {};
         }
 
-        //Utils.setSettings(objects[id], settings, {user: this.user, language: I18n.getLanguage()});
-        this.tasks.push({name: 'saveSettings', id, settings, defaultSettings, cb});
+        if (settings.background && typeof settings.background === 'object') {
+            let fileName = `/${Utils.namespace}.0/${this.user}/${settings.background.name}`;
 
-        if (this.tasks.length === 1) {
-            this.processTasks();
+            if (settings.background.data.startsWith('data:')) {
+                settings.background.data = settings.background.data.split(',')[1];
+            }
+            // upload image
+            this.conn.writeFile64(fileName, settings.background.data, function (err) {
+                if (err) {
+                    window.alert(err);
+                } else {
+                    settings.background = fileName;
+                    this.tasks.push({name: 'saveSettings', id, settings, defaultSettings, cb});
+
+                    if (this.tasks.length === 1) {
+                        this.processTasks();
+                    }
+                }
+            }.bind(this));
+        } else {
+            //Utils.setSettings(objects[id], settings, {user: this.user, language: I18n.getLanguage()});
+            this.tasks.push({name: 'saveSettings', id, settings, defaultSettings, cb});
+
+            if (this.tasks.length === 1) {
+                this.processTasks();
+            }
         }
     }
 
@@ -928,7 +949,7 @@ class App extends Component {
     saveDialogSettings(settings) {
         settings = settings || this.state.settings;
         if (settings.background && typeof settings.background === 'object') {
-            let fileName = `/${Utils.namespace}.0/${this.user}/${this.state.viewEnum}.${settings.background.ext}`;
+            let fileName = `/${Utils.namespace}.0/${this.user}/${this.state.viewEnum}.${settings.background.name.toLowerCase().split('.').pop()}`;
 
             if (settings.background.data.startsWith('data:')) {
                 settings.background.data = settings.background.data.split(',')[1];

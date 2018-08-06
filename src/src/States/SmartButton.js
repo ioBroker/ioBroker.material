@@ -114,14 +114,7 @@ class SmartButton extends SmartGeneric {
     }
 
     render() {
-        const text = this.getStateText();
-        return this.wrapContent([
-            (<div key={this.key + 'tile-icon'} className="tile-icon">{this.getIcon()}</div>),
-            (<div key={this.key + 'tile-text'} className="tile-text" style={Theme.tile.tileText}>
-                <div className="tile-channel-name" style={Object.assign({}, Theme.tile.tileName, this.state.nameStyle, {height: '4.5em'})}>{this.state.settings.name}</div>
-                <div className="tile-state-text"  style={Object.assign({}, Theme.tile.tileState, Theme.tile.tileStateOff, {position: 'absolute', bottom: 0, left :0})}>{text}</div>
-            </div>)
-        ]);
+        return this.wrapContent(this.getStandardContent(null));
     }
 }
 

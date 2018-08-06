@@ -67,6 +67,7 @@ class SmartTile extends Component {
             colorOn: Theme.tile.tileOn.background,
             colorOff: Theme.tile.tileOff.background,
             background: null,
+            bottomBar: false,
             width: 1
         };
         this.stateId = this.channelInfo && this.channelInfo.states.find(state => state.id).id;
@@ -116,7 +117,10 @@ class SmartTile extends Component {
         if (this.state.background) {
             style.backgroundImage = `url(${this.state.background})`;
             style.backgroundSize = '100% auto';
-            style.backgroundPosition = 'center calc(50% - 48px)';
+            style.backgroundPosition = this.state.bottomBar ? 'center center' : 'center calc(50% - 48px)';
+            if (!this.state.state) {
+                style.filter = 'grayscale(100%)'
+            }
             delete style.background;
         }
 
@@ -137,9 +141,9 @@ class SmartTile extends Component {
         }
     }
 
-    setBackgroundImage(url) {
+    setBackgroundImage(url, bottomBar) {
         if (this.state.background !== url) {
-            this.setState({background: url});
+            this.setState({background: url, bottomBar: bottomBar || false});
         }
     }
 
@@ -176,6 +180,7 @@ class SmartTile extends Component {
         } else {
             this.hasAnimation = '';
         }
+
         style = Object.assign(this.getTileStyle(), style);
 
         return (

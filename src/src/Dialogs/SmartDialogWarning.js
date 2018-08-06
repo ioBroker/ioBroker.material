@@ -23,7 +23,6 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-import Utils from '../Utils';
 import SmartDialogGeneric from './SmartDialogGeneric';
 import I18n from '../i18n';
 
@@ -229,7 +228,6 @@ class SmartDialogWarning extends SmartDialogGeneric  {
     }
 
     getIconDiv() {
-        const classes = this.props.classes;
         if (!this.ids.icon || !this.state[this.ids.icon]) return null;
         const chart = this.state[this.ids.icon];
 
