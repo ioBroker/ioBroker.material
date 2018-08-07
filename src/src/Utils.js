@@ -91,6 +91,29 @@ class Utils {
         return null;
     }
 
+    static getSettingsCustomURLs(obj, forEnumId, options) {
+        if (obj && obj.hasOwnProperty('common')) {
+            obj = obj.common;
+        }
+        let settings;
+        if (obj && obj.custom) {
+            settings = (obj.custom || {})[NAMESPACE];
+            const user = options.user || 'admin';
+            if (settings[user]) {
+                if (forEnumId) {
+                    if (settings[user].subURLs && settings[user].subURLs[forEnumId]) {
+                        return JSON.parse(JSON.stringify(settings[user].subURLs[forEnumId]));
+                    }
+                } else {
+                    if (settings[user].URLs) {
+                        return JSON.parse(JSON.stringify(settings[user].URLs));
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     static reorder(list, source, dest) {
         const result = Array.from(list);
         const [removed] = result.splice(source, 1);

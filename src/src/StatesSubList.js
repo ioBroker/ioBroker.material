@@ -61,6 +61,7 @@ class StatesSubList extends Component {
         debug:          PropTypes.bool,
         ignoreIndicators: PropTypes.array,
         onSaveSettings: PropTypes.func,
+        onDelete:       PropTypes.func,
         windowWidth:    PropTypes.number,
         align:          PropTypes.string,
         newLine:        PropTypes.bool,
@@ -193,7 +194,8 @@ class StatesSubList extends Component {
         this.collectVisibility = null;
     }
 
-    onVisibilityControl(id, visible) {
+
+    onVisibilityControl(id, visible, isDelete) {
         const oldState = this.collectVisibility && this.collectVisibility[id] !== undefined ? this.collectVisibility[id] : this.state.visibleChildren[id];
 
         if (oldState !== visible) {
@@ -207,7 +209,11 @@ class StatesSubList extends Component {
     }
 
     createControl(control, channelId, channelInfo, i) {
-        const state = channelInfo.states.find(state => state.id);
+        if (!channelInfo) {
+            debugger
+        }
+
+        let state = channelInfo.states.find(state => state.id);
 
         let Component = control; // This will be used by rendering
         //              ↓
@@ -224,6 +230,7 @@ class StatesSubList extends Component {
             objects={this.props.objects}
             user={this.props.user}
             onVisibilityControl={this.onVisibilityControl.bind(this)}
+            onDelete={this.props.onDelete}
             onSaveSettings={this.props.onSaveSettings}
             onCollectIds={this.props.onCollectIds}
             onControl={this.props.onControl}
@@ -248,40 +255,57 @@ class StatesSubList extends Component {
             }.bind(this));
         }
 
-        const controls = items.map(function (id, i) {
+        const controls = items.map(function (id) {
             if (this.state[id] === undefined) {
                 //debugger;
             }
 
-            let controls = this.detector.detect(this.props.objects, id, this.props.keys, usedIds, this.props.ignoreIndicators);
-            if (controls) {
-                controls = controls.map(function (control) {
-                    const id = control.states.find(state => state.id).id;
-                    if (id) {
-                        this.widgetTypes[id] = {
-                            type:   control.type,
-                            SET:    control.states.find(state => state.name === 'SET'),
-                            ON_SET: control.states.find(state => state.name === 'ON_SET'),
-                            STOP:   control.states.find(state => state.name === 'STOP'),
-                        };
-                        for (let a in this.widgetTypes[id]) {
-                            if (this.widgetTypes[id].hasOwnProperty(a) && a !== 'type' && this.widgetTypes[id][a]) {
-                                this.widgetTypes[id][a] = this.widgetTypes[id][a].id;
-                            }
-                        }
+            if (id && typeof id === 'object') {
+                id = JSON.parse(JSON.stringify(id));
+                id.name = 'URL';
+                if (!id.id) {
+                    id.id = '_custom' + Math.random();
+                }
 
-                        return {control, id};
-                    }
-                }.bind(this));
+                // custom URL
+                return {
+                    control: {
+                        type: Types.url,
+                        states: [id]
+                    },
+                    id: id.id
+                };
             } else {
-                this.props.debug && console.log('Nothing found for ' + id);
-            }
-            if (!controls || !controls.length) {
-                return null;
-            } else if (controls.length === 1) {
-                return controls[0];
-            } else {
-                return controls;
+                let controls = this.detector.detect(this.props.objects, id, this.props.keys, usedIds, this.props.ignoreIndicators);
+                if (controls) {
+                    controls = controls.map(function (control) {
+                        const id = control.states.find(state => state.id).id;
+                        if (id) {
+                            this.widgetTypes[id] = {
+                                type:   control.type,
+                                SET:    control.states.find(state => state.name === 'SET'),
+                                ON_SET: control.states.find(state => state.name === 'ON_SET'),
+                                STOP:   control.states.find(state => state.name === 'STOP'),
+                            };
+                            for (let a in this.widgetTypes[id]) {
+                                if (this.widgetTypes[id].hasOwnProperty(a) && a !== 'type' && this.widgetTypes[id][a]) {
+                                    this.widgetTypes[id][a] = this.widgetTypes[id][a].id;
+                                }
+                            }
+
+                            return {control, id};
+                        }
+                    }.bind(this));
+                } else {
+                    this.props.debug && console.log('Nothing found for ' + id);
+                }
+                if (!controls || !controls.length) {
+                    return null;
+                } else if (controls.length === 1) {
+                    return controls[0];
+                } else {
+                    return controls;
+                }
             }
         }.bind(this));
 
@@ -377,7 +401,7 @@ class StatesSubList extends Component {
                 </DragDropContext>
             );
         } else if (this.props.editMode || (!this.state.subDragging || !this.state.enabled)) {
-            return(
+            return (
                 <div  key={(this.state.enumID + '-' + this.state.enumSubID).replace(/[^\w\d]/g, '_') + '-inset'} style={{width: '100%', overflow: 'auto', opacity: this.state.enabled ? 1 : 0.5}}>
                     <div key="inline-div" style={{display: 'flex'}}>
                         {items.map(e => (<div key={'inline-div-' + e.id}>{e.control}</div>))}
@@ -417,8 +441,8 @@ class StatesSubList extends Component {
         }
         if (countLights > 1) {
             return [
-                (<ButtonBase variant="fab" mini aria-label="Off" onClick={() => this.controlAllLights(false)} style={Object.assign({}, Theme.buttonAllLight, {color: Theme.palette.lampOff})} title={I18n.t('All lights off')}><IconLight /></ButtonBase>),
-                (<ButtonBase variant="fab" mini aria-label="On"  onClick={() => this.controlAllLights(true)}  style={Object.assign({}, Theme.buttonAllLight, {color: Theme.palette.lampOn})} title={I18n.t('All lights on')}><IconLight /></ButtonBase>)
+                (<ButtonBase key="light-off" variant="fab" mini="true" aria-label="Off" onClick={() => this.controlAllLights(false)} style={Object.assign({}, Theme.buttonAllLight, {color: Theme.palette.lampOff})} title={I18n.t('All lights off')}><IconLight /></ButtonBase>),
+                (<ButtonBase key="light-on"  variant="fab" mini="true" aria-label="On"  onClick={() => this.controlAllLights(true)}  style={Object.assign({}, Theme.buttonAllLight, {color: Theme.palette.lampOn})} title={I18n.t('All lights on')}><IconLight /></ButtonBase>)
             ];
         } else {
             return null;

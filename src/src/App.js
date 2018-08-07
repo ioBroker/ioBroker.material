@@ -464,7 +464,6 @@ class App extends Component {
         });
     }
 
-
     resubscribe() {
         const ids = (this.subscribes && Object.keys(this.subscribes));
         if (this.state.appSettings.instances) {
@@ -1114,7 +1113,7 @@ class App extends Component {
     }
 
     getButtonSpeech(useBright) {
-        if (this.state.connected && this.state.appSettings &&
+        if (!this.state.editMode && this.state.connected && this.state.appSettings &&
             (this.state.appSettings.text2command || this.state.appSettings.text2command === 0) &&
             SpeechDialog.isSpeechRecognitionSupported()) {
             return (

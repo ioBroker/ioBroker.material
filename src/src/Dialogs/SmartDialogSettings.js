@@ -160,6 +160,12 @@ class SmartDialogSettings extends SmartDialogGeneric  {
         this.setState(newValue);
     }
 
+    onDelete() {
+        this.props.onSave(false);
+        this.ignoreUnsaved = true;
+        this.onClose();
+    }
+
     isChanged(name, newVal) {
         return !!this.props.settings.find(item => {
             if (item.name === name) {
@@ -175,14 +181,14 @@ class SmartDialogSettings extends SmartDialogGeneric  {
             const divider = i !== this.props.settings.length - 1 ? (<ListItem key={e.id + '_div'} style={Theme.dialog.divider}/>) : null;
 
             let item;
-            if (e.type === 'boolean') {
-                /*item = [(<span key={this.props.dialogKey + '-' + e.name + '-checkbox-name'}>{I18n.t(e.name)}</span>),
-                    (<Switch
-                        key={this.props.dialogKey + '-' + e.name + '-checkbox'}
-                        checked={this.state.values[e.name] || false}
-                        onChange={ev => this.handleToggle(e.name, ev)}
-                        value={e.name}
-                    />)];*/
+            if (e.type === 'delete') {
+                item = (<Button
+                    color="secondary"
+                    variant="contained"
+                    key={this.props.dialogKey + '-delete'}
+                    onClick={() => this.onDelete()}
+                >{I18n.t('Delete')}</Button>);
+            } else  if (e.type === 'boolean') {
                 item = (<BoolControl
                             key={this.props.dialogKey + '-' + e.name + '-bool'}
                             label={I18n.t(e.name)}

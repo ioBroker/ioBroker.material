@@ -30,6 +30,7 @@ var Types = {
     blind: 'blind',
     button: 'button',
     camera: 'camera',
+    url: 'url',
     image: 'image',
     dimmer: 'dimmer',
     door: 'door',

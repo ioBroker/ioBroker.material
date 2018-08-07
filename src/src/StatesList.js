@@ -19,6 +19,7 @@ import SmartTile from './SmartTile';
 import { withStyles } from '@material-ui/core/styles';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import IconVertical from 'react-icons/lib/fa/arrows-v'
+import IconAdd from 'react-icons/lib/md/add'
 import IconHorizontal from 'react-icons/lib/fa/arrows-h'
 import Button from '@material-ui/core/Button';
 
@@ -50,27 +51,33 @@ const styles = {
         top: 70,
         right: 30,
         zIndex: 4
+    },
+    'add-button': {
+        position: 'fixed',
+        top: 70,
+        right: 100,
+        zIndex: 4
     }
 };
 
 class StatesList extends Component {
 
     static propTypes = {
-        enumID:          PropTypes.string.isRequired,
-        user:            PropTypes.string.isRequired,
-        objects:         PropTypes.object.isRequired,
-        editMode:        PropTypes.bool.isRequired,
-        states:          PropTypes.object.isRequired,
-        connected:       PropTypes.bool.isRequired,
-        debug:           PropTypes.bool,
-        background:      PropTypes.string.isRequired,
-        backgroundId:    PropTypes.number,
-        backgroundColor: PropTypes.string,
-        align:           PropTypes.string,
-        ignoreIndicators: PropTypes.array,
-        windowWidth:     PropTypes.number,
-        windowHeight:    PropTypes.number,
-        newLine:         PropTypes.bool
+        enumID:             PropTypes.string.isRequired,
+        user:               PropTypes.string.isRequired,
+        objects:            PropTypes.object.isRequired,
+        editMode:           PropTypes.bool.isRequired,
+        states:             PropTypes.object.isRequired,
+        connected:          PropTypes.bool.isRequired,
+        debug:              PropTypes.bool,
+        background:         PropTypes.string.isRequired,
+        backgroundId:       PropTypes.number,
+        backgroundColor:    PropTypes.string,
+        align:              PropTypes.string,
+        ignoreIndicators:   PropTypes.array,
+        windowWidth:        PropTypes.number,
+        windowHeight:       PropTypes.number,
+        newLine:            PropTypes.bool
     };
 
     constructor(props) {
@@ -85,6 +92,7 @@ class StatesList extends Component {
             enumID: this.props.enumID,
             align: this.props.align,
             order: Utils.getSettingsOrder(this.props.objects[this.props.enumID], null, {user: this.props.user}),
+            customURLs: Utils.getSettingsCustomURLs(this.props.objects[this.props.enumID], null, {user: this.props.user}),
             background: this.props.background,
             backgroundId: this.props.backgroundId,
             visibleChildren: {}
@@ -236,6 +244,13 @@ class StatesList extends Component {
         }
     }
 
+    onDelete(id) {
+        if (id === this.props.enumID) {
+            const customURLs = Utils.getSettingsCustomURLs(this.props.objects[this.props.enumID], null, {user: this.props.user});
+            this.setState({customURLs});
+        }
+    }
+
     getEnumFunctions() {
         return this.getEnums('enum.functions.');
     }
@@ -263,6 +278,7 @@ class StatesList extends Component {
                         isUseBright={isUseBright}
                         ignoreIndicators={this.props.ignoreIndicators}
                         onVisibilityControl={this.onVisibilityControl.bind(this)}
+                        onDelete={this.onDelete.bind(this)}
                         debug={this.props.debug}
                         align={this.state.align}
                         editMode={this.props.editMode}
@@ -291,6 +307,7 @@ class StatesList extends Component {
                 isUseBright={isUseBright}
                 ignoreIndicators={this.props.ignoreIndicators}
                 onVisibilityControl={this.onVisibilityControl.bind(this)}
+                onDelete={this.onDelete.bind(this)}
                 debug={this.props.debug}
                 align={this.state.align}
                 editMode={this.props.editMode}
@@ -325,18 +342,55 @@ class StatesList extends Component {
                 {columns}
                 {provided.placeholder}
                 {this.getToggleDragButton()}
+                {this.getAddButton()}
             </div>);
     }
 
     getToggleDragButton() {
-        if (this.props.editMode) {
-            return (<Button key={this.props.dialogKey + '-stop-button'}
+        if (this.props.editMode && this.props.enumID !== Utils.INSTANCES) {
+            return (<Button key={this.props.dialogKey + '-drag-button'}
                     variant="fab"
                     title={I18n.t('Drag direction')}
                     style={{fontSize: 24}}
                     onClick={() => this.setState({subDragging: !this.state.subDragging})}
                     className={this.props.classes['drag-button']}>
                 {this.state.subDragging ? <IconHorizontal/> : <IconVertical/>}
+            </Button>);
+        } else {
+            return null;
+        }
+    }
+
+    onAddCustomURL () {
+        const newState = {customURLs: JSON.parse(JSON.stringify(this.state.customURLs || []))};
+
+        newState.customURLs.push({
+            type: 'url',
+            name: I18n.t('Custom URL'),
+            id: '_custom_' + Date.now(),
+            settingsId: this.state.enumID,
+            enabled: true,
+            doubleSize: true
+        });
+
+        this.order = null;
+
+        const settings = Utils.getSettings(this.props.objects[this.props.enumID], {user: this.props.user});
+        settings.URLs = newState.customURLs;
+        this.props.onSaveSettings && this.props.onSaveSettings(this.props.enumID, settings, () => {
+            this.setState(newState);
+        });
+    }
+
+    getAddButton() {
+        if (this.props.editMode && this.props.enumID !== Utils.INSTANCES) {
+            return (<Button key={this.props.dialogKey + '-add-button'}
+                            variant="fab"
+                            title={I18n.t('Add custom URL')}
+                            style={{fontSize: 24}}
+                            onClick={() => this.onAddCustomURL()}
+                            className={this.props.classes['add-button']}>
+                <IconAdd/>
             </Button>);
         } else {
             return null;
@@ -375,6 +429,7 @@ class StatesList extends Component {
             return (<div style={Object.assign({marginLeft: this.props.marginLeft}, style)}>
                 {columns}
                 {this.getToggleDragButton()}
+                {this.getAddButton()}
                 </div>);
         }
     }
@@ -436,9 +491,19 @@ class StatesList extends Component {
                 }
             });
 
-            if (column.length) {
+            if (column.length || (this.state.customURLs && this.state.customURLs.length)) {
                 this.props.debug && console.log('Add to others: ' + column.join(', '));
-                columns.push({id: 'others', items: column});
+
+                if (this.state.customURLs && this.state.customURLs.length) {
+                    this.state.customURLs.forEach(e => {
+                        e.settingsId = this.state.enumID;
+                        column.push(e)
+                    });
+                }
+
+                if (column.length) {
+                    columns.push({id: 'others', items: column});
+                }
             }
 
             if (!this.state.visible) {

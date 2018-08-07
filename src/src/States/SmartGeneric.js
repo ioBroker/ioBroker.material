@@ -392,10 +392,10 @@ class SmartGeneric extends Component {
 
     saveSettings(newSettings, cb) {
         const settings = newSettings || this.state.settings;
-        if (this.props.onSaveSettings) {
+        if (this.props.onSaveSettings && this.settingsId) {
             this.props.onSaveSettings(this.settingsId, settings, {enabled: this.defaultEnabling}, () => {
                 // subscribe if enabled and was not subscribed
-                if (settings.enabled && !this.subscribed) {
+                if (this.subscribes && settings.enabled && !this.subscribed) {
                     this.subscribed = true;
                     this.props.onCollectIds(this, this.subscribes, true);
                 } else
@@ -412,6 +412,35 @@ class SmartGeneric extends Component {
                 this.props.tile.setSize(this.width);
                 cb && cb();
             });
+        } else if (this.customSettings) {
+            // custom URL
+            const enumSettings = Utils.getSettings(this.props.objects[this.customSettings.settingsId], {user: this.props.user});
+            let pos = -1;
+
+            if (enumSettings) {
+                enumSettings.URLs.forEach((e, i) => {
+                    if (e.id === this.id) {
+                        pos = i;
+                        return false;
+                    }
+                });
+            }
+
+            if (pos !== -1) {
+                if (newSettings) {
+                    newSettings = Object.assign({}, this.customSettings, newSettings);
+                    enumSettings.URLs[pos] = newSettings;
+                } else {
+                    enumSettings.URLs.splice(pos, 1);
+                }
+                const enumId = (newSettings && newSettings.settingsId) || this.customSettings.settingsId;
+                this.props.onSaveSettings && this.props.onSaveSettings(enumId, enumSettings, function () {
+                    if (!newSettings) {
+                        this.props.tile.setDelete(enumId);
+                    }
+                    cb && cb();
+                }.bind(this));
+            }
         }
     }
 
@@ -587,19 +616,20 @@ class SmartGeneric extends Component {
     }
 
     saveDialogSettings(settings) {
-        settings.enabled = this.state.settings.enabled;
-        if (settings.background && typeof settings.background === 'object') {
-            settings.background.name = this.settingsId.replace(/[\s*?./\\]/g, '_') + '.' + settings.background.name.toLowerCase().split('.').pop();
+        if (settings) {
+            settings.enabled = this.state.settings.enabled;
+            if (settings.background && typeof settings.background === 'object') {
+                settings.background.name = this.settingsId.replace(/[\s*?./\\]/g, '_') + '.' + settings.background.name.toLowerCase().split('.').pop();
+            }
         }
+
         this.saveSettings(settings, () => {
-            this.setState({settings});
             if (settings.background) {
                 this.state.backgroundId++;
                 this.props.tile.setBackgroundImage(settings.background + '?ts=' + Date.now(), true);
             } else {
                 this.props.tile.setBackgroundImage('', false);
             }
-
         });
     }
 

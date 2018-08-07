@@ -14,6 +14,7 @@
  * limitations under the License.
  **/
 import React, {Component} from 'react';
+import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types';
 import Paper from '@material-ui/core/Paper';
 
@@ -39,6 +40,7 @@ import SmartMedia from './States/SmartMedia';
 import SmartVolume from './States/SmartVolume';
 import SmartWeatherForecast from './States/SmartWeatherForecast';
 import SmartWarning from './States/SmartWarning';
+import SmartURL from './States/SmartURL';
 
 class SmartTile extends Component {
     static propTypes = {
@@ -49,6 +51,7 @@ class SmartTile extends Component {
         editMode:           PropTypes.bool.isRequired,
         windowWidth:        PropTypes.number,
         onVisibilityControl: PropTypes.func,
+        onDelete:           PropTypes.func,
         onSaveSettings:     PropTypes.func,
         onCollectIds:       PropTypes.func,
         onControl:          PropTypes.func,
@@ -76,6 +79,7 @@ class SmartTile extends Component {
             onMouseUp: null,
             onClick: null
         };
+        this.tileRef = React.createRef();
     }
 
     getObjectName(channelName) {
@@ -114,6 +118,7 @@ class SmartTile extends Component {
                 Object.assign({}, Theme.tile.tile, Theme.tile.tileOn, typeof this.state.colorOn === 'object' ? this.state.colorOn : {background: this.state.colorOn}) :
                 Object.assign({}, Theme.tile.tile, Theme.tile.tileOff, typeof this.state.colorOff === 'object' ? this.state.colorOff : {background: this.state.colorOff});
         }
+
         if (this.state.background) {
             style.backgroundImage = `url(${this.state.background})`;
             style.backgroundSize = '100% auto';
@@ -141,13 +146,17 @@ class SmartTile extends Component {
         }
     }
 
-    setBackgroundImage(url, bottomBar) {
+    setBackgroundImage(url, bottomBar, seemless) {
         if (this.state.background !== url) {
             this.setState({background: url, bottomBar: bottomBar || false});
         }
     }
 
-    setVisibility(isVisible) {
+    setDelete(enumId) {
+        this.props.onDelete(enumId);
+    }
+
+    setVisibility(isVisible, isDelete) {
         if (this.state.visible !== isVisible) {
             this.lastEnabledChange = Date.now();
             this.setState({visible: isVisible});
@@ -184,7 +193,8 @@ class SmartTile extends Component {
         style = Object.assign(this.getTileStyle(), style);
 
         return (
-            <Paper style={style}
+            <Paper ref={this.tileRef}
+                   style={style}
                    className={this.hasAnimation}
                    onMouseDown={this.onMouseDown.bind(this)}
                    onTouchStart={this.onMouseDown.bind(this)}
@@ -278,6 +288,9 @@ class SmartTile extends Component {
                     break;
                 case Types.weatherForecast:
                     Control = SmartWeatherForecast;
+                    break;
+                case Types.url:
+                    Control = SmartURL;
                     break;
                 default:
                     break;
