@@ -408,8 +408,8 @@ class SmartGeneric extends Component {
                 this.props.tile.setColorOn(settings.colorOn   || Theme.tile.tileOn);
                 this.props.tile.setColorOff(settings.colorOff || Theme.tile.tileOff);
                 this.props.tile.setVisibility(settings.enabled);
-                this.props.tile.setSize(this.width);
                 this.width = settings.doubleSize ? 2 : 1;
+                this.props.tile.setSize(this.width);
                 cb && cb();
             });
         }
