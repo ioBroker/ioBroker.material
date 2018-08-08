@@ -35,7 +35,7 @@ const styles = {
     'date-div': {
         position: 'absolute',
         zIndex: 1,
-        width: 'calc(100% - 2em - 90px)',
+        width: 'calc(100% - 2rem - 90px)',
         top: 16,
         right: 16
     },
@@ -54,7 +54,7 @@ const styles = {
         zIndex: 1,
         fontWeight: 'bold',
         top: 55,
-        width: 'calc(100% - 2em - 90px)',
+        width: 'calc(100% - 2rem - 90px)',
         right: 16,
         textAlign: 'left'
     },
@@ -63,7 +63,7 @@ const styles = {
     'info-div': {
         position: 'absolute',
         zIndex: 1,
-        maxWidth: 'calc(100% - 2em - 90px)',
+        maxWidth: 'calc(100% - 2rem - 90px)',
         fontWeight: 'normal',
         top: 75,
         right: 16,

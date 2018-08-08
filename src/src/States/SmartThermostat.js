@@ -131,7 +131,7 @@ class SmartThermostat extends SmartGeneric {
             }
         }
         return (
-            <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, {}, {left: '0.5em'})} className="tile-icon">
+            <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, {}, {left: '0.5rem'})} className="tile-icon">
                 {customIcon}
             </div>
         );
@@ -151,7 +151,7 @@ class SmartThermostat extends SmartGeneric {
         }
         return (
             <div key={this.key + 'tile-secondary'} className="tile-text-second"
-                 style={Object.assign({}, Theme.tile.secondary.div, {top: '1em'})} title={I18n.t('Environment values')}>
+                 style={Object.assign({}, Theme.tile.secondary.div, {top: '1rem'})} title={I18n.t('Environment values')}>
                 {this.actualId !== this.id ?
                     [
                         (<IconThermometer key={this.key + 'tile-secondary-icon-0'} style={Object.assign({}, Theme.tile.secondary.icon)} />),

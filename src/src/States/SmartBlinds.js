@@ -173,7 +173,7 @@ class SmartBlinds extends SmartGeneric {
             }
         }
         return (
-            <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, /*this.state[this.actualId] !== this.min ? {color: Theme.palette.lampOn} : */{}, {left: '1em'})} className="tile-icon">
+            <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, /*this.state[this.actualId] !== this.min ? {color: Theme.palette.lampOn} : */{}, {left: '1rem'})} className="tile-icon">
                 {customIcon}
                 {this.state.executing ? <CircularProgress style={{zIndex: 3, position: 'absolute', top: 0, left: 0}} size={Theme.tile.tileIcon.width}/> : null}
                 <div style={Object.assign({}, styles.overlap, {height: this.realValueToPercent(this.state[this.id]) + '%'})} />

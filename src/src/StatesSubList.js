@@ -441,7 +441,7 @@ class StatesSubList extends Component {
         }
         if (countLights > 1) {
             return [
-                (<ButtonBase key="light-off" variant="fab" mini="true" aria-label="Off" onClick={() => this.controlAllLights(false)} style={Object.assign({}, Theme.buttonAllLight, {color: Theme.palette.lampOff})} title={I18n.t('All lights off')}><IconLight /></ButtonBase>),
+                (<ButtonBase key="light-off" variant="fab" mini="true" aria-label="Off" onClick={() => this.controlAllLights(false)} style={Object.assign({}, Theme.buttonAllLight, {color: 'black'})} title={I18n.t('All lights off')}><IconLight /></ButtonBase>),
                 (<ButtonBase key="light-on"  variant="fab" mini="true" aria-label="On"  onClick={() => this.controlAllLights(true)}  style={Object.assign({}, Theme.buttonAllLight, {color: Theme.palette.lampOn})} title={I18n.t('All lights on')}><IconLight /></ButtonBase>)
             ];
         } else {

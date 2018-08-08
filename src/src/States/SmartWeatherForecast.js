@@ -49,7 +49,7 @@ const styles = {
     'currentDate-div': {
         position: 'absolute',
         zIndex: 1,
-        width: 'calc(100% - 2em)',
+        width: 'calc(100% - 2rem)',
         top: 16,
         left: 16
     },
@@ -71,7 +71,7 @@ const styles = {
         zIndex: 1,
         fontWeight: 'normal',
         top: 35,
-        maxWidth: 'calc(100% - 2em - 90px)',
+        maxWidth: 'calc(100% - 2rem - 90px)',
         right: 16,
         textAlign: 'right'
     },

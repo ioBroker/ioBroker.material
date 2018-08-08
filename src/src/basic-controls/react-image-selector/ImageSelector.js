@@ -165,6 +165,7 @@ class ImageSelector extends React.Component {
      *
      * @param {Object} imageData - Image File Object
      * @param {Object} crop - crop Object provided by react-image-crop
+     * @param {String} fileName - File name
      * @param {Function} cb - Callback
      */
     static cropImage(imageData, crop, fileName, cb) {
@@ -219,10 +220,15 @@ class ImageSelector extends React.Component {
             }
         } else {
             this.setState({image: file});
+            this.props.onUpload && this.props.onUpload(file);
         }
     }
 
     handleDropImage(files) {
+        if (files && files.hasOwnProperty('target')) {
+            files = files.target.files;
+        }
+
         if (!files && !files.length) return;
         const file = files[files.length - 1];
 
@@ -244,7 +250,7 @@ class ImageSelector extends React.Component {
     }
 
     static isMobile() {
-        return /iPhone|iPad|iPod|Android/i.test(window.navigator.userAgent);
+        return true || /iPhone|iPad|iPod|Android/i.test(window.navigator.userAgent);
     }
 
     onCamera() {

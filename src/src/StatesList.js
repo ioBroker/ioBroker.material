@@ -139,6 +139,8 @@ class StatesList extends Component {
             if (newState.order !== null && !(newState.order instanceof Array)) {
                 newState.order = null;
             }
+            newState.customURLs = Utils.getSettingsCustomURLs(this.props.objects[newState.enumID], null, {user: this.props.user});
+
             this.order = null;
             newState.visibleChildren = {};
             newState.visible = false;
@@ -366,10 +368,11 @@ class StatesList extends Component {
 
         newState.customURLs.push({
             type: 'url',
-            name: I18n.t('Custom URL'),
+            title: I18n.t('Custom URL'),
             id: '_custom_' + Date.now(),
             settingsId: this.state.enumID,
             enabled: true,
+            fullWidth: true,
             doubleSize: true
         });
 
@@ -496,8 +499,7 @@ class StatesList extends Component {
 
                 if (this.state.customURLs && this.state.customURLs.length) {
                     this.state.customURLs.forEach(e => {
-                        e.settingsId = this.state.enumID;
-                        column.push(e)
+                        column.push({id: e.id, settingsId: this.state.enumID, name: 'URL'});
                     });
                 }
 

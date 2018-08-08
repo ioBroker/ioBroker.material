@@ -308,7 +308,7 @@ export default {
             opacity: 0.7
         },
         tileIcon: {
-            width: 40, // 2.5em
+            width: 40, // 2.5rem
             height: 40,
             position: 'absolute',
             top: 14,

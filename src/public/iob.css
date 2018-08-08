@@ -1,10 +1,10 @@
 .iob-icon {
     display: inline-block;
-    width: 2em;
-    height: 1.8em;
-    border-radius: 0.4em;
+    width: 2rem;
+    height: 1.8rem;
+    border-radius: 0.4rem;
     text-align: center;
-    padding-top: 0.2em;
+    padding-top: 0.2rem;
     float: right;
 }
 

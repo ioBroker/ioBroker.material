@@ -61,7 +61,7 @@ class SmartSwitch extends SmartGeneric {
                     this.colorOff = 'inherit';
                     this.backOn = Theme.palette.lampOn;
                     this.backOff = 'gray';
-                    this.style = {left: '1em'};
+                    this.style = {left: '1rem'};
                     break;
             }
         }

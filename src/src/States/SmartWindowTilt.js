@@ -150,8 +150,8 @@ class SmartWindowTilt extends SmartGeneric {
         const iconStyle = {
             width: 60,
             height: 60,
-            top: '0.2em',
-            left: '0.2em'
+            top: '0.2rem',
+            left: '0.2rem'
         };
         let customIcon;
 

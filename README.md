@@ -39,19 +39,18 @@ Better if every device belongs to both categories. Because every device has a ty
 * Show images / URL
 * Make a photo
 * Maps (OpensStreetMap)
-* Weather maps
-* Add custom URLs as tile (image or IFRAME)
 
 ## Credits
 - Used icons from flaticon
 - Volume knob from [here](https://codepen.io/blucube/pen/cudAz) By [Ed Hicks](https://twitter.com/blucube) - Inspired by a [dribbble shot](https://dribbble.com/shots/753124-Volume-Knob)  by [Ricardo Salazar](https://twitter.com/rickss)
 
 ## Changelog
-### 0.9.10 (2018.08.06)
+### 0.9.10 (2018.08.08)
 * (bluefox) Crop of images was implemented
 * (bluefox) Background of tiles is possible
-* (bluefox) Double width of every tile is possiblle
+* (bluefox) Double width of every tile is possible
 * (bluefox) Group light control
+* (bluefox) Custom URLs implemented
 
 ### 0.9.9 (2018.08.03)
 * (bluefox) Order of tiles is implemented

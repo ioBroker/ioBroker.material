@@ -98,8 +98,8 @@ class SmartState extends SmartGeneric {
             this.style = {
                 width: 60,
                 height: 60,
-                top: '0.2em',
-                left: '0.2em'
+                top: '0.2rem',
+                left: '0.2rem'
             };
         } if (this.channelInfo.type === Types.door) {
             this.iconOn = IconDoorOpened;
@@ -108,7 +108,7 @@ class SmartState extends SmartGeneric {
             this.textOff = 'closed';
             this.showTime = true;
             this.style = {
-                left: '1em'
+                left: '1rem'
             };
         } else if (this.channelInfo.type === Types.motion) {
             this.iconOn = IconMotionOn;

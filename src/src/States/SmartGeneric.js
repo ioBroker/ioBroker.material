@@ -410,7 +410,7 @@ class SmartGeneric extends Component {
                 this.props.tile.setVisibility(settings.enabled);
                 this.width = settings.doubleSize ? 2 : 1;
                 this.props.tile.setSize(this.width);
-                cb && cb();
+                cb && cb(settings);
             });
         } else if (this.customSettings) {
             // custom URL
@@ -437,8 +437,10 @@ class SmartGeneric extends Component {
                 this.props.onSaveSettings && this.props.onSaveSettings(enumId, enumSettings, function () {
                     if (!newSettings) {
                         this.props.tile.setDelete(enumId);
+                    } else {
+
                     }
-                    cb && cb();
+                    cb && cb(newSettings);
                 }.bind(this));
             }
         }
@@ -615,7 +617,7 @@ class SmartGeneric extends Component {
         return settings;
     }
 
-    saveDialogSettings(settings) {
+    saveDialogSettings(settings, cb) {
         if (settings) {
             settings.enabled = this.state.settings.enabled;
             if (settings.background && typeof settings.background === 'object') {
@@ -623,13 +625,14 @@ class SmartGeneric extends Component {
             }
         }
 
-        this.saveSettings(settings, () => {
+        this.saveSettings(settings, newSettings => {
             if (settings.background) {
                 this.state.backgroundId++;
                 this.props.tile.setBackgroundImage(settings.background + '?ts=' + Date.now(), true);
             } else {
                 this.props.tile.setBackgroundImage('', false);
             }
+            cb && cb(newSettings);
         });
     }
 

@@ -34,9 +34,9 @@ const style = {
             background: 'rgba(0,0,0,0.55)',
             position: 'agetDialogSettingsbsolute',
             bottom: 50,
-            width: 'calc(100% + 1em)',
-            left: '-0.5em',
-            paddingLeft: '1.2em'
+            width: 'calc(100% + 1rem)',
+            left: '-0.5rem',
+            paddingLeft: '1.2rem'
         },
         name: {
             fontSize: 10,
@@ -63,9 +63,9 @@ const style = {
         div: {
             background: 'rgba(255,255,255,0.9)',
             position: 'absolute',
-            width: 'calc(100% + 1em)',
+            width: 'calc(100% + 1rem)',
             bottom: 0,
-            left: '-0.5em',
+            left: '-0.5rem',
             height: 48,
             textAlign: 'center',
             lineHeight: '48px',
@@ -106,7 +106,7 @@ const style = {
         },
         name: {
             position: 'absolute',
-            left: '1.2em',
+            left: '1.2rem',
             bottom: 2,
             fontSize: 14,
             color: 'rgba(0,0,0,0.6)'
