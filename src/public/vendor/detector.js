@@ -180,7 +180,13 @@ function ChannelDetector() {
             ],
             type: Types.weatherForecast
         },
-        warning: {
+/*        rgb: {
+            states: [
+                {role: /^value.warning$/,                                 indicator: false,                  name: 'LEVEL',         required: true},
+            ],
+            type: Types.rgb
+        },
+ */     warning: {
             states: [
                 {role: /^value.warning$/,                                 indicator: false,                  name: 'LEVEL',         required: true},
                 // optional

@@ -719,6 +719,8 @@ class SmartGeneric extends Component {
                          name={this.state.settings.name}
                          dialogKey={this.key + 'settings'}
                          settings={this.getDialogSettings()}
+                         objects={this.props.objects}
+                         settingsId={this.settingsId}
                          onSave={this.saveDialogSettings.bind(this)}
                          onClose={this.onSettingsClose.bind(this)}
                 />): null];

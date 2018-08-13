@@ -15,9 +15,10 @@
  **/
 import React from 'react';
 import PropTypes from 'prop-types';
-import Theme from '../theme';
-import I18n from '../i18n';
+import CopyToClipboard from 'react-copy-to-clipboard';
 
+import Popover from '@material-ui/core/Popover';
+import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import TextField from '@material-ui/core/TextField';
@@ -29,8 +30,10 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Toolbar from '@material-ui/core/Toolbar';
 import Paper from '@material-ui/core/Paper';
+import IconButton from '@material-ui/core/IconButton';
 
 import OkIcon from 'react-icons/lib/md/save';
+import CopyIcon from 'react-icons/lib/md/content-copy';
 
 import ColorPicker from '../basic-controls/react-color-picker/ColorPicker';
 import ImageSelector from '../basic-controls/react-image-selector/ImageSelector';
@@ -39,7 +42,30 @@ import SelectControl from '../basic-controls/react-info-controls/SelectControl';
 import BoolControl from '../basic-controls/react-info-controls/BoolControl';
 
 import SmartDialogGeneric from './SmartDialogGeneric';
+import Utils from '../Utils';
+import Theme from '../theme';
+import I18n from '../i18n';
 
+const styles = {
+    descCopyIcon: {
+        position: 'absolute',
+        top: 0,
+        right: 0
+    },
+    descDivId: {
+        fontSize: 'smaller'
+    },
+    descTitle: {
+        fontWeight: 'bold'
+    },
+    descCopied: {
+        position: 'absolute',
+        top: 3,
+        right: 3,
+        background: 'white'
+    }
+
+};
 class SmartDialogSettings extends SmartDialogGeneric  {
 
     // expected:
@@ -53,6 +79,7 @@ class SmartDialogSettings extends SmartDialogGeneric  {
         dialogKey:          PropTypes.string,
         windowWidth:        PropTypes.number,
         settings:           PropTypes.array.isRequired,
+        objectInfo:         PropTypes.object,
         onSave:             PropTypes.func.isRequired,
         onClose:            PropTypes.func
     };
@@ -65,6 +92,7 @@ class SmartDialogSettings extends SmartDialogGeneric  {
 
         };
         this.stateRx.images = [];
+        this.stateRx.anchorEl = null;
 
         this.props.settings.forEach(e => {
             this.stateRx.values[e.name] = e.value === '__default__' ? '' : e.value;
@@ -176,6 +204,35 @@ class SmartDialogSettings extends SmartDialogGeneric  {
         });
     }
 
+    copyId(event) {
+        this.setState({anchorEl: event.currentTarget});
+        setTimeout(() => {
+            this.setState({anchorEl: null});
+        }, 2000);
+    }
+
+    generateObjectInfo() {
+        if (this.props.settingsId) {
+            return (<Paper key={'object-info'} style={{margin: 5, padding: 5, position: 'relative'}} elevation={1}>
+                <CopyToClipboard
+                    text={this.props.settingsId}>
+                    <IconButton
+                        title={I18n.t('Copy ID to clipboard')}
+                        onClick={this.copyId.bind(this)}
+                        style={styles.descCopyIcon}>
+                        <CopyIcon width={Theme.iconSize} height={Theme.iconSize}/>
+                    </IconButton>
+                </CopyToClipboard>
+                {this.state.anchorEl ? (<Button variant="outlined" disabled style={styles.descCopied}>{I18n.t('Copied')}</Button>) : null}
+                <div><span style={styles.descTitle}>{I18n.t('Name')}: </span>{Utils.getObjectName(this.props.objects, this.props.settingsId)}</div>
+                <div style={styles.descDivId}><span style={styles.descTitle}>{I18n.t('Description')}: </span>{Utils.getObjectName(this.props.objects, this.props.settingsId, null, null, true)}</div>
+                <div style={styles.descDivId}><span style={styles.descTitle}>ID: </span>{this.props.settingsId}</div>
+            </Paper>);
+        } else {
+            return null;
+        }
+    }
+
     generateContent() {
         const result = this.props.settings.map((e, i) => {
             const divider = i !== this.props.settings.length - 1 ? (<ListItem key={e.id + '_div'} style={Theme.dialog.divider}/>) : null;
@@ -279,6 +336,9 @@ class SmartDialogSettings extends SmartDialogGeneric  {
                 return (<Paper key={this.props.dialogKey + '-' + e.name + '-paper'} style={{margin: 5, padding: 5}} elevation={1}>{item}</Paper>);
             }
         });
+
+        result.push(this.generateObjectInfo());
+
         return [
             (<Toolbar key={this.props.dialogKey + '-toolbar'} >
                 <h4   key={this.props.dialogKey + '-header'} style={Theme.dialog.header}>{this.props.name}</h4>

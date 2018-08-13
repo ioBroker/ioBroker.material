@@ -1,10 +1,18 @@
 {
     "common": {
         "name": "material",
-        "version": "0.9.10",
+        "version": "0.9.11",
         "news": {
-            "0.9.10": {
-                "en": "in process"
+            "0.9.11": {
+                "en": "Fixed error with empty page",
+                "de": "Fehler bei leerer Seite behoben",
+                "ru": "Исправлена ​​ошибка с пустой страницей",
+                "pt": "Corrigido erro com página vazia",
+                "nl": "Vaste fout met lege pagina",
+                "fr": "Erreur fixe avec page vide",
+                "it": "Risolto errore con la pagina vuota",
+                "es": "Se arregló el error con la página vacía",
+                "pl": "Naprawiono błąd z pustą stroną"
             },
             "0.9.9": {
                 "en": "Order of tiles is implemented\nSupport of dwd data",

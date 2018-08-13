@@ -512,16 +512,7 @@ class StatesList extends Component {
                 columns.push({id: 'nothing'});
             }
         } else  {
-            // no items
-            columns.push({control: (<SmartTile
-                key="nothing"
-                editMode={this.props.editMode}
-                user={this.props.user}
-                states={this.props.states}
-                objects={this.props.objects}
-                id=""/>), id: 'nothing'});
-
-            return this.wrapContent(columns, true);
+            columns.push({id: 'nothing'});
         }
 
         if (!this.order) {

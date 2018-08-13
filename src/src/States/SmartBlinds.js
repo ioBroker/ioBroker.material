@@ -172,11 +172,17 @@ class SmartBlinds extends SmartGeneric {
                 customIcon = (<Icon width={'100%'} height={'100%'} style={{zIndex: 1}}/>);
             }
         }
+
+        const overlapStyle = Object.assign({}, styles.overlap, {height: this.realValueToPercent(this.state[this.id]) + '%'});
+        if (this.state.settings.colorOn) {
+            Object.assign(overlapStyle, {background: this.state.settings.colorOn});
+        }
+
         return (
             <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, /*this.state[this.actualId] !== this.min ? {color: Theme.palette.lampOn} : */{}, {left: '1rem'})} className="tile-icon">
                 {customIcon}
                 {this.state.executing ? <CircularProgress style={{zIndex: 3, position: 'absolute', top: 0, left: 0}} size={Theme.tile.tileIcon.width}/> : null}
-                <div style={Object.assign({}, styles.overlap, {height: this.realValueToPercent(this.state[this.id]) + '%'})} />
+                <div style={overlapStyle} />
             </div>
         );
     }

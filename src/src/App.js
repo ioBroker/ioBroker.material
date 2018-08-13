@@ -141,6 +141,9 @@ class App extends Component {
                 },
                 function (err, res) {
                     this.instances = {};
+                    if (window.debugInstances) {
+                        res.rows = window.debugInstances;
+                    }
                     if (res && res.rows && res.rows.length) {
                         for (let i = 0; i < res.rows.length; i++) {
                             const obj = res.rows[i].value;
@@ -176,6 +179,8 @@ class App extends Component {
             objects = objects || {};
             if (typeof window.debugObjects !== 'undefined') {
                 objects = window.debugObjects;
+                window.debugEnums && window.debugEnums.rows.forEach(e => objects[e.id] = e.value);
+                window.debugChannels && window.debugChannels.rows.forEach(e => objects[e.id] = e.value);
             }
 
             if (err) {
