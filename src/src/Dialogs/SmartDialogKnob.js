@@ -106,7 +106,16 @@ class SmartDialogKnob extends SmartDialogGeneric  {
         this.click = Date.now();
 
         this.setState({value: this.externalValue2localValue(value)});
-        this.props.onValueChange && this.props.onValueChange(Math.round(value));
+        if (this.controlTimer) {
+            clearTimeout(this.controlTimer);
+        }
+
+        if (this.props.onValueChange) {
+            this.controlTimer = setTimeout(val => {
+                this.controlTimer = null;
+                this.props.onValueChange(Math.round(val));
+            }, 300, value);
+        }
     }
 
     onMute(e) {

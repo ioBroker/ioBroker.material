@@ -36,8 +36,6 @@ Better if every device belongs to both categories. Because every device has a ty
 * vacuum cleaner
 * show bar for sliders to indicate position
 * support of quality codes
-* Show images / URL
-* Make a photo
 * Maps (OpensStreetMap)
 
 ## Credits

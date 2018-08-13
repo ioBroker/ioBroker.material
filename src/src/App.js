@@ -173,6 +173,11 @@ class App extends Component {
         }.bind(this));
 
         this.conn.getObjects(!this.state.refresh, function (err, objects) {
+            objects = objects || {};
+            if (typeof window.debugObjects !== 'undefined') {
+                objects = window.debugObjects;
+            }
+
             if (err) {
                 this.showError(err);
             } else {

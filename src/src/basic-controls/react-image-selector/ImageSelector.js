@@ -250,7 +250,7 @@ class ImageSelector extends React.Component {
     }
 
     static isMobile() {
-        return true || /iPhone|iPad|iPod|Android/i.test(window.navigator.userAgent);
+        return /iPhone|iPad|iPod|Android/i.test(window.navigator.userAgent);
     }
 
     onCamera() {
