@@ -276,7 +276,14 @@ class StatesSubList extends Component {
                     id: id.id
                 };
             } else {
-                let controls = this.detector.detect(this.props.objects, id, this.props.keys, usedIds, this.props.ignoreIndicators);
+                const options = {
+                    objects:            this.props.objects,
+                    id,
+                    _keysOptional:      this.props.keys,
+                    _usedIdsOptional:   usedIds,
+                    ignoreIndicators:   this.props.ignoreIndicators
+                };
+                let controls = this.detector.detect(options);
                 if (controls) {
                     controls = controls.map(function (control) {
                         const id = control.states.find(state => state.id).id;

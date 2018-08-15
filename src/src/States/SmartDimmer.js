@@ -23,7 +23,7 @@ import Theme from '../theme';
 import Dialog from '../Dialogs/SmartDialogSlider';
 import I18n from '../i18n';
 
-class SmartLight extends SmartGeneric {
+class SmartDimmer extends SmartGeneric {
     constructor(props) {
         super(props);
         if (this.channelInfo.states) {
@@ -226,5 +226,5 @@ class SmartLight extends SmartGeneric {
     }
 }
 
-export default SmartLight;
+export default SmartDimmer;
 

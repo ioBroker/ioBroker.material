@@ -14,7 +14,6 @@
  * limitations under the License.
  **/
 import React, {Component} from 'react';
-import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types';
 import Paper from '@material-ui/core/Paper';
 
@@ -41,6 +40,7 @@ import SmartVolume from './States/SmartVolume';
 import SmartWeatherForecast from './States/SmartWeatherForecast';
 import SmartWarning from './States/SmartWarning';
 import SmartURL from './States/SmartURL';
+import SmartColor from './States/SmartColor';
 
 class SmartTile extends Component {
     static propTypes = {
@@ -165,13 +165,13 @@ class SmartTile extends Component {
     }
 
     setColorOn(color) {
-        if (this.state.colorOn !== color) {
+        if (JSON.stringify(this.state.colorOn) !== JSON.stringify(color)) {
             this.setState({colorOn: color});
         }
     }
 
     setColorOff(color) {
-        if (this.state.colorOff !== color) {
+        if (JSON.stringify(this.state.colorOff) !== JSON.stringify(color)) {
             this.setState({colorOff: color});
         }
     }
@@ -285,6 +285,11 @@ class SmartTile extends Component {
                 case Types.door:
                 case Types.motion:
                     Control = SmartState;
+                    break;
+                case Types.rgbSingle:
+                case Types.hue:
+                case Types.rgb:
+                    Control = SmartColor;
                     break;
                 case Types.weatherForecast:
                     Control = SmartWeatherForecast;

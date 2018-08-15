@@ -14,10 +14,33 @@
  * limitations under the License.
  **/
 import React from 'react';
-import ColorsImg from '../assets/rgb.png';
 import {decomposeColor} from '@material-ui/core/styles/colorManipulator';
 import PropTypes from 'prop-types';
+
+import ColorsImg from '../assets/rgb.png';
 import SmartDialogGeneric from './SmartDialogGeneric';
+import UtilsColors from '../UtilsColors';
+import ColorSaturation from '../basic-controls/react-color-saturation/ColorSaturation';
+
+const styles = {
+    buttonColorStyle: {
+        position: 'absolute',
+        left: 'calc(50% + 7rem)',
+        bottom: '4em',
+        height: '2.5rem',
+        width: '2.5rem',
+        cursor: 'pointer'
+    },
+    saturationSlider: {
+        width: 'calc(100% - 2rem)',
+        position: 'absolute',
+        top: '25rem',
+        left: 16,
+        borderRadius: 15,
+        paddingLeft: 5,
+        paddingRight: 5
+    }
+};
 
 class SmartDialogColor extends SmartDialogGeneric  {
     // expected:
@@ -26,36 +49,26 @@ class SmartDialogColor extends SmartDialogGeneric  {
             PropTypes.string,
             PropTypes.object
         ]),
-        dialogKey:          PropTypes.string.isRequired,
         windowWidth:        PropTypes.number,
         onClose:            PropTypes.func.isRequired,
-        onValueChange:      PropTypes.func,
-        startValue:         PropTypes.string
+        onRgbChange:        PropTypes.func,
+        onToggle:           PropTypes.func,
+        ids:                PropTypes.object,
+        startRGB:           PropTypes.string,
+        startOn:            PropTypes.bool
     };
-
-    static buttonColorStyle = {
-        position: 'absolute',
-        left: 'calc(50% + 7em)',
-        bottom: '4em',
-        height: '2.5em',
-        width: '2.5em',
-        cursor: 'pointer'
-    };
-
     static handlerSize = 32;
 
     constructor(props) {
         super(props);
-        this.state = {
-            value: this.props.startValue || '#00FF00'
-        };
-        this.state.value = this.state.value.toString();
+        this.stateRx.color = (this.props.startRGB || '#00FF00').toString();
+        const [r,g,b] = UtilsColors.hex2array(this.stateRx.color);
+        const [h,s,l] = UtilsColors.rgbToHsl(r, g, b);
+        this.stateRx.saturation = s * 100;
+        
         this.mouseUpTime = 0;
         this.onMouseMoveBind = this.onMouseMove.bind(this);
         this.onMouseUpBind = this.onMouseUp.bind(this);
-
-        // disable context menu after long click
-        window.addEventListener('contextmenu', SmartDialogColor.onContextMenu, false);
 
         this.refColor       = React.createRef();
         this.refColorCursor = React.createRef();
@@ -70,85 +83,6 @@ class SmartDialogColor extends SmartDialogGeneric  {
             timer: null
         };
         this.componentReady();
-    }
-
-    /**
-     * Converts an RGB color value to HSL. Conversion formula
-     * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
-     * Assumes r, g, and b are contained in the set [0, 255] and
-     * returns h, s, and l in the set [0, 1].
-     *
-     * Taken from here: https://gist.github.com/mjackson/5311256
-     *
-     * @param   Number  r       The red color value
-     * @param   Number  g       The green color value
-     * @param   Number  b       The blue color value
-     * @return  Array           The HSL representation
-     */
-    static rgbToHsl(r, g, b) {
-        r /= 255;
-        g /= 255;
-        b /= 255;
-
-        const max = Math.max(r, g, b);
-        const min = Math.min(r, g, b);
-        let h, s, l = (max + min) / 2;
-
-        if (max === min) {
-            h = s = 0; // achromatic
-        } else {
-            let d = max - min;
-            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-
-            switch (max) {
-                case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-                case g: h = (b - r) / d + 2; break;
-                case b: h = (r - g) / d + 4; break;
-            }
-
-            h /= 6;
-        }
-
-        return [ h, s, l ];
-    }
-
-    /**
-     * Converts an HSL color value to RGB. Conversion formula
-     * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
-     * Assumes h, s, and l are contained in the set [0, 1] and
-     * returns r, g, and b in the set [0, 255].
-     *
-     * Taken from here: https://gist.github.com/mjackson/5311256
-     *
-     * @param   {number}  h       The hue
-     * @param   {number}  s       The saturation
-     * @param   {number}  l       The lightness
-     * @return  {Array}           The RGB representation
-     */
-    static hslToRgb(h, s, l) {
-        let r, g, b;
-
-        if (!s) {
-            r = g = b = l; // achromatic
-        } else {
-            function hue2rgb(p, q, t) {
-                if (t < 0) t += 1;
-                if (t > 1) t -= 1;
-                if (t < 1/6) return p + (q - p) * 6 * t;
-                if (t < 1/2) return q;
-                if (t < 2/3) return p + (q - p) * (2 / 3 - t) * 6;
-                return p;
-            }
-
-            const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-            const p = 2 * l - q;
-
-            r = hue2rgb(p, q, h + 1/3);
-            g = hue2rgb(p, q, h);
-            b = hue2rgb(p, q, h - 1/3);
-        }
-
-        return [r * 255, g * 255, b * 255];
     }
 
     static createRgb(size) {
@@ -184,7 +118,7 @@ class SmartDialogColor extends SmartDialogGeneric  {
 
     static colorToPos(color, size) {
         let c = decomposeColor(color);
-        let hsl = SmartDialogColor.rgbToHsl(c.values[0], c.values[1], c.values[2]);
+        let hsl = UtilsColors.rgbToHsl(c.colors[0], c.colors[1], c.colors[2]);
         let h = -hsl[0];
         if (isNaN(h)) h = 0;
         const R =  (size / 2);
@@ -208,7 +142,7 @@ class SmartDialogColor extends SmartDialogGeneric  {
         h = h * -1;
         if (h < 0) h += 360;
         h = h / 360;
-        const rgb = SmartDialogColor.hslToRgb(h, 1, 0.5);
+        const rgb = UtilsColors.hslToRgb(h, 1, 0.5);
         let r = Math.round(rgb[0]).toString(16);
         let g = Math.round(rgb[1]).toString(16);
         let b = Math.round(rgb[2]).toString(16);
@@ -216,14 +150,6 @@ class SmartDialogColor extends SmartDialogGeneric  {
         if (g.length < 2) g = '0' + g;
         if (b.length < 2) b = '0' + b;
         return '#' + r + g + b;
-    }
-
-    static onContextMenu(e) {
-        if (!e.shiftKey && !e.ctrlKey) {
-            e.preventDefault();
-            console.log('Ignore context menu' + e);
-            return false;
-        }
     }
 
     componentDidUpdate() {
@@ -237,7 +163,7 @@ class SmartDialogColor extends SmartDialogGeneric  {
             this.colorWidth = this.refColorImage.current.offsetWidth;
             this.colorLeft = this.refColorImage.current.offsetLeft;
             this.colorTop = this.refColorImage.current.offsetTop;
-            let pos = SmartDialogColor.colorToPos(this.state.value, this.colorWidth - SmartDialogColor.handlerSize);
+            let pos = SmartDialogColor.colorToPos(this.state.color, this.colorWidth - SmartDialogColor.handlerSize);
             this.refColorCursor.current.style.top  = this.colorTop + pos.y + (pos.y > 0 ? 0 : -SmartDialogColor.handlerSize) + 'px';
             this.refColorCursor.current.style.left = this.colorLeft + pos.x + (pos.x > 0 ? 0 : -SmartDialogColor.handlerSize) + 'px';
             this.rect = this.refColorImage.current.getBoundingClientRect();
@@ -248,7 +174,17 @@ class SmartDialogColor extends SmartDialogGeneric  {
         let pageY = e.touches ? e.touches[e.touches.length - 1].pageY : e.pageY;
         let pageX = e.touches ? e.touches[e.touches.length - 1].pageX : e.pageX;
         const halfSize = this.colorWidth / 2;
-        this.setState({value: SmartDialogColor.posToColor(pageX - this.rect.left - halfSize, pageY - this.rect.top - halfSize)});
+        const color = SmartDialogColor.posToColor(pageX - this.rect.left - halfSize, pageY - this.rect.top - halfSize);
+        this.setState({color});
+        if (this.changeTimer) {
+            clearTimeout(this.changeTimer);
+        }
+        if (this.props.onRgbChange) {
+            this.changeTimer = setTimeout(color => {
+                this.changeTimer = null;
+                this.props.onRgbChange(this.getRealValue(color));
+            }, 1000, color);
+        }
     }
 
     onMouseMove(e) {
@@ -273,15 +209,29 @@ class SmartDialogColor extends SmartDialogGeneric  {
         e.preventDefault();
         e.stopPropagation();
         this.mouseUpTime = Date.now();
-        console.log('Stopped');
+
+        if (this.changeTimer) {
+            clearTimeout(this.changeTimer);
+        }
+
         document.removeEventListener('mousemove',   this.onMouseMoveBind,   {passive: false, capture: true});
         document.removeEventListener('mouseup',     this.onMouseUpBind,     {passive: false, capture: true});
         document.removeEventListener('touchmove',   this.onMouseMoveBind,   {passive: false, capture: true});
         document.removeEventListener('touchend',    this.onMouseUpBind,     {passive: false, capture: true});
 
-        this.props.onValueChange && this.props.onValueChange(this.state.value);
+        this.props.onRgbChange && this.props.onRgbChange(this.getRealValue());
     }
 
+    
+    getRealValue(rgb, saturation) {
+        rgb = rgb || this.state.color;
+        saturation = (saturation === null || saturation === undefined) ? this.state.saturation : saturation;
+        const [r,g,b] = UtilsColors.hex2array(rgb);
+        const [h,s,l] = UtilsColors.rgbToHsl(r, g, b);
+        const _rgb = UtilsColors.hslToRgb(h, saturation / 100, l);
+        return UtilsColors.rgb2string(_rgb);
+    }
+    
     onClose() {
         if (!this.mouseUpTime || Date.now() - this.mouseUpTime > 100) {
             window.removeEventListener('contextmenu', SmartDialogColor.onContextMenu, false);
@@ -293,11 +243,44 @@ class SmartDialogColor extends SmartDialogGeneric  {
         this.click = Date.now();
     }
 
-    generateContent() {
-        let pos = SmartDialogColor.colorToPos(this.state.value, this.colorWidth - SmartDialogColor.handlerSize);
+    getHue() {
+        if (!this.state.color) {
+            return '#FFFFFF';
+        }
+        const [r,g,b] = UtilsColors.hex2array(this.state.color);
+        const [h,s,l] = UtilsColors.rgbToHsl(r, g, b);
+        return h * 360;
+    }
+    
+    getSaturation() {
+        if (!this.state.color) {
+            return 100;
+        }
+        const [r,g,b] = UtilsColors.hex2array(this.state.color);
+        const [h,s,l] = UtilsColors.rgbToHsl(r, g, b);
+        return s * 100;
+    }
 
-        return (
-            <div ref={this.refColor}
+    onSaturationChanged(saturation) {
+        this.click = Date.now();
+        this.mouseUpTime = this.click;
+        this.setState({saturation});
+        if (this.changeTimer) {
+            clearTimeout(this.changeTimer);
+        }
+        if (this.props.onRgbChange) {
+            this.changeTimer = setTimeout(saturation => {
+                this.changeTimer = null;
+                this.props.onRgbChange(this.getRealValue(null, saturation));
+            }, 1000, saturation);
+        }
+    }
+
+    generateContent() {
+        let pos = SmartDialogColor.colorToPos(this.state.color, this.colorWidth - SmartDialogColor.handlerSize);
+
+        return [(
+            <div key="color-dialog" ref={this.refColor}
                   style={{
                     width: this.colorWidth || '20em',
                     position: 'absolute',
@@ -326,12 +309,15 @@ class SmartDialogColor extends SmartDialogGeneric  {
                          left: pos.x + this.colorLeft + (pos.x > 0 ? 0 : -SmartDialogColor.handlerSize),
                          borderRadius: SmartDialogColor.handlerSize,
                          boxSizing: 'border-box',
-                         background: this.state.value,
+                         background: this.state.color,
                          border: '2px solid white'
                      }}>
                 </div>
-            </div>
-        );
+            </div>),
+            (<div style={styles.saturationSlider} key="saturation">
+                <ColorSaturation hue={this.getHue()} saturation={this.getSaturation()} onChange={this.onSaturationChanged.bind(this)}/>
+            </div>)
+        ];
     }
 }
 

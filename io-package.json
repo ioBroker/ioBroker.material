@@ -1,8 +1,11 @@
 {
     "common": {
         "name": "material",
-        "version": "0.9.11",
+        "version": "0.9.12",
         "news": {
+            "0.9.12": {
+                "en": "in progress"
+            },
             "0.9.11": {
                 "en": "Fixed error with empty page",
                 "de": "Fehler bei leerer Seite behoben",

@@ -15,7 +15,7 @@
  **/
 
 import React from 'react';
-import I18n from "./i18n";
+import I18n from './i18n';
 
 const NAMESPACE = 'material';
 const days = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
@@ -390,12 +390,14 @@ class Utils {
             return num;
         }
     }
+
     static setDataFormat(format) {
         if (format) {
             Utils.dateFormat = format.toUpperCase().split(/[.-/]/);
             Utils.dateFormat.splice(Utils.dateFormat.indexOf('YYYY'), 1);
         }
     }
+
     static date2string(now) {
         if (typeof now === 'string') {
             now = now.trim();

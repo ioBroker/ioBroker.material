@@ -43,6 +43,9 @@ Better if every device belongs to both categories. Because every device has a ty
 - Volume knob from [here](https://codepen.io/blucube/pen/cudAz) By [Ed Hicks](https://twitter.com/blucube) - Inspired by a [dribbble shot](https://dribbble.com/shots/753124-Volume-Knob)  by [Ricardo Salazar](https://twitter.com/rickss)
 
 ## Changelog
+### 0.9.12 (2018.08.14)
+* (bluefox) in progress
+
 ### 0.9.11 (2018.08.14)
 * (bluefox) Fixed error with empty page
 
