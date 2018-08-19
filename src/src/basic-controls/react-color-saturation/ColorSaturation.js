@@ -23,16 +23,27 @@ import UtilsColor from '../../UtilsColors';
 
 const styles = {
     track: {
-        height: 20
+        background: 'rgba(0,0,0,0) !important',
     },
     trackBefore: {
-        height: 20
+        background: 'rgba(0,0,0,0) !important',
     },
     trackAfter: {
-        height: 20
+        background: 'rgba(0,0,0,0) !important',
     },
     thumb: {
         background: 'rgba(255,255,255,0.8)',
+        borderRadius: 10,
+        height: 20
+    },
+    div: {
+        borderRadius: 15,
+        paddingLeft: 5,
+        paddingRight: 5,
+        width: '100%',
+        height: 30,
+        paddingTop: 0.1,
+        // boxShadow: 'rgba(255, 255, 255, 0.1) 0px 0.2em 0.1em 0.05em inset, rgba(0, 0, 0, 0.5) 0px -0.2em 0.1em 0.05em inset, rgba(0, 0, 0, 0.3) 0px 0.5em 0.65em 0px'
     }
 };
 
@@ -50,11 +61,20 @@ class ColorSaturation extends React.Component {
             saturation: this.props.saturation
         };
     }
+
     componentWillReceiveProps(nextProps) {
         const newState = {};
+        let changed = false;
         if (nextProps.hue !== this.state.hue) {
             newState.hue = nextProps.hue;
-            this.setState({hue: nextProps.hue});
+            changed = true;
+        }
+        if (nextProps.saturation !== this.state.saturation) {
+            newState.saturation = nextProps.saturation;
+            changed = true;
+        }
+        if (changed) {
+            this.setState(newState);
         }
     }
 
@@ -70,17 +90,18 @@ class ColorSaturation extends React.Component {
         const color = 'linear-gradient(to right, rgba(0,0,0,1) 0%,' + rgba + ' 100%)';
         console.log(rgb + ' ' + rgba);
         return (
-            <div style={{width: '100%', height: 30, background: color, paddingTop: 0.1}}>
+            <div className={this.props.classes.div} style={{background: color}}>
                 <Slider value={this.state.saturation} aria-labelledby="label" min={0} max={100}
-                    //classes={{
-                    //    track: this.props.classes.track,
-                    //    trackBefore: this.props.classes.trackBefore,
-                    //    trackAfter: this.props.classes.trackAfter,
-                    //    thumb: this.props.classes.thumb
-                    //}}
+                    classes={{
+                        track: this.props.classes.track,
+                        trackBefore: this.props.classes.trackBefore,
+                        trackAfter: this.props.classes.trackAfter,
+                        thumb: this.props.classes.thumb
+                    }}
                     onChange={this.handleChange.bind(this)} />
             </div>
         )
     }
 }
+
 export default withStyles(styles)(ColorSaturation);

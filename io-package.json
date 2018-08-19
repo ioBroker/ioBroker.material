@@ -4,7 +4,15 @@
         "version": "0.9.12",
         "news": {
             "0.9.12": {
-                "en": "in progress"
+                "en": "RGB was implemented",
+                "de": "RGB wurde implementiert",
+                "ru": "RGB был реализован",
+                "pt": "RGB foi implementado",
+                "nl": "RGB is geïmplementeerd",
+                "fr": "RVB a été implémenté",
+                "it": "RGB è stato implementato",
+                "es": "RGB fue implementado",
+                "pl": "Zaimplementowano RGB"
             },
             "0.9.11": {
                 "en": "Fixed error with empty page",

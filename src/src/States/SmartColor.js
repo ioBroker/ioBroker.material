@@ -15,6 +15,7 @@
  **/
 import React from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import {withStyles} from '@material-ui/core/styles';
 
 import Icon from 'react-icons/lib/ti/lightbulb'
 
@@ -31,12 +32,16 @@ class SmartColor extends SmartGeneric {
             red:            null,
             green:          null,
             blue:           null,
+
             rgb:            null,
+
             hue:            null,
+            saturation:     null,
+            brightness:     null,
+
             temperature:    null,
             dimmer:         null,
-            on:             null,
-            saturation:     null
+            on:             null
         };
 
         if (this.channelInfo.states) {
@@ -133,9 +138,6 @@ class SmartColor extends SmartGeneric {
             }
 
             state = this.channelInfo.states.find(state => state.id && state.name === 'DIMMER');
-            if (!state) {
-                state = this.channelInfo.states.find(state => state.id && state.name === 'BRIGHTNESS');
-            }
             ids.dimmer = state && state.id ? {id: state.id} : null;
             if (ids.dimmer) {
                 if (this.props.objects[state.id].common.min !== undefined) {
@@ -154,6 +156,28 @@ class SmartColor extends SmartGeneric {
                     ids.dimmer.unit = '%';
                 }
             }
+
+            state = this.channelInfo.states.find(state => state.id && state.name === 'BRIGHTNESS');
+            ids.brightness = state && state.id ? {id: state.id} : null;
+            if (ids.brightness) {
+                if (this.props.objects[state.id].common.min !== undefined) {
+                    ids.brightness.min = parseFloat(this.props.objects[state.id].common.min);
+                } else {
+                    ids.brightness.min = 0;
+                }
+                if (this.props.objects[state.id].common.max !== undefined) {
+                    ids.brightness.max = parseFloat(this.props.objects[state.id].common.max);
+                } else {
+                    ids.brightness.max = 100;
+                }
+                if (this.props.objects[state.id].common.unit !== undefined) {
+                    ids.brightness.unit = this.props.objects[state.id].common.unit;
+                } else {
+                    ids.brightness.unit = '%';
+                }
+            }
+
+
             state = this.channelInfo.states.find(state => state.id && state.name === 'SATURATION');
             ids.saturation = state && state.id ? {id: state.id} : null;
             if (ids.saturation) {
@@ -176,6 +200,7 @@ class SmartColor extends SmartGeneric {
             ids.on = state && state.id ? {id: state.id} : null;
             if (ids.on) {
                 this.props.tile.setState({isPointer: true});
+                this.props.tile.registerHandler('onClick', this.onToggle.bind(this));
             }
         }
         this.ids = ids;
@@ -264,28 +289,31 @@ class SmartColor extends SmartGeneric {
         }
     }
 
-    setRgbValue(rgb) {
+    onRgbChange(rgb) {
         const newValue = {};
         if (this.ids.rgb) {
             newValue[this.ids.rgb.id] = rgb;
+
             this.props.onControl(this.ids.rgb.id, rgb);
-            this.ids.on && this.props.onControl(this.ids.on.id, true);
         } else if (this.ids.red) {
             let [r, g, b] = UtilsColors.hex2array(rgb);
+
             r = this.realValueToPercent({min: 0, max: 255}, r);
             g = this.realValueToPercent({min: 0, max: 255}, g);
             b = this.realValueToPercent({min: 0, max: 255}, b);
+
             newValue[this.ids.red.id] = r;
             newValue[this.ids.green.id] = g;
             newValue[this.ids.blue.id] = b;
+
             r = this.percentToRealValue(this.ids.red, r);
             g = this.percentToRealValue(this.ids.green, g);
             b = this.percentToRealValue(this.ids.blue, b);
+
             this.props.onControl(this.ids.red.id, r);
             this.props.onControl(this.ids.green.id, g);
             this.props.onControl(this.ids.blue.id, b);
-            this.ids.on && this.props.onControl(this.ids.on.id, true);
-        } else if (this.ids.hue) {
+            } else if (this.ids.hue) {
             let [r, g, b] = UtilsColors.hex2array(rgb);
             let [h, s, l] = UtilsColors.rgbToHsl(r, g, b);
             h = this.realValueToPercent({min: 0, max: 1}, h);
@@ -295,45 +323,45 @@ class SmartColor extends SmartGeneric {
             if (this.ids.saturation) {
                 newValue[this.ids.saturation.id] = s;
             }
-            if (this.ids.dimmer) {
-                newValue[this.ids.dimmer.id] = l;
+            if (this.ids.brightness) {
+                newValue[this.ids.brightness.id] = l;
             }
             h = this.percentToRealValue(this.ids.hue, h);
             s = this.percentToRealValue(this.ids.saturation, s);
-            l = this.percentToRealValue(this.ids.dimmer, l);
+            l = this.percentToRealValue(this.ids.brightness, l);
+
             this.props.onControl(this.ids.hue.id, h);
             this.ids.saturation && this.props.onControl(this.ids.saturation.id, s);
-            this.ids.dimmer && this.props.onControl(this.ids.dimmer.id, l);
-            this.ids.on && this.props.onControl(this.ids.on.id, true);
+            this.ids.brightness && this.props.onControl(this.ids.brightness.id, l);
         }
 
         if (this.ids.on && !this.state[this.ids.on.id]) {
             newValue[this.ids.on.id] = true;
+            this.props.onControl(this.ids.on.id, true);
+        }
+        if (this.ids.dimmer) {
+            if (this.state[this.ids.dimmer.id] === 0) {
+                newValue[this.ids.dimmer.id] = 100;
+                this.props.onControl(this.ids.dimmer.id, 100);
+            } else {
+                this.props.onControl(this.ids.dimmer.id, this.state[this.ids.dimmer.id]);
+            }
         }
 
         this.setState(newValue);
 
     }
 
-    setValue(props, percent) {
-        if (percent) {
-            this.lastNotNullPercent = percent;
-        } else {
-            const p = this.realValueToPercent(props);
-            if (p) {
-                this.lastNotNullPercent = p;
-            }
-        }
-
-        console.log('Control ' + props.id + ' = ' + this.percentToRealValue(props, percent));
-
-        this.setState({setValue: percent});
-        this.props.onControl(props.id, this.percentToRealValue(props, percent));
+    onDimmerChange(dimmer) {
+        this.setState({dimmer});
+        this.props.onControl(this.ids.dimmer.id, this.percentToRealValue(this.ids.dimmer, dimmer));
     }
 
-    onToggleValue() {
+    onToggle(value) {
         if (this.ids.on) {
-            this.props.onControl(this.ids.on.id, !this.state[this.ids.on.id]);
+            const newValue = value === undefined || typeof value === 'object' ? !this.state[this.ids.on.id] : value;
+            this.setState({[this.ids.on.id]: newValue});
+            this.props.onControl(this.ids.on.id, newValue);
         }
     }
 
@@ -376,13 +404,13 @@ class SmartColor extends SmartGeneric {
         } else if (this.ids.hue) {
             let hue = states[this.ids.hue.id];
             let saturation = this.ids.saturation ? states[this.ids.saturation.id] : 100;
-            let dimmer = this.ids.dimmer ? states[this.ids.dimmer.id] : 100;
-            if (hue !== null      && saturation !== null      && dimmer !== null &&
-                hue !== undefined && saturation !== undefined && dimmer !== undefined) {
+            let brightness = this.ids.brightness ? states[this.ids.brightness.id] : 100;
+            if (hue !== null      && saturation !== null      && brightness !== null &&
+                hue !== undefined && saturation !== undefined && brightness !== undefined) {
                 hue = this.percentToRealValue({min: 0, max: 1}, hue);
                 saturation = this.percentToRealValue({min: 0, max: 1}, saturation);
-                dimmer = this.percentToRealValue({min: 0, max: 1}, dimmer);
-                color = UtilsColors.rgb2string(UtilsColors.hslToRgb(hue, saturation, dimmer));
+                brightness = this.percentToRealValue({min: 0, max: 1}, brightness);
+                color = UtilsColors.rgb2string(UtilsColors.hslToRgb(hue, saturation, brightness));
             }
         } else if (this.ids.temperature) {
             let temperature = states[this.ids.temperature.id];
@@ -410,17 +438,30 @@ class SmartColor extends SmartGeneric {
     }
 
     render() {
+        if (this.state.showDialog) {
+            this.props.tile.unregisterHandler('onClick');
+        } else {
+            this.props.tile.registerHandler('onClick', this.onToggle.bind(this));
+        }
+
         return this.wrapContent([
             this.getStandardContent(this.id, true),
             this.state.showDialog ?
                 <Dialog key={this.key + 'dialog'}
                     windowWidth={this.props.windowWidth}
                     ids={this.ids}
+
                     startRGB={this.getColor() || '#000000'}
+                    onRgbChange={this.onRgbChange.bind(this)}
+
                     startOn={this.ids.on && this.state[this.ids.on.id]}
-                    onRgbChange={this.setRgbValue.bind(this)}
-                    onValueChange={this.setValue.bind(this)}
-                    onToggle={this.ids.on && this.onToggleValue.bind(this)}
+                    useOn={!!this.ids.on}
+                    onToggle={this.ids.on && this.onToggle.bind(this)}
+
+                    startDimmer={this.ids.dimmer && this.state[this.ids.dimmer.id]}
+                    useDimmer={!!this.ids.dimmer}
+                    onDimmerChange={this.onDimmerChange.bind(this)}
+
                     onClose={this.onDialogClose.bind(this)}
                 /> : null
         ]);

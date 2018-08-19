@@ -525,7 +525,7 @@ class SmartWeatherForecast extends SmartGeneric {
 
             {(windDir !== null && windDir !== undefined) || (windSpeed !== null && windSpeed !== undefined) ?
                 (<div key="wind" className={classes['todayState-wind']}>
-                    <span key="windTitle" className={classes['todayState-windTitle']}>{I18n.t('Wind')}:</span>
+                    {!windIcon ? (<span key="windTitle" className={classes['todayState-windTitle']}>{I18n.t('Wind')}:</span>) : null}
                     {windIcon ? (<img className={classes['todayState-windIcon']} src={windIcon} alt="state"/>) : null}
                     {windDir ? (<span className={classes['todayState-windDir']}>{windDir}</span>) : null}
                     {windSpeed !== null && windSpeed !== undefined && !isNaN(windSpeed) ? (<span key="windSpeed" className={classes['todayState-windSpeed']}>{windSpeed}{this.windUnit}</span>) : null}

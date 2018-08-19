@@ -211,6 +211,12 @@ class SmartTile extends Component {
         this.handlers[eventName] = handler;
     }
 
+    unregisterHandler(eventName) {
+        if (this.handlers[eventName]) {
+            this.handlers[eventName] = null;
+        }
+    }
+
     createControl(control, channelInfo, tile) {
         let Component = control; // This will be used by rendering
         //              ↓

@@ -9,7 +9,7 @@
 
 React and Material UI interface.
 
-![Screenshot](img/screenshot1.png)
+![Screenshots](img/screenshot1.png)
 
 ## Installation
 **Important!**
@@ -17,7 +17,7 @@ This adapter cannot be installed directly from github. Only from npm.
 
 ## Usage
 It is very important to know, that adapter shows only devices that added to some categories, like *rooms* or *function*.
-Better if every device belongs to both categories. Because every device has a type and place.
+Better if every device belongs to both categories. Because every device has the type and place.
 
 
 ## Supported types
@@ -37,14 +37,19 @@ Better if every device belongs to both categories. Because every device has a ty
 * show bar for sliders to indicate position
 * support of quality codes
 * Maps (OpensStreetMap)
+* Temperature color
+* Switch to default screen after X seconds
+* Order states in info
+* Use icons in weather and not text
+* Allow selection of JPEG format for camera
 
 ## Credits
 - Used icons from flaticon
 - Volume knob from [here](https://codepen.io/blucube/pen/cudAz) By [Ed Hicks](https://twitter.com/blucube) - Inspired by a [dribbble shot](https://dribbble.com/shots/753124-Volume-Knob)  by [Ricardo Salazar](https://twitter.com/rickss)
 
 ## Changelog
-### 0.9.12 (2018.08.14)
-* (bluefox) in progress
+### 0.9.12 (2018.08.19)
+* (bluefox) RGB was implemented
 
 ### 0.9.11 (2018.08.14)
 * (bluefox) Fixed error with empty page
@@ -99,4 +104,4 @@ CC-BY-NC
 
 Copyright (c) 2017-2018 bluefox <dogafox@gmail.com>
 
-Commercial use is not allowed.
+Commercial use is not allowed without permission.
