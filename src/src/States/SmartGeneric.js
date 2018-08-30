@@ -28,14 +28,14 @@ import Dialog from '../Dialogs/SmartDialogSettings';
 
 class SmartGeneric extends Component {
     static propTypes = {
-        objects:        PropTypes.object.isRequired,
-        states:         PropTypes.object.isRequired,
-        tile:           PropTypes.object.isRequired,
-        channelInfo:    PropTypes.object.isRequired,
-        ignoreIndicators: PropTypes.array,
-        enumNames:      PropTypes.array,
-        windowWidth:    PropTypes.number,
-        user:           PropTypes.string
+        objects:            PropTypes.object.isRequired,
+        states:             PropTypes.object.isRequired,
+        tile:               PropTypes.object.isRequired,
+        channelInfo:        PropTypes.object.isRequired,
+        ignoreIndicators:   PropTypes.array,
+        enumNames:          PropTypes.array,
+        windowWidth:        PropTypes.number,
+        user:               PropTypes.string
     };
 
     constructor(props, noSubscribe) {
@@ -550,6 +550,7 @@ class SmartGeneric extends Component {
         } else {
             this.defaultIcon = '';
         }
+        return this.defaultIcon;
     }
 
     getDialogSettings(settings) {
@@ -599,19 +600,21 @@ class SmartGeneric extends Component {
             value: this.state.settings.name || '',
             type: 'string'
         });
-        /*settings.unshift({
-            name: 'useCommon',
-            value: this.state.settings.useCommon || false,
-            type: 'boolean'
-        });*/
-        let icon;
-        if (this.id && (icon = this.getDefaultIcon())) {
-            settings.unshift({
-                name: 'useDefaultIcon',
-                value: this.state.settings.useDefaultIcon || '',
-                type: 'boolean',
-                icon
-            });
+        if (this.id) {
+            /*settings.unshift({
+                name: 'useCommon',getObjectIcon
+                value: this.state.settings.useCommon || false,
+                type: 'boolean'
+            });*/
+            let icon = this.getDefaultIcon();
+            if (icon) {
+                settings.unshift({
+                    name: 'useDefaultIcon',
+                    value: this.state.settings.useDefaultIcon || '',
+                    type: 'boolean',
+                    icon
+                });
+            }
         }
 
         return settings;

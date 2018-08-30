@@ -332,7 +332,7 @@ export default {
             pointerEvents: 'none',
             bottom: 0,
             left: 0,
-            width: 'calc(100% - 32px)',
+            width: '100%',
             position: 'absolute',
             padding: '0 16px',
             height: 67

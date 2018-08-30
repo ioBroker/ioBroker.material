@@ -241,7 +241,7 @@ function ChannelDetector() {
         },
         hue: {
             states: [
-                {role: /^level\.color\.hue/,                              indicator: false, type: 'number',  write: true,           name: 'HUE',           required: true},
+                {role: /^level\.color\.hue$/,                             indicator: false, type: 'number',  write: true,           name: 'HUE',           required: true},
                 {role: /^level\.dimmer$/,                                 indicator: false, type: 'number',  write: true,           name: 'DIMMER',        required: false, searchInParent: true},
                 {role: /^level\.brightness$/,                             indicator: false, type: 'number',  write: true,           name: 'BRIGHTNESS',    required: false},
                 {role: /^level\.color\.saturation$/,                      indicator: false, type: 'number',  write: true,           name: 'SATURATION',    required: false},
@@ -864,8 +864,8 @@ function ChannelDetector() {
                 if (!patterns.hasOwnProperty(pattern) || (allowedTypes && allowedTypes.indexOf(patterns[pattern].type) === -1)) continue;
                 context.result = null;
 
-                if (pattern === 'rgbOld' && id.indexOf('hue.0.Philips_hue.Hue_go_1') !== -1) {
-                    //console.log(pattern);
+                if (pattern === 'hue' && id.indexOf('yeelight-2.0') !== -1) {
+                    console.log(pattern);
                 }
 
                 var _usedIds = [];

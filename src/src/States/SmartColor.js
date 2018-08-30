@@ -94,10 +94,12 @@ class SmartColor extends SmartGeneric {
                 state = this.channelInfo.states.find(state => state.id && state.name === 'RGB');
                 if (state && this.props.objects[state.id] && this.props.objects[state.id].common) {
                     ids.rgb = {id: state.id};
+                    this.id = this.id || state.id;
                 } else {
                     state = this.channelInfo.states.find(state => state.id && state.name === 'HUE');
                     if (state && this.props.objects[state.id] && this.props.objects[state.id].common) {
                         ids.hue = {id: state.id};
+                        this.id = this.id || state.id;
                         if (this.props.objects[state.id].common.min !== undefined) {
                             ids.hue.min = parseFloat(this.props.objects[state.id].common.min);
                         } else {
@@ -223,12 +225,20 @@ class SmartColor extends SmartGeneric {
             }
         }
         val = parseFloat(val);
-        return Math.round((val - props.min) / (props.max - props.min) * 100);
+        return (val - props.min) / (props.max - props.min) * 100;
     }
 
     percentToRealValue(props, percent) {
         percent = parseFloat(percent);
-        return Math.round((props.max - props.min) * percent / 100);
+        if (props) {
+            let real = (props.max - props.min) * percent / 100;
+            if (props.max - props.min > 50) {
+                real = Math.round(real);
+            }
+            return real;
+        } else {
+            return percent;
+        }
     }
 
     updateBackgroundColor(states) {
@@ -404,7 +414,7 @@ class SmartColor extends SmartGeneric {
         } else if (this.ids.hue) {
             let hue = states[this.ids.hue.id];
             let saturation = this.ids.saturation ? states[this.ids.saturation.id] : 100;
-            let brightness = this.ids.brightness ? states[this.ids.brightness.id] : 100;
+            let brightness = this.ids.brightness ? states[this.ids.brightness.id] : 50;
             if (hue !== null      && saturation !== null      && brightness !== null &&
                 hue !== undefined && saturation !== undefined && brightness !== undefined) {
                 hue = this.percentToRealValue({min: 0, max: 1}, hue);

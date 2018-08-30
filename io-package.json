@@ -1,8 +1,19 @@
 {
     "common": {
         "name": "material",
-        "version": "0.9.12",
+        "version": "0.10.0",
         "news": {
+            "0.10.0": {
+                "en": "RGB was corrected",
+                "de": "RGB wurde korrigiert",
+                "ru": "RGB был исправлен",
+                "pt": "RGB foi corrigido",
+                "nl": "RGB is gecorrigeerd",
+                "fr": "RVB a été corrigé",
+                "it": "RGB è stato corretto",
+                "es": "RGB fue corregido",
+                "pl": "RGB zostało poprawione"
+            },
             "0.9.12": {
                 "en": "RGB was implemented",
                 "de": "RGB wurde implementiert",
