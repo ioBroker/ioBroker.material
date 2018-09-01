@@ -318,7 +318,7 @@ export default {
         },
         tileName: {
             overflow: 'hidden',
-            width: 'calc(100% - 32px)',
+            width: '100%',
             height: 37,
         },
         tileName2: {
@@ -332,7 +332,7 @@ export default {
             pointerEvents: 'none',
             bottom: 0,
             left: 0,
-            width: '100%',
+            width: 'calc(100% - 16px)',
             position: 'absolute',
             padding: '0 16px',
             height: 67
@@ -348,7 +348,7 @@ export default {
         },
         tileNumber: {
             position: 'absolute',
-            bottom: 10,
+            bottom: 30,
             right: 10,
             borderRadius: 20,
             background: 'rgb(45, 116, 249)',
@@ -364,7 +364,7 @@ export default {
             bottom: 10,
             left: 16,
             whiteSpace: 'nowrap',
-            width: '100%',
+            width: 'calc(100% - 32px)',
             overflow: 'hidden',
             textOverflow: 'ellipsis'
         },

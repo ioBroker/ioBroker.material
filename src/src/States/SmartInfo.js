@@ -138,7 +138,7 @@ class SmartInfo extends SmartGeneric {
             return {
                 id: id,
                 unit: unit ? ' ' + unit : '',
-                icon: objects[id].common && objects[id].common.icon,
+                icon: Utils.getObjectIcon(id, objects[id]),
                 name: title,
                 role: role,
                 common: objects[id].common
@@ -159,10 +159,10 @@ class SmartInfo extends SmartGeneric {
     getIcon() {
         let customIcon;
         if (this.state.settings.useDefaultIcon) {
-            customIcon = (<img src={this.getDefaultIcon()} alt="icon" style={{height: '100%', zIndex: 1}}/>);
+            customIcon = (<img src={this.getDefaultIcon()} alt=" " style={{height: '100%', zIndex: 1}}/>);
         } else {
             if (this.state.settings.icon) {
-                customIcon = (<img src={this.state.settings.icon} alt="icon" style={{height: '100%', zIndex: 1}}/>);
+                customIcon = (<img src={this.state.settings.icon} alt=" " style={{height: '100%', zIndex: 1}}/>);
             } else {
                 const Icon = this.infos[0].icon || IconInfo;
                 customIcon = (<Icon width={'100%'} height={'100%'} style={{zIndex: 1}}/>);
@@ -193,7 +193,7 @@ class SmartInfo extends SmartGeneric {
                 Icon = icon;
                 Icon = (<Icon style={Object.assign({}, Theme.tile.secondary.icon, this.infos[1].iconStyle || {})} />);
             } else {
-                Icon = (<img alt={this.infos[1].name} src={icon} style={Object.assign({}, Theme.tile.secondary.icon, this.infos[1].iconStyle || {})}/>)
+                Icon = (<img alt={' '} src={icon} style={Object.assign({}, Theme.tile.secondary.icon, this.infos[1].iconStyle || {})}/>)
             }
         }
 

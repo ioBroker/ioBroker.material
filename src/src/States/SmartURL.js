@@ -112,7 +112,7 @@ class SmartURL extends SmartGeneric {
     }
 
     isImage() {
-        return this.customSettings.background && this.customSettings.background.toLowerCase().match(/\.png|\.jpg|\.gif|\.jpeg/);
+        return this.customSettings.isImage || (this.customSettings.background && this.customSettings.background.toLowerCase().match(/\.png|\.jpg|\.gif|\.jpeg/));
     }
 
     componentWillUnmount() {
@@ -198,6 +198,12 @@ class SmartURL extends SmartGeneric {
             name: 'title',
             value: (this.state.settings.title === undefined) ? '' : this.state.settings.title,
             type: 'text'
+        });
+
+        settings.unshift({
+            name: 'isImage',
+            value: this.state.settings.isImage || false,
+            type: 'boolean'
         });
 
         settings.forEach((e, i) => {
