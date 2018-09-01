@@ -17,7 +17,7 @@ import React from 'react'
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 
-import Slider from '@material-ui/lab/Slider';
+import Slider from './Slider';
 
 import UtilsColor from '../../UtilsColors';
 
@@ -79,7 +79,7 @@ class ColorSaturation extends React.Component {
     }
 
     handleChange(event, value) {
-        event.stopPropagation();
+        if (event) event.stopPropagation();
         this.props.onChange && this.props.onChange(value);
         this.setState({saturation: value});
     };
