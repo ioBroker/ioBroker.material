@@ -5,6 +5,8 @@
   "dependencies": {
     "@material-ui/core": "^3.0.1",
     "@material-ui/lab": "^3.0.0-alpha.13",
+    "classnames": "^2.2.6",
+    "keycode": "^2.2.0",
     "material-ui-slider-label": "https://github.com/tariqwest/material-ui-slider-label/tarball/master",
     "moment": "^2.22.2",
     "moment-timezone": "^0.5.21",
