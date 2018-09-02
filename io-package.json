@@ -1,8 +1,19 @@
 {
     "common": {
         "name": "material",
-        "version": "0.10.0",
+        "version": "0.10.1",
         "news": {
+            "0.10.1": {
+                "en": "GUI corrections",
+                "de": "GUI-Korrekturen",
+                "ru": "Исправления GUI",
+                "pt": "Correções da GUI",
+                "nl": "GUI-correcties",
+                "fr": "Corrections GUI",
+                "it": "Correzioni della GUI",
+                "es": "Correcciones GUI",
+                "pl": "Poprawki GUI"
+            },
             "0.10.0": {
                 "en": "RGB was corrected",
                 "de": "RGB wurde korrigiert",
