@@ -23,6 +23,14 @@ import Button from '@material-ui/core/Button';
 import I18n from '../i18n';
 
 class SmartDialogGeneric extends Component  {
+
+    static COLOR_MODES = {
+        RGB: 0,
+        HUE: 1,
+        R_G_B: 2,
+        TEMPERATURE: 3
+    };
+
     // expected:
     static propTypes = {
         name:               PropTypes.oneOfType([
@@ -146,6 +154,11 @@ class SmartDialogGeneric extends Component  {
         } else {
             return null;
         }
+    }
+
+    setDialogStyle(style) {
+        this.dialogStyle = style || {};
+        this.forceUpdate();
     }
 
     render() {

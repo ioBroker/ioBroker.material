@@ -16,6 +16,7 @@
 import React from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import {withStyles} from '@material-ui/core/styles';
+import { TinyColor } from '@ctrl/tinycolor';
 
 import Icon from 'react-icons/lib/ti/lightbulb'
 
@@ -26,6 +27,7 @@ import I18n from '../i18n';
 import UtilsColors from '../UtilsColors';
 
 class SmartColor extends SmartGeneric {
+
     constructor(props) {
         super(props);
         const ids = {
@@ -43,13 +45,14 @@ class SmartColor extends SmartGeneric {
             dimmer:         null,
             on:             null
         };
-
+        let colorMode;
         if (this.channelInfo.states) {
             let state = this.channelInfo.states.find(state => state.id && state.name === 'RED');
 
             if (state && this.props.objects[state.id] && this.props.objects[state.id].common) {
                 this.id = state.id;
                 ids.red = {id: state.id};
+                colorMode = Dialog.COLOR_MODES.R_G_B;
                 if (this.props.objects[state.id].common.min !== undefined) {
                     ids.red.min = parseFloat(this.props.objects[state.id].common.min);
                 } else {
@@ -93,11 +96,13 @@ class SmartColor extends SmartGeneric {
             } else {
                 state = this.channelInfo.states.find(state => state.id && state.name === 'RGB');
                 if (state && this.props.objects[state.id] && this.props.objects[state.id].common) {
+                    colorMode = Dialog.COLOR_MODES.RGB;
                     ids.rgb = {id: state.id};
                     this.id = this.id || state.id;
                 } else {
                     state = this.channelInfo.states.find(state => state.id && state.name === 'HUE');
                     if (state && this.props.objects[state.id] && this.props.objects[state.id].common) {
+                        colorMode = Dialog.COLOR_MODES.HUE;
                         ids.hue = {id: state.id};
                         this.id = this.id || state.id;
                         if (this.props.objects[state.id].common.min !== undefined) {
@@ -122,6 +127,7 @@ class SmartColor extends SmartGeneric {
             state = this.channelInfo.states.find(state => state.id && state.name === 'TEMPERATURE');
             ids.temperature = state && state.id ? {id: state.id} : null;
             if (ids.temperature) {
+                colorMode = colorMode || Dialog.COLOR_MODES.TEMPERATURE;
                 if (this.props.objects[state.id].common.min !== undefined) {
                     ids.temperature.min = parseFloat(this.props.objects[state.id].common.min);
                 } else {
@@ -211,6 +217,8 @@ class SmartColor extends SmartGeneric {
 
         this.stateRx.showDialog = false; // support dialog in this tile used in generic class)
         this.stateRx.setValue = null;
+        this.stateRx.colorMode = colorMode;
+
         this.doubleState = true; // used in generic
 
         this.componentReady();
@@ -231,7 +239,7 @@ class SmartColor extends SmartGeneric {
     percentToRealValue(props, percent) {
         percent = parseFloat(percent);
         if (props) {
-            let real = (props.max - props.min) * percent / 100;
+            let real = (props.max - props.min) * percent / 100 + props.min;
             if (props.max - props.min > 50) {
                 real = Math.round(real);
             }
@@ -299,22 +307,30 @@ class SmartColor extends SmartGeneric {
         }
     }
 
-    onRgbChange(rgb) {
+    onRgbChange(rgb, temperature, colorMode) {
         const newValue = {};
+        if (colorMode !== undefined) {
+            newValue.colorMode = colorMode;
+        }
+
+        if (temperature && this.ids.temperature) {
+            newValue[this.ids.temperature.id] = this.realValueToPercent(this.ids.temperature, temperature);
+            this.props.onControl(this.ids.temperature.id, this.percentToRealValue(this.ids.temperature, newValue[this.ids.temperature.id]));
+        } else
         if (this.ids.rgb) {
             newValue[this.ids.rgb.id] = rgb;
-
             this.props.onControl(this.ids.rgb.id, rgb);
-        } else if (this.ids.red) {
+        } else
+        if (this.ids.red) {
             let [r, g, b] = UtilsColors.hex2array(rgb);
 
             r = this.realValueToPercent({min: 0, max: 255}, r);
             g = this.realValueToPercent({min: 0, max: 255}, g);
             b = this.realValueToPercent({min: 0, max: 255}, b);
 
-            newValue[this.ids.red.id] = r;
+            newValue[this.ids.red.id]   = r;
             newValue[this.ids.green.id] = g;
-            newValue[this.ids.blue.id] = b;
+            newValue[this.ids.blue.id]  = b;
 
             r = this.percentToRealValue(this.ids.red, r);
             g = this.percentToRealValue(this.ids.green, g);
@@ -323,7 +339,8 @@ class SmartColor extends SmartGeneric {
             this.props.onControl(this.ids.red.id, r);
             this.props.onControl(this.ids.green.id, g);
             this.props.onControl(this.ids.blue.id, b);
-            } else if (this.ids.hue) {
+        } else
+        if (this.ids.hue) {
             let [r, g, b] = UtilsColors.hex2array(rgb);
             let [h, s, l] = UtilsColors.rgbToHsl(r, g, b);
             h = this.realValueToPercent({min: 0, max: 1}, h);
@@ -343,6 +360,11 @@ class SmartColor extends SmartGeneric {
             this.props.onControl(this.ids.hue.id, h);
             this.ids.saturation && this.props.onControl(this.ids.saturation.id, s);
             this.ids.brightness && this.props.onControl(this.ids.brightness.id, l);
+        } else
+        if (this.ids.temperature) {
+            newValue[this.ids.rgb.id] = rgb;
+            const _rgb = UtilsColors.hex2array(rgb);
+            this.props.onControl(this.ids.temperature.id, UtilsColors.rgb2temperature(_rgb[0], _rgb[1], _rgb[2]));
         }
 
         if (this.ids.on && !this.state[this.ids.on.id]) {
@@ -398,9 +420,10 @@ class SmartColor extends SmartGeneric {
         states = states || this.state;
 
         let color;
-        if (this.ids.rgb) {
+        if (this.ids.rgb && this.state.colorMode === Dialog.COLOR_MODES.RGB) {
             color = states[this.ids.rgb.id];
-        } else if (this.ids.red) {
+        } else
+        if (this.ids.red && this.state.colorMode === Dialog.COLOR_MODES.R_G_B) {
             let r = states[this.ids.red.id];
             let g = states[this.ids.green.id];
             let b = states[this.ids.blue.id];
@@ -411,7 +434,42 @@ class SmartColor extends SmartGeneric {
                 b = this.percentToRealValue({min: 0, max: 255}, b);
                 color = UtilsColors.rgb2string([r, g, b]);
             }
-        } else if (this.ids.hue) {
+        } else
+        if (this.ids.hue && this.state.colorMode === Dialog.COLOR_MODES.HUE) {
+            let hue = states[this.ids.hue.id];
+            let saturation = this.ids.saturation ? states[this.ids.saturation.id] : 100;
+            let brightness = this.ids.brightness ? states[this.ids.brightness.id] : 50;
+            if (hue !== null      && saturation !== null      && brightness !== null &&
+                hue !== undefined && saturation !== undefined && brightness !== undefined) {
+                hue = this.percentToRealValue({min: 0, max: 1}, hue);
+                saturation = this.percentToRealValue({min: 0, max: 1}, saturation);
+                brightness = this.percentToRealValue({min: 0, max: 1}, brightness);
+                color = UtilsColors.rgb2string(UtilsColors.hslToRgb(hue, saturation, brightness));
+            }
+        } else
+        if (this.ids.temperature && this.state.colorMode === Dialog.COLOR_MODES.TEMPERATURE) {
+            let temperature = this.percentToRealValue(this.ids.temperature, states[this.ids.temperature.id]);
+            color = UtilsColors.rgb2string(UtilsColors.temperatureToRGB(temperature));
+            if (this.state.dimmer !== undefined) {
+                color = new TinyColor(color).darken(100 - this.state.dimmer).toString();
+            }
+        } else
+        if (this.ids.rgb) {
+            color = states[this.ids.rgb.id];
+        } else
+        if (this.ids.red) {
+            let r = states[this.ids.red.id];
+            let g = states[this.ids.green.id];
+            let b = states[this.ids.blue.id];
+            if (r !== null      && g !== null      && b !== null &&
+                r !== undefined && g !== undefined && b !== undefined) {
+                r = this.percentToRealValue({min: 0, max: 255}, r);
+                g = this.percentToRealValue({min: 0, max: 255}, g);
+                b = this.percentToRealValue({min: 0, max: 255}, b);
+                color = UtilsColors.rgb2string([r, g, b]);
+            }
+        } else
+        if (this.ids.hue) {
             let hue = states[this.ids.hue.id];
             let saturation = this.ids.saturation ? states[this.ids.saturation.id] : 100;
             let brightness = this.ids.brightness ? states[this.ids.brightness.id] : 50;
@@ -426,6 +484,7 @@ class SmartColor extends SmartGeneric {
             let temperature = states[this.ids.temperature.id];
             temperature = this.percentToRealValue(this.ids.temperature, temperature);
             color = UtilsColors.rgb2string(UtilsColors.temperatureToRGB(temperature));
+            color = new TinyColor(color).darken(100 - this.state.dimmer).toString();
         }
 
         if (color && color[0] !== '#' && color.match(/^rgb/)) {
@@ -460,6 +519,11 @@ class SmartColor extends SmartGeneric {
                 <Dialog key={this.key + 'dialog'}
                     windowWidth={this.props.windowWidth}
                     ids={this.ids}
+                    modeRGB={!this.ids.temperature || !!(this.ids.rgb || this.ids.red || this.ids.hue)}
+                    modeTemperature={!!this.ids.temperature}
+                    startModeTemp={this.state.colorMode === Dialog.COLOR_MODES.TEMPERATURE}
+                    temperatureMin={(this.ids.temperature && this.ids.temperature.min) || 2200}
+                    temperatureMax={(this.ids.temperature && this.ids.temperature.max) || 6500}
 
                     startRGB={this.getColor() || '#000000'}
                     onRgbChange={this.onRgbChange.bind(this)}

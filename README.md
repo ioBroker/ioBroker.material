@@ -42,6 +42,7 @@ Better if every device belongs to both categories. Because every device has the 
 * Order states in info
 * Use icons in weather and not text
 * Allow selection of JPEG format for camera
+* Temperature color control
 
 ## Credits
 - Used icons from flaticon

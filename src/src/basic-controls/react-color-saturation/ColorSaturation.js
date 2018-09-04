@@ -85,10 +85,9 @@ class ColorSaturation extends React.Component {
     };
 
     render() {
-        const rgb = UtilsColor.rgb2string(UtilsColor.hslToRgb(this.state.hue / 360, 1, 0.5));
+        const rgb = this.state.hue === '#FFFFFF' ? '#FFFFFF' : UtilsColor.rgb2string(UtilsColor.hslToRgb(this.state.hue / 360, 1, 0.5));
         const rgba = UtilsColor.hexToRgbA(rgb, 1);
         const color = 'linear-gradient(to right, rgba(0,0,0,1) 0%,' + rgba + ' 100%)';
-        console.log(rgb + ' ' + rgba);
         return (
             <div className={this.props.classes.div} style={{background: color}}>
                 <Slider value={this.state.saturation} aria-labelledby="label" min={0} max={100}
