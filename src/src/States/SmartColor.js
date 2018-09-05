@@ -389,6 +389,23 @@ class SmartColor extends SmartGeneric {
         this.props.onControl(this.ids.dimmer.id, this.percentToRealValue(this.ids.dimmer, dimmer));
     }
 
+    getDialogSettings() {
+        const settings = super.getDialogSettings();
+
+        settings.unshift({
+            name: 'colorMode',
+            value: this.state.settings.colorMode || 'RGB/Kelvin',
+            options: [
+                {value: 'RGB/Kelvin',   label: I18n.t('RGB/Kelvin')},
+                {value: 'RGB',          label: I18n.t('RGB')},
+                {value: 'Kelvin',       label: I18n.t('Kelvin')}
+                ],
+            type: 'select'
+        });
+
+        return settings;
+    }
+
     onToggle(value) {
         if (this.ids.on) {
             const newValue = value === undefined || typeof value === 'object' ? !this.state[this.ids.on.id] : value;
@@ -513,20 +530,35 @@ class SmartColor extends SmartGeneric {
             this.props.tile.registerHandler('onClick', this.onToggle.bind(this));
         }
 
+        let modeRGB = !this.ids.temperature || !!(this.ids.rgb || this.ids.red || this.ids.hue);
+        let modeTemperature = !!this.ids.temperature;
+        if (this.state.settings.colorMode === 'RGB') {
+            modeRGB = true;
+            modeTemperature = false;
+        } else
+        if (this.state.settings.colorMode === 'Kelvin') {
+            modeRGB = false;
+            modeTemperature = true;
+        }
+        const color = this.getColor() || '#000000';
+
         return this.wrapContent([
             this.getStandardContent(this.id, true),
             this.state.showDialog ?
                 <Dialog key={this.key + 'dialog'}
                     windowWidth={this.props.windowWidth}
                     ids={this.ids}
-                    modeRGB={!this.ids.temperature || !!(this.ids.rgb || this.ids.red || this.ids.hue)}
-                    modeTemperature={!!this.ids.temperature}
+
+                    modeRGB={modeRGB}
+                    modeTemperature={modeTemperature}
+
                     startModeTemp={this.state.colorMode === Dialog.COLOR_MODES.TEMPERATURE}
                     temperatureMin={(this.ids.temperature && this.ids.temperature.min) || 2200}
                     temperatureMax={(this.ids.temperature && this.ids.temperature.max) || 6500}
 
-                    startRGB={this.getColor() || '#000000'}
+                    startRGB={color}
                     onRgbChange={this.onRgbChange.bind(this)}
+                    startTemp={this.state[this.ids.temperature.id] ? this.percentToRealValue(this.ids.temperature, this.state[this.ids.temperature.id]) : UtilsColors.rgb2temperature(color)}
 
                     startOn={this.ids.on && this.state[this.ids.on.id]}
                     useOn={!!this.ids.on}

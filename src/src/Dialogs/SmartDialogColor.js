@@ -18,12 +18,14 @@ import {decomposeColor} from '@material-ui/core/styles/colorManipulator';
 import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
 
-import ColorsTempImg from '../assets/temrColor.png';
+import ColorsTempImg from '../assets/tempColor.png';
 import ColorsImg from '../assets/rgb.png';
 import SmartDialogGeneric from './SmartDialogGeneric';
 import UtilsColors from '../UtilsColors';
 import ColorSaturation from '../basic-controls/react-color-saturation/ColorSaturation';
 import IconLight from 'react-icons/lib/ti/lightbulb';
+import IconTemp from 'react-icons/lib/ti/thermometer';
+import IconRGB from 'react-icons/lib/md/color-lens';
 import I18n from '../i18n';
 import {withStyles} from "@material-ui/core/styles/index";
 
@@ -74,8 +76,8 @@ const styles = {
         textShadow: '0 0 0.3em rgba(23,23,23)'
     },
     buttonRgb: {
-        color: '#3f3f3f',
-        background: '#F8E900'
+        color: '#ffffff',
+        background: '#ff6a5b'
     },
     buttonTemp: {
         color: '#ffffff',
@@ -162,9 +164,9 @@ class SmartDialogColor extends SmartDialogGeneric  {
             name:  '',
             timer: null
         };
-        //if (this.stateRx.tempMode) {
-        this.dialogStyle = {background: 'rgba(154, 154, 154, 0.8)'};
-        //}
+        if (this.stateRx.tempMode) {
+            this.dialogStyle = {background: 'rgba(154, 154, 154, 0.8)'};
+        }
 
         this.setMaxHeight();
         this.componentReady();
@@ -207,7 +209,7 @@ class SmartDialogColor extends SmartDialogGeneric  {
         }
 
         if (this.dialogStyle.maxHeight !== maxHeight) {
-            this.dialogStyle = {maxHeight: maxHeight};
+            this.dialogStyle.maxHeight = maxHeight;
         }
     }
 
@@ -372,10 +374,10 @@ class SmartDialogColor extends SmartDialogGeneric  {
         if (newState.tempMode) {
             const rgb = UtilsColors.hex2array(this.state.color);
             newState.temperature = UtilsColors.rgb2temperature(rgb[0], rgb[1], rgb[2]);
-            //this.setDialogStyle({background: 'rgba(154, 154, 154, 0.8)'});
+            this.setDialogStyle({background: 'rgba(154, 154, 154, 0.8)', maxHeight: this.dialogStyle.maxHeight});
         } else {
             newState.color = UtilsColors.rgb2string(UtilsColors.temperatureToRGB(this.state.temperature));
-            //this.setDialogStyle();
+            this.setDialogStyle({maxHeight: this.dialogStyle.maxHeight});
         }
         this.setState(newState);
     }
@@ -498,7 +500,7 @@ class SmartDialogColor extends SmartDialogGeneric  {
         const style = Object.assign(
             {},
             styles.buttonColor,
-            this.state.tempMode ? styles.buttonTemp : styles.buttonRgb);
+            this.state.tempMode ?  styles.buttonRgb : styles.buttonTemp);
         return (
             <Button key="color-mode-button"
                     variant="fab"
@@ -508,7 +510,7 @@ class SmartDialogColor extends SmartDialogGeneric  {
                     style={style}
                     onClick={this.onSwitchColorMode.bind(this)}
             >
-                <IconLight/>
+                {this.state.tempMode ? (<IconRGB/>) : (<IconTemp/>)}
             </Button>);
     }
 

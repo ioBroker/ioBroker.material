@@ -167,6 +167,44 @@ class App extends Component {
         }
     }
 
+    readRemoteData(callback) {
+        if (!this.state.refresh && this.localData) {
+            this.localData.keys = Object.keys(this.localData.objects);
+            this.localData.config = this.localData.objects['system.config'];
+            callback(this.localData);
+            this.localData = null;
+        } else {
+            this.loadingStep('read objects');
+            this.conn.getObjects(false, function (err, objects) {
+                this.loadingStep('read config');
+                objects = objects || {};
+                let keys = Object.keys(objects);
+                keys.sort();
+                let result = {};
+                for (let k = 0; k < keys.length; k++) {
+                    if (keys[k].match(/^system\./) && keys[k] !== 'system.config') continue;
+                    result[keys[k]] = {
+                        common: objects[keys[k]].common,
+                        type: objects[keys[k]].type
+                    };
+                }
+                this.conn.getObject(appConfigID, function (err, appConfig) {
+                    this.loadingStep('read app config');
+                    this.conn.getObject('system.config', function (err, config) {
+                        result['system.config'] = config;
+                        try {
+                            const myStorage = window.localStorage;
+                            myStorage.setItem('data', JSON.stringify({objects: result, appConfig}));
+                        } catch (e) {
+                            console.error('cannot store information to localstorage: ' + e);
+                        }
+                        callback(err, {objects: result, appConfig, config, keys});
+                    }.bind(this));
+                }.bind(this));
+            }.bind(this));
+        }
+    }
+
     readAllData() {
         this.loadingStep('read objects');
         this.user = this.conn.getUser().replace(/^system\.user\./, '');
@@ -175,8 +213,8 @@ class App extends Component {
             obj && obj.common && obj.common.version && this.setState({actualVersion: obj.common.version});
         }.bind(this));
 
-        this.conn.getObjects(!this.state.refresh, function (err, objects) {
-            objects = objects || {};
+        this.readRemoteData((err, data) => {
+            let objects = data.objects || {};
             if (typeof window.debugObjects !== 'undefined') {
                 objects = window.debugObjects;
                 window.debugEnums && window.debugEnums.rows.forEach(e => objects[e.id] = e.value);
@@ -188,88 +226,71 @@ class App extends Component {
             } else {
                 let viewEnum = this.state.viewEnum;
 
-                this.loadingStep('read config');
-                this.conn.getObject(appConfigID, function (err, appConfig) {
-                    this.loadingStep('read app config');
-                    this.conn.getObject('system.config', function (err, config) {
-                        objects['system.config'] = config;
+                I18n.setLanguage((data.config && data.config.common && data.config.common.language) || window.sysLang);
 
-                        I18n.setLanguage((config && config.common && config.common.language) || window.sysLang);
+                let appSettings = Utils.getSettings(data.appConfig || {_id: appConfigID}, {
+                    user: this.user,
+                    language: I18n.getLanguage()
+                });
 
-                        let keys = Object.keys(objects);
-                        keys.sort();
-                        let result = {};
-                        for (let k = 0; k < keys.length; k++) {
-                            if (keys[k].match(/^system\./) && keys[k] !== 'system.config') continue;
-                            result[keys[k]] = {
-                                common: objects[keys[k]].common,
-                                type: objects[keys[k]].type
-                            };
+                // add loadingBackground & co
+                if (data.appConfig.native) {
+                    appSettings = Object.assign(appSettings || {}, data.appConfig.native);
+                }
+
+                if (!viewEnum) {
+                    viewEnum = appSettings.startEnum;
+                }
+                if (objects && !viewEnum) {
+                    let reg = new RegExp('^' + this.state.masterPath + '\\.');
+                    // get first room
+                    for (let id in objects) {
+                        if (objects.hasOwnProperty(id) && reg.test(id)) {
+                            viewEnum = id;
+                            break;
                         }
-                        let appSettings = Utils.getSettings(appConfig || {_id: appConfigID}, {
-                            user: this.user,
-                            language: I18n.getLanguage()
+                    }
+                }
+
+                this.objects = objects || {};
+                Utils.setDataFormat(this.getDateFormat());
+
+                this.readInstancesData(appSettings.instances, function () {
+                    this.loadingStep('done');
+                    if (viewEnum) {
+                        const settings = viewEnum === Utils.INSTANCES ?
+                            appSettings.instancesSettings || {}
+                            : Utils.getSettings((objects || {})[viewEnum], {
+                                user: this.user,
+                                language: I18n.getLanguage()
+                            });
+
+                        this.setState({
+                            viewEnum: viewEnum,
+                            loading: false,
+                            settings: settings,
+                            appSettings
                         });
+                        this.setBarColor(settings);
+                    } else {
+                        this.setState({loading: false});
+                    }
 
-                        // add loadingBackground & co
-                        if (appConfig.native) {
-                            appSettings = Object.assign(appSettings || {}, appConfig.native);
-                        }
+                    if (appSettings && (appSettings.text2command || appSettings.text2command === 0)) {
+                        this.conn.subscribe(['text2command.' + appSettings.text2command + '.response']);
+                    }
 
-                        if (!viewEnum) {
-                            viewEnum = appSettings.startEnum;
-                        }
-                        if (result && !viewEnum) {
-                            let reg = new RegExp('^' + this.state.masterPath + '\\.');
-                            // get first room
-                            for (let id in result) {
-                                if (result.hasOwnProperty(id) && reg.test(id)) {
-                                    viewEnum = id;
-                                    break;
-                                }
-                            }
-                        }
-
-                        this.objects = result || {};
-                        Utils.setDataFormat(this.getDateFormat());
-
-                        this.readInstancesData(appSettings.instances, function () {
-                            this.loadingStep('done');
-                            if (viewEnum) {
-                                const settings = viewEnum === Utils.INSTANCES ?
-                                    appSettings.instancesSettings || {}
-                                    : Utils.getSettings((result || {})[viewEnum], {
-                                        user: this.user,
-                                        language: I18n.getLanguage()
-                                    });
-                                this.setState({
-                                    viewEnum: viewEnum,
-                                    loading: false,
-                                    settings: settings,
-                                    appSettings
-                                });
-                                this.setBarColor(settings);
-                            } else {
-                                this.setState({loading: false});
-                            }
-
-                            if (appSettings && (appSettings.text2command || appSettings.text2command === 0)) {
-                                this.conn.subscribe(['text2command.' + appSettings.text2command + '.response']);
-                            }
-
-                            if (appSettings.instances) {
-                                this.conn._socket.emit('subscribeObjects', 'system.adapter.*');
-                                this.subscribeInstances = true;
-                            } else if (this.subscribeInstances) {
-                                this.conn._socket.emit('unsubscribeObjects', 'system.adapter.*');
-                                this.subscribeInstances = false;
-                            }
-                            this.gotObjects = true;
-                        }.bind(this));
-                    }.bind(this));
+                    if (appSettings.instances) {
+                        this.conn._socket.emit('subscribeObjects', 'system.adapter.*');
+                        this.subscribeInstances = true;
+                    } else if (this.subscribeInstances) {
+                        this.conn._socket.emit('unsubscribeObjects', 'system.adapter.*');
+                        this.subscribeInstances = false;
+                    }
+                    this.gotObjects = true;
                 }.bind(this));
             }
-        }.bind(this));
+        });
     }
 
     tryToConnect() {
@@ -336,13 +357,28 @@ class App extends Component {
         }, false, false);
     }
 
+    loadLocalData(callback) {
+        const myStorage = window.localStorage;
+        let data = myStorage.getItem('data');
+        if (data) {
+            try {
+                this.localData = JSON.parse(data);
+            } catch (e) {
+                console.error('cannot restore information from localstorage: ' + e);
+            }
+        }
+
+        callback && callback();
+    }
+
     componentDidMount () {
         this.updateWindowDimensions();
         window.addEventListener('resize', this.updateWindowDimensions);
 
         this.conn.namespace   = 'material.0';
         this.conn._useStorage = false;
-        this.tryToConnect();
+
+        this.loadLocalData(() => this.tryToConnect());
     }
 
     componentWillUnmount() {
@@ -1062,6 +1098,7 @@ class App extends Component {
     onMenuClose() {
         this.setState({open: false});
     }
+
     getMenu(useBright) {
         return (<Drawer
             variant={this.state.menuFixed ? 'permanent' : 'temporary'}

@@ -49,7 +49,7 @@ const styles = {
 
 class ColorSaturation extends React.Component {
     static propTypes = {
-        hue:        PropTypes.string,
+        hue:        PropTypes.number,
         saturation: PropTypes.number,
         onChange:   PropTypes.func.isRequired
     };
