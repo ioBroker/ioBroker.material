@@ -222,14 +222,20 @@ class SmartDialogColor extends SmartDialogGeneric  {
         c.width = c.height = size;
         let ctx = c.getContext('2d');
         let s;
+        let t;
 
-        for (let hr = size; hr > size * 0.8; hr--) {
-            for (let i = 0, oldRad = 120 * d2r; i < 300; i += 1) {
-                rad = (i + 120 + 1) * d2r;
-                s = 100 - Math.round(hr / size * 100);
+        for (let hr = size; hr > 1; hr--) {
+            oldRad = 0;
+            for(let i = 0; i < 360; i += 1) {
+                rad = (i + 1) * d2r;
+                s = hr / size;
+                if (s > 0.5) {
+                    t = (1 + Math.sin(Math.PI * (s + 0.5) * 2 - Math.PI / 2)) / 2;
+                } else {
+                    t = 0;
+                }
 
-                const rgb = UtilsColors.temperatureToRGB((i / 300) * (this.tMax - this.tMin) + this.tMin);
-                ctx.strokeStyle = UtilsColors.rgb2string(rgb);//new TinyColor({r: rgb[0], g: rgb[1], b: rgb[2]}).lighten(s).toString();
+                ctx.strokeStyle = 'hsl(' + (-i) + ', 100%, '+ (50 + (50 - t * 50)) + '%)';
                 ctx.beginPath();
                 ctx.arc(size / 2, size / 2, hr / 2, oldRad, rad + 0.01);
                 ctx.stroke();
@@ -247,12 +253,12 @@ class SmartDialogColor extends SmartDialogGeneric  {
         let c = document.createElement('canvas');
         c.width = c.height = size;
         let ctx = c.getContext('2d');
-        let s;
 
         for (let hr = size; hr > size * 0.8; hr--) {
-            for (let i = 0, oldRad = 120 * d2r; i < 300; i += 1) {
+            oldRad = 120 * d2r;
+            for (let i = 0; i < 300; i += 1) {
                 rad = (i + 120 + 1) * d2r;
-                s = 100 - Math.round(hr / size * 100);
+                //s = 100 - Math.round(hr / size * 100);
 
                 const rgb = UtilsColors.temperatureToRGB((i / 300) * (this.tMax - this.tMin) + this.tMin);
                 ctx.strokeStyle = UtilsColors.rgb2string(rgb);
@@ -334,8 +340,8 @@ class SmartDialogColor extends SmartDialogGeneric  {
 
     componentDidUpdate() {
         if (!this.colorWidth) {
-            const h = this.refColor.current.offsetHeight - 6 * 16;
-           /* if (h < this.refColor.current.offsetWidth) {
+            /*const h = this.refColor.current.offsetHeight - 6 * 16;
+            if (h < this.refColor.current.offsetWidth) {
                 this.colorWidth = h;
                 this.refColor.current.style.width = this.colorWidth + 'px';
                 this.refColor.current.style.left = 'calc(50% - ' + (this.colorWidth / 2) + 'px)';
@@ -454,7 +460,7 @@ class SmartDialogColor extends SmartDialogGeneric  {
             return '#FFFFFF';
         }
         const [r,g,b] = UtilsColors.hex2array(color);
-        const [h,s,l] = UtilsColors.rgbToHsl(r, g, b);
+        const [h/*,s,l*/] = UtilsColors.rgbToHsl(r, g, b);
         return h * 360;
     }
 
@@ -537,6 +543,7 @@ class SmartDialogColor extends SmartDialogGeneric  {
                     left: 'calc(50% - ' + (this.colorWidth ? (this.colorWidth / 2) + 'px' : '10rem') + ')'
                   }}>
                 <img ref={this.refColorImage}
+                     alt="color"
                      src={this.state.tempMode ? this.imageCT : ColorsImg}//{ColorsImg}this.rgb || SmartDialogColor.createCT(600)}
                      onMouseDown={this.onMouseDown.bind(this)}
                      onTouchStart={this.onMouseDown.bind(this)}

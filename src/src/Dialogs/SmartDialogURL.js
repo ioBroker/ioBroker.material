@@ -173,11 +173,11 @@ class SmartDialogURL extends SmartDialogGeneric  {
         const style = {height: 'calc(100% - ' + (this.props.settings.title ? HEIGHT_TITLE : '0') + 'px)'};
         if (!this.props.image && this.state.url) {
             return (<Paper onClick={() => this.onOpenNewWindow()} className={this.props.classes['iframe-div']} style={style}>
-                <iframe className={this.props.classes['iframe']} src={this.state.url}/>
+                <iframe className={this.props.classes['iframe']} title={this.state.url} src={this.state.url}/>
             </Paper>);
         } else if (this.state.url) {
             return (<Paper key="image"  style={style} onClick={() => this.onOpenNewWindow()} className={this.props.classes['iframe-div']}>
-                <img className={this.props.classes['image-img']} src={this.state.url}/>
+                <img className={this.props.classes['image-img']} alt="" src={this.state.url}/>
             </Paper>);
         }
     }

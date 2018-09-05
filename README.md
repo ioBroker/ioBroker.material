@@ -41,8 +41,7 @@ Better if every device belongs to both categories. Because every device has the 
 * Switch to default screen after X seconds
 * Order states in info
 * Use icons in weather and not text
-* Allow selection of JPEG format for camera
-* Temperature color control
+* Cache objects
 
 ## Credits
 - Used icons from flaticon

@@ -51,7 +51,6 @@ class SmartGeneric extends Component {
 
         this.showCorner = false; // set it to true to show the corner
         this.stateRx = {
-            backgroundId: 0,
             executing: false,
             settings: {},
             showSettings: false,
@@ -630,7 +629,6 @@ class SmartGeneric extends Component {
 
         this.saveSettings(settings, newSettings => {
             if (settings.background) {
-                this.state.backgroundId++;
                 this.props.tile.setBackgroundImage(settings.background + '?ts=' + Date.now(), true);
             } else {
                 this.props.tile.setBackgroundImage('', false);

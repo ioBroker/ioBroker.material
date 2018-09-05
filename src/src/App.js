@@ -171,7 +171,13 @@ class App extends Component {
         if (!this.state.refresh && this.localData) {
             this.localData.keys = Object.keys(this.localData.objects);
             this.localData.config = this.localData.objects['system.config'];
-            callback(this.localData);
+
+            this.localData.appSettings = Utils.getSettings(this.localData.appConfig || {_id: appConfigID}, {
+                user: this.user,
+                language: I18n.getLanguage()
+            });
+
+            callback(null, this.localData);
             this.localData = null;
         } else {
             this.loadingStep('read objects');
@@ -192,13 +198,19 @@ class App extends Component {
                     this.loadingStep('read app config');
                     this.conn.getObject('system.config', function (err, config) {
                         result['system.config'] = config;
-                        try {
-                            const myStorage = window.localStorage;
-                            myStorage.setItem('data', JSON.stringify({objects: result, appConfig}));
-                        } catch (e) {
-                            console.error('cannot store information to localstorage: ' + e);
+                        let appSettings = Utils.getSettings(appConfig || {_id: appConfigID}, {
+                            user: this.user,
+                            language: I18n.getLanguage()
+                        });
+                        if (!appSettings.noCache) {
+                            try {
+                                const myStorage = window.localStorage;
+                                myStorage.setItem('data', JSON.stringify({objects: result, appConfig}));
+                            } catch (e) {
+                                console.error('cannot store information to localstorage: ' + e);
+                            }
                         }
-                        callback(err, {objects: result, appConfig, config, keys});
+                        callback(err, {objects: result, appConfig, config, keys, appSettings});
                     }.bind(this));
                 }.bind(this));
             }.bind(this));
@@ -227,12 +239,7 @@ class App extends Component {
                 let viewEnum = this.state.viewEnum;
 
                 I18n.setLanguage((data.config && data.config.common && data.config.common.language) || window.sysLang);
-
-                let appSettings = Utils.getSettings(data.appConfig || {_id: appConfigID}, {
-                    user: this.user,
-                    language: I18n.getLanguage()
-                });
-
+                let appSettings = data.appSettings;
                 // add loadingBackground & co
                 if (data.appConfig.native) {
                     appSettings = Object.assign(appSettings || {}, data.appConfig.native);
@@ -358,10 +365,10 @@ class App extends Component {
     }
 
     loadLocalData(callback) {
-        const myStorage = window.localStorage;
-        let data = myStorage.getItem('data');
+        let data = window.localStorage.getItem('data');
         if (data) {
             try {
+                console.log('Size of stored data: ' + Math.floor(data.length / 1024) + 'k. Max possible: 5000k');
                 this.localData = JSON.parse(data);
             } catch (e) {
                 console.error('cannot restore information from localstorage: ' + e);
@@ -976,6 +983,12 @@ class App extends Component {
         });
 
         settings.push({
+            name: 'noCache',
+            value: !!appSettings.noCache,
+            type: 'boolean'
+        });
+
+        settings.push({
             name: 'debug',
             value: appSettings.debug === undefined ? true : appSettings.debug ,
             type: 'boolean'
@@ -1029,6 +1042,13 @@ class App extends Component {
         }
     }
 
+    syncObjects() {
+        this.setState({refresh: true}, () => {
+            window.localStorage.removeItem('data');
+            window.location.reload();
+        });
+    }
+
     saveAppSettings(appSettings) {
         appSettings = appSettings || this.state.appSettings || {};
         const nativeSettings = {
@@ -1036,6 +1056,10 @@ class App extends Component {
         };
         const _appSettings = JSON.parse(JSON.stringify(appSettings));
         delete _appSettings.loadingBackground;
+
+        if (this.state.appSettings.noCache !== appSettings.noCache && appSettings.noCache) {
+            window.localStorage.removeItem('data');
+        }
 
         let tasks = 0;
         if (nativeSettings.loadingBackground !== undefined) {
@@ -1186,7 +1210,21 @@ class App extends Component {
             return null;
         }
     }
-    
+
+    getButtonSync(useBright) {
+        if (this.state.connected && this.state.editMode && !this.state.appSettings.noCache) {
+            return (
+                <IconButton
+                    onClick={this.syncObjects.bind(this)}
+                    title={I18n.t('Re-sync objects')}
+                    style={{color: this.state.editEnumSettings ? Theme.palette.editActive : (useBright ? Theme.palette.textColorBright : Theme.palette.textColorDark)}}>
+                    <IconRefresh width={Theme.iconSize} height={Theme.iconSize}/>
+                </IconButton>);
+        } else {
+            return null;
+        }
+    }
+
     getButtonSignal(useBright) {
         if (this.state.connected) return null;
         return (
@@ -1221,6 +1259,7 @@ class App extends Component {
                     {this.getVersionControl(useBright)}
                     {this.getButtonSignal(useBright)}
                     {this.getButtonEditSettings(useBright)}
+                    {this.getButtonSync(useBright)}
                     {this.getEditButton(useBright)}
                     {this.getButtonSpeech(useBright)}
                     {this.getButtonFullScreen(useBright)}

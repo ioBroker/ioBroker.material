@@ -58,13 +58,17 @@ function getOptions(options, root, path) {
 }
 
 const SelectControl = ({classes, label, value, onChange, options}) => {
+    if (typeof value === 'object' && value.value !== undefined) {
+        value = value.value;
+    }
+
     return (<div className={classes.line}>
         <InputLabel htmlFor="selection" className={classes.subTitle}>{label}</InputLabel>
         <NativeSelect
             className={classes.line}
             value={value}
             onChange={event => onChange(event.target.value)}
-            input={<Input name="selection" id="selection" />}
+            input={<Input value={value} name="selection" id="selection" />}
         >
             {getOptions(options)}
         </NativeSelect>

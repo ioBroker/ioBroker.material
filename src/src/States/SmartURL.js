@@ -272,7 +272,7 @@ class SmartURL extends SmartGeneric {
 
     getIFrameDiv() {
         if (!this.image && this.state.settings.background) {
-            return (<iframe key="iframe" className={this.props.classes['iframe']} src={this.state.settings.background}/>)
+            return (<iframe key="iframe" title={this.settings.name} className={this.props.classes['iframe']} src={this.state.settings.background}/>)
         } else {
             return null;
         }
