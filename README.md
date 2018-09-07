@@ -37,11 +37,9 @@ Better if every device belongs to both categories. Because every device has the 
 * show bar for sliders to indicate position
 * support of quality codes
 * Maps (OpensStreetMap)
-* Temperature color
 * Switch to default screen after X seconds
 * Order states in info
 * Use icons in weather and not text
-* Cache objects
 
 ## Credits
 - Used icons from flaticon
