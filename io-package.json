@@ -1,8 +1,19 @@
 {
     "common": {
         "name": "material",
-        "version": "0.10.1",
+        "version": "0.10.2",
         "news": {
+            "0.10.2": {
+                "en": "Color temperature was implemented\nCache of objects was implemented",
+                "de": "Farbtemperatur wurde implementiert\nCache von Objekten wurde implementiert",
+                "ru": "Цветовая температура была реализована\nБыл реализован кеш объектов",
+                "pt": "Temperatura de cor foi implementada\nCache de objetos foi implementado",
+                "nl": "Kleurtemperatuur is geïmplementeerd\nCache met objecten is geïmplementeerd",
+                "fr": "La température de couleur a été mise en œuvre\nLe cache des objets a été implémenté",
+                "it": "La temperatura del colore è stata implementata\nLa cache degli oggetti è stata implementata",
+                "es": "La temperatura del color fue implementada\nSe implementó el caché de objetos",
+                "pl": "Wprowadzono temperaturę kolorów\nPamięć podręczna obiektów została zaimplementowana"
+            },
             "0.10.1": {
                 "en": "GUI corrections",
                 "de": "GUI-Korrekturen",
