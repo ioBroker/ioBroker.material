@@ -1,9 +1,9 @@
 {
     "common": {
         "name": "material",
-        "version": "0.10.2",
+        "version": "0.10.3",
         "news": {
-            "0.10.2": {
+            "0.10.3": {
                 "en": "Color temperature was implemented\nCache of objects was implemented",
                 "de": "Farbtemperatur wurde implementiert\nCache von Objekten wurde implementiert",
                 "ru": "Цветовая температура была реализована\nБыл реализован кеш объектов",
