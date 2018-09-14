@@ -50,6 +50,8 @@ import StatesList from './StatesList';
 import SpeechDialog from './SpeechDialog';
 import DialogSettings from './Dialogs/SmartDialogSettings';
 import LoadingIndicator from './basic-controls/react-loading-screen/LoadingIndicator';
+import Utilsw from './Utilsweather';    //Added by binarywritter
+import './dateformat.css';   //Added by binarywritter
 
 const isKeyboardAvailableOnFullScreen = (typeof Element !== 'undefined' && 'ALLOW_KEYBOARD_INPUT' in Element) && Element.ALLOW_KEYBOARD_INPUT;
 
@@ -66,6 +68,7 @@ class App extends Component {
         super(props);
 
         let path = decodeURIComponent(window.location.hash).replace(/^#/, '');
+        let query = '';  //Added
 
         this.state = {
             menuFixed:      (typeof Storage !== 'undefined') ? window.localStorage.getItem('menuFixed') === '1' : false,
@@ -89,7 +92,9 @@ class App extends Component {
             editAppSettings: false,
             settings:       null,
             appSettings:    null,
-            actualVersion:  ''
+            actualVersion:  '',
+            name:           'Temperature', //Added
+            temperature:    0              //Added
         };
         this.state.open = this.state.menuFixed;
 
@@ -105,6 +110,7 @@ class App extends Component {
         this.requestStates = [];
         this.conn = window.servConn;
         this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
+        this.updateData = this.updateData.bind(this);     //Added
 
         window.addEventListener('pageshow', () => {
             if (this.gotObjects) {
@@ -114,6 +120,30 @@ class App extends Component {
 
         this.urlVersion = App.getUrlVersion();
     }
+
+    //Added
+    updateData() {
+        this.setState({ temperature: Math.round(citiesWeather[currentCity].main.temp  – 273.15) });
+    }    
+         
+    //Added
+    fetchData() {
+        let cities = [];
+        let citiesWeather = [];
+        let currentCity = 0;
+        
+        if (citiesWeather[currentCity]) {
+            this.updateData();
+            }
+        else {
+            Utilsw.get(cities[currentCity])
+            .then(function(data) {
+                citiesWeather[currentCity] = data;
+                this.updateData();
+                }.bind(this));
+            }
+    }      
+
 
     static getUrlVersion() {
         let url = window.document.location.pathname;
@@ -377,6 +407,33 @@ class App extends Component {
 
         callback && callback();
     }
+
+    //Added    
+    componentWillMount() {
+        query = location.search.split('=')[1];
+        
+        if (query !== undefined) {
+            cities = query.split(',');
+            if (cities.length > 1) {
+                setInterval((function() {
+                    currentCity++;
+                    if (currentCity === cities.length) {
+                        currentCity = 0;
+                        }
+                    this.fetchData();
+                    }).bind(this), 5000);
+                }
+            }
+        else {
+            cities[0] = 'Berlin';
+            }
+                
+        setInterval(function() {
+            citiesWeather = []; 
+        }, (1000*60*5));
+        
+        this.fetchData();
+   }
 
     componentDidMount () {
         this.updateWindowDimensions();
@@ -1373,6 +1430,9 @@ class App extends Component {
                     {this.getStateList(useBright)}
                     {this.getErrorDialog(useBright)}
                     {this.getSpeechDialog(useBright)}
+                    //Added , will this display break anything? Display the weather temperature
+                    <div className=”cTemp”><span className=”cTempnumber”>{this.state.temperature}</span></div>  	
+                    <label className="cLabeltemp">{ this.state.name } />                        
                 </div>
             );
         }
