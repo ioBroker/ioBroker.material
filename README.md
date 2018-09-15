@@ -46,6 +46,9 @@ Better if every device belongs to both categories. Because every device has the 
 - Volume knob from [here](https://codepen.io/blucube/pen/cudAz) By [Ed Hicks](https://twitter.com/blucube) - Inspired by a [dribbble shot](https://dribbble.com/shots/753124-Volume-Knob)  by [Ricardo Salazar](https://twitter.com/rickss)
 
 ## Changelog
+### 0.10.4 (2018.09.15)
+* (bluefox) fix error with settings
+
 ### 0.10.3 (2018.09.02)
 * (bluefox) implement color temperature
 * (bluefox) implement cache of objects

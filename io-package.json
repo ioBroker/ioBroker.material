@@ -1,8 +1,19 @@
 {
     "common": {
         "name": "material",
-        "version": "0.10.3",
+        "version": "0.10.4",
         "news": {
+            "0.10.4": {
+                "en": "The error with settings was fixed",
+                "de": "Der Fehler bei den Einstellungen wurde behoben",
+                "ru": "Исправлена ​​ошибка с настройками",
+                "pt": "O erro com as configurações foi corrigido",
+                "nl": "De fout met de instellingen was verholpen",
+                "fr": "L'erreur avec les paramètres a été corrigée",
+                "it": "L'errore con le impostazioni è stato corretto",
+                "es": "El error con la configuración fue arreglado",
+                "pl": "Naprawiono błąd związany z ustawieniami"
+            },
             "0.10.3": {
                 "en": "Color temperature was implemented\nCache of objects was implemented",
                 "de": "Farbtemperatur wurde implementiert\nCache von Objekten wurde implementiert",
