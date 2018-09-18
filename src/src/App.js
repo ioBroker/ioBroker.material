@@ -88,7 +88,7 @@ class App extends Component {
             editEnumSettings: false,
             editAppSettings: false,
             settings:       null,
-            appSettings:    null,
+            appSettings:    {},
             actualVersion:  ''
         };
         this.state.open = this.state.menuFixed;
@@ -175,7 +175,7 @@ class App extends Component {
             this.localData.appSettings = Utils.getSettings(this.localData.appConfig || {_id: appConfigID}, {
                 user: this.user,
                 language: I18n.getLanguage()
-            });
+            }) || {};
 
             callback(null, this.localData);
             this.localData = null;
@@ -201,7 +201,7 @@ class App extends Component {
                         let appSettings = Utils.getSettings(appConfig || {_id: appConfigID}, {
                             user: this.user,
                             language: I18n.getLanguage()
-                        });
+                        }) || {};
                         if (!appSettings.noCache) {
                             try {
                                 const myStorage = window.localStorage;
@@ -1057,7 +1057,7 @@ class App extends Component {
         const _appSettings = JSON.parse(JSON.stringify(appSettings));
         delete _appSettings.loadingBackground;
 
-        if (this.state.appSettings.noCache !== appSettings.noCache && appSettings.noCache) {
+        if (appSettings.noCache && (!this.state.appSettings || this.state.appSettings.noCache !== appSettings.noCache)) {
             window.localStorage.removeItem('data');
         }
 
