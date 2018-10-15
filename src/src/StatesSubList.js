@@ -19,9 +19,9 @@ import { withStyles } from '@material-ui/core/styles';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import ButtonBase from '@material-ui/core/ButtonBase';
 
-import IconUnreach from 'react-icons/lib/md/perm-scan-wifi';
-import IconGrip from 'react-icons/lib/md/drag-handle';
-import IconLight from 'react-icons/lib/ti/lightbulb';
+import {MdPermScanWifi as IconUnreach} from 'react-icons/md';
+import {MdDragHandle as IconGrip} from 'react-icons/md';
+import {TiLightbulb as IconLight} from 'react-icons/ti';
 
 import Utils from './Utils';
 import Theme from './theme';

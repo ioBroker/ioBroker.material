@@ -15,12 +15,12 @@
  **/
 import React, { Component } from 'react';
 import {withStyles} from '@material-ui/core/styles';
+import 'typeface-roboto'
 
 import './App.css';
 
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
 import Drawer from '@material-ui/core/Drawer';
 import Dialog from '@material-ui/core/Dialog';
 import IconButton from '@material-ui/core/IconButton';
@@ -30,16 +30,16 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-import IconClose from 'react-icons/lib/md/close';
-import IconSettings from 'react-icons/lib/md/mode-edit';
-import IconEdit from 'react-icons/lib/md/settings';
-import IconSignalOff from 'react-icons/lib/md/signal-wifi-off';
-import IconLock from 'react-icons/lib/md/lock';
-import IconFullScreen from 'react-icons/lib/md/fullscreen';
-import IconFullScreenExit from 'react-icons/lib/md/fullscreen-exit';
-import IconMic from 'react-icons/lib/md/mic';
-import IconMenu from 'react-icons/lib/md/menu';
-import IconRefresh from 'react-icons/lib/md/refresh';
+import {MdClose as IconClose} from 'react-icons/md';
+import {MdModeEdit as IconSettings} from 'react-icons/md';
+import {MdSettings as IconEdit} from 'react-icons/md';
+import {MdSignalWifiOff as IconSignalOff} from 'react-icons/md';
+import {MdLock as IconLock} from 'react-icons/md';
+import {MdFullscreen as IconFullScreen} from 'react-icons/md';
+import {MdFullscreenExit as IconFullScreenExit} from 'react-icons/md';
+import {MdMic as IconMic} from 'react-icons/md';
+import {MdMenu as IconMenu} from 'react-icons/md';
+import {MdRefresh as IconRefresh} from 'react-icons/md';
 
 import Theme from './theme';
 import I18n from './i18n';
@@ -1270,9 +1270,9 @@ class App extends Component {
                     <IconMenu/>
                 </IconButton>)}
                 {Utils.getIcon(this.state.settings, Theme.appBarIcon)}
-                <Typography variant="title" color="inherit" style={{flex: 1}}>
+                <title color="inherit" style={{flex: 1}}>
                     {this.getTitle()}
-                </Typography>
+                </title>
                 <div style={{color: useBright ? Theme.palette.textColorBright : Theme.palette.textColorDark, whiteSpace: 'nowrap'}}>
                     {this.getVersionControl(useBright)}
                     {this.getButtonSignal(useBright)}

@@ -30,8 +30,8 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Paper from '@material-ui/core/Paper';
 import IconButton from '@material-ui/core/IconButton';
 
-import OkIcon from 'react-icons/lib/md/save';
-import CopyIcon from 'react-icons/lib/md/content-copy';
+import {MdSave as OkIcon} from 'react-icons/md';
+import {MdContentCopy as CopyIcon} from 'react-icons/md';
 
 import ColorPicker from '../basic-controls/react-color-picker/ColorPicker';
 import ImageSelector from '../basic-controls/react-image-selector/ImageSelector';

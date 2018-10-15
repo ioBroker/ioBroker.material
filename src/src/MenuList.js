@@ -33,11 +33,11 @@ import Theme from './theme';
 
 import IconRooms from './icons/IconHome';
 import IconButton    from '@material-ui/core/IconButton';
-import IconFunctions from 'react-icons/lib/md/lightbulb-outline';
-import IconFavorites from 'react-icons/lib/md/favorite';
-import ExpandLess from 'react-icons/lib/md/expand-less';
-import ExpandMore from 'react-icons/lib/md/expand-more';
-import IconInstances from 'react-icons/lib/md/play-arrow';
+import {MdLightbulbOutline as IconFunctions} from 'react-icons/md';
+import {MdFavorite as IconFavorites} from 'react-icons/md';
+import {MdExpandLess as ExpandLess} from 'react-icons/md';
+import {MdExpandMore as ExpandMore} from 'react-icons/md';
+import {MdPlayArrow as IconInstances} from 'react-icons/md';
 
 const styles = {
     iconsSelected: {

@@ -23,11 +23,11 @@ import ColorsImg from '../assets/rgb.png';
 import SmartDialogGeneric from './SmartDialogGeneric';
 import UtilsColors from '../UtilsColors';
 import ColorSaturation from '../basic-controls/react-color-saturation/ColorSaturation';
-import IconLight from 'react-icons/lib/ti/lightbulb';
-import IconTemp from 'react-icons/lib/ti/thermometer';
-import IconRGB from 'react-icons/lib/md/color-lens';
+import {TiLightbulb as IconLight} from 'react-icons/ti';
+import {TiThermometer as IconTemp} from 'react-icons/ti';
+import {MdColorLens as IconRGB} from 'react-icons/md';
 import I18n from '../i18n';
-import {withStyles} from "@material-ui/core/styles/index";
+import {withStyles} from '@material-ui/core/styles/index';
 
 const HANDLER_SIZE = 32;
 const styles = {

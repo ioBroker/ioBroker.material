@@ -6,12 +6,14 @@
     "@ctrl/tinycolor": "^2.2.1",
     "@material-ui/core": "^3.2.1",
     "@material-ui/lab": "^3.0.0-alpha.20",
+    "@svgr/cli": "^3.1.0",
     "classnames": "^2.2.6",
     "keycode": "^2.2.0",
     "material-ui-slider-label": "https://github.com/tariqwest/material-ui-slider-label/tarball/master",
     "moment": "^2.22.2",
     "moment-timezone": "^0.5.21",
     "react": "^16.5.2",
+    "react-beautiful-dnd": "^9.0.2",
     "react-camera": "^0.1.3",
     "react-color": "^2.14.1",
     "react-copy-to-clipboard": "^5.0.1",
@@ -27,7 +29,7 @@
     "react-native-i18n": "^2.0.15",
     "react-scripts": "^2.0.5",
     "react-tap-event-plugin": "^3.0.3",
-    "svgr": "^2.0.0"
+    "typeface-roboto": "0.0.54"
   },
   "homepage": "./",
   "scripts": {
@@ -35,6 +37,12 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "svgr": "node node_modules/svgr/bin/svgr --no-semi -d ./src/icons/ ./src/icons/"
-  }
+    "svgr": "node node_modules/@svgr/cli/bin/svgr --no-semi -d ./src/icons/ ./src/icons/"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }

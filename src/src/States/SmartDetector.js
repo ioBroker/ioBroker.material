@@ -15,11 +15,11 @@
  **/
 import Theme            from '../theme';
 
-import IconWorking      from 'react-icons/lib/ti/cog-outline';
-import IconUnreach      from 'react-icons/lib/md/perm-scan-wifi';
-import IconMaintain     from 'react-icons/lib/md/priority-high';
-import IconLowbat       from 'react-icons/lib/md/battery-alert';
-import IconError        from 'react-icons/lib/md/error';
+import {TiCogOutline as IconWorking}      from 'react-icons/ti';
+import {MdPermScanWifi as IconUnreach}      from 'react-icons/md';
+import {MdPriorityHigh as IconMaintain}     from 'react-icons/md';
+import {MdBatteryAlert as IconLowbat}       from 'react-icons/md';
+import {MdError as IconError}        from 'react-icons/md';
 
 const additionalParameters = {
     'WORKING':      {icon: IconWorking,    color: Theme.tile.tileIndicatorsIcons.working},

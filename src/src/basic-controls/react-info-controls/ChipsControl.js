@@ -18,7 +18,7 @@ import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Chip from '@material-ui/core/Chip';
-import AddIcon from 'react-icons/lib/md/add';
+import {MdAdd as AddIcon} from 'react-icons/md';
 import Button from '@material-ui/core/Button';
 
 const styles = theme => ({

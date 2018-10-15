@@ -18,9 +18,9 @@ import PropTypes from 'prop-types';
 import SmartTile from './SmartTile';
 import { withStyles } from '@material-ui/core/styles';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
-import IconVertical from 'react-icons/lib/fa/arrows-v'
-import IconAdd from 'react-icons/lib/md/add'
-import IconHorizontal from 'react-icons/lib/fa/arrows-h'
+import {FaArrowsAltV as IconVertical} from 'react-icons/fa'
+import {MdAdd as IconAdd} from 'react-icons/md'
+import {FaArrowsAltH as IconHorizontal} from 'react-icons/fa'
 import Button from '@material-ui/core/Button';
 
 import Theme from './theme';

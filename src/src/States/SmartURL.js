@@ -17,11 +17,11 @@ import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 
-import IconCam from 'react-icons/lib/fa/video-camera';
+import {FaVideo as IconCam} from 'react-icons/fa';
 import SmartGeneric from './SmartGeneric';
 import Dialog from '../Dialogs/SmartDialogURL';
 import Theme from '../theme';
-import Utils from "../Utils";
+import Utils from '../Utils';
 
 const styles = {
     'title-div': {

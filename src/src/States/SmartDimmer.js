@@ -16,7 +16,7 @@
 import React from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-import Icon from 'react-icons/lib/ti/lightbulb'
+import {TiLightbulb as Icon} from 'react-icons/ti'
 
 import SmartGeneric from './SmartGeneric';
 import Theme from '../theme';

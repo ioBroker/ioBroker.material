@@ -15,16 +15,17 @@
  **/
 import React from 'react';
 import SmartGeneric from './SmartGeneric';
-import IconButton from 'react-icons/lib/go/diff-modified';
-import IconStop from 'react-icons/lib/md/stop';
-import IconPlay from 'react-icons/lib/md/play-arrow';
-import IconPause from 'react-icons/lib/md/pause';
-import IconReplay from 'react-icons/lib/md/replay';
-import IconShuffle from 'react-icons/lib/md/shuffle';
-import IconMute from 'react-icons/lib/md/volume-mute';
-import IconUnmute from 'react-icons/lib/md/volume-up';
-import IconForward from 'react-icons/lib/md/fast-forward';
-import IconPrev from 'react-icons/lib/md/fast-rewind';
+
+import {GoDiffModified as IconButton} from 'react-icons/go';
+import {MdStop as IconStop} from 'react-icons/md';
+import {MdPlayArrow as IconPlay} from 'react-icons/md';
+import {MdPause as IconPause} from 'react-icons/md';
+import {MdReplay as IconReplay} from 'react-icons/md';
+import {MdShuffle as IconShuffle} from 'react-icons/md';
+import {MdVolumeMute as IconMute} from 'react-icons/md';
+import {MdVolumeUp as IconUnmute} from 'react-icons/md';
+import {MdFastForward as IconForward} from 'react-icons/md';
+import {MdFastRewind as IconPrev} from 'react-icons/md';
 
 import Theme from '../theme';
 import I18n from '../i18n';

@@ -17,9 +17,9 @@ import React from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Button from '@material-ui/core/Button';
 
-import IconVolume0 from 'react-icons/lib/md/volume-mute';
-import IconVolume50 from 'react-icons/lib/md/volume-down';
-import IconVolume100 from 'react-icons/lib/md/volume-up';
+import {MdVolumeMute as IconVolume0} from 'react-icons/md';
+import {MdVolumeDown as IconVolume50} from 'react-icons/md';
+import {MdVolumeUp as IconVolume100} from 'react-icons/md';
 
 import Theme from '../theme';
 import SmartGeneric from './SmartGeneric';

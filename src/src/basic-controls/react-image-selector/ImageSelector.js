@@ -16,10 +16,12 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Dropzone from 'react-dropzone';
-import IconDelete from 'react-icons/lib/md/delete';
-import IconOpen from 'react-icons/lib/md/file-upload';
-import IconClose from 'react-icons/lib/md/close';
-import IconCam from 'react-icons/lib/md/camera-alt';
+
+import {MdDelete as IconDelete} from 'react-icons/md';
+import {MdFileUpload as IconOpen} from 'react-icons/md';
+import {MdClose as IconClose} from 'react-icons/md';
+import {MdCameraAlt as IconCam} from 'react-icons/md';
+
 import Button from '@material-ui/core/Button';
 import PropTypes from 'prop-types';
 import ImageList from './ImageList';

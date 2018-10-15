@@ -17,12 +17,12 @@ import React from 'react';
 import SmartGeneric from './SmartGeneric';
 import Button from '@material-ui/core/Button';
 
-import IconNote from 'react-icons/lib/md/music-note';
-import IconPlay from 'react-icons/lib/md/play-arrow';
-import IconPause from 'react-icons/lib/md/pause';
-import IconStop from 'react-icons/lib/md/stop';
-import IconNext from 'react-icons/lib/md/skip-next';
-import IconPrev from 'react-icons/lib/md/skip-previous';
+import {MdMusicNote as IconNote} from 'react-icons/md';
+import {MdPlayArrow as IconPlay} from 'react-icons/md';
+import {MdPause as IconPause} from 'react-icons/md';
+import {MdStop as IconStop} from 'react-icons/md';
+import {MdSkipNext as IconNext} from 'react-icons/md';
+import {MdSkipPrevious as IconPrev} from 'react-icons/md';
 
 import Theme from '../theme';
 // import cover from '../assets/cover.png';

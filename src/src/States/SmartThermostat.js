@@ -20,7 +20,7 @@ import IconThermometer from '../icons/ThermometerSimple';
 import IconHydro from '../icons/Humidity';
 import Theme from '../theme';
 import Dialog from '../Dialogs/SmartDialogThermostat';
-import I18n from "../i18n";
+import I18n from '../i18n';
 
 class SmartThermostat extends SmartGeneric {
     // props = {

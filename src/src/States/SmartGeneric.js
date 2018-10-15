@@ -18,12 +18,14 @@ import PropTypes from 'prop-types';
 import Utils from '../Utils';
 import I18n from '../i18n';
 import Theme from '../theme';
-import IconCheck from 'react-icons/lib/md/visibility';
-import IconRemoved from 'react-icons/lib/md/remove';
-import IconEdit from 'react-icons/lib/md/edit';
-import IconDirectionUp from 'react-icons/lib/md/arrow-upward';
-import IconDirectionDown from 'react-icons/lib/md/arrow-downward';
-import IconDirection from 'react-icons/lib/md/swap-vert';
+
+import {MdVisibility as IconCheck} from 'react-icons/md';
+import {MdRemove as IconRemoved} from 'react-icons/md';
+import {MdEdit as IconEdit} from 'react-icons/md';
+import {MdArrowUpward as IconDirectionUp} from 'react-icons/md';
+import {MdArrowDownward as IconDirectionDown} from 'react-icons/md';
+import {MdSwapVert as IconDirection} from 'react-icons/md';
+
 import Dialog from '../Dialogs/SmartDialogSettings';
 
 class SmartGeneric extends Component {

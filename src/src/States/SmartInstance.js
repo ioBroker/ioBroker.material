@@ -20,8 +20,8 @@ import SmartGeneric from './SmartGeneric';
 import Theme from '../theme';
 import I18n from '../i18n';
 
-import IconPlay from 'react-icons/lib/md/play-arrow';
-import IconPause from 'react-icons/lib/md/pause';
+import {MdPlayArrow as IconPlay} from 'react-icons/md';
+import {MdPause as IconPause} from 'react-icons/md';
 //import IconChecked from 'react-icons/lib/md/check-circle';
 //import IconUnchecked from 'react-icons/lib/md/cancel';
 

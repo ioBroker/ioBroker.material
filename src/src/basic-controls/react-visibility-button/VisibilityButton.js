@@ -16,8 +16,8 @@
 import React from 'react'
 import PropTypes from 'prop-types';
 
-import IconCheck from 'react-icons/lib/md/visibility';
-import IconUncheck from 'react-icons/lib/md/visibility-off';
+import {MdVisibility as IconCheck} from 'react-icons/md';
+import {MdVisibilityOff as IconUncheck} from 'react-icons/md';
 import IconButton from '@material-ui/core/IconButton';
 
 const styles = {

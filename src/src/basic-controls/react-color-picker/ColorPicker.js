@@ -17,7 +17,7 @@ import React from 'react'
 import {ChromePicker} from 'react-color'
 import TextField from '@material-ui/core/TextField';
 import IconButton from '@material-ui/core/IconButton';
-import IconDelete from 'react-icons/lib/md/delete';
+import {MdDelete as IconDelete} from 'react-icons/md';
 
 const styles = {
     color: {

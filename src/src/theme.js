@@ -25,6 +25,9 @@ const tileBorderRadius = 16;
 const tileSize = 128;
 
 export default {
+    typography: {
+        useNextVariants: true,
+    },
     classes: {
         menuBackground: {
             background: 'inherit'

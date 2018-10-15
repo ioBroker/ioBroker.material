@@ -18,7 +18,7 @@ import PropTypes from 'prop-types';
 import Theme from '../theme';
 import Paper from '@material-ui/core/Paper';
 import Snackbar from '@material-ui/core/Snackbar';
-import CloseIcon from 'react-icons/lib/md/close';
+import {MdClose as CloseIcon} from 'react-icons/md';
 import Button from '@material-ui/core/Button';
 import I18n from '../i18n';
 

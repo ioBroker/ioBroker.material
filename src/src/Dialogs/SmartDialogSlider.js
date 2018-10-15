@@ -15,10 +15,10 @@
  **/
 import React from 'react';
 import PropTypes from 'prop-types';
-import IconUp from 'react-icons/lib/fa/angle-double-up';
-import IconDown from 'react-icons/lib/fa/angle-double-down';
-import IconLamp from 'react-icons/lib/ti/lightbulb';
-import IconStop from 'react-icons/lib/md/stop'
+import {FaAngleDoubleUp as IconUp} from 'react-icons/fa';
+import {FaAngleDoubleDown as IconDown} from 'react-icons/fa';
+import {TiLightbulb as IconLamp} from 'react-icons/ti';
+import {MdStop as IconStop} from 'react-icons/md'
 import {darken} from '@material-ui/core/styles/colorManipulator';
 import Button from '@material-ui/core/Button';
 

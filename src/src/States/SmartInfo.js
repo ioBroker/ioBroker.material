@@ -17,7 +17,7 @@ import React from 'react';
 import SmartGeneric from './SmartGeneric';
 import IconThermometer from '../icons/ThermometerSimple';
 import IconHydro from '../icons/Humidity';
-import IconInfo from 'react-icons/lib/md/info';
+import {MdInfo as IconInfo} from 'react-icons/md';
 import Utils from '../Utils';
 
 import Theme from '../theme';

@@ -17,8 +17,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
 
-import IconVolume0 from 'react-icons/lib/md/volume-mute';
-import IconVolume100 from 'react-icons/lib/md/volume-up';
+import {MdVolumeMute as IconVolume0} from 'react-icons/md';
+import {MdVolumeUp as IconVolume100} from 'react-icons/md';
 
 import SmartDialogGeneric from './SmartDialogGeneric';
 import KnobControl from '../basic-controls/react-knob/KnobControl';

@@ -19,7 +19,6 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 import './index.css';
-import injectTapEventPlugin from 'react-tap-event-plugin';
 import Theme from './theme';
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
@@ -40,7 +39,6 @@ import 'moment/locale/es';
     }
 });*/
 
-injectTapEventPlugin();
 
 ReactDOM.render(
     <MuiThemeProvider theme={createMuiTheme(Theme)}>

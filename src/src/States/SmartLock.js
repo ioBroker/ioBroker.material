@@ -16,10 +16,10 @@
 import React from 'react';
 import Moment from 'react-moment';
 import SmartGeneric from './SmartGeneric';
-import IconLockClosed from 'react-icons/lib/md/lock';
-import IconLockOpened from 'react-icons/lib/md/lock-open';
+import {MdLock as IconLockClosed} from 'react-icons/md';
+import {MdLockOpen as IconLockOpened} from 'react-icons/md';
+import {MdClose as IconClose} from 'react-icons/md'
 import IconDoorOpened from '../icons/DoorOpened';
-import IconClose from 'react-icons/lib/md/close'
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';

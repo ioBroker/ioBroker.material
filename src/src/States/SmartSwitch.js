@@ -15,10 +15,12 @@
  **/
 import React from 'react';
 import SmartGeneric from './SmartGeneric';
-import IconLight from 'react-icons/lib/ti/lightbulb';
-import IconCheck from 'react-icons/lib/md/check';
-import IconCancel from 'react-icons/lib/md/cancel';
+
+import {TiLightbulb as IconLight} from 'react-icons/ti';
+import {MdCheck as IconCheck} from 'react-icons/md';
+import {MdCancel as IconCancel} from 'react-icons/md';
 import IconSwitch from '../icons/Socket';
+
 import Types from './SmartTypes';
 import Theme from '../theme';
 import I18n from '../i18n';
