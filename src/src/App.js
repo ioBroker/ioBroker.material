@@ -1158,7 +1158,7 @@ class App extends Component {
 
                 {this.state.connected && this.state.editMode ? (<IconButton onClick={this.editAppSettingsOpen.bind(this)} style={{color: this.state.editEnumSettings ? Theme.palette.editActive : (useBright ? Theme.palette.textColorBright : Theme.palette.textColorDark)}}><IconSettings width={Theme.iconSize} height={Theme.iconSize}/></IconButton>) : null}
 
-                <div style={{flex: 1}}/>
+                <div style={{flexGrow: 1}}/>
 
                 {this.state.width > 500 && !this.state.menuFixed ?
                     (<IconButton onClick={this.onToggleLock.bind(this)} style={{float: 'right', color: useBright ? Theme.palette.textColorBright : Theme.palette.textColorDark}}>
@@ -1270,9 +1270,9 @@ class App extends Component {
                     <IconMenu/>
                 </IconButton>)}
                 {Utils.getIcon(this.state.settings, Theme.appBarIcon)}
-                <title color="inherit" style={{flex: 1}}>
+                <h3 color="inherit" style={{flex: 1}}>
                     {this.getTitle()}
-                </title>
+                </h3>
                 <div style={{color: useBright ? Theme.palette.textColorBright : Theme.palette.textColorDark, whiteSpace: 'nowrap'}}>
                     {this.getVersionControl(useBright)}
                     {this.getButtonSignal(useBright)}

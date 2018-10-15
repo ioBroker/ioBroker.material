@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
-class Thermostat extends React.Component {
+class Thermostat extends Component {
   getStyles() {
     // Determine if the thermostat is actively working to reach the target temperature.
     let dialColor = '#222';

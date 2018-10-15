@@ -703,15 +703,15 @@ class SmartGeneric extends Component {
                 (<div key={this.key + 'wrapper'}>
                     {this.state.settings.enabled ?
                         [(<div onClick={this.toggleEnabled.bind(this)} key={this.key + 'icon-check'} style={Theme.tile.editMode.checkIcon} className="edit-buttons">
-                                <IconCheck width={'90%'} height={'50%'} style={Theme.tile.editMode.buttonIcon}/>
+                            <IconCheck size={'50%'} style={Theme.tile.editMode.buttonIcon}/>
                         </div>),
                         (<div onClick={this.showSettings.bind(this)} key={this.key + 'icon-edit'} style={Theme.tile.editMode.editIcon} className="edit-buttons">
-                            <IconEdit width={'100%'} height={'50%'} style={Object.assign({}, Theme.tile.editMode.buttonIcon, {width: '80%', marginLeft: '20%'})}/>
+                            <IconEdit size={'50%'} style={Object.assign({}, Theme.tile.editMode.buttonIcon, {width: '80%', marginLeft: '20%'})}/>
                             </div>
                         )]
                         :
                         (<div onClick={this.toggleEnabled.bind(this)} key={this.key + '.icon-check'} style={Theme.tile.editMode.removeIcon}>
-                            <IconRemoved width={'100%'} height={'100%'} style={Theme.tile.editMode.buttonIconRemoved}/>
+                            <IconRemoved size={'100%'} style={Theme.tile.editMode.buttonIconRemoved}/>
                         </div>)
                     }
                     {content}
