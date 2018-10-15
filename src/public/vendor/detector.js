@@ -995,7 +995,7 @@ function ChannelDetector() {
         var _keysOptional     = options._keysOptional;
         var _usedIdsOptional  = options._usedIdsOptional;
         var ignoreIndicators  = options.ignoreIndicators;
-        var allowedTypes      = options.allowedTypes;
+        // var allowedTypes      = options.allowedTypes;
 
         if (this.cache[id] !== undefined) {
             return this.cache[id];

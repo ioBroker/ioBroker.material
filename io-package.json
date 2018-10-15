@@ -1,9 +1,9 @@
 {
     "common": {
         "name": "material",
-        "version": "0.10.4",
+        "version": "0.10.5",
         "news": {
-            "0.10.4": {
+            "0.10.5": {
                 "en": "The error with settings was fixed",
                 "de": "Der Fehler bei den Einstellungen wurde behoben",
                 "ru": "Исправлена ​​ошибка с настройками",

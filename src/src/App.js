@@ -618,12 +618,20 @@ class App extends Component {
                 oldObj.common.enabled = val;
                 this.conn._socket.emit('setObject', oldObj._id, oldObj, err => {
                     if (err) {
-                        this.setState({errorText: err});
+                        this.showError(`Cannot control ${id}: ${err}`);
                     }
                 });
             });
         } else {
             this.conn.setState(id, val);
+        }
+    }
+
+    clearCachedObjects() {
+        try {
+            window.localStorage.removeItem('data');
+        } catch (e) {
+            console.error('Cannot clear local storage');
         }
     }
 
@@ -647,7 +655,12 @@ class App extends Component {
                                 this.tasks[0].cb();
                             }
                             this.tasks.shift();
-                            if (err) console.error('Cannot save: ' + obj._id);
+                            if (err) {
+                                console.error('Cannot save: ' + obj._id);
+                                this.showError(`Cannot save ${obj._id}: ${err}`);
+                            } else {
+                                this.clearCachedObjects();
+                            }
                             setTimeout(this.processTasks.bind(this), 0);
                         });
                     } else {
@@ -678,7 +691,12 @@ class App extends Component {
                             this.tasks[0].cb();
                         }
                         this.tasks.shift();
-                        if (err) console.error('Cannot save: ' + obj._id);
+                        if (err) {
+                            console.error('Cannot save: ' + obj._id);
+                            this.showError(`Cannot save ${obj._id}: ${err}`);
+                        } else {
+                            this.clearCachedObjects();
+                        }
                         setTimeout(this.processTasks.bind(this), 0);
                     });
                 } else {
@@ -1212,7 +1230,7 @@ class App extends Component {
     }
 
     getButtonSync(useBright) {
-        if (this.state.connected && this.state.editMode && !this.state.appSettings.noCache) {
+        if (this.state.connected && this.state.editMode && (!this.state.appSettings || !this.state.appSettings.noCache)) {
             return (
                 <IconButton
                     onClick={this.syncObjects.bind(this)}

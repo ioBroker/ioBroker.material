@@ -557,7 +557,7 @@ class SmartColor extends SmartGeneric {
 
                     startRGB={color}
                     onRgbChange={this.onRgbChange.bind(this)}
-                    startTemp={this.state[this.ids.temperature.id] ? this.percentToRealValue(this.ids.temperature, this.state[this.ids.temperature.id]) : UtilsColors.rgb2temperature(color)}
+                    startTemp={(this.ids.temperature && this.state[this.ids.temperature.id]) ? this.percentToRealValue(this.ids.temperature, this.state[this.ids.temperature.id]) : UtilsColors.rgb2temperature(color)}
 
                     startOn={this.ids.on && this.state[this.ids.on.id]}
                     useOn={!!this.ids.on}

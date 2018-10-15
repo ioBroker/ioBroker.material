@@ -23,7 +23,7 @@ import IconCam from 'react-icons/lib/md/camera-alt';
 import Button from '@material-ui/core/Button';
 import PropTypes from 'prop-types';
 import ImageList from './ImageList';
-import ReactCrop, { makeAspectCrop } from 'react-image-crop';
+import ReactCrop/*, { makeAspectCrop } */from 'react-image-crop';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -280,12 +280,12 @@ class ImageSelector extends React.Component {
         this.setState({
             cropHeight,
             cropWidth,
-            crop: makeAspectCrop({
+            crop: {width: 100}/*makeAspectCrop({
                 x: 0,
                 y: 0,
                 aspect: this.props.aspect || 1,
                 width: 100,
-            }, image.width / image.height)
+            }, image.width / image.height)*/
         });
     }
 
