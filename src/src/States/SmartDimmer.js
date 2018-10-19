@@ -183,7 +183,7 @@ class SmartDimmer extends SmartGeneric {
             if (this.state.settings.icon) {
                 customIcon = (<img src={this.state.settings.icon} alt="icon" style={{height: '100%'}}/>);
             } else {
-                customIcon = (<Icon width={'100%'} height={'100%'}/>);
+                customIcon = (<Icon width={Theme.tile.tileIconSvg.size} height={Theme.tile.tileIconSvg.size} style={{height: Theme.tile.tileIconSvg.size, width: Theme.tile.tileIconSvg.size}}/>);
             }
         }
         return (

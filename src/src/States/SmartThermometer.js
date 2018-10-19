@@ -98,7 +98,7 @@ class SmartThermometer extends SmartGeneric {
             if (this.state.settings.icon) {
                 customIcon = (<img alt="icon" src={this.state.settings.icon} style={{height: '100%', zIndex: 1}}/>);
             } else {
-                customIcon = (<IconThermometer width={'100%'} height={'100%'} style={{zIndex: 1}}/>);
+                customIcon = (<IconThermometer width={Theme.tile.tileIconSvg.size} height={Theme.tile.tileIconSvg.size} style={{zIndex: 1, height: Theme.tile.tileIconSvg.size, width: Theme.tile.tileIconSvg.size}}/>);
             }
         }
 

@@ -295,6 +295,7 @@ class SmartTile extends Component {
                 case Types.rgbSingle:
                 case Types.hue:
                 case Types.rgb:
+                case Types.ct:
                     Control = SmartColor;
                     break;
                 case Types.weatherForecast:

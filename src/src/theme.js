@@ -310,6 +310,9 @@ export default {
             background: '#b7b6b6',
             opacity: 0.7
         },
+        tileIconSvg: {
+            size: 40, // 2.5rem
+        },
         tileIcon: {
             width: 40, // 2.5rem
             height: 40,

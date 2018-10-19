@@ -233,7 +233,7 @@ class SmartDialogSettings extends SmartDialogGeneric  {
     }
 
     generateContent() {
-        const result = this.props.settings.map((e, i) => {
+        const result = this.props.settings.map(function (e, i) {
             const divider = i !== this.props.settings.length - 1 ? (<ListItem key={e.id + '_div'} style={Theme.dialog.divider}/>) : null;
 
             let item;
@@ -334,7 +334,7 @@ class SmartDialogSettings extends SmartDialogGeneric  {
             } else {
                 return (<Paper key={this.props.dialogKey + '-' + e.name + '-paper'} style={{margin: 5, padding: 5}} elevation={1}>{item}</Paper>);
             }
-        });
+        }.bind(this));
 
         result.push(this.generateObjectInfo());
 

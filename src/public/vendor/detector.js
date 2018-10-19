@@ -46,6 +46,7 @@ var Types = {
     media: 'media',
     motion: 'motion',
     rgb: 'rgb',
+    ct: 'ct',
     rgbSingle: 'rgbSingle',
     hue: 'hue',
     slider: 'slider',
@@ -255,6 +256,22 @@ function ChannelDetector() {
                 patternError
             ],
             type: Types.hue
+        },
+        ct: {
+            states: [
+                {role: /^level\.color\.temperature$/,                     indicator: false, type: 'number',  write: true,           name: 'TEMPERATURE',   required: true},
+                {role: /^level\.dimmer$/,                                 indicator: false, type: 'number',  write: true,           name: 'DIMMER',        required: false},
+                {role: /^level\.brightness$/,                             indicator: false, type: 'number',  write: true,           name: 'BRIGHTNESS',    required: false},
+                {role: /^level\.color\.saturation$/,                      indicator: false, type: 'number',  write: true,           name: 'SATURATION',    required: false},
+                {role: /^switch.light$/,                                  indicator: false, type: 'boolean', write: true,           name: 'ON',            required: false},
+                {role: /^switch$/,                                        indicator: false, type: 'boolean', write: true,           name: 'ON',            required: false},
+                patternWorking,
+                patternUnreach,
+                patternLowbat,
+                patternMaintain,
+                patternError
+            ],
+            type: Types.ct
         },
         warning: {
             states: [

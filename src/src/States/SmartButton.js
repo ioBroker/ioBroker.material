@@ -100,7 +100,7 @@ class SmartButton extends SmartGeneric {
                 customIcon = (<img src={this.state.settings.icon} alt="icon" style={{height: '100%'}}/>);
             } else {
                 const Icon = this.icon;
-                customIcon = (<Icon width={'100%'} height={'100%'}/>);
+                customIcon = (<Icon width={Theme.tile.tileIconSvg.size} height={Theme.tile.tileIconSvg.size} style={{height: Theme.tile.tileIconSvg.size, width: Theme.tile.tileIconSvg.size}}/>);
             }
         }
         return (

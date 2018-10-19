@@ -35,6 +35,7 @@ import {MdVolumeMute as IconVolume0} from 'react-icons/md';
 import Utils from '../Utils';
 import SmartDialogGeneric from './SmartDialogGeneric';
 import I18n from '../i18n';
+import Theme from "../theme";
 //import cover from '../assets/cover.png';
 
 const HEIGHT_HEADER = 48;
@@ -624,7 +625,7 @@ class SmartDialogMedia extends SmartDialogGeneric  {
             return (
                 <div style={this.divs.cover.style}>
                     <div key={this.key + 'icon'} style={styles.cover.img}>
-                        <IconNote width={'100%'} height={'100%'}/>
+                        <IconNote width={Theme.tile.tileIconSvg.size} height={Theme.tile.tileIconSvg.size} style={{height: Theme.tile.tileIconSvg.size, width: Theme.tile.tileIconSvg.size}}/>
                     </div>
                 </div>
             );

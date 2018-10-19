@@ -104,7 +104,7 @@ class SmartLock extends SmartGeneric {
                 customIcon = (<img alt="icon" src={isOn ? this.state.settings.icon : this.state.settings.iconOff || this.state.settings.icon} style={{height: '100%', zIndex: 1}}/>);
             } else {
                 const Icon = isOn ? IconLockOpened : IconLockClosed;
-                customIcon = (<Icon width={'100%'} height={'100%'} style={{zIndex: 1}}/>);
+                customIcon = (<Icon width={Theme.tile.tileIconSvg.size} height={Theme.tile.tileIconSvg.size} style={{zIndex:1, height: Theme.tile.tileIconSvg.size, width: Theme.tile.tileIconSvg.size}}/>);
             }
         }
 

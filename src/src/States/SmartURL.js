@@ -22,6 +22,7 @@ import SmartGeneric from './SmartGeneric';
 import Dialog from '../Dialogs/SmartDialogURL';
 import Theme from '../theme';
 import Utils from '../Utils';
+import Icon from "../icons/Thermometer";
 
 const styles = {
     'title-div': {
@@ -261,7 +262,7 @@ class SmartURL extends SmartGeneric {
         if (this.state.settings.icon) {
             customIcon = (<img src={this.state.settings.icon} alt="icon" style={{height: '100%', zIndex: 1, color: 'white'}}/>);
         } else {
-            customIcon = (<IconCam width={'100%'} height={'100%'} style={{zIndex: 1, color: 'white'}}/>);
+            customIcon = (<IconCam width={Theme.tile.tileIconSvg.size} height={Theme.tile.tileIconSvg.size} style={{zIndex: 1, height: Theme.tile.tileIconSvg.size, width: Theme.tile.tileIconSvg.size, color: 'white'}}/>);
         }
         return (
             <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, {opacity: 0.7})} className="tile-icon">

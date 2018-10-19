@@ -109,7 +109,7 @@ class SmartSlider extends SmartGeneric {
             } else {
                 let IconCustom = this.icon;
                 if (IconCustom) {
-                    customIcon = (<IconCustom width={'100%'} height={'100%'}/>);
+                    customIcon = (<IconCustom width={Theme.tile.tileIconSvg.size} height={Theme.tile.tileIconSvg.size} style={{height: Theme.tile.tileIconSvg.size, width: Theme.tile.tileIconSvg.size}}/>);
                 }
             }
         }

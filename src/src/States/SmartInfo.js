@@ -165,7 +165,7 @@ class SmartInfo extends SmartGeneric {
                 customIcon = (<img src={this.state.settings.icon} alt=" " style={{height: '100%', zIndex: 1}}/>);
             } else {
                 const Icon = this.infos[0].icon || IconInfo;
-                customIcon = (<Icon width={'100%'} height={'100%'} style={{zIndex: 1}}/>);
+                customIcon = (<Icon width={Theme.tile.tileIconSvg.size} height={Theme.tile.tileIconSvg.size} style={{zIndex: 1, height: Theme.tile.tileIconSvg.size, width: Theme.tile.tileIconSvg.size}}/>);
             }
         }
 

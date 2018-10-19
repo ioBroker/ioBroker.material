@@ -266,28 +266,48 @@ class ImageSelector extends React.Component {
         });
     }
 
-    onImageLoaded(image) {
+    onImageLoaded(image, tryCount) {
+        tryCount = tryCount || 0;
         let cropHeight;
         let cropWidth;
+        let width;
+        let height;
+        if (!this.cropRef.current && tryCount < 10) {
+            return setTimeout(() => this.onImageLoaded(image, tryCount + 1), 200);
+        }
+        let aspect = this.props.aspect || 1;
+
         if (this.cropRef.current) {
             if (this.cropRef.current.clientWidth > this.cropRef.current.clientHeight) {
                 cropHeight = this.cropRef.current.clientHeight;
-                cropWidth = this.cropRef.current.clientHeight * (image.width / image.height);
+                if (cropHeight > image.naturalHeight) {
+                    cropHeight = image.naturalHeight;
+                }
+                cropWidth = cropHeight * (image.naturalWidth / image.naturalHeight);
+                height = 100;
+                width = (image.naturalHeight / image.naturalWidth) * 100 * aspect;
+                if (width > 100) {
+                    height = 100 / width * 100;
+                    width = 100;
+                }
             } else {
-                cropHeight = this.cropRef.current.clientWidth * (image.height / image.width);
                 cropWidth = this.cropRef.current.clientWidth;
+                if (cropWidth > image.naturalWidth) {
+                    cropWidth = image.naturalWidth;
+                }
+                cropHeight = cropWidth * (image.naturalHeight / image.naturalWidth);
+                width = 100;
+                height = (image.naturalWidth / image.naturalHeight) * 100 / aspect;
+				if (height > 100) {
+                    width = 100 / height * 100;
+                    height = 100;
+                }
             }
         }
-
         this.setState({
             cropHeight,
             cropWidth,
-            crop: {width: 100}/*makeAspectCrop({
-                x: 0,
-                y: 0,
-                aspect: this.props.aspect || 1,
-                width: 100,
-            }, image.width / image.height)*/
+            crop: {x: 0, y: 0, width, height, aspect: aspect}
         });
     }
 
@@ -363,7 +383,7 @@ class ImageSelector extends React.Component {
                                    onComplete={(crop, pixelCrop) => this.cropPixels = pixelCrop}
                                    crop={this.state.crop}
                                    keepSelection={true}
-                                   onImageLoaded={this.onImageLoaded.bind(this)}
+                                   onImageLoaded={image => this.onImageLoaded(image)}
                                    aspect={this.props.aspect || 1}
                                    src={this.state.beforeCrop.data} />
                     </div>

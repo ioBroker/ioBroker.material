@@ -99,7 +99,7 @@ class Utils {
         if (obj && obj.custom) {
             settings = (obj.custom || {})[NAMESPACE];
             const user = options.user || 'admin';
-            if (settings[user]) {
+            if (settings && settings[user]) {
                 if (forEnumId) {
                     if (settings[user].subURLs && settings[user].subURLs[forEnumId]) {
                         return JSON.parse(JSON.stringify(settings[user].subURLs[forEnumId]));

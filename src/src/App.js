@@ -177,6 +177,11 @@ class App extends Component {
                 language: I18n.getLanguage()
             }) || {};
 
+            this.localData.objects = this.localData.objects || {};
+            this.localData.appConfig = this.localData.appConfig || {_id: appConfigID};
+            this.localData.config = this.localData.config || {};
+            this.localData.keys = this.localData.keys || [];
+
             callback(null, this.localData);
             this.localData = null;
         } else {
@@ -197,6 +202,7 @@ class App extends Component {
                 this.conn.getObject(appConfigID, function (err, appConfig) {
                     this.loadingStep('read app config');
                     this.conn.getObject('system.config', function (err, config) {
+                        config = config || {};
                         result['system.config'] = config;
                         let appSettings = Utils.getSettings(appConfig || {_id: appConfigID}, {
                             user: this.user,
@@ -210,6 +216,8 @@ class App extends Component {
                                 console.error('cannot store information to localstorage: ' + e);
                             }
                         }
+                        appConfig = appConfig || {};
+
                         callback(err, {objects: result, appConfig, config, keys, appSettings});
                     }.bind(this));
                 }.bind(this));
@@ -241,7 +249,7 @@ class App extends Component {
                 I18n.setLanguage((data.config && data.config.common && data.config.common.language) || window.sysLang);
                 let appSettings = data.appSettings;
                 // add loadingBackground & co
-                if (data.appConfig.native) {
+                if (data.appConfig && data.appConfig.native) {
                     appSettings = Object.assign(appSettings || {}, data.appConfig.native);
                 }
 

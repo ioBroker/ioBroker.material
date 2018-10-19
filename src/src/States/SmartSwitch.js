@@ -126,7 +126,7 @@ class SmartSwitch extends SmartGeneric {
                 customIcon = (<img alt="icon" src={state ? this.state.settings.icon : this.state.settings.iconOff || this.state.settings.icon} style={{height: '100%'}}/>);
             } else {
                 const Icon = this.state[this.actualId] ? this.iconOn : this.iconOff;
-                customIcon = (<Icon width={'100%'} height={'100%'}/>);
+                customIcon = (<Icon width={Theme.tile.tileIconSvg.size} height={Theme.tile.tileIconSvg.size} style={{height: Theme.tile.tileIconSvg.size, width: Theme.tile.tileIconSvg.size}}/>);
             }
         }
         return (

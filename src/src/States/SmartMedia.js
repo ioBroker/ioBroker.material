@@ -291,7 +291,7 @@ class SmartMedia extends SmartGeneric {
             if (this.state.settings.useDefaultIcon) {
                 customIcon = (<img alt="icon" src={this.getDefaultIcon()} style={{height: '100%'}}/>);
             } else {
-                customIcon = (<IconNote width={'100%'} height={'100%'}/>);
+                customIcon = (<IconNote width={Theme.tile.tileIconSvg.size} height={Theme.tile.tileIconSvg.size} style={{height: Theme.tile.tileIconSvg.size, width: Theme.tile.tileIconSvg.size}}/>);
             }
             return (
                 <div key={this.key + 'icon'} style={Theme.tile.tileIcon} className="tile-icon">

@@ -126,6 +126,7 @@ class SmartColor extends SmartGeneric {
             state = this.channelInfo.states.find(state => state.id && state.name === 'TEMPERATURE');
             ids.temperature = state && state.id ? {id: state.id} : null;
             if (ids.temperature) {
+                this.id = this.id || state.id;
                 colorMode = colorMode || Dialog.COLOR_MODES.TEMPERATURE;
                 if (this.props.objects[state.id].common.min !== undefined) {
                     ids.temperature.min = parseFloat(this.props.objects[state.id].common.min);
@@ -421,7 +422,7 @@ class SmartColor extends SmartGeneric {
             if (this.state.settings.icon) {
                 customIcon = (<img src={this.state.settings.icon} alt="icon" style={{height: '100%'}}/>);
             } else {
-                customIcon = (<Icon width={'100%'} height={'100%'}/>);
+                customIcon = (<Icon width={Theme.tile.tileIconSvg.size} height={Theme.tile.tileIconSvg.size} style={{height: Theme.tile.tileIconSvg.size, width: Theme.tile.tileIconSvg.size}}/>);
             }
         }
         return (

@@ -28,6 +28,7 @@ import Types from './SmartTypes';
 import Dialog from '../Dialogs/SmartDialogKnob';
 
 import I18n from '../i18n';
+import Icon from "../icons/Thermometer";
 
 const style = {
     mute: {
@@ -154,7 +155,7 @@ class SmartVolume extends SmartGeneric {
         if (this.state.settings.useDefaultIcon) {
             customIcon = (<img alt="icon" src={this.getDefaultIcon()} style={{height: '100%', zIndex: 1}}/>);
         } else {
-            customIcon = (<Icon width={'100%'} height={'100%'} style={{zIndex: 1}}/>);
+            customIcon = (<Icon width={Theme.tile.tileIconSvg.size} height={Theme.tile.tileIconSvg.size} style={{zIndex: 1, height: Theme.tile.tileIconSvg.size, width: Theme.tile.tileIconSvg.size}}/>);
         }
 
         return (<div key={this.key + 'tile-secondary'} className="tile-text-second"
@@ -184,7 +185,7 @@ class SmartVolume extends SmartGeneric {
                 } else {
                     IconCustom = IconVolume100;
                 }
-                customIcon = (<IconCustom width={'100%'} height={'100%'}/>);
+                customIcon = (<IconCustom width={Theme.tile.tileIconSvg.size} height={Theme.tile.tileIconSvg.size} style={{zIndex: 1, height: Theme.tile.tileIconSvg.size, width: Theme.tile.tileIconSvg.size}}/>);
             }
         }
         return (
