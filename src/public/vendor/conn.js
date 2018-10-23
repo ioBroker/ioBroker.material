@@ -92,6 +92,9 @@ var servConn = {
     getUser:          function () {
         return this._user;
     },
+    getAuthEnabled:   function () {
+        return this._auth;
+    },
     setReloadTimeout: function (timeout){
         this._reloadInterval = parseInt(timeout, 10);    
     },
@@ -115,7 +118,7 @@ var servConn = {
     },
     _monitor:         function () {
         if (this._timer) return;
-        var ts = (new Date()).getTime();
+        var ts = Date.now();
         if (this._reloadInterval && ts - this._lastTimer > this._reloadInterval * 1000) {
             // It seems, that PC was in a sleep => Reload page to request authentication anew
             this.reload();
@@ -134,7 +137,7 @@ var servConn = {
         this._isSecure = isSecure;
 
         if (this._isSecure) {
-            that._lastTimer = (new Date()).getTime();
+            that._lastTimer = Date.now();
             this._monitor();
         }
 
@@ -150,6 +153,7 @@ var servConn = {
         if (this._connCallbacks.onConnChange) {
             setTimeout(function () {
                 that._socket.emit('authEnabled', function (auth, user) {
+                    that._auth = auth;
                     that._user = user;
                     that._connCallbacks.onConnChange(that._isConnected);
                     if (typeof app !== 'undefined') app.onConnChange(that._isConnected);
@@ -274,7 +278,7 @@ var servConn = {
 
             this._socket.on('connect', function () {
                 if (that._disconnectedSince) {
-                    var offlineTime = (new Date()).getTime() - that._disconnectedSince;
+                    var offlineTime = Date.now() - that._disconnectedSince;
                     console.log('was offline for ' + (offlineTime / 1000) + 's');
 
                     // reload whole page if no connection longer than some period
@@ -350,7 +354,7 @@ var servConn = {
             });
 
             this._socket.on('disconnect', function () {
-                that._disconnectedSince = (new Date()).getTime();
+                that._disconnectedSince = Date.now();
 
                 // called only once when connection lost (and it was here before)
                 that._isConnected = false;
@@ -372,7 +376,7 @@ var servConn = {
 
             // after reconnect the "connect" event will be called
             this._socket.on('reconnect', function () {
-                var offlineTime = (new Date()).getTime() - that._disconnectedSince;
+                var offlineTime = Date.now() - that._disconnectedSince;
                 console.log('was offline for ' + (offlineTime / 1000) + 's');
 
                 // reload whole page if no connection longer than one minute

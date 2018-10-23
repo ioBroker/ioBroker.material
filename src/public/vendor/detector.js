@@ -828,7 +828,7 @@ function ChannelDetector() {
                         if (cid === _id) return;
                         if ((state.indicator || (usedIds.indexOf(cid) === -1 && (state.notSingle || _usedIds.indexOf(cid) === -1))) &&
                             this._applyPattern(objects, cid, state)) {
-                            if (!state.indicator && !state.notSingle){
+                            if (!state.indicator && !state.notSingle) {
                                 _usedIds.push(cid);
                             }
                             var newState = copyState(state);
@@ -867,7 +867,7 @@ function ChannelDetector() {
                 channelStates = getAllStatesInChannel(keys, id);
             }
 
-            if (id.indexOf('javascript.0.devices.valueSimple') !== -1) {
+            if (id.indexOf('yeelight-2.0.color-') !== -1) {
                 console.log('aaa');
             }
             var context = {
@@ -881,7 +881,7 @@ function ChannelDetector() {
                 if (!patterns.hasOwnProperty(pattern) || (allowedTypes && allowedTypes.indexOf(patterns[pattern].type) === -1)) continue;
                 context.result = null;
 
-                if (pattern === 'hue' && id.indexOf('yeelight-2.0') !== -1) {
+                if (pattern === 'hue' && id.indexOf('yeelight-2.0.color-') !== -1) {
                     console.log(pattern);
                 }
 

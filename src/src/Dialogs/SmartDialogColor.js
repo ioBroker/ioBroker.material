@@ -378,10 +378,12 @@ class SmartDialogColor extends SmartDialogGeneric  {
     onSwitchColorMode() {
         const newState = {tempMode: !this.state.tempMode};
         if (newState.tempMode) {
+            // Temperature mode
             const rgb = UtilsColors.hex2array(this.state.color);
             newState.temperature = UtilsColors.rgb2temperature(rgb[0], rgb[1], rgb[2]);
             this.setDialogStyle({background: 'rgba(154, 154, 154, 0.8)', maxHeight: this.dialogStyle.maxHeight});
         } else {
+            // Color mode
             newState.color = UtilsColors.rgb2string(UtilsColors.temperatureToRGB(this.state.temperature));
             this.setDialogStyle({maxHeight: this.dialogStyle.maxHeight});
         }
@@ -512,7 +514,7 @@ class SmartDialogColor extends SmartDialogGeneric  {
                     variant="fab"
                     color="primary"
                     aria-label="mute"
-                    title={this.state.on ? I18n.t('Off') : I18n.t('On')}
+                    title={this.state.tempMode ? I18n.t('HUE') : I18n.t('Color temperature')}
                     style={style}
                     onClick={this.onSwitchColorMode.bind(this)}
             >

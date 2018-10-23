@@ -40,6 +40,7 @@ import {MdFullscreenExit as IconFullScreenExit} from 'react-icons/md';
 import {MdMic as IconMic} from 'react-icons/md';
 import {MdMenu as IconMenu} from 'react-icons/md';
 import {MdRefresh as IconRefresh} from 'react-icons/md';
+import {FaSignOutAlt as IconLogout} from 'react-icons/fa';
 
 import Theme from './theme';
 import I18n from './i18n';
@@ -50,6 +51,7 @@ import StatesList from './StatesList';
 import SpeechDialog from './SpeechDialog';
 import DialogSettings from './Dialogs/SmartDialogSettings';
 import LoadingIndicator from './basic-controls/react-loading-screen/LoadingIndicator';
+import ServerConnection from './Connection';
 
 const isKeyboardAvailableOnFullScreen = (typeof Element !== 'undefined' && 'ALLOW_KEYBOARD_INPUT' in Element) && Element.ALLOW_KEYBOARD_INPUT;
 
@@ -103,8 +105,10 @@ class App extends Component {
         this.subscribeInstances = false;
         this.subscribes = {};
         this.requestStates = [];
-        this.conn = window.servConn;
+        this.conn = null;
         this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
+        this.initialFullScreenMode = window.document.fullScreen || window.document.mozFullScreen || window.document.webkitIsFullScreen;
+        this.isCloud = !!window.document.location.hostname.match(/^iobroker\./);
 
         window.addEventListener('pageshow', () => {
             if (this.gotObjects) {
@@ -228,6 +232,7 @@ class App extends Component {
     readAllData() {
         this.loadingStep('read objects');
         this.user = this.conn.getUser().replace(/^system\.user\./, '');
+        this.auth = this.conn.getIsLoginRequired();
 
         this.conn.getObject('system.adapter.material', function (err, obj) {
             obj && obj.common && obj.common.version && this.setState({actualVersion: obj.common.version});
@@ -311,65 +316,72 @@ class App extends Component {
     tryToConnect() {
         this.loadingStep('connecting');
 
-        this.conn.init({
-            name:          'material.0',  // optional - default 'vis.0'
-            connLink:      (typeof socketUrl === 'undefined') ? '/' : undefined,  // optional URL of the socket.io adapter
+        this.conn = new ServerConnection({
+            namespace:      'material.0',  // optional - default 'vis.0'
+            connOptions: {
+                // optional URL of the socket.io adapter
+                connLink:      typeof window.socketUrl === 'undefined' ? '/' : undefined
 //            socketSession: ''           // optional - used by authentication
-        }, {
-            onConnChange: function (isConnected) { // no lambda here
-                if (isConnected) {
-                    this.setState({connected: true, loading: true});
-                    if (this.gotObjects) {
-                        this.resubscribe();
-                    } else {
-                        this.readAllData();
-                    }
-                } else {
-                    this.subscribeInstances = false;
-                    this.setState({
-                        connected: false,
-                        loadingProgress: 1,
-                        loading: true,
-                        loadingStep: 'connecting'
-                    });
-                }
-            }.bind(this),
-            onRefresh: () => {
-                window.location.reload();
             },
-            onUpdate: function (id, state) { // no lambda here
-                setTimeout(() => {
-                    if (id) {
-                        this.states[id] = state;
-                    } else {
-                        delete this.states[id];
-                    }
-
-                    if (this.subscribes[id]) {
-                        this.subscribes[id].forEach(elem => elem.updateState(id, this.states[id]));
-                    }
-
-                    if (this.state.appSettings && (this.state.appSettings.text2command || this.state.appSettings.text2command === 0)) {
-                        if (state && !state.ack && state.val && id === 'text2command.' + this.state.appSettings.text2command + '.response') {
-                            this.speak(state.val);
+            useStorage: false,
+            connCallbacks: {
+                onConnChange: function (isConnected) { // no lambda here
+                    if (isConnected) {
+                        this.setState({connected: true, loading: true});
+                        if (this.gotObjects) {
+                            this.resubscribe();
+                        } else {
+                            this.readAllData();
                         }
+                    } else {
+                        this.subscribeInstances = false;
+                        this.setState({
+                            connected: false,
+                            loadingProgress: 1,
+                            loading: true,
+                            loadingStep: 'connecting'
+                        });
                     }
-                }, 0);
-            }.bind(this),
-            onError: function (err) { // no lambda here
-                this.showError(err);
-            }.bind(this),
-            onObjectChange: function (id, obj) {
-                if (this.instances) {
-                    if (obj) {
-                        this.instances[id] = obj;
-                    } else if (this.instances[id]) {
-                        delete this.instances[id];
+                }.bind(this),
+                onRefresh: () => {
+                    window.location.reload();
+                },
+                onUpdate: function (id, state) { // no lambda here
+                    setTimeout(() => {
+                        if (id) {
+                            this.states[id] = state;
+                        } else {
+                            delete this.states[id];
+                        }
+
+                        if (this.subscribes[id]) {
+                            this.subscribes[id].forEach(elem => elem.updateState(id, this.states[id]));
+                        }
+
+                        if (this.state.appSettings && (this.state.appSettings.text2command || this.state.appSettings.text2command === 0)) {
+                            if (state && !state.ack && state.val && id === 'text2command.' + this.state.appSettings.text2command + '.response') {
+                                this.speak(state.val);
+                            }
+                        }
+                    }, 0);
+                }.bind(this),
+                onError: function (err) { // no lambda here
+                    this.showError(err);
+                }.bind(this),
+                onObjectChange: function (id, obj) {
+                    if (this.instances) {
+                        if (obj) {
+                            this.instances[id] = obj;
+                        } else if (this.instances[id]) {
+                            delete this.instances[id];
+                        }
+                        this.forceUpdate();
                     }
-                    this.forceUpdate();
-                }
-            }.bind(this)
-        }, false, false);
+                }.bind(this)
+            },
+            objectsRequired: false,
+            autoSubscribe: false
+        });
     }
 
     loadLocalData(callback) {
@@ -389,10 +401,6 @@ class App extends Component {
     componentDidMount () {
         this.updateWindowDimensions();
         window.addEventListener('resize', this.updateWindowDimensions);
-
-        this.conn.namespace   = 'material.0';
-        this.conn._useStorage = false;
-
         this.loadLocalData(() => this.tryToConnect());
     }
 
@@ -1124,6 +1132,14 @@ class App extends Component {
         }
     }
 
+    logout() {
+        if (this.isCloud) {
+            window.location.href = '/logout';
+        } else {
+            this.conn.logout(() => window.location.reload());
+        }
+    }
+
     getEditButton(useBright) {
         if (!this.state.connected) return null;
 
@@ -1194,7 +1210,7 @@ class App extends Component {
     }
 
     getButtonFullScreen(useBright) {
-        if (App.isFullScreenSupported()) {
+        if (App.isFullScreenSupported() && !this.initialFullScreenMode) {
             return (
                 <IconButton
                     style={{color: useBright ? Theme.palette.textColorBright : Theme.palette.textColorDark}}
@@ -1251,6 +1267,20 @@ class App extends Component {
         }
     }
 
+    getButtonLogout(useBright) {
+        if (this.isCloud || this.auth) {
+            return (
+                <IconButton
+                    onClick={this.logout.bind(this)}
+                    title={I18n.t('Logout')}
+                    style={{color: this.state.editEnumSettings ? Theme.palette.editActive : (useBright ? Theme.palette.textColorBright : Theme.palette.textColorDark)}}>
+                    <IconLogout width={Theme.iconSize} height={Theme.iconSize}/>
+                </IconButton>);
+        } else {
+            return null;
+        }
+    }
+
     getButtonSignal(useBright) {
         if (this.state.connected) return null;
         return (
@@ -1288,6 +1318,7 @@ class App extends Component {
                     {this.getButtonSync(useBright)}
                     {this.getEditButton(useBright)}
                     {this.getButtonSpeech(useBright)}
+                    {this.getButtonLogout(useBright)}
                     {this.getButtonFullScreen(useBright)}
                 </div>
                 {this.state.editEnumSettings ? (<DialogSettings key={'enum-settings'}
