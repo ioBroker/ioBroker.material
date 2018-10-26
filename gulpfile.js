@@ -173,13 +173,9 @@ function build() {
     }
 }
 
-gulp.task('3-build', () => {
-    return build();
-});
+gulp.task('3-build', () => build());
 
-gulp.task('3-build-dep', ['2-npm', 'icons', 'version', 'vendorJS'], () => {
-    return build();
-});
+gulp.task('3-build-dep', ['2-npm', 'icons', 'version', 'vendorJS'], () => build());
 
 gulp.task('version', done => {
     const pack = require('./package');
