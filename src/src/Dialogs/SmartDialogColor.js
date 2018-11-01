@@ -571,4 +571,5 @@ class SmartDialogColor extends SmartDialogGeneric  {
         ];
     }
 }
+
 export default withStyles(styles)(SmartDialogColor);
