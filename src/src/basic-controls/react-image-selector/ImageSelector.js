@@ -312,7 +312,7 @@ class ImageSelector extends React.Component {
     }
 
     render() {
-        const _style = Object.assign({}, style.dropzone, this.state.imageStatus === 'accepted' ? style.dropzoneAccepted : (this.state.imageStatus === 'accepted' ? style.dropzoneRejected : {}));
+        const _style = Object.assign({}, style.dropzone, this.state.imageStatus === 'accepted' ? style.dropzoneAccepted : (this.state.imageStatus === 'rejected' ? style.dropzoneRejected : {}));
 
         return (<div style={{position: 'relative'}}>
             <div key={'image-label'} style={style.label}>{this.props.label}</div>
@@ -344,18 +344,17 @@ class ImageSelector extends React.Component {
                            style={_style}>
                         {
                             ({isDragActive, isDragReject}) => {
-                                if (isDragActive) {
-                                    if (this.state.imageStatus !== 'accepted') {
-                                        this.setState({imageStatus: 'accepted'});
-                                    }
-
-                                    return this.props.textAccepted || 'All files will be accepted';
-                                } else
                                 if (isDragReject) {
                                     if (this.state.imageStatus !== 'rejected') {
                                         this.setState({imageStatus: 'rejected'});
                                     }
                                     return this.props.textRejected || 'Some files will be rejected';
+                                } else if (isDragActive) {
+                                    if (this.state.imageStatus !== 'accepted') {
+                                        this.setState({imageStatus: 'accepted'});
+                                    }
+
+                                    return this.props.textAccepted || 'All files will be accepted';
                                 } else {
                                     if (this.state.imageStatus !== 'wait') {
                                         this.setState({imageStatus: 'wait'});
