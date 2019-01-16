@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "material",
-        "version": "0.10.5",
+        "version": "0.10.6",
         "news": {
+            "0.10.6": {
+                "en": "Add Chinese support",
+                "de": "Chinesische Unterstützung hinzufügen",
+                "ru": "Добавить поддержку китайцев",
+                "pt": "Adicionar suporte chinês",
+                "nl": "Voeg Chinese ondersteuning toe",
+                "fr": "Ajouter un support chinois",
+                "it": "Aggiungi supporto cinese",
+                "es": "Añadir soporte chino",
+                "pl": "Dodaj chińskie wsparcie",
+                "zh-cn": "添加中文支持"
+            },
             "0.10.5": {
                 "en": "The error with settings was fixed",
                 "de": "Der Fehler bei den Einstellungen wurde behoben",
@@ -180,7 +192,8 @@
             "fr": "Interface utilisateur ioBroker basée sur l'interface utilisateur matérielle",
             "it": "Interfaccia utente ioBroker basata su UI materiale",
             "es": "Interfaz de usuario ioBroker basada en IU de material",
-            "pl": "Interfejs użytkownika ioBroker oparty na interfejsie użytkownika"
+            "pl": "Interfejs użytkownika ioBroker oparty na interfejsie użytkownika",
+            "zh-cn": "基于Material UI的ioBroker用户界面"
         },
         "platform":                 "javascript/Node.js",
         "onlyWWW":                  "true",
