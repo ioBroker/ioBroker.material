@@ -177,6 +177,8 @@ class ImageSelector extends React.Component {
 
         const ctx = canvas.getContext('2d');
         const image = new Image();
+        // only in URL allowed names
+        fileName = fileName.replace(/#\*\?=:\+/g, '_');
         image.onload = function() {
             ctx.drawImage(
                 image,
