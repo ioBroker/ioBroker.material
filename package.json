@@ -36,7 +36,10 @@
     "gulp-exec": "^3.0.2",
     "gulp-sourcemaps": "^2.6.4",
     "gulp-uglify": "^3.0.1",
-    "gulp-watch": "^5.0.1"
+    "gulp-watch": "^5.0.1",
+    "mocha": "^6.0.2",
+    "chai": "^4.2.0",
+    "@iobroker/adapter-core": "^1.0.3"
   },
   "bugs": {
     "url": "https://github.com/ioBroker/ioBroker.material/issues"
@@ -48,6 +51,5 @@
     "prepare": "node node_modules/gulp/bin/gulp.js"
   },
   "license": "CC-BY-NC-4.0",
-  "dependencies": {
-  }
+  "dependencies": {}
 }
