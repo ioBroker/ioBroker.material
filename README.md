@@ -2,7 +2,7 @@
 # ioBroker.material
 =================
 
-[![NPM version](http://img.shields.io/npm/v/iobroker.material.svg)](https://www.npmjs.com/package/iobroker.material)
+![Number of Installations](http://iobroker.live/badges/material-installed.svg) ![Number of Installations](http://iobroker.live/badges/material-stable.svg) [![NPM version](http://img.shields.io/npm/v/iobroker.material.svg)](https://www.npmjs.com/package/iobroker.material)
 [![Downloads](https://img.shields.io/npm/dm/iobroker.material.svg)](https://www.npmjs.com/package/iobroker.material)
 
 [![NPM](https://nodei.co/npm/iobroker.material.png?downloads=true)](https://nodei.co/npm/iobroker.material/)
