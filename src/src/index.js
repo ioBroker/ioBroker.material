@@ -27,6 +27,7 @@ import 'moment/locale/fr';
 import 'moment/locale/de';
 import 'moment/locale/ru';
 import 'moment/locale/es';
+import 'moment/locale/zh-cn';
 
 /*const muiTheme = getMuiTheme({
     appBar: {

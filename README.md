@@ -1,8 +1,7 @@
 ![Logo](admin/material.png)
 # ioBroker.material
-=================
 
-[![NPM version](http://img.shields.io/npm/v/iobroker.material.svg)](https://www.npmjs.com/package/iobroker.material)
+![Number of Installations](http://iobroker.live/badges/material-installed.svg) ![Number of Installations](http://iobroker.live/badges/material-stable.svg) [![NPM version](http://img.shields.io/npm/v/iobroker.material.svg)](https://www.npmjs.com/package/iobroker.material)
 [![Downloads](https://img.shields.io/npm/dm/iobroker.material.svg)](https://www.npmjs.com/package/iobroker.material)
 
 [![NPM](https://nodei.co/npm/iobroker.material.png?downloads=true)](https://nodei.co/npm/iobroker.material/)
@@ -46,6 +45,9 @@ Better if every device belongs to both categories. Because every device has the 
 - Volume knob from [here](https://codepen.io/blucube/pen/cudAz) By [Ed Hicks](https://twitter.com/blucube) - Inspired by a [dribbble shot](https://dribbble.com/shots/753124-Volume-Knob)  by [Ricardo Salazar](https://twitter.com/rickss)
 
 ## Changelog
+### 0.10.6 (2019.01.29)
+*  Added Chinese support
+
 ### 0.10.5 (2018.10.15)
 * (bluefox) fix error with settings
 
