@@ -302,6 +302,9 @@ export default {
             cursor: 'pointer',
             zIndex: 2
         },
+        tileCornerTouch: {
+            borderWidth: '0 28px 28px 0',
+        },
         tileOn: {
             background: 'white',
             opacity: 1

@@ -20,7 +20,7 @@ import I18n from '../i18n';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import Button from '@material-ui/core/Button';
-import Slider from '@material-ui/lab/Slider';
+import Slider from '@material-ui/core/Slider';
 import SmartDialogGeneric from './SmartDialogGeneric';
 import Typography from '@material-ui/core/Typography';
 import BoolControl from '../basic-controls/react-info-controls/BoolControl'
@@ -120,7 +120,9 @@ class SmartDialogInfo extends SmartDialogGeneric  {
                     // slider
                     item = [(<Typography key={this.props.dialogKey + '-' + e.id + '-title'}>{e.name} - {this.state[e.id] ? this.state[e.id].val : '?'}{e.unit}</Typography>),
                         (<Slider
+                            classes={{}}
                             key={this.props.dialogKey + '-' + e.id + '-control'}
+                            valueLabelDisplay="auto"
                             min={e.common.min}
                             max={e.common.max}
                             step={((e.common.max - e.common.min) / 100)}

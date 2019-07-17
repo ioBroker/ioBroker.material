@@ -89,6 +89,41 @@ gulp.task('flat=>i18n', done => {
     });
 });
 
+gulp.task('icons', done => {
+    const dir = __dirname + '/src/src/icons';
+    const files = fs.readdirSync(__dirname + '/src/src/icons').filter(e => e.match(/\.svg$/) && ignoreSvgs.indexOf(e) === -1);
+    const texts = files.map(file => fs.readFileSync(dir + '/' + file));
+    let text = ['import {Component} from "react";'];
+    text.push('class IconList extends Component {');
+    text.push('    static List = [');
+    texts.forEach(file => text.push('       ' + '"data:image/svg+xml;base64,' + Buffer.from(file).toString('base64') + '",'));
+    text.push('    ];');
+    text.push('}');
+    text.push('export default IconList;');
+    fs.writeFileSync(dir + '/icons.js', text.join('\n'));
+    done();
+});
+
+gulp.task('version', done => {
+    const pack = require('./package');
+    fs.writeFileSync(__dirname + '/src/src/version.js', 'export default \'' + pack.version + '\';');
+    done();
+});
+
+gulp.task('vendorJS', () => {
+    return gulp.src([
+        'src/public/vendor/*.js',
+        '!src/public/vendor/detector.js',
+        '!src/public/vendor/conn.js',
+        '!src/public/vendor/socket.io.js'
+    ])
+        .pipe(sourcemaps.init())
+        .pipe(concat('vendor.js'))
+        .pipe(uglify())
+        .pipe(sourcemaps.write('.'))
+        .pipe(gulp.dest('src/public'));
+});
+
 gulp.task('clean', () => {
     return del([
         'src/node_modules/**/*',
@@ -138,13 +173,13 @@ gulp.task('2-npm', () => {
     }
 });
 
-gulp.task('2-npm-dep', ['clean'], () => {
+gulp.task('2-npm-dep', gulp.series('clean', () => {
     if (fs.existsSync(__dirname + '/src/node_modules')) {
         return Promise.resolve();
     } else {
         return npmInstall();
     }
-});
+}));
 
 function build() {
     const options = {
@@ -175,43 +210,9 @@ function build() {
 
 gulp.task('3-build', () => build());
 
-gulp.task('3-build-dep', ['2-npm', 'icons', 'version', 'vendorJS'], () => build());
-
-gulp.task('version', done => {
-    const pack = require('./package');
-    fs.writeFileSync(__dirname + '/src/src/version.js', 'export default \'' + pack.version + '\';');
-    done();
-});
+gulp.task('3-build-dep', gulp.series('2-npm', 'icons', 'version', 'vendorJS', () => build()));
 
 const ignoreSvgs = ['fireOff.svg'];
-
-gulp.task('icons', done => {
-    const dir = __dirname + '/src/src/icons';
-    const files = fs.readdirSync(__dirname + '/src/src/icons').filter(e => e.match(/\.svg$/) && ignoreSvgs.indexOf(e) === -1);
-    const texts = files.map(file => fs.readFileSync(dir + '/' + file));
-    let text = ['import {Component} from "react";'];
-    text.push('class IconList extends Component {');
-    text.push('    static List = [');
-    texts.forEach(file => text.push('       ' + '"data:image/svg+xml;base64,' + Buffer.from(file).toString('base64') + '",'));
-    text.push('    ];');
-    text.push('}');
-    text.push('export default IconList;');
-    fs.writeFileSync(dir + '/icons.js', text.join('\n'));
-    done();
-});
-
-gulp.task('vendorJS', () => {
-    return gulp.src([
-        'src/public/vendor/*.js',
-        '!src/public/vendor/conn.js',
-        '!src/public/vendor/socket.io.js'
-    ])
-    .pipe(sourcemaps.init())
-    .pipe(concat('vendor.js'))
-    .pipe(uglify())
-    .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('src/public'));
-});
 
 function getHash(data) {
     const md5 = crypto.createHash('md5');
@@ -236,9 +237,9 @@ function modifyServiceWorker() {
     });
 }
 
-gulp.task('4-modifyServiceWorker-dep', ['3-build-dep'], () => {
+gulp.task('4-modifyServiceWorker-dep', gulp.series('3-build-dep', () => {
     return modifyServiceWorker();
-});
+}));
 
 gulp.task('4-modifyServiceWorker', () => {
     return modifyServiceWorker();
@@ -260,13 +261,13 @@ function copyFiles() {
     });
 }
 
-gulp.task('5-copy', ['vendorJS', '4-modifyServiceWorker'], () => {
+gulp.task('5-copy', gulp.series('vendorJS', '4-modifyServiceWorker', () => {
     return copyFiles();
-});
+}));
 
-gulp.task('5-copy-dep', ['vendorJS', '4-modifyServiceWorker-dep'], () => {
+gulp.task('5-copy-dep', gulp.series('vendorJS', '4-modifyServiceWorker-dep', () => {
     return copyFiles();
-});
+}));
 
 gulp.task('webserver', () => {
     connect.server({
@@ -275,9 +276,9 @@ gulp.task('webserver', () => {
     });
 });
 
-gulp.task('watch', ['webserver'], () => {
+gulp.task('watch', gulp.series('webserver', () => {
     // Callback mode, useful if any plugin in the pipeline depends on the `end`/`flush` event
     return watch(['src/src/*/**', 'src/src/*'], { ignoreInitial: true }, ['build']);
-});
+}));
 
-gulp.task('default', ['5-copy-dep']);
+gulp.task('default', gulp.series('5-copy-dep'));

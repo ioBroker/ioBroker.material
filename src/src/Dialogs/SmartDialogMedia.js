@@ -17,7 +17,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import Button from '@material-ui/core/Button';
-import Slider from '@material-ui/lab/Slider';
+import Slider from '@material-ui/core/Slider';
 
 import {MdMusicNote as IconNote} from 'react-icons/md';
 import {MdPlayArrow as IconPlay} from 'react-icons/md';
@@ -474,9 +474,20 @@ class SmartDialogMedia extends SmartDialogGeneric  {
 
     getVolumeSlider() {
         if (this.ids.volume.set) {
-            return (<Slider value={this.state[this.ids.volume.actual] || 0} style={styles.volume.slider} onChange={(event, value) => this.onVolume(value)} />);
+            return (<Slider
+                classes={{}}
+                value={this.state[this.ids.volume.actual] || 0}
+                style={styles.volume.slider}
+                onChange={(event, value) => this.onVolume(value)}
+                valueLabelDisplay="auto"
+            />);
         } else if (this.ids.volume.actual) {
-            return (<Slider value={this.state[this.ids.volume.actual] || 0} style={styles.volume.slider} disabled />);
+            return (<Slider
+                classes={{}}
+                value={this.state[this.ids.volume.actual] || 0}
+                style={styles.volume.slider} disabled
+                valueLabelDisplay="auto"
+            />);
         } else {
             return null;
         }
@@ -528,10 +539,22 @@ class SmartDialogMedia extends SmartDialogGeneric  {
 
     getSlider() {
         if (this.ids.control.seek) {
-            return (<Slider value={this.state[this.ids.control.seek] || 0} style={styles.time.slider} onChange={(event, value) => this.onSeek(value)} />);
+            return (<Slider
+                classes={{}}
+                value={this.state[this.ids.control.seek] || 0}
+                style={styles.time.slider}
+                onChange={(event, value) => this.onSeek(value)}
+                valueLabelDisplay="auto"
+            />);
         } else if (this.ids.control.elapsed && this.ids.control.duration && this.state[this.ids.control.duration]) {
             const value = Math.round(this.state[this.ids.control.elapsed] / this.state[this.ids.control.duration] * 100);
-            return (<Slider value={value || 0} disabled style={styles.time.slider} />);
+            return (<Slider
+                classes={{}}
+                value={value || 0}
+                disabled
+                style={styles.time.slider}
+                valueLabelDisplay="auto"
+            />);
         } else {
             return null;
         }

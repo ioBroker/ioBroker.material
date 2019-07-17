@@ -20,6 +20,7 @@ import {MdPermScanWifi as IconUnreach}      from 'react-icons/md';
 import {MdPriorityHigh as IconMaintain}     from 'react-icons/md';
 import {MdBatteryAlert as IconLowbat}       from 'react-icons/md';
 import {MdError as IconError}        from 'react-icons/md';
+import {ChannelDetector} from 'iobroker.type-detector';
 
 const additionalParameters = {
     'WORKING':      {icon: IconWorking,    color: Theme.tile.tileIndicatorsIcons.working},
@@ -33,7 +34,7 @@ const additionalParameters = {
 
 class IOBChannelDetector {
     constructor() {
-        this.detector = new window.ChannelDetector();
+        this.detector = new ChannelDetector();
     }
 
     detect(/*objects, keys, id, usedIds, ignoreIndicators*/) {

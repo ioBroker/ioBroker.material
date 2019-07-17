@@ -32,6 +32,7 @@ class SmartThermometer extends SmartGeneric {
                 this.id = '';
             }
 
+            // could be only "humidity"
             state = this.channelInfo.states.find(state => state.id && state.name === 'SECOND');
             if (state) {
                 this.secondary  = {
@@ -42,6 +43,15 @@ class SmartThermometer extends SmartGeneric {
 
         this.props.tile.state.state = true;
 
+        // if only humidity
+        if (!this.secondary &&
+            this.props.objects[this.id] &&
+            this.props.objects[this.id].common &&
+            this.props.objects[this.id].common.role &&
+            this.props.objects[this.id].common.role.match(/humidity/i)
+        ) {
+            this.isHumidityMain = true;
+        } else
         if (this.secondary && this.props.objects[this.secondary.id] && this.props.objects[this.secondary.id].common) {
             // detect type of secondary info
             const secondary = this.props.objects[this.secondary.id].common;

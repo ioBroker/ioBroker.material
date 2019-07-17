@@ -1,0 +1,1 @@
+// this file is placeholder for vendor.js (if no one file will be combined)

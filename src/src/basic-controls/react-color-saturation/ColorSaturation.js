@@ -90,7 +90,11 @@ class ColorSaturation extends React.Component {
         const color = 'linear-gradient(to right, rgba(0,0,0,1) 0%,' + rgba + ' 100%)';
         return (
             <div className={this.props.classes.div} style={{background: color}}>
-                <Slider value={this.state.saturation} aria-labelledby="label" min={0} max={100}
+                <Slider
+                    value={this.state.saturation}
+                    aria-labelledby="label"
+                    min={0}
+                    max={100}
                     classes={{
                         track: this.props.classes.track,
                         trackBefore: this.props.classes.trackBefore,

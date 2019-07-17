@@ -28,6 +28,22 @@ import {MdSwapVert as IconDirection} from 'react-icons/md';
 
 import Dialog from '../Dialogs/SmartDialogSettings';
 
+// taken from here: https://stackoverflow.com/questions/4817029/whats-the-best-way-to-detect-a-touch-screen-device-using-javascript
+function isTouchDevice() {
+    if (('ontouchstart' in window) || (window.DocumentTouch && window.document instanceof window.DocumentTouch)) {
+        return true;
+    }
+
+    // include the 'heartz' as a way to have a non matching MQ to help terminate the join
+    // https://git.io/vznFH
+    const PREFIXES = ' -webkit- -moz- -o- -ms- '.split(' ');
+    const mq = query => window.matchMedia(query).matches;
+    const query = ['(', PREFIXES.join('touch-enabled),('), 'heartz', ')'].join('');
+    return mq(query);
+}
+
+const isTouch = isTouchDevice();
+
 class SmartGeneric extends Component {
     static propTypes = {
         objects:            PropTypes.object.isRequired,
@@ -731,7 +747,12 @@ class SmartGeneric extends Component {
             return [
                 (<div key={this.key + 'type'} style={{display: 'none'}}>{this.channelInfo.type}</div>),
                 (<div key={this.key + 'wrapper'} >
-                    {this.showCorner ? (<div key={this.key + 'corner'} onMouseDown={this.onLongClick.bind(this)} className="corner" style={Theme.tile.tileCorner}/>) : null}
+                    {this.showCorner ? (<div
+                        key={this.key + 'corner'}
+                        onMouseDown={this.onLongClick.bind(this)}
+                        className={'corner' + (isTouch ? ' corner-touch' : '')}
+                        style={Object.assign({}, Theme.tile.tileCorner, isTouch ? Theme.tile.tileCornerTouch : {})}
+                        />) : null}
                     {this.getIndicators()}
                     {content}
                 </div>)
@@ -749,7 +770,7 @@ class SmartGeneric extends Component {
         if (!this.state.editMode && !this.state.settings.enabled) {
             return null;
         } else {
-            return this.wrapContent(this.settings.name || this.getObjectNameCh());
+            return this.wrapContent(this.state.settings.name || this.getObjectNameCh());
         }
     }
 }

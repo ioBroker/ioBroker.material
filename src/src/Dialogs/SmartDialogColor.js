@@ -49,12 +49,16 @@ const styles = {
         position: 'absolute',
         left: 5,
         top: 5,
-        height: 24,
-        width: 36,
+//        height: 24,
+//        width: 36,
         background: '-webkit-gradient(linear, left bottom, left top, color-stop(0, #1d1d1d), color-stop(1, #131313))',
         boxShadow: '0 0.2em 0.1em 0.05em rgba(255, 255, 255, 0.1) inset, 0 -0.2em 0.1em 0.05em rgba(0, 0, 0, 0.5) inset, 0 0.5em 0.65em 0 rgba(0, 0, 0, 0.3)',
         color: 'rgb(99, 99, 99)',
         textShadow: '0 0 0.3em rgba(23,23,23)'
+    },
+    button: {
+        width: 36,
+        height: 36,
     },
     buttonOn: {
         color: '#3f3f3f',
@@ -68,8 +72,8 @@ const styles = {
         position: 'absolute',
         left: 50,
         top: 5,
-        height: 24,
-        width: 36,
+//        height: 24,
+//        width: 36,
         background: '-webkit-gradient(linear, left bottom, left top, color-stop(0, #1d1d1d), color-stop(1, #131313))',
         boxShadow: '0 0.2em 0.1em 0.05em rgba(255, 255, 255, 0.1) inset, 0 -0.2em 0.1em 0.05em rgba(0, 0, 0, 0.5) inset, 0 0.5em 0.65em 0 rgba(0, 0, 0, 0.3)',
         color: 'rgb(99, 99, 99)',
@@ -495,6 +499,7 @@ class SmartDialogColor extends SmartDialogGeneric  {
                     variant="fab"
                     color="primary"
                     aria-label="mute"
+                    className={this.props.classes.button}
                     title={this.state.on ? I18n.t('Off') : I18n.t('On')}
                     style={style}
                     onClick={this.onToggle.bind(this)}
@@ -512,6 +517,7 @@ class SmartDialogColor extends SmartDialogGeneric  {
         return (
             <Button key="color-mode-button"
                     variant="fab"
+                    className={this.props.classes.button}
                     color="primary"
                     aria-label="mute"
                     title={this.state.tempMode ? I18n.t('HUE') : I18n.t('Color temperature')}
