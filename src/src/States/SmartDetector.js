@@ -40,15 +40,9 @@ class IOBChannelDetector {
     detect(/*objects, keys, id, usedIds, ignoreIndicators*/) {
         const result = this.detector.detect.apply(this.detector, arguments);
 
-        if (result) {
-            result.forEach(one => {
-                one.states.forEach(state => {
-                    if (state.id && additionalParameters[state.name]) {
-                        Object.assign(state, additionalParameters[state.name]);
-                    }
-                });
-            })
-        }
+        result && result.forEach(one =>
+            one.states.forEach(state =>
+                state.id && additionalParameters[state.name] && Object.assign(state, additionalParameters[state.name])));
 
         return result;
     }

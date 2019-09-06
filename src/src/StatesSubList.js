@@ -321,6 +321,7 @@ class StatesSubList extends Component {
                 };
                 let controls = this.detector.detect(options);
                 if (controls) {
+                    // this is not lambda function because debug. control is undefined if used in lambda function
                     controls = controls.map(function (control) {
                         const id = control.states.find(state => state.id).id;
                         if (id) {

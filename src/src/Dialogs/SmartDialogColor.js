@@ -16,7 +16,7 @@
 import React from 'react';
 import {decomposeColor} from '@material-ui/core/styles/colorManipulator';
 import PropTypes from 'prop-types';
-import Button from '@material-ui/core/Button';
+import Fab from '@material-ui/core/Fab';
 
 import ColorsTempImg from '../assets/tempColor.png';
 import ColorsImg from '../assets/rgb.png';
@@ -495,8 +495,8 @@ class SmartDialogColor extends SmartDialogGeneric  {
             styles.buttonOnOff,
             this.state.on ? styles.buttonOn : styles.buttonOff);
         return (
-            <Button key="onoff-button"
-                    variant="fab"
+            <Fab key="onoff-button"
+                    variant="round"
                     color="primary"
                     aria-label="mute"
                     className={this.props.classes.button}
@@ -505,7 +505,7 @@ class SmartDialogColor extends SmartDialogGeneric  {
                     onClick={this.onToggle.bind(this)}
                     >
                 <IconLight/>
-            </Button>);
+            </Fab>);
     }
 
     getColorModeButton() {
@@ -515,8 +515,8 @@ class SmartDialogColor extends SmartDialogGeneric  {
             styles.buttonColor,
             this.state.tempMode ?  styles.buttonRgb : styles.buttonTemp);
         return (
-            <Button key="color-mode-button"
-                    variant="fab"
+            <Fab key="color-mode-button"
+                    variant="round"
                     className={this.props.classes.button}
                     color="primary"
                     aria-label="mute"
@@ -525,7 +525,7 @@ class SmartDialogColor extends SmartDialogGeneric  {
                     onClick={this.onSwitchColorMode.bind(this)}
             >
                 {this.state.tempMode ? (<IconRGB/>) : (<IconTemp/>)}
-            </Button>);
+            </Fab>);
     }
 
     onToggle() {

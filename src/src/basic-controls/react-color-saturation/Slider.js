@@ -6,7 +6,10 @@ import classNames from 'classnames';
 import withStyles from '@material-ui/core/styles/withStyles';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import { fade } from '@material-ui/core/styles/colorManipulator';
-import clamp from '@material-ui/lab/utils/clamp';
+
+function clamp(value, min = 0, max = 100) {
+    return Math.min(Math.max(value, min), max);
+}
 
 export const styles = theme => {
     const commonTransitionsOptions = {
@@ -267,11 +270,11 @@ class Slider extends React.Component {
     };
 
     handleFocus = () => {
-        this.setState({ currentState: 'focused' });
+        this.setState({currentState: 'focused'});
     };
 
     handleBlur = () => {
-        this.setState({ currentState: 'normal' });
+        this.setState({currentState: 'normal'});
     };
 
     handleClick = event => {
@@ -279,9 +282,8 @@ class Slider extends React.Component {
         const percent = calculatePercent(this.containerRef, event, vertical, reverse);
         const value = percentToValue(percent, min, max);
 
-        this.emitChange(event, value, () => {
-            this.playJumpAnimation();
-        });
+        this.emitChange(event, value, () =>
+            this.playJumpAnimation());
     };
 
     handleTouchStart = event => {
@@ -290,34 +292,28 @@ class Slider extends React.Component {
 
     handleMouseDown = (event, isTouch) => {
         event.preventDefault();
-        this.setState({ currentState: 'activated' });
+        this.setState({currentState: 'activated'});
         this.touch = isTouch;
         this.moved = false;
 
         document.body.addEventListener('mousemove', this.handleMouseMoveBind);
-        document.body.addEventListener('mouseup', this.handleMouseUpBind);
+        document.body.addEventListener('mouseup',   this.handleMouseUpBind);
         document.body.addEventListener('touchmove', this.handleMouseMoveBind);
-        document.body.addEventListener('touchend', this.handleMouseUpBind);
+        document.body.addEventListener('touchend',  this.handleMouseUpBind);
 
-        if (typeof this.props.onDragStart === 'function') {
-            this.props.onDragStart(event);
-        }
+        typeof this.props.onDragStart === 'function' && this.props.onDragStart(event);
     };
 
     handleMouseUp = event => {
         this.setState({ currentState: 'normal' });
 
         document.body.removeEventListener('mousemove', this.handleMouseMoveBind);
-        document.body.removeEventListener('mouseup', this.handleMouseUpBind);
+        document.body.removeEventListener('mouseup',   this.handleMouseUpBind);
         document.body.removeEventListener('touchmove', this.handleMouseMoveBind);
-        document.body.removeEventListener('touchend', this.handleMouseUpBind);
+        document.body.removeEventListener('touchend',  this.handleMouseUpBind);
 
-        if (typeof this.props.onDragEnd === 'function') {
-            this.props.onDragEnd(event);
-        }
-        if (this.touch && !this.moved) {
-            this.handleClick(event);
-        }
+        typeof this.props.onDragEnd === 'function' && this.props.onDragEnd(event);
+        this.touch && !this.moved && this.handleClick(event);
     };
 
     handleMouseMove = event => {

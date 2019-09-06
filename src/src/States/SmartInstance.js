@@ -14,7 +14,7 @@
  * limitations under the License.
  **/
 import React from 'react';
-import Button from '@material-ui/core/Button';
+import Fab from '@material-ui/core/Fab';
 
 import SmartGeneric from './SmartGeneric';
 import Theme from '../theme';
@@ -64,6 +64,7 @@ class SmartInstance extends SmartGeneric {
     }
     updateState(id, state) {
         const newState = {};
+        state = state || {};
         const val = typeof state.val === 'number' ? !!state.val : state.val === true || state.val === 'true' || state.val === '1' || state.val === 'on' || state.val === 'ON';
         if (id === this.id) {
             newState[id] = val;
@@ -77,9 +78,7 @@ class SmartInstance extends SmartGeneric {
 
             this.setState(newState);
 
-            this.props.tile.setState({
-                state: val
-            });
+            this.props.tile.setState({state: val});
         } else if (id === this.connectedId) {
             this.connectedState = state.val;
             if (this.state[this.id]) {
@@ -125,19 +124,19 @@ class SmartInstance extends SmartGeneric {
 
         if (this.props.objects[this.instanceId].common.enabled) {
             Icon = IconPause;
-            text = I18n.t('disable adapter');
+            text = I18n.t('disable instance');
             color = '#90ee90';
         } else {
             Icon = IconPlay;
-            text = I18n.t('enable adapter');
+            text = I18n.t('enable instance');
             color = '#f99';
         }
 
         return (<div key={this.key + 'tile-secondary'} className="tile-text-second"
                      style={Theme.tile.secondary.button} title={text}>
-            <Button variant="fab" mini onClick={this.toggle.bind(this)} style={{background: color, boxShadow: 'none'}} aria-label={text}>
+            <Fab variant="round" size="small" onClick={this.toggle.bind(this)} style={{background: color, boxShadow: 'none'}} aria-label={text}>
                 <Icon />
-            </Button>
+            </Fab>
         </div>);
     }
 

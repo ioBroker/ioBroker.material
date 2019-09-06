@@ -135,7 +135,8 @@ export default {
             overflowX: 'hidden',
             overflowY: 'auto',
             paddingBottom: 20,
-            width: 'calc(100% - 16px)'
+            width: 'calc(100% - 16px)',
+            paddingTop: 15,
         },
         divider: {
             paddingTop: 0,

@@ -118,7 +118,8 @@ class SmartDialogInfo extends SmartDialogGeneric  {
                 } else
                 if (e.common.type === 'number' && e.common.min !== undefined && e.common.max !== undefined && e.common.max - e.common.min < 5000) {
                     // slider
-                    item = [(<Typography key={this.props.dialogKey + '-' + e.id + '-title'}>{e.name} - {this.state[e.id] ? this.state[e.id].val : '?'}{e.unit}</Typography>),
+                    item = [
+                        (<Typography key={this.props.dialogKey + '-' + e.id + '-title'}>{e.name} - {this.state[e.id] ? this.state[e.id].val : '?'}{e.unit}</Typography>),
                         (<Slider
                             classes={{}}
                             key={this.props.dialogKey + '-' + e.id + '-control'}
