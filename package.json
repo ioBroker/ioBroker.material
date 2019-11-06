@@ -1,7 +1,7 @@
 {
   "name": "iobroker.material",
   "description": "React Material based ioBroker user interface",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "author": {
     "name": "bluefox",
     "email": "dogafox@gmail.com"
@@ -28,16 +28,16 @@
     "material"
   ],
   "devDependencies": {
-    "del": "^5.0.0",
+    "del": "^5.1.0",
     "gulp": "^4.0.2",
     "gulp-concat": "^2.6.1",
     "gulp-connect": "^5.7.0",
     "gulp-copy": "^4.0.1",
-    "gulp-exec": "^3.0.2",
+    "gulp-exec": "^4.0.0",
     "gulp-sourcemaps": "^2.6.5",
     "gulp-uglify": "^3.0.2",
     "gulp-watch": "^5.0.1",
-    "mocha": "^6.0.2",
+    "mocha": "^6.2.2",
     "chai": "^4.2.0"
   },
   "bugs": {

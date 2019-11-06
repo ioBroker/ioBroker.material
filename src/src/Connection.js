@@ -1,5 +1,5 @@
 /**
- * Copyright 2018 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2019 bluefox <dogafox@gmail.com>
  *
  * The MIT License (MIT)
  *
@@ -554,13 +554,17 @@ class ServerConnection {
     }
 
     subscribe(idOrArray, callback) {
-        if (!this._checkConnection('subscribe', arguments)) return;
+        if (!this._checkConnection('subscribe', arguments)) {
+            return;
+        }
 
         this._socket.emit('subscribe', idOrArray, callback);
     }
 
     unsubscribe(idOrArray, callback) {
-        if (!this._checkConnection('unsubscribe', arguments)) return;
+        if (!this._checkConnection('unsubscribe', arguments)) {
+            return;
+        }
 
         this._socket.emit('unsubscribe', idOrArray, callback);
     }
@@ -1399,8 +1403,8 @@ class ServerConnection {
             console.log('socket.io not initialized');
             return;
         }
-        
-        this._socket.emit('chmodFile', this.namespace, projectDir + '*', {mode: mode}, (err, data) => 
+
+        this._socket.emit('chmodFile', this.namespace, projectDir + '*', {mode: mode}, (err, data) =>
             callback && callback(err, data));
     }
 
@@ -1418,7 +1422,7 @@ class ServerConnection {
             timeout = null;
             callback('timeout');
         }, options.timeout);
-        
+
         this._socket.emit('getHistory', id, options, (err, result) => {
             if (timeout) {
                 clearTimeout(timeout);
