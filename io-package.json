@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "material",
-        "version": "0.10.6",
+        "version": "0.12.1",
         "news": {
+            "0.12.1": {
+                "en": "Packages were updated",
+                "de": "Pakete wurden aktualisiert",
+                "ru": "Пакеты были обновлены",
+                "pt": "Pacotes atualizados",
+                "nl": "Pakketten zijn bijgewerkt",
+                "fr": "Les paquets ont été mis à jour",
+                "it": "I pacchetti sono stati aggiornati",
+                "es": "Paquetes fueron actualizados",
+                "pl": "Pakiety zostały zaktualizowane",
+                "zh-cn": "软件包已更新"
+            },
             "0.10.6": {
                 "en": "Added Chinese support",
                 "de": "Chinesische Unterstützung hinzugefügt",
