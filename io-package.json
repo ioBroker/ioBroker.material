@@ -27,50 +27,6 @@
                 "pl": "Dodano chińskie wsparcie",
                 "zh-cn": "增加了中文支持"
             },
-            "0.10.5": {
-                "en": "The error with settings was fixed",
-                "de": "Der Fehler bei den Einstellungen wurde behoben",
-                "ru": "Исправлена ​​ошибка с настройками",
-                "pt": "O erro com as configurações foi corrigido",
-                "nl": "De fout met de instellingen was verholpen",
-                "fr": "L'erreur avec les paramètres a été corrigée",
-                "it": "L'errore con le impostazioni è stato corretto",
-                "es": "El error con la configuración fue arreglado",
-                "pl": "Naprawiono błąd związany z ustawieniami"
-            },
-            "0.10.3": {
-                "en": "Color temperature was implemented\nCache of objects was implemented",
-                "de": "Farbtemperatur wurde implementiert\nCache von Objekten wurde implementiert",
-                "ru": "Цветовая температура была реализована\nБыл реализован кеш объектов",
-                "pt": "Temperatura de cor foi implementada\nCache de objetos foi implementado",
-                "nl": "Kleurtemperatuur is geïmplementeerd\nCache met objecten is geïmplementeerd",
-                "fr": "La température de couleur a été mise en œuvre\nLe cache des objets a été implémenté",
-                "it": "La temperatura del colore è stata implementata\nLa cache degli oggetti è stata implementata",
-                "es": "La temperatura del color fue implementada\nSe implementó el caché de objetos",
-                "pl": "Wprowadzono temperaturę kolorów\nPamięć podręczna obiektów została zaimplementowana"
-            },
-            "0.10.1": {
-                "en": "GUI corrections",
-                "de": "GUI-Korrekturen",
-                "ru": "Исправления GUI",
-                "pt": "Correções da GUI",
-                "nl": "GUI-correcties",
-                "fr": "Corrections GUI",
-                "it": "Correzioni della GUI",
-                "es": "Correcciones GUI",
-                "pl": "Poprawki GUI"
-            },
-            "0.10.0": {
-                "en": "RGB was corrected",
-                "de": "RGB wurde korrigiert",
-                "ru": "RGB был исправлен",
-                "pt": "RGB foi corrigido",
-                "nl": "RGB is gecorrigeerd",
-                "fr": "RVB a été corrigé",
-                "it": "RGB è stato corretto",
-                "es": "RGB fue corregido",
-                "pl": "RGB zostało poprawione"
-            },
             "0.9.12": {
                 "en": "RGB was implemented",
                 "de": "RGB wurde implementiert",
@@ -104,98 +60,12 @@
                 "es": "Se implementa el orden de las fichas\nSoporte de datos dwd",
                 "pl": "Kolejność płytek jest zaimplementowana\nObsługa danych DWD"
             },
-            "0.9.7": {
-                "en": "Implemented the weather widget",
-                "de": "Implementiert das Wetter Widget",
-                "ru": "Реализован погодный виджет",
-                "pt": "Implementou o widget do tempo",
-                "nl": "De weerwidget geïmplementeerd",
-                "fr": "Implémenté le widget météo",
-                "it": "Implementato il widget meteo",
-                "es": "Implementado el widget del clima",
-                "pl": "Wdrożyłem widget pogody"
-            },
-            "0.9.4": {
-                "en": "Bug-fixes",
-                "de": "Fehlerbehebung",
-                "ru": "Исправление ошибок",
-                "pt": "Correções de bugs",
-                "nl": "Bugfixes",
-                "fr": "Corrections de bogues",
-                "it": "Bug-fix",
-                "es": "Corrección de errores",
-                "pl": "Poprawki błędów"
-            },
-            "0.9.3": {
-                "en": "Many changes",
-                "de": "Viele Veränderungen",
-                "ru": "Много изменений",
-                "pt": "Muitas mudanças",
-                "nl": "Veel veranderingen",
-                "fr": "Beaucoup de changements",
-                "it": "Molti cambiamenti",
-                "es": "Muchos cambios",
-                "pl": "Wiele zmian"
-            },
-            "0.9.2": {
-                "en": "Update logic was implemented",
-                "de": "Update-Logik wurde implementiert",
-                "ru": "Была реализована логика обновления",
-                "pt": "A lógica de atualização foi implementada",
-                "nl": "Update logica is geïmplementeerd",
-                "fr": "La mise à jour a été implémentée",
-                "it": "La logica di aggiornamento è stata implementata",
-                "es": "Se implementó la lógica de actualización",
-                "pl": "Zaktualizowana logika została zaimplementowana"
-            },
-            "0.9.1": {
-                "en": "Volume control was implemented",
-                "de": "Lautstärkeregelung wurde implementiert",
-                "ru": "Регулятор громкости был реализован",
-                "pt": "Controle de volume foi implementado",
-                "nl": "Volumeregeling is geïmplementeerd",
-                "fr": "Le contrôle du volume a été implémenté",
-                "it": "Il controllo del volume è stato implementato",
-                "es": "Control de volumen fue implementado",
-                "pl": "Kontrola głośności została wdrożona"
-            },
             "0.8.9": {
                 "en": "React app"
-            },
-            "0.5.7": {
-                "en": "Ready for cloud services",
-                "de": "Bereit für Cloud-Dienste",
-                "ru": "Готов к облачным сервисам",
-                "pt": "Pronto para serviços em nuvem",
-                "nl": "Klaar voor cloudservices",
-                "fr": "Prêt pour les services cloud",
-                "it": "Pronto per i servizi cloud",
-                "es": "Listo para servicios en la nube",
-                "pl": "Gotowy do usług w chmurze"
-            },
-            "0.5.6": {
-                "en": "fix undefined names",
-                "de": "Korrigiere undefinierte Namen",
-                "ru": "Поправлены неопределённые имена"
-            },
-            "0.5.3": {
-                "en": "fix dimmer",
-                "de": "Korrigiere Dimmer",
-                "ru": "Поправлены диммеры"
-            },
-            "0.5.2": {
-                "en": "fix action icons",
-                "de": "Korrigiere Zustandsbldchen",
-                "ru": "Поправлены иконки"
-            },
-            "0.5.1": {
-                "en": "initial commit",
-                "de": "initial commit",
-                "ru": "initial commit"
             }
         },
         "title":                    "Material UI",
-        "desc":                     {
+        "desc": {
             "en": "Material UI based ioBroker user interface",
             "de": "ioBroker GUI für mobile Geräte auf dem Basis von Material UI",
             "ru": "ioBroker визуализация для мобильных устройств на Material UI",
@@ -231,7 +101,7 @@
         ],
         "localLink":                "%web_protocol%://%ip%:%web_port%/material/index.html",
         "type":                     "visualization",
-        "license":                  "CC-BY-NC",
+        "license":                  "CC-BY-NC-4.0",
         "noConfig":                 true,
         "eraseOnUpload":            true,
         "webByVersion":             true,

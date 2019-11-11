@@ -14,12 +14,6 @@
     "type": "git",
     "url": "https://github.com/ioBroker/ioBroker.material"
   },
-  "licenses": [
-    {
-      "type": "CC-BY-NC-4.0",
-      "url": "https://github.com/ioBroker/ioBroker.material/blob/master/LICENSE"
-    }
-  ],
   "keywords": [
     "ioBroker",
     "GUI",
@@ -43,7 +37,7 @@
   "bugs": {
     "url": "https://github.com/ioBroker/ioBroker.material/issues"
   },
-  "main": "www/index.html",
+  "main": "README.md",
   "scripts": {
     "test": "node node_modules/gulp/bin/gulp.js",
     "build": "node node_modules/gulp/bin/gulp.js",
