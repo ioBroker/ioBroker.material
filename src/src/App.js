@@ -296,6 +296,11 @@ class App extends Component {
                         this.setState({loading: false});
                     }
 
+                    // sometimes text2command = {label: disabled}
+                    if (typeof appSettings.text2command === 'object') {
+                        appSettings.text2command = '';
+                    }
+
                     if (appSettings && (appSettings.text2command || appSettings.text2command === 0)) {
                         this.conn.subscribe(['text2command.' + appSettings.text2command + '.response']);
                     }
