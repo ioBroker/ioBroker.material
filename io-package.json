@@ -86,7 +86,7 @@
         "keywords":                 ["user", "interface", "webapp", "jquerymobile", "ui"],
         "readme":                   "https://github.com/ioBroker/ioBroker.material/blob/master/README.md",
         "singleton":                true,
-        "preserveSettings":         "material",
+        "preserveSettings":         "custom",
 	    "nogit":                    true,
         "webPreSettings":           {
             "materialBackground": "native.loadingBackground"
