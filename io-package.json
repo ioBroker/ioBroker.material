@@ -78,7 +78,7 @@
             "zh-cn": "基于Material UI的ioBroker用户界面"
         },
         "platform":                 "javascript/Node.js",
-        "onlyWWW":                  "true",
+        "onlyWWW":                  true,
         "loglevel":                 "info",
         "icon":                     "material.png",
         "enabled":                  true,
