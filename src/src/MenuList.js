@@ -405,6 +405,7 @@ class MenuList extends Component {
             const style = {opacity: this.props.editMode && !this.state.visibility[item.id] ? 0.5 : 1};
             style.marginLeft = 16 * level;
             const expanded = this.state.roots[item.id] && this.state.roots[item.id].expanded;
+            const styleButton = useBright ? styles.menuTextBright : styles.menuTextDark;
 
             return [
                 (<ListItem
@@ -421,8 +422,8 @@ class MenuList extends Component {
                         primary={item.settings.name}/>
                     {visibilityButton}
                     {children && children.length ? (expanded ?
-                        (<ExpandLess style={(useBright ? this.props.classes.menuTextBright : this.props.classes.menuTextDark)} onClick={e => this.onExpandMenu(e, item.id)} />) :
-                        (<ExpandMore style={(useBright ? this.props.classes.menuTextBright : this.props.classes.menuTextDark)} onClick={e => this.onExpandMenu(e, item.id)} />)) : ''}
+                        (<ExpandLess style={styleButton} onClick={e => this.onExpandMenu(e, item.id)} />) :
+                        (<ExpandMore style={styleButton} onClick={e => this.onExpandMenu(e, item.id)} />)) : ''}
                 </ListItem>),
 
                 children && children.length ?
