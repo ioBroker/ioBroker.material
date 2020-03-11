@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "material",
-        "version": "0.13.0",
+        "version": "0.13.1",
         "news": {
+            "0.13.1": {
+                "en": "compatibility with Web >= 3.0.0 added",
+                "de": "Kompatibilität mit Web >= 3.0.0 hinzugefügt",
+                "ru": "добавлена совместимость с Web >= 3.0.0",
+                "pt": "compatibilidade com a Web >= 3.0.0 adicionada",
+                "nl": "compatibiliteit met Web >= 3.0.0 toegevoegd",
+                "fr": "compatibilité avec Web >= 3.0.0 ajoutée",
+                "it": "compatibilità con Web >= 3.0.0 aggiunto",
+                "es": "compatibilidad con Web >= 3.0.0 agregado",
+                "pl": "dodano kompatybilność z Internetem >= 3.0.0",
+                "zh-cn": "与Web >= 3.0.0的兼容性已添加"
+            },
             "0.13.0": {
                 "en": "compatibility with Web >= 3.0.0 added",
                 "de": "Kompatibilität mit Web >= 3.0.0 hinzugefügt",
