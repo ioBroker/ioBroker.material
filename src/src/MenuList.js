@@ -404,6 +404,7 @@ class MenuList extends Component {
 
             const style = {opacity: this.props.editMode && !this.state.visibility[item.id] ? 0.5 : 1};
             style.marginLeft = 16 * level;
+            style.width = 'calc(100% - ' + (16 * level) + 'px)';
             const expanded = this.state.roots[item.id] && this.state.roots[item.id].expanded;
             const styleButton = useBright ? styles.menuTextBright : styles.menuTextDark;
 
