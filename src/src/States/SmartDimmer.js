@@ -91,6 +91,10 @@ class SmartDimmer extends SmartGeneric {
     updateState(id, state) {
         let newState = {};
 
+        if (!state) {
+            return;
+        }
+
         if (this.onActualId === id || (this.onId === id && this.onId === this.onActualId && state.ack)) {
             let val = typeof state.val === 'number' ? !!state.val : state.val === true || state.val === 'true' || state.val === '1' || state.val === 'on' || state.val === 'ON' || state.val === 'ein' || state.val === 'EIN';
             newState[id] = val;

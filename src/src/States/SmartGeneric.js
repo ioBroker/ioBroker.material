@@ -325,6 +325,9 @@ class SmartGeneric extends Component {
     updateState(id, state) {
         // update indicators
         let val;
+        if (!state) {
+            return;
+        }
         if (this.indicators && id === this.indicators.directionId) {
             val = (state.val !== null && state.val !== undefined) ? state.val.toString() : '';
         } else if (this.indicators && id === this.indicators.errorId) {
