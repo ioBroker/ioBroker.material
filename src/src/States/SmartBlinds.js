@@ -109,6 +109,9 @@ class SmartBlinds extends SmartGeneric {
     }
 
     updateState(id, state) {
+        if (!state) {
+            return;
+        }
         let newState = {};
         const val = typeof state.val === 'number' ? state.val : parseFloat(state.val);
         if (this.actualId === id || (this.id === id && this.id === this.actualId && state.ack)) {

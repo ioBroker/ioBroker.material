@@ -145,6 +145,9 @@ class SmartWeatherForecast extends SmartGeneric {
     }
 
     updateState(id, state) {
+        if (!state) {
+            return;
+        }
         if (id === this.ids.title ||
             id === this.ids.info ||
             id === this.ids.icon) {

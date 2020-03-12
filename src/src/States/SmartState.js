@@ -151,6 +151,9 @@ class SmartState extends SmartGeneric {
     }
 
     updateState(id, state) {
+        if (!state) {
+            return;
+        }
         if (id === this.id) {
             let val = typeof state.val === 'number' ? !!state.val : state.val === true || state.val === 'true' || state.val === '1' || state.val === 'on' || state.val === 'ON';
             const newState = {};

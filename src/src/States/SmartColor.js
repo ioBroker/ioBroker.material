@@ -264,6 +264,10 @@ class SmartColor extends SmartGeneric {
     updateState(id, state) {
         let newState = {};
         let props;
+        if (!state) {
+            return;
+        }
+
         if (this.ids.red && this.ids.red.id === id) {
             props = this.ids.red;
         } else if (this.ids.green && this.ids.green.id === id) {

@@ -80,6 +80,9 @@ class SmartSwitch extends SmartGeneric {
 
     updateState(id, state) {
         const newState = {};
+        if (!state) {
+            return;
+        }
         const val = typeof state.val === 'number' ? !!state.val : state.val === true || state.val === 'true' || state.val === '1' || state.val === 'on' || state.val === 'ON';
         if (id === this.actualId || (this.id === id && this.id === this.actualId && state.ack)) {
             newState[id] = val;

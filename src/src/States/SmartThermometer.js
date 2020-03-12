@@ -85,6 +85,9 @@ class SmartThermometer extends SmartGeneric {
     }
 
     updateState(id, state) {
+        if (!state) {
+            return;
+        }
         if (id === this.id) {
             const newState = {};
             newState[id] = state.val;

@@ -86,7 +86,9 @@ class SmartVolume extends SmartGeneric {
 
     updateState(id, state) {
         let newState = {};
-
+        if (!state) {
+            return;
+        }
         if (this.actualId === id || (this.id === id && this.id === this.actualId && state.ack)) {
             const val = typeof state.val === 'number' ? state.val : parseFloat(state.val);
             if (!isNaN(val)) {

@@ -99,6 +99,9 @@ class SmartThermostat extends SmartGeneric {
 
     updateState(id, state) {
         let newState = {};
+        if (!state) {
+            return;
+        }
         if (this.actualId === id || id === this.id || id === this.humidityId) {
             newState[id] = typeof state.val === 'number' ? state.val : parseFloat(state.val);
             if (isNaN(newState[id])) {

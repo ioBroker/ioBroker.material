@@ -147,6 +147,9 @@ class SmartInfo extends SmartGeneric {
     }
 
     updateState(id, state) {
+        if (!state) {
+            return;
+        }
         if (this.infos && this.infos.find(e => e.id === id)) {
             const newState = {};
             newState[id] = state.val;

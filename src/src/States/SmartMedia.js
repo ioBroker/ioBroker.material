@@ -238,6 +238,10 @@ class SmartMedia extends SmartGeneric {
     }
 
     updateState(id, state) {
+        if (!state) {
+            return;
+        }
+
         if (id === this.ids.info.cover) {
             let url = state && state.val;
             if (url) {

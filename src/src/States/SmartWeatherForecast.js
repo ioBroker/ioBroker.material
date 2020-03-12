@@ -376,6 +376,10 @@ class SmartWeatherForecast extends SmartGeneric {
     }
 
     updateState(id, state) {
+        if (!state) {
+            return;
+        }
+
         if (id === this.ids.current.temperature ||
             id === this.ids.current.humidity ||
             id === this.ids.current.windChill ||

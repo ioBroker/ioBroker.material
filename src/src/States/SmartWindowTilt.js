@@ -70,6 +70,10 @@ class SmartWindowTilt extends SmartGeneric {
 
     updateState(id, state) {
         let val;
+        if (!state) {
+            return;
+        }
+
         if (typeof state.val !== 'number') {
             const i = parseInt(state.val, 10);
             if (i.toString() === i) {

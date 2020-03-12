@@ -1,9 +1,9 @@
 {
     "common": {
         "name": "material",
-        "version": "0.13.4",
+        "version": "0.13.5",
         "news": {
-            "0.13.4": {
+            "0.13.5": {
                 "en": "Fixed error with stacked rooms",
                 "de": "Fehler bei gestapelten Räumen behoben",
                 "ru": "Исправлена ошибка со сложенными комнатами",
