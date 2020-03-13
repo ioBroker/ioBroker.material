@@ -91,7 +91,8 @@ class App extends Component {
             editAppSettings: false,
             settings:       null,
             appSettings:    {},
-            actualVersion:  ''
+            actualVersion:  '',
+            bigMessage:     '',
         };
         this.state.open = this.state.menuFixed;
 
@@ -264,18 +265,17 @@ class App extends Component {
                 if (objects && !viewEnum) {
                     let reg = new RegExp('^' + this.state.masterPath + '\\.');
                     // get first room
-                    for (let id in objects) {
-                        if (objects.hasOwnProperty(id) && reg.test(id)) {
-                            viewEnum = id;
-                            break;
-                        }
+                    viewEnum = Object.keys(objects).find(id => reg.test(id));
+                    if (!viewEnum) {
+                        // show message please create at least one room in admin
+                        return this.setState({bigMessage: I18n.t('Please create some rooms in admin'), loading: false, settings: {}});
                     }
                 }
 
                 this.objects = objects || {};
                 Utils.setDataFormat(this.getDateFormat());
 
-                this.readInstancesData(appSettings.instances, function () {
+                this.readInstancesData(appSettings.instances, () => {
                     this.loadingStep('done');
                     if (viewEnum) {
                         const settings = viewEnum === Utils.INSTANCES ?
@@ -286,14 +286,14 @@ class App extends Component {
                             });
 
                         this.setState({
-                            viewEnum: viewEnum,
+                            viewEnum,
                             loading: false,
-                            settings: settings,
+                            settings,
                             appSettings
                         });
                         this.setBarColor(settings);
                     } else {
-                        this.setState({loading: false});
+                        this.setState({loading: false, settings: {}});
                     }
 
                     // sometimes text2command = {label: disabled}
@@ -313,7 +313,7 @@ class App extends Component {
                         this.subscribeInstances = false;
                     }
                     this.gotObjects = true;
-                }.bind(this));
+                });
             }
         });
     }
@@ -1432,7 +1432,12 @@ class App extends Component {
                 <div>
                     {this.getAppBar(useBright)}
                     {this.getMenu(useBright)}
-                    {this.getStateList(useBright)}
+                    {!this.state.bigMessage ?  this.getStateList(useBright) : <div style={{
+                        position: 'absolute',
+                        fontSize: 36,
+                        top: '50%',
+                        width: '100%',
+                        textAlign: 'center'}}>{this.state.bigMessage}</div>}
                     {this.getErrorDialog(useBright)}
                     {this.getSpeechDialog(useBright)}
                 </div>

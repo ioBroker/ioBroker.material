@@ -22,6 +22,7 @@ import {FaArrowsAltV as IconVertical} from 'react-icons/fa'
 import {MdAdd as IconAdd} from 'react-icons/md'
 import {FaArrowsAltH as IconHorizontal} from 'react-icons/fa'
 import Button from '@material-ui/core/Button';
+import Fab from '@material-ui/core/Fab';
 
 import Theme from './theme';
 import Utils from './Utils';
@@ -105,7 +106,7 @@ class StatesList extends Component {
         this.collectVisibilityTimer = null;
     }
 
-    componentWillUpdate(nextProps, nextState) {
+    UNSAFE_componentWillUpdate(nextProps, nextState) {
         if (!this.enumFunctions.length) {
             this.getEnumFunctions(nextProps.objects).forEach(e => this.enumFunctions.push(e));
         }
@@ -350,14 +351,14 @@ class StatesList extends Component {
 
     getToggleDragButton() {
         if (this.props.editMode && this.props.enumID !== Utils.INSTANCES) {
-            return (<Button key={this.props.dialogKey + '-drag-button'}
-                    variant="fab"
+            return (<Fab key={this.props.dialogKey + '-drag-button'}
+                    size="small"
                     title={I18n.t('Drag direction')}
                     style={{fontSize: 24}}
                     onClick={() => this.setState({subDragging: !this.state.subDragging})}
                     className={this.props.classes['drag-button']}>
                 {this.state.subDragging ? <IconHorizontal/> : <IconVertical/>}
-            </Button>);
+            </Fab>);
         } else {
             return null;
         }
@@ -387,14 +388,14 @@ class StatesList extends Component {
 
     getAddButton() {
         if (this.props.editMode && this.props.enumID !== Utils.INSTANCES) {
-            return (<Button key={this.props.dialogKey + '-add-button'}
-                            variant="fab"
+            return (<Fab key={this.props.dialogKey + '-add-button'}
+                         size="small"
                             title={I18n.t('Add custom URL')}
                             style={{fontSize: 24}}
                             onClick={() => this.onAddCustomURL()}
                             className={this.props.classes['add-button']}>
                 <IconAdd/>
-            </Button>);
+            </Fab>);
         } else {
             return null;
         }

@@ -99,7 +99,7 @@ class StatesSubList extends Component {
         this.collectVisibilityTimer = null;
     }
 
-    componentWillUpdate(nextProps, nextState) {
+    UNSAFE_componentWillUpdate(nextProps, nextState) {
         const newState = {};
         let changed = false;
 

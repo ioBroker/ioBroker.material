@@ -169,6 +169,15 @@ export default {
             borderRadius: 24,
             zIndex: 2
         },
+        closeButtonLeft: {
+            position: 'absolute',
+            top: 5,
+            left: 5,
+            width: 36,
+            height: 24,
+            borderRadius: 24,
+            zIndex: 2
+        },
         settingsBack: {
             background: 'rgba(255,255,255,0.5)'
         },

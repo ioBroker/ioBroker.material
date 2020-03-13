@@ -19,7 +19,7 @@ import Theme from '../theme';
 import Paper from '@material-ui/core/Paper';
 import Snackbar from '@material-ui/core/Snackbar';
 import {MdClose as CloseIcon} from 'react-icons/md';
-import Button from '@material-ui/core/Button';
+import Fab from '@material-ui/core/Fab';
 import I18n from '../i18n';
 
 class SmartDialogGeneric extends Component  {
@@ -145,12 +145,12 @@ class SmartDialogGeneric extends Component  {
 
     showCloseButton() {
         if (this.props.windowWidth < 500) {
-            return (<Button variant="fab"
+            return (<Fab size="small"
                             aria-label={I18n.t('close')}
                             onClick={() => this.onClose(true)}
-                            style={Theme.dialog.closeButton}>
+                            style={Theme.dialog.closeButtonLeft}>
                 <CloseIcon />
-            </Button>)
+            </Fab>)
         } else {
             return null;
         }

@@ -28,6 +28,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Toolbar from '@material-ui/core/Toolbar';
 import Paper from '@material-ui/core/Paper';
+import Fab from '@material-ui/core/Fab';
 import IconButton from '@material-ui/core/IconButton';
 
 import {MdSave as OkIcon} from 'react-icons/md';
@@ -341,7 +342,7 @@ class SmartDialogSettings extends SmartDialogGeneric  {
         return [
             (<Toolbar key={this.props.dialogKey + '-toolbar'} >
                 <h4   key={this.props.dialogKey + '-header'} style={Theme.dialog.header}>{this.props.name}</h4>
-                <Button onClick={this.onSave.bind(this)}  key={this.props.dialogKey + '-ok'} style={Theme.dialog.saveButton}  disabled={!this.state.changed} variant="extendedFab" color="primary"   aria-label="save"><OkIcon />{I18n.t('Save')}</Button>
+                <Fab onClick={this.onSave.bind(this)}  key={this.props.dialogKey + '-ok'} style={Theme.dialog.saveButton}  disabled={!this.state.changed} size="small" variant="extended" color="primary"   aria-label="save"><OkIcon />{I18n.t('Save')}</Fab>
             </Toolbar>),
             (<List key={this.props.dialogKey + '-list'} style={Theme.dialog.list}>{result}</List>)
         ];

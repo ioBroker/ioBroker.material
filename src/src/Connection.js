@@ -729,7 +729,7 @@ class ServerConnection {
         const adapter = parts[1];
         parts.splice(0, 2);
 
-        this._socket.emit('writeFile', adapter, parts.join('/'), atob(data), {mode: this._defaultMode}, callback);
+        this._socket.emit('writeFile64', adapter, parts.join('/'), data, {mode: this._defaultMode}, callback);
     }
 
     readDir(dirname, callback) {

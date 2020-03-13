@@ -21,7 +21,11 @@ import {MdDelete as IconDelete} from 'react-icons/md';
 import {MdFileUpload as IconOpen} from 'react-icons/md';
 import {MdClose as IconClose} from 'react-icons/md';
 import {MdCameraAlt as IconCam} from 'react-icons/md';
+import {MdFileUpload as IconUpload} from 'react-icons/md';
+import {MdCancel as IconNo} from 'react-icons/md';
+import {MdPlusOne as IconPlus} from 'react-icons/md';
 
+import Fab from '@material-ui/core/Button';
 import Button from '@material-ui/core/Button';
 import PropTypes from 'prop-types';
 import ImageList from './ImageList';
@@ -30,6 +34,9 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
+
+import NoImage from '../../assets/noImage.png';
+
 import 'react-image-crop/dist/ReactCrop.css'
 
 // Icons
@@ -44,6 +51,10 @@ const style = {
         lineHeight: 1,
         paddingTop: 10,
         paddingBottom: 5
+    },
+    dropzoneDiv: {
+        width: '100%',
+        height: '100%'
     },
     dropzone: {
         marginTop: 20,
@@ -61,14 +72,14 @@ const style = {
         border: '2px dashed green',
     },
     deleteIcon: {
-        color: 'white',
+        //color: 'white',
         opacity: 0.9,
         position: 'absolute',
         top: 10,
         right: 10
     },
     openIcon: {
-        color: 'white',
+        //color: 'white',
         opacity: 0.9,
         position: 'absolute',
         right: 10,
@@ -80,6 +91,12 @@ const style = {
         right: 3,
         zIndex: 10,
         cursor: 'pointer'
+    },
+    iconError: {
+        color: '#ffc3c6',
+    },
+    iconOk: {
+        color: '#aaeebc',
     },
     imageBar: {
         bar: {
@@ -156,7 +173,7 @@ class ImageSelector extends React.Component {
         this.state = state;
     }
 
-    componentWillUpdate(nextProps, nextState) {
+    UNSAFE_componentWillUpdate(nextProps, nextState) {
         if (!this.props.icons && JSON.stringify(nextProps.images) !== JSON.stringify(this.state.images)) {
             this.setState({images: nextProps.images});
         }
@@ -219,11 +236,11 @@ class ImageSelector extends React.Component {
             if (this.props.aspect) {
                 this.setState({beforeCrop: file, cropOpened: true});
             } else {
-                this.setState({image: file.data});
+                this.setState({image: file.data, errored: false});
                 this.props.onUpload && this.props.onUpload(file);
             }
         } else {
-            this.setState({image: file});
+            this.setState({image: file, errored: false});
             this.props.onUpload && this.props.onUpload(file);
         }
     }
@@ -314,54 +331,71 @@ class ImageSelector extends React.Component {
     }
 
     render() {
-        const _style = Object.assign({}, style.dropzone, this.state.imageStatus === 'accepted' ? style.dropzoneAccepted : (this.state.imageStatus === 'rejected' ? style.dropzoneRejected : {}));
+        //const _style = Object.assign({}, style.dropzone, this.state.imageStatus === 'accepted' ? style.dropzoneAccepted : (this.state.imageStatus === 'rejected' ? style.dropzoneRejected : {}));
+        const className = this.props.classes.dropzone + ' ' + (this.state.imageStatus === 'accepted' ? this.props.classes.dropzoneAccepted : (this.state.imageStatus === 'rejected' ? this.props.classes.dropzoneRejected : ''));
 
         return (<div style={{position: 'relative'}}>
             <div key={'image-label'} style={style.label}>{this.props.label}</div>
             {this.state.image ? [
                 (<img key={'image-preview'}
-                      src={typeof this.state.image === 'object' ? this.state.image.preview : this.state.image}
+                      onError={() => this.setState({errored: true})}
+                      src={this.state.errored ? NoImage : (typeof this.state.image === 'object' ? this.state.image.preview : this.state.image)}
                       alt={this.props.label || ''} style={{width: this.props.height || '100%', height: 'auto'}}/>),
-                (<Button key={'image-delete'} onClick={this.removeImage.bind(this)} style={style.deleteIcon} variant="fab" mini aria-label="delete">
+                (<Fab key={'image-delete'} onClick={this.removeImage.bind(this)} style={style.deleteIcon} size="small" aria-label="delete">
                     <IconDelete />
-                </Button>),
-                (<Button key={'image-open'} onClick={() => this.setState({opened: !this.state.opened})}
-                         style={!this.state.opened ? Object.assign({}, style.openIcon, {bottom: -14}) : Object.assign({}, style.openIcon, {bottom: 120})} variant="fab" mini aria-label="delete">
+                </Fab>),
+                (<Fab key={'image-open'} onClick={() => this.setState({opened: !this.state.opened})}
+                         style={!this.state.opened ? Object.assign({}, style.openIcon, {bottom: -5}) : Object.assign({}, style.openIcon, {bottom: 120})}  aria-label="delete">
                     {this.state.opened ? (<IconClose />) : (<IconOpen/>)}
-                </Button>)
+                </Fab>)
             ] : null}
             {this.state.opened &&
                 [
                     ((this.state.images && this.state.images.length) || this.icons) && (<ImageList key={'image-list'} images={this.state.images || this.icons} onSelect={this.handleSelectImage.bind(this)}/>),
                     ImageSelector.isMobile() && !this.props.icons ?
-                        (<Button key={'image-camera'} onClick={() => this.onCamera()}
-                                  style={Object.assign({}, style.camIcon)} variant="fab" mini aria-label="camera">
+                        (<Fab key={'image-camera'} onClick={() => this.onCamera()}
+                                  style={Object.assign({}, style.camIcon)} size="small" aria-label="camera">
                             <IconCam />
                             <input ref={this.inputRef} type="file" accept="image/*" onChange={files => this.handleDropImage(files)} capture style={{display: 'none'}}/>
-                        </Button>) : null,
+                        </Fab>) : null,
                     (<Dropzone key={'image-drop'}
                            maxSize={this.props.maxSize}
                            onDrop={files => this.handleDropImage(files)}
                            accept={this.props.accept || 'image/jpeg, image/png'}
-                           style={_style}>
+                           className={className}>
                         {
-                            ({isDragActive, isDragReject}) => {
+                            ({getRootProps, getInputProps, isDragActive, isDragReject}) => {
                                 if (isDragReject) {
                                     if (this.state.imageStatus !== 'rejected') {
                                         this.setState({imageStatus: 'rejected'});
                                     }
-                                    return this.props.textRejected || 'Some files will be rejected';
+                                    return (
+                                        <div className={className || this.props.classes.dropzoneDiv} {...getRootProps()}>
+                                            <input {...getInputProps()} />
+                                            <span key="text" className={this.props.classes.text}>{I18n.t('Some files will be rejected')}</span>
+                                            <IconNo key="icon" className={this.props.classes.icon + ' ' + this.props.classes.iconError}/>
+                                        </div>);
                                 } else if (isDragActive) {
                                     if (this.state.imageStatus !== 'accepted') {
                                         this.setState({imageStatus: 'accepted'});
                                     }
 
-                                    return this.props.textAccepted || 'All files will be accepted';
+                                    return (
+                                        <div className={className || this.props.classes.dropzoneDiv} {...getRootProps()}>
+                                            <input {...getInputProps()} />
+                                            <span key="text" className={this.props.classes.text}>{I18n.t('All files will be accepted')}</span>
+                                            <IconPlus key="icon" className={this.props.classes.icon + ' ' + this.props.classes.iconOk}/>
+                                        </div>);
                                 } else {
                                     if (this.state.imageStatus !== 'wait') {
                                         this.setState({imageStatus: 'wait'});
                                     }
-                                    return this.props.textWaiting || 'Drop some files here or click...';
+                                    return (
+                                        <div className={className || this.props.classes.dropzoneDiv} {...getRootProps()}>
+                                            <input {...getInputProps()} />
+                                            <span key="text" className={this.props.classes.text}>{I18n.t('Drop some files here or click...')}</span>
+                                            <IconUpload key="icon" className={this.props.classes.icon}/>
+                                        </div>);
                                 }
                             }
                         }

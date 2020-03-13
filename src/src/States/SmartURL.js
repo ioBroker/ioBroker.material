@@ -68,7 +68,7 @@ class SmartURL extends SmartGeneric {
 
         if (this.channelInfo.states) {
             // Actual
-            let state = this.channelInfo.states.find(state => state.id && state.name === 'URL');
+            let state = this.channelInfo.states.find(state => state && state.id && state.name === 'URL');
             if (state) {
                 this.id = state.id;
                 this.ids.url = state.id;
@@ -208,7 +208,7 @@ class SmartURL extends SmartGeneric {
         });
 
         settings.forEach((e, i) => {
-            if (e.name === 'background') {
+            if (e && e.name === 'background') {
                 e.type = 'text';
                 settings.splice(i, 1);
                 settings.unshift(e);
@@ -218,7 +218,7 @@ class SmartURL extends SmartGeneric {
 
         // remove name from list
         settings.forEach((e, i) => {
-            if (e.name === 'name') {
+            if (e && e.name === 'name') {
                 settings.splice(i, 1);
                 return false;
             }
@@ -273,7 +273,7 @@ class SmartURL extends SmartGeneric {
 
     getIFrameDiv() {
         if (!this.image && this.state.settings.background) {
-            return (<iframe key="iframe" title={this.state.settings.name} className={this.props.classes['iframe']} src={this.state.settings.background}/>)
+            return (<iframe key="iframe" title={this.state.settings ? this.state.settings.name || '' : ''} className={this.props.classes['iframe']} src={this.state.settings.background}/>)
         } else {
             return null;
         }
@@ -316,7 +316,7 @@ class SmartURL extends SmartGeneric {
             this.state.showDialog ?
                 <Dialog dialogKey={this.key + 'dialog'}
                         key={this.key + 'dialog'}
-                        name={this.state.settings.name}
+                        name={this.state.settings ? this.state.settings.name || '' : ''}
                         enumNames={this.props.enumNames}
                         settings={this.state.settings}
                         objects={this.props.objects}
