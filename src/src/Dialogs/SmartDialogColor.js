@@ -1,5 +1,5 @@
 /**
- * Copyright 2018 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2020 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -176,24 +176,22 @@ class SmartDialogColor extends SmartDialogGeneric  {
         this.componentReady();
     }
 
-    componentWillReceiveProps(nextProps) {
+    static getDerivedStateFromProps(props, state) {
         const newState = {};
         let changed = false;
-        if (nextProps.startOn !== this.state.on) {
-            newState.on = nextProps.startOn;
+        if (props.startOn !== state.on) {
+            newState.on = props.startOn;
             changed = true;
         }
-        /*if (nextProps.startDimmer !== this.state.dimmer) {
-            newState.dimmer = nextProps.startDimmer;
+        /*if (props.startDimmer !== state.dimmer) {
+            newState.dimmer = props.startDimmer;
             changed = true;
         }
-        if (nextProps.startRGB !== this.state.color) {
-            newState.color = nextProps.startRGB;
+        if (props.startRGB !== state.color) {
+            newState.color = props.startRGB;
             changed = true;
         }*/
-        if (changed) {
-            this.setState(newState);
-        }
+        return changed ? newState : null;
     }
 
     setMaxHeight() {

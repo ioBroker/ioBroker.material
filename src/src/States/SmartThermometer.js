@@ -1,5 +1,5 @@
 /**
- * Copyright 2018 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2020 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -74,9 +74,7 @@ class SmartThermometer extends SmartGeneric {
             this.unit = '';
         }
 
-        this.props.tile.setState({
-            isPointer: false
-        });
+        this.props.tile.setState({isPointer: false});
 
         this.key = 'smart-thermometer-' + this.id + '-';
 
@@ -124,7 +122,17 @@ class SmartThermometer extends SmartGeneric {
 
     getStateText() {
         const state = this.state[this.id];
-        return state === undefined || state === null ? '?' : state + this.unit;
+
+        if (state === null) {
+            return '?';
+        } else {
+            const val = Math.round(state * 100) / 100;
+            if (this.commaAsDelimiter) {
+                return val.toString().replace('.', ',') + this.unit;
+            } else {
+                return val + this.unit;
+            }
+        }
     }
 
     getSecondaryDiv() {

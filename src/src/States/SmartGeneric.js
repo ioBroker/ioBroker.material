@@ -1,5 +1,5 @@
 /**
- * Copyright 2018 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2020 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,6 +76,8 @@ class SmartGeneric extends Component {
             ignoreIndicators: this.props.ignoreIndicators || []
         };
         this.defaultEnabling = true; // overload this property to hide element by default
+
+        this.commaAsDelimiter = this.props.objects['system.config'] && this.props.objects['system.config'].common && this.props.objects['system.config'].common.isFloatComma;
 
         this.editMode = this.props.editMode;
 
@@ -473,19 +475,27 @@ class SmartGeneric extends Component {
         this.saveSettings(settings, () => this.setState({settings}));
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.editMode !== this.state.editMode) {
-            this.setState({editMode: nextProps.editMode});
+    static getDerivedStateFromProps(props, state) {
+        const newState = {};
+        let changed = false;
+        if (props.editMode !== state.editMode) {
+            newState.editMode = props.editMode;
             //this.props.tile.setVisibility(nextProps.editMode || this.state.settings.enabled);
         }
-        if (JSON.stringify(nextProps.ignoreIndicators) !== JSON.stringify(this.state.ignoreIndicators)) {
-            this.setState({ignoreIndicators: nextProps.ignoreIndicators});
+        if (JSON.stringify(props.ignoreIndicators) !== JSON.stringify(state.ignoreIndicators)) {
+            newState.ignoreIndicators = props.ignoreIndicators;
         }
+
+        return changed ? newState : null;
     }
 
     roundValue(value, decimals) {
         if (decimals !== undefined || typeof this.state.settings.decimals !== 'undefined') {
-            return value.toFixed(decimals !== undefined ? decimals : this.state.settings.decimals);
+            let val = value.toFixed(decimals !== undefined ? decimals : this.state.settings.decimals);
+            if (this.commaAsDelimiter) {
+                val = val.replace('.', ',');
+            }
+            return val;
         } else {
             return value;
         }

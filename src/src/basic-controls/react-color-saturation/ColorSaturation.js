@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2019 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2020 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,20 +62,19 @@ class ColorSaturation extends React.Component {
         };
     }
 
-    componentWillReceiveProps(nextProps) {
+    static getDerivedStateFromProps(props, state) {
         const newState = {};
         let changed = false;
-        if (nextProps.hue !== this.state.hue) {
-            newState.hue = nextProps.hue;
+        if (props.hue !== state.hue) {
+            newState.hue = props.hue;
             changed = true;
         }
-        if (nextProps.saturation !== this.state.saturation) {
-            newState.saturation = nextProps.saturation;
+        if (props.saturation !== state.saturation) {
+            newState.saturation = props.saturation;
             changed = true;
         }
-        if (changed) {
-            this.setState(newState);
-        }
+
+        return changed ? newState : null;
     }
 
     handleChange(event, value) {

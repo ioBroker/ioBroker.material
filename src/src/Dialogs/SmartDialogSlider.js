@@ -1,5 +1,5 @@
 /**
- * Copyright 2018 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2020 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -111,7 +111,7 @@ class SmartDialogSlider extends SmartDialogGeneric  {
         this.componentReady();
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (nextProps.startValue !== this.state.value && !this.mouseDown && Date.now() - this.lastControl > 1000) {
             this.setState({value: nextProps.startValue});
         }

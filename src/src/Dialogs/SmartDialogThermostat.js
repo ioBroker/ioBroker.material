@@ -1,5 +1,5 @@
 /**
- * Copyright 2018 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2020 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,9 @@ class SmartDialogThermostat extends SmartDialogGeneric  {
         dialogKey:          PropTypes.string.isRequired,
         windowWidth:        PropTypes.number,
         onClose:            PropTypes.func.isRequired,
+        unit:               PropTypes.string,
+        step:               PropTypes.number,
+        commaAsDelimiter:   PropTypes.bool,
 
         objects:            PropTypes.object,
         states:             PropTypes.object,
@@ -65,6 +68,7 @@ class SmartDialogThermostat extends SmartDialogGeneric  {
         this.stateRx.value = props.startValue || 0;
         this.stateRx.boostValue = props.boostValue;
 
+        this.step = props.step || 0.5;
         this.min = props.min;
         if (this.min > props.actualValue) {
             this.min = props.actualValue
@@ -92,12 +96,12 @@ class SmartDialogThermostat extends SmartDialogGeneric  {
     componentDidMount() {
         super.componentDidMount();
         this.svgControl = this.refPanel.current.getElementsByTagName('svg')[0];
-        this.svgWidth = this.svgControl.clientWidth;
-        this.svgHeight = this.svgControl.clientHeight;
+        this.svgWidth   = this.svgControl.clientWidth;
+        this.svgHeight  = this.svgControl.clientHeight;
         this.svgCenterX = this.svgWidth / 2;
         this.svgCenterY = this.svgHeight / 2;
-        this.svgRadius = this.svgCenterX > this.svgCenterY ? this.svgCenterY : this.svgCenterX;
-        this.rect = this.svgControl.getBoundingClientRect();
+        this.svgRadius  = this.svgCenterX > this.svgCenterY ? this.svgCenterY : this.svgCenterX;
+        this.rect       = this.svgControl.getBoundingClientRect();
 
         this.svgControl.addEventListener('mousedown', this.onMouseDownBind, {passive: false, capture: true});
         this.svgControl.addEventListener('touchstart', this.onMouseDownBind, {passive: false, capture: true});
@@ -137,7 +141,7 @@ class SmartDialogThermostat extends SmartDialogGeneric  {
         }
         h -= 120;
         h /= 360 - 60;
-        return SmartDialogThermostat.roundValue((this.max - this.min) * h + this.min);
+        return SmartDialogThermostat.roundValue((this.max - this.min) * h + this.min, this.step);
     }
 
     eventToValue(e, checkRadius) {
@@ -202,6 +206,9 @@ class SmartDialogThermostat extends SmartDialogGeneric  {
                          className="boost-button">{I18n.t('Boost')}
                 </Button>) : null}
             <ThermostatControl
+                afterComma={1}
+                unit={this.props.unit}
+                commaAsDelimiter={this.props.commaAsDelimiter === undefined ? true : this.props.commaAsDelimiter}
                 minValue={this.min}
                 maxValue={this.max}
                 hvacMode={'heating'}

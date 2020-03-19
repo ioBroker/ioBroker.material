@@ -6,7 +6,7 @@ class Thermostat extends Component {
     // Determine if the thermostat is actively working to reach the target temperature.
     let dialColor = '#222';
     if (this.props.hvacMode === 'heating') {
-      dialColor = '#E36304';
+      dialColor = '#b57e51';
     } else if (this.props.hvacMode === 'cooling') {
       dialColor = '#007AF1';
     }
@@ -28,7 +28,7 @@ class Thermostat extends Component {
         textAnchor: 'middle',
         fontFamily: 'Helvetica, sans-serif',
         alignmentBaseline: 'central',
-        fontSize: '120px',
+        fontSize: '80px',
         fontWeight: 'bold',
         visibility: (this.props.away ? 'hidden' : 'visible'),
       },
@@ -37,7 +37,7 @@ class Thermostat extends Component {
         textAnchor: 'middle',
         fontFamily: 'Helvetica, sans-serif',
         alignmentBaseline: 'central',
-        fontSize: '22px',
+        fontSize: '20px',
         fontWeight: 'bold',
       },
       away: {
@@ -93,6 +93,18 @@ class Thermostat extends Component {
     return isNaN(point) ? point : point * scale;
   }
 
+  formatNumber(num, withUnit) {
+    const unit = this.props.unit || '';
+    num = num.toFixed(this.props.afterComma || 0);
+    if (this.props.afterComma) {
+      num = num.replace('.', ',');
+    }
+    if (unit && withUnit) {
+      num += unit;
+    }
+    return num;
+  }
+
   render() {
     const _self = this;
 
@@ -135,6 +147,7 @@ class Thermostat extends Component {
     const theta = tickDegrees / this.props.numTicks;
     const offsetDegrees = 180 - (360 - tickDegrees) / 2;
     const tickArray = [];
+
     for (let iTick = 0; iTick < this.props.numTicks; iTick++) {
       const isLarge = iTick === min || iTick === max;
       const isActive = iTick >= min && iTick <= max;
@@ -189,18 +202,18 @@ class Thermostat extends Component {
       <svg width={this.props.width} height={this.props.height} style={styles.dial}
         viewBox={['0 0 ', diameter, ' ', diameter].join('')}
       >
-        <circle cx={radius} cy={radius} r={radius} style={styles.circle}></circle>
+        <circle cx={radius} cy={radius} r={radius} style={styles.circle}/>
         <g>{tickArray}</g>
         <text x={radius} y={radius} style={styles.target}>
-          {Math.round(this.props.targetTemperature)}
+          {this.formatNumber(this.props.targetTemperature, true)}
         </text>
         <text x={ambientPosition[0]} y={ambientPosition[1]} style={styles.ambient}>
-          {Math.round(this.props.ambientTemperature)}
+          {this.formatNumber(this.props.ambientTemperature, false)}
         </text>
         <text x={radius} y={radius} style={styles.away}>AWAY</text>
         <path d={leafDef} style={styles.leaf}
           transform={['translate(', translate[0], ',', translate[1], ')'].join('')}
-        ></path>
+        />
       </svg>
     );
   }
@@ -226,7 +239,13 @@ Thermostat.propTypes = {
   /* Desired temperature that the thermostat attempts to reach */
   targetTemperature: PropTypes.number,
   /* Current state of operations within the thermostat */
-  hvacMode: PropTypes.oneOf(['off', 'heating', 'cooling'])
+  hvacMode: PropTypes.oneOf(['off', 'heating', 'cooling']),
+  /* If comma should be used as delimiter */
+  commaAsDelimiter: PropTypes.bool,
+  /* Number of digits after comma. E.g 2 => 25.54 */
+  afterComma: PropTypes.number,
+  /* °C or °F */
+  unit: PropTypes.string,
 };
 
 Thermostat.defaultProps = {

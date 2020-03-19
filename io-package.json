@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "material",
-        "version": "0.13.5",
+        "version": "0.13.6",
         "news": {
+            "0.13.6": {
+                "en": "Added sorting of rooms",
+                "de": "Sortierung der Räume hinzugefügt",
+                "ru": "Добавлена сортировка комнат",
+                "pt": "Classificação de salas adicionada",
+                "nl": "Sortering van kamers toegevoegd",
+                "fr": "Ajout du tri des chambres",
+                "it": "Aggiunto ordinamento delle stanze",
+                "es": "Clasificación agregada de habitaciones",
+                "pl": "Dodano sortowanie pokoi",
+                "zh-cn": "添加房间排序"
+            },
             "0.13.5": {
                 "en": "Fixed error with stacked rooms",
                 "de": "Fehler bei gestapelten Räumen behoben",

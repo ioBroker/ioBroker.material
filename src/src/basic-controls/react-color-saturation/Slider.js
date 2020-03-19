@@ -218,16 +218,20 @@ class Slider extends React.Component {
         clearTimeout(this.jumpAnimationTimeoutId);
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.disabled) {
-            return { currentState: 'disabled' };
+    static getDerivedStateFromProps(props, state) {
+        const newState = {};
+        let changed = false;
+        if (props.disabled && state.currentState !== 'disabled') {
+            changed = true;
+            newState.currentState = 'disabled';
         }
 
-        if (!nextProps.disabled && prevState.currentState === 'disabled') {
-            return { currentState: 'normal' };
+        if (!props.disabled && state.currentState === 'disabled') {
+            changed = true;
+            newState.currentState = 'normal';
         }
 
-        return null;
+        return changed ? newState : null;
     }
 
     handleKeyDown = event => {

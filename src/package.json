@@ -29,7 +29,8 @@
     "react-native-i18n": "^2.0.15",
     "react-scripts": "^3.4.0",
     "typeface-roboto": "^0.0.75",
-    "eslint": "^6.8.0"
+    "eslint": "^6.8.0",
+    "react-sortable-hoc": "^1.11.0"
   },
   "homepage": "./",
   "scripts": {

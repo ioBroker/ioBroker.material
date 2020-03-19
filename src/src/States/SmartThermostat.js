@@ -1,5 +1,5 @@
 /**
- * Copyright 2018 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2020 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -83,9 +83,9 @@ class SmartThermostat extends SmartGeneric {
                 this.unit = '°F';
             }
 
-            this.props.tile.setState({
-                isPointer: true
-            });
+            this.step = common.step || 0.5;
+
+            this.props.tile.setState({isPointer: true});
         }
 
         this.unit = this.unit || '°C';
@@ -93,6 +93,7 @@ class SmartThermostat extends SmartGeneric {
         this.stateRx.showDialog = false;
         this.props.tile.setState({state: true});
         this.key = 'smart-thermostat-' + this.id + '-';
+        this.step = this.step || 0.5;
 
         this.componentReady();
     }
@@ -144,7 +145,12 @@ class SmartThermostat extends SmartGeneric {
         if (this.state[this.id] === null) {
             return '?';
         } else {
-            return this.state[this.id] + this.unit;
+            const val = Math.round(this.state[this.id] * 100) / 100;
+            if (this.commaAsDelimiter) {
+                return val.toString().replace('.', ',') + this.unit;
+            } else {
+                return val + this.unit;
+            }
         }
     }
 
@@ -185,6 +191,9 @@ class SmartThermostat extends SmartGeneric {
             this.getSecondaryDiv(),
             this.state.showDialog ?
                 <Dialog key={this.key + 'dialog'}
+                        unit={this.unit}
+                        commaAsDelimiter={this.commaAsDelimiter}
+                        step={this.step}
                         dialogKey={this.key + 'dialog'}
                         startValue={this.state[this.id]}
                         windowWidth={this.props.windowWidth}

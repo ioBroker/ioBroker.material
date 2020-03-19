@@ -1,5 +1,5 @@
 /**
- * Copyright 2018 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2020 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -77,12 +77,21 @@ class SmartDialogKnob extends SmartDialogGeneric  {
         this.componentReady();
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.startValue !== this.state.value) {
-            this.setState({value: nextProps.startValue});
+    static getDerivedStateFromProps(props, state) {
+        const newState = {};
+        let changed;
+        if (props.startValue !== state.value) {
+            newState.value = props.startValue;
+            changed = true;
         }
-        if (nextProps.startMuteValue !== undefined && nextProps.startMuteValue !== this.state.muteValue) {
-            this.setState({muteValue: nextProps.startMuteValue});
+        if (props.startMuteValue !== undefined && props.startMuteValue !== state.muteValue) {
+            newState.muteValue = props.startMuteValue;
+            changed = true;
+        }
+        if (changed) {
+            return newState;
+        } else {
+            return null;
         }
     }
 

@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2019 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2020 bluefox <dogafox@gmail.com>
  *
  * The MIT License (MIT)
  *
@@ -299,6 +299,12 @@ class ServerConnection {
             } else {
                 url = window.location.protocol + '//' + window.location.host;
             }
+
+            // if debug
+            if (window.location.port === '3000' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+                url = window.location.protocol + '//localhost:8082';
+            }
+
 
             if (this._socket) {
                 try {
