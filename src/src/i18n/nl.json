@@ -1,4 +1,5 @@
 {
+  "": "",
   "-": "-",
   "Add custom URL": "Aangepaste URL toevoegen",
   "Adjusting Command": "Commando aanpassen",
@@ -14,6 +15,7 @@
   "Close": "Dichtbij",
   "Color temperature": "Kleurtemperatuur",
   "Control ID is empty": "Controle-ID is leeg",
+  "Copy ID to clipboard": "Kopieer ID naar klembord",
   "Crop": "Gewas",
   "Crop image": "Afbeelding bijsnijden",
   "Current": "Stroom",
@@ -21,6 +23,7 @@
   "Custom URL": "Eigen URL",
   "Decision Value": "Beslissingswaarde",
   "Delete": "Verwijder",
+  "Description": "Beschrijving",
   "Discard changes": "Veranderingen ongedaan maken",
   "Drag direction": "Sleeprichting",
   "Drop some files here or click...": "Zet hier enkele bestanden neer of klik op ...",
@@ -37,6 +40,7 @@
   "Lock state": "Status vergrendelen",
   "Logout": "Uitloggen",
   "Menu instances": "instanties",
+  "Name": "Naam",
   "No Motion": "Geen beweging",
   "No elements": "Geen elementen",
   "Not saved!": "Niet opgeslagen!",
@@ -46,6 +50,7 @@
   "On Time": "Op interval",
   "Others": "anderen",
   "Percent": "procent",
+  "Please create some rooms in admin": "Maak enkele kamers aan in de admin",
   "Precip.": "Neerslag.",
   "Press Cont": "Ononderbroken indrukken",
   "Pressure": "Druk",
@@ -123,6 +128,7 @@
   "mute": "dempen",
   "name": "Naam",
   "newLine": "Nieuwe groep - nieuwe lijn",
+  "noAck": "Wacht niet op bevestiging",
   "noCache": "Laad altijd objecten",
   "opened": "geopend",
   "read app config": "configuratie van de app lezen",
@@ -142,6 +148,8 @@
   "update": "Update-interval (ms)",
   "updateInDialog": "Update-interval in dialoogvenster (ms)",
   "useDefaultIcon": "Gebruik standaardpictogram",
+  "Close all blinds": "Sluit alle blinds",
+  "Open all blinds": "Open alle blinds",
   "wind_E": "E",
   "wind_ENE": "ENE",
   "wind_ESE": "ESE",
@@ -157,6 +165,5 @@
   "wind_SW": "SW",
   "wind_W": "SSW",
   "wind_WNW": "WNW",
-  "wind_WSW": "WSW",
-  "Please create some rooms in admin": "Maak enkele kamers aan in de admin"
+  "wind_WSW": "WSW"
 }

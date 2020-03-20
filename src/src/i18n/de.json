@@ -1,4 +1,5 @@
 {
+  "": "",
   "-": "-",
   "Add custom URL": "Fügen Sie eine benutzerdefinierte URL hinzu",
   "Adjusting Command": "Anpass-Befehl",
@@ -14,6 +15,7 @@
   "Close": "Zumachen",
   "Color temperature": "Farbtemperatur",
   "Control ID is empty": "Control ID is empty",
+  "Copy ID to clipboard": "ID in Zwischenablage kopieren",
   "Crop": "Zuschneiden",
   "Crop image": "Bild zuschneiden",
   "Current": "Strom",
@@ -21,6 +23,7 @@
   "Custom URL": "Eigene URL",
   "Decision Value": "Entscheidungswert",
   "Delete": "Löschen",
+  "Description": "Beschreibung",
   "Discard changes": "Änderungen verwerfen",
   "Drag direction": "Zieh-Richtung",
   "Drop some files here or click...": "Dateien hierher schieben oder klicken ...",
@@ -37,6 +40,7 @@
   "Lock state": "Sperrstatus",
   "Logout": "Ausloggen",
   "Menu instances": "Instanzen",
+  "Name": "Name",
   "No Motion": "Keine Bewegung",
   "No elements": "Keine Elemente",
   "Not saved!": "Nicht gespeichert!",
@@ -46,6 +50,7 @@
   "On Time": "AN-Dauer",
   "Others": "Andere",
   "Percent": "Prozent",
+  "Please create some rooms in admin": "Bitte erstellen Sie einige Räume in admin",
   "Precip.": "Niederschlag",
   "Press Cont": "Dauerknopsdrück",
   "Pressure": "Druck",
@@ -123,6 +128,7 @@
   "mute": "Mute",
   "name": "Name",
   "newLine": "Neue Gruppe - neuer Zeile",
+  "noAck": "Warten Sie nicht auf die Bestätigung",
   "noCache": "Objekte immer neu laden",
   "opened": "auf",
   "read app config": "lese App-Konfiguration",
@@ -142,6 +148,8 @@
   "update": "Aktualisierungsintervall (ms)",
   "updateInDialog": "Aktualisierungsintervall im Dialog (ms)",
   "useDefaultIcon": "Standard-Symbol",
+  "Close all blinds": "Schließen Sie alle Jalousien",
+  "Open all blinds": "Öffne alle Jalousien",
   "wind_E": "O",
   "wind_ENE": "ONO",
   "wind_ESE": "OSO",
@@ -157,6 +165,5 @@
   "wind_SW": "SW",
   "wind_W": "W",
   "wind_WNW": "WNW",
-  "wind_WSW": "WSW",
-  "Please create some rooms in admin": "Bitte erstellen Sie einige Räume in admin"
+  "wind_WSW": "WSW"
 }

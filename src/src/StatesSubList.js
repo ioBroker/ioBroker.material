@@ -22,6 +22,9 @@ import ButtonBase from '@material-ui/core/ButtonBase';
 import {MdPermScanWifi as IconUnreach} from 'react-icons/md';
 import {MdDragHandle as IconGrip} from 'react-icons/md';
 import {TiLightbulb as IconLight} from 'react-icons/ti';
+//import {TiLightbulb as IconBlind0} from 'react-icons/ti';
+//import {TiLightbulb as IconBlind100} from 'react-icons/ti';
+import IconBlind from './icons/Jalousie'
 
 import Utils from './Utils';
 import Theme from './theme';
@@ -464,10 +467,47 @@ class StatesSubList extends Component {
                 if (this.widgetTypes[id].ON_SET) {
                     this.props.onControl(this.widgetTypes[id].ON_SET, isOn);
                 } else if (this.widgetTypes[id].SET) {
-                    this.props.onControl(this.widgetTypes[id].SET, isOn ? this.props.objects[this.widgetTypes[id].SET].common.max : this.props.objects[this.widgetTypes[id].SET].common.min);
+                    let max = this.props.objects[this.widgetTypes[id].SET].common.max;
+                    let min = this.props.objects[this.widgetTypes[id].SET].common.min;
+                    if (max === undefined) {
+                        max = 100;
+                    }
+                    if (min === undefined) {
+                        min = 0;
+                    }
+
+                    this.props.onControl(this.widgetTypes[id].SET, isOn ? max : min);
                 }
             } else if (this.widgetTypes[id].type === Types.light && this.widgetTypes[id].SET) {
                 this.props.onControl(this.widgetTypes[id].SET, isOn);
+            }
+        }
+    }
+
+    controlAllBlinds(isOn) {
+        for (let id in this.widgetTypes) {
+            if (!this.widgetTypes.hasOwnProperty(id)) continue;
+            if (this.widgetTypes[id].type === Types.blind) {
+                if (this.widgetTypes[id].ON_SET) {
+                    this.props.onControl(this.widgetTypes[id].ON_SET, isOn);
+                } else if (this.widgetTypes[id].SET) {
+                    let max = this.props.objects[this.widgetTypes[id].SET].common.max;
+                    let min = this.props.objects[this.widgetTypes[id].SET].common.min;
+                    if (max === undefined) {
+                        max = 100;
+                    }
+                    if (min === undefined) {
+                        min = 0;
+                    }
+                    const settings = Utils.getSettings(this.props.objects[id], {user: this.props.user, language: I18n.getLanguage()})
+                    if (settings.inverted) {
+                        const m = max;
+                        max = min;
+                        min = m;
+                    }
+
+                    this.props.onControl(this.widgetTypes[id].SET, isOn ? max : min);
+                }
             }
         }
     }
@@ -476,21 +516,28 @@ class StatesSubList extends Component {
         if (this.props.editMode) return null;
 
         let countLights = 0;
-        for (let id in this.widgetTypes) {
-            if (this.widgetTypes.hasOwnProperty(id) &&
-                (this.widgetTypes[id].type === Types.light || this.widgetTypes[id].type === Types.dimmer))
-            {
+        let countBlinds = 0;
+        Object.keys(this.widgetTypes).forEach(id => {
+            if (this.widgetTypes[id].type === Types.light || this.widgetTypes[id].type === Types.dimmer) {
                 countLights++;
             }
-        }
+            if (this.widgetTypes[id].type === Types.blind){
+                countBlinds++;
+            }
+        });
+
+        const controls = [];
+
         if (countLights > 1) {
-            return [
-                (<ButtonBase key="light-off" variant="fab" mini="true" aria-label="Off" onClick={() => this.controlAllLights(false)} style={Object.assign({}, Theme.buttonAllLight, {color: 'black'})} title={I18n.t('All lights off')}><IconLight /></ButtonBase>),
-                (<ButtonBase key="light-on"  variant="fab" mini="true" aria-label="On"  onClick={() => this.controlAllLights(true)}  style={Object.assign({}, Theme.buttonAllLight, {color: Theme.palette.lampOn})} title={I18n.t('All lights on')}><IconLight /></ButtonBase>)
-            ];
-        } else {
-            return null;
+            controls.push((<ButtonBase key="light-off" variant="fab" mini="true" aria-label="Off" onClick={() => this.controlAllLights(false)} style={Object.assign({}, Theme.buttonAllLight, {color: 'black'})}              title={I18n.t('All lights off')}><IconLight /></ButtonBase>));
+            controls.push((<ButtonBase key="light-on"  variant="fab" mini="true" aria-label="On"  onClick={() => this.controlAllLights(true)}  style={Object.assign({}, Theme.buttonAllLight, {color: Theme.palette.lampOn})} title={I18n.t('All lights on')}><IconLight  /></ButtonBase>));
         }
+        if (countBlinds > 1) {
+            controls.push((<ButtonBase key="blind-off" variant="fab" mini="true" aria-label="Off" onClick={() => this.controlAllBlinds(false)} style={Object.assign({}, Theme.buttonAllLight, {color: 'black'})}              title={I18n.t('Close all blinds')}><IconBlind  style={Object.assign({}, Theme.iconAllBlinds, {color: 'black'})}/></ButtonBase>));
+            controls.push((<ButtonBase key="blind-on"  variant="fab" mini="true" aria-label="On"  onClick={() => this.controlAllBlinds(true)}  style={Object.assign({}, Theme.buttonAllLight, {color: Theme.palette.lampOn})} title={I18n.t('Open all blinds')}><IconBlind style={Object.assign({}, Theme.iconAllBlinds, {color: 'black', opacity: 0.3})} /></ButtonBase>));
+        }
+
+        return controls.length ? controls : null;
     }
 
     render() {

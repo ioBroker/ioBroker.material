@@ -1,4 +1,5 @@
 {
+  "": "",
   "-": "-",
   "Add custom URL": "Agregar URL personalizada",
   "Adjusting Command": "Comando de ajuste",
@@ -14,6 +15,7 @@
   "Close": "Cerca",
   "Color temperature": "Temperatura del color",
   "Control ID is empty": "La ID de control está vacía",
+  "Copy ID to clipboard": "Copiar ID al portapapeles",
   "Crop": "Cultivo",
   "Crop image": "Delimitar imagen",
   "Current": "Corriente",
@@ -21,6 +23,7 @@
   "Custom URL": "URL personalizada",
   "Decision Value": "Valor de decisión",
   "Delete": "Borrar",
+  "Description": "Descripción",
   "Discard changes": "Descartar los cambios",
   "Drag direction": "Dirección de arrastre",
   "Drop some files here or click...": "Suelta algunos archivos aquí o haz clic ...",
@@ -37,6 +40,7 @@
   "Lock state": "Estado de bloqueo",
   "Logout": "Cerrar sesión",
   "Menu instances": "Instancias",
+  "Name": "Nombre",
   "No Motion": "Sin movimiento",
   "No elements": "Sin elementos",
   "Not saved!": "¡No guardado!",
@@ -46,6 +50,7 @@
   "On Time": "En intervalo",
   "Others": "Otros",
   "Percent": "Por ciento",
+  "Please create some rooms in admin": "Por favor crea algunas salas en admin",
   "Precip.": "Precip.",
   "Press Cont": "Prensa continua",
   "Pressure": "Presión",
@@ -123,6 +128,7 @@
   "mute": "mudo",
   "name": "Nombre",
   "newLine": "Nuevo grupo - nueva línea",
+  "noAck": "No esperes el reconocimiento",
   "noCache": "Siempre carga objetos",
   "opened": "abrió",
   "read app config": "lectura de la configuración de la aplicación",
@@ -142,6 +148,8 @@
   "update": "Intervalo de actualización (ms)",
   "updateInDialog": "Intervalo de actualización en diálogo (ms)",
   "useDefaultIcon": "Usar icono predeterminado",
+  "Close all blinds": "Cerrar todas las persianas",
+  "Open all blinds": "Abrir todas las persianas",
   "wind_E": "E",
   "wind_ENE": "ENE",
   "wind_ESE": "ESE",
@@ -157,6 +165,5 @@
   "wind_SW": "SO",
   "wind_W": "W",
   "wind_WNW": "WNW",
-  "wind_WSW": "WSW",
-  "Please create some rooms in admin": "Por favor crea algunas salas en admin"
+  "wind_WSW": "WSW"
 }

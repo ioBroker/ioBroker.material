@@ -80,6 +80,7 @@ class SmartVolume extends SmartGeneric {
         this.stateRx.setValue = null;
         this.key = 'smart-slider-' + this.id + '-';
         this.doubleState = true; // used in generic
+        this.noAck = true;  // used in generic
 
         this.componentReady();
     }
@@ -126,7 +127,7 @@ class SmartVolume extends SmartGeneric {
     setValue(value) {
         console.log('Control ' + this.id + ' = ' + value);
         if (this.actualId !== this.id) {
-            this.setState({executing: true, setValue: value});
+            this.setState({executing: this.state.settings.noAck ? false : true, setValue: value});
         }
         if (this.max - this.min > 9) {
             value = Math.round(value);

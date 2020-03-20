@@ -1,4 +1,5 @@
 {
+  "": "",
   "-": "-",
   "Add custom URL": "Добавить пользовательский URL",
   "Adjusting Command": "Команда настройки",
@@ -14,6 +15,7 @@
   "Close": "Закрыть",
   "Color temperature": "Цветовая температура",
   "Control ID is empty": "Идентификатор управления пуст",
+  "Copy ID to clipboard": "Скопировать ID в буфер обмена",
   "Crop": "Обрезать",
   "Crop image": "Обрезать изображение",
   "Current": "Ток",
@@ -21,6 +23,7 @@
   "Custom URL": "Пользовательский URL",
   "Decision Value": "Значение для решения",
   "Delete": "Удалить",
+  "Description": "Описание",
   "Discard changes": "Отменить изменения",
   "Drag direction": "Направление перемещения",
   "Drop some files here or click...": "Переместите сюда файлы или нажмите ...",
@@ -37,6 +40,7 @@
   "Lock state": "Состояние замка",
   "Logout": "Выйти",
   "Menu instances": "Инстанции драйверов",
+  "Name": "Имя",
   "No Motion": "Нет движения",
   "No elements": "Нет элементов",
   "Not saved!": "Изменения не сохранены!",
@@ -46,6 +50,7 @@
   "On Time": "Интервал включения",
   "Others": "Другие",
   "Percent": "Процент",
+  "Please create some rooms in admin": "Пожалуйста, создайте несколько комнат в админке",
   "Precip.": "Осадки",
   "Press Cont": "Длительное нажатие",
   "Pressure": "Атм. давление",
@@ -123,6 +128,7 @@
   "mute": "Убрать звук",
   "name": "Имя",
   "newLine": "Каждая группа с новой строки",
+  "noAck": "Не ждать подтверждения",
   "noCache": "Загружать каждый раз объекты",
   "opened": "откр.",
   "read app config": "чтение настроек приложения",
@@ -142,6 +148,8 @@
   "update": "Интервал обновления (мс)",
   "updateInDialog": "Интервал в диалоговом окне (мс)",
   "useDefaultIcon": "Значок по умолчанию",
+  "Close all blinds": "Закрыть все жалюзи",
+  "Open all blinds": "Открыть все жалюзи",
   "wind_E": "В",
   "wind_ENE": "ВCВ",
   "wind_ESE": "ВЮВ",
@@ -157,6 +165,5 @@
   "wind_SW": "ЮЗ",
   "wind_W": "З",
   "wind_WNW": "ЗСЗ",
-  "wind_WSW": "ЗЮЗ",
-  "Please create some rooms in admin": "Пожалуйста, создайте несколько комнат в админке"
+  "wind_WSW": "ЗЮЗ"
 }

@@ -73,6 +73,7 @@ class SmartSwitch extends SmartGeneric {
         });
         this.key = 'smart-switch-' + this.id + '-';
         this.doubleState = true; // used in generic
+        this.noAck = true;  // used in generic
 
         this.props.tile.registerHandler('onClick', this.onTileClick.bind(this));
         this.componentReady();
@@ -105,7 +106,7 @@ class SmartSwitch extends SmartGeneric {
 
     toggle() {
         if (this.actualId !== this.id) {
-            this.setState({executing: true});
+            this.setState({executing: this.state.settings.noAck ? false : true});
         }
         this.props.onControl(this.id, !this.state[this.actualId]);
     }

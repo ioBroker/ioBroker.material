@@ -1,4 +1,5 @@
 {
+  "": "",
   "-": "-",
   "Add custom URL": "Ajouter une URL personnalisée",
   "Adjusting Command": "Commande d'ajustement",
@@ -14,6 +15,7 @@
   "Close": "Fermer",
   "Color temperature": "Température de couleur",
   "Control ID is empty": "L'ID de contrôle est vide",
+  "Copy ID to clipboard": "Copier l'ID dans le presse-papiers",
   "Crop": "Surgir",
   "Crop image": "Image de la culture",
   "Current": "Actuel",
@@ -21,6 +23,7 @@
   "Custom URL": "URL personnalisée",
   "Decision Value": "Valeur de décision",
   "Delete": "Effacer",
+  "Description": "La description",
   "Discard changes": "Annuler les modifications",
   "Drag direction": "Glisser direction",
   "Drop some files here or click...": "Déposer des fichiers ici ou cliquez sur ...",
@@ -37,6 +40,7 @@
   "Lock state": "Etat verrouillé",
   "Logout": "Connectez - Out",
   "Menu instances": "Les instances",
+  "Name": "Nom",
   "No Motion": "Pas de mouvement",
   "No elements": "Aucun élément",
   "Not saved!": "Pas sauvé!",
@@ -46,6 +50,7 @@
   "On Time": "Sur intervalle",
   "Others": "Autres",
   "Percent": "Pour cent",
+  "Please create some rooms in admin": "Veuillez créer quelques salles dans l'admin",
   "Precip.": "Précip.",
   "Press Cont": "Presse continue",
   "Pressure": "Pression",
@@ -123,6 +128,7 @@
   "mute": "muet",
   "name": "prénom",
   "newLine": "Nouveau groupe - nouvelle ligne",
+  "noAck": "N'attendez pas l'accusé de réception",
   "noCache": "Toujours charger des objets",
   "opened": "ouvert",
   "read app config": "lecture de la configuration de l'application",
@@ -142,6 +148,8 @@
   "update": "Intervalle de mise à jour (ms)",
   "updateInDialog": "Intervalle de mise à jour dans la boîte de dialogue (ms)",
   "useDefaultIcon": "Utiliser l'icône par défaut",
+  "Close all blinds": "Fermez tous les stores",
+  "Open all blinds": "Ouvrez tous les stores",
   "wind_E": "E",
   "wind_ENE": "ENE",
   "wind_ESE": "ESE",
@@ -157,6 +165,5 @@
   "wind_SW": "SW",
   "wind_W": "W",
   "wind_WNW": "WNW",
-  "wind_WSW": "WSW",
-  "Please create some rooms in admin": "Veuillez créer quelques salles dans l'admin"
+  "wind_WSW": "WSW"
 }

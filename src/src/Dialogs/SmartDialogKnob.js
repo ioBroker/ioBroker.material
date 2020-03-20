@@ -88,11 +88,7 @@ class SmartDialogKnob extends SmartDialogGeneric  {
             newState.muteValue = props.startMuteValue;
             changed = true;
         }
-        if (changed) {
-            return newState;
-        } else {
-            return null;
-        }
+        return changed ? newState : null;
     }
 
     localValue2externalValue(value) {

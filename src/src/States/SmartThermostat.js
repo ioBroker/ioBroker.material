@@ -141,17 +141,21 @@ class SmartThermostat extends SmartGeneric {
         );
     }
 
-    getStateText() {
-        if (this.state[this.id] === null) {
+    formatValue(num, unit) {
+        if (num === null) {
             return '?';
         } else {
-            const val = Math.round(this.state[this.id] * 100) / 100;
+            const val = Math.round(num * 100) / 100;
             if (this.commaAsDelimiter) {
-                return val.toString().replace('.', ',') + this.unit;
+                return val.toString().replace('.', ',') + (unit || this.unit);
             } else {
-                return val + this.unit;
+                return val + (unit || this.unit);
             }
         }
+    }
+
+    getStateText() {
+        return this.formatValue(this.state[this.id]);
     }
 
     getSecondaryDiv() {
@@ -164,13 +168,13 @@ class SmartThermostat extends SmartGeneric {
                 {this.actualId !== this.id ?
                     [
                         (<IconThermometer key={this.key + 'tile-secondary-icon-0'} style={Object.assign({}, Theme.tile.secondary.icon)} />),
-                        (<span key={this.key + 'tile-secondary-text-0'} style={Theme.tile.secondary.text}>{this.state[this.actualId] === null ? '?' : this.state[this.actualId] + this.unit}</span>),
+                        (<span key={this.key + 'tile-secondary-text-0'} style={Theme.tile.secondary.text}>{this.formatValue(this.state[this.actualId])}</span>),
                         (<br key={this.key + 'tile-secondary-br-0'} />)
                     ] : null}
                 {this.humidityId ?
                     [
                         (<IconHydro key={this.key + 'tile-secondary-icon-1'} style={Object.assign({}, Theme.tile.secondary.icon)} />),
-                        (<span key={this.key + 'tile-secondary-text-1'} style={Theme.tile.secondary.text}>{this.state[this.humidityId] === null ? '?' : this.state[this.humidityId] + this.humUnit}</span>)
+                        (<span key={this.key + 'tile-secondary-text-1'} style={Theme.tile.secondary.text}>{this.formatValue(this.state[this.humidityId], this.humUnit)}</span>)
                     ] : null}
             </div>);
     }

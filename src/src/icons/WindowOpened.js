@@ -2,7 +2,7 @@ import * as React from "react";
 
 function SvgWindowOpened(props) {
   return (
-    <svg width={361} height={361} {...props}>
+    <svg width={361} height={361} viewBox="0 0 361 361" {...props}>
       <path
         d="M267.826 263.303c0 3.91-3.156 7.082-7.05 7.082l-157.885.021c-3.894 0-7.05-3.171-7.05-7.083v-157.5c0-3.911 3.156-7.083 7.05-7.083l157.885-.021c3.894 0 7.05 3.172 7.05 7.083v157.501z"
         fill="none"

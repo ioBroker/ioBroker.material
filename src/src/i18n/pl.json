@@ -1,4 +1,5 @@
 {
+  "": "",
   "-": "-",
   "Add custom URL": "Dodaj niestandardowy adres URL",
   "Adjusting Command": "Dostosowywanie polecenia",
@@ -14,6 +15,7 @@
   "Close": "Blisko",
   "Color temperature": "Temperatura koloru",
   "Control ID is empty": "Identyfikator kontroli jest pusty",
+  "Copy ID to clipboard": "Skopiuj identyfikator do schowka",
   "Crop": "Przyciąć",
   "Crop image": "Przytnij zdjęcie",
   "Current": "obecny",
@@ -21,6 +23,7 @@
   "Custom URL": "Niestandardowy adres URL",
   "Decision Value": "Wartość decyzji",
   "Delete": "Kasować",
+  "Description": "Opis",
   "Discard changes": "Odrzucać zmiany",
   "Drag direction": "Przeciągnij kierunek",
   "Drop some files here or click...": "Upuść niektóre pliki tutaj lub kliknij ...",
@@ -37,6 +40,7 @@
   "Lock state": "Stan blokady",
   "Logout": "Wyloguj",
   "Menu instances": "Instancje",
+  "Name": "Nazwa",
   "No Motion": "Bez ruchu",
   "No elements": "Bez elementów",
   "Not saved!": "Nie zapisano!",
@@ -46,6 +50,7 @@
   "On Time": "W odstępie czasu",
   "Others": "Inne",
   "Percent": "Procent",
+  "Please create some rooms in admin": "Proszę utworzyć kilka pokoi w admin",
   "Precip.": "Opady",
   "Press Cont": "Ciągłe naciśnięcie",
   "Pressure": "Ciśnienie",
@@ -123,6 +128,7 @@
   "mute": "niemy",
   "name": "Nazwa",
   "newLine": "Nowa grupa - nowa linia",
+  "noAck": "Nie czekaj na potwierdzenie",
   "noCache": "Zawsze ładuj przedmioty",
   "opened": "otwierany",
   "read app config": "odczyt konfiguracji aplikacji",
@@ -142,6 +148,8 @@
   "update": "Interwał aktualizacji (ms)",
   "updateInDialog": "Interwał aktualizacji w oknie dialogowym (ms)",
   "useDefaultIcon": "Użyj domyślnej ikony",
+  "Close all blinds": "Zamknij wszystkie żaluzje",
+  "Open all blinds": "Otwórz wszystkie żaluzje",
   "wind_E": "E",
   "wind_ENE": "ENE",
   "wind_ESE": "ESE",
@@ -157,6 +165,5 @@
   "wind_SW": "SW",
   "wind_W": "W",
   "wind_WNW": "WNW",
-  "wind_WSW": "WSW",
-  "Please create some rooms in admin": "Proszę utworzyć kilka pokoi w admin"
+  "wind_WSW": "WSW"
 }

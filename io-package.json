@@ -1,9 +1,9 @@
 {
     "common": {
         "name": "material",
-        "version": "0.13.7",
+        "version": "0.13.8",
         "news": {
-            "0.13.7": {
+            "0.13.8": {
                 "en": "Added sorting of rooms",
                 "de": "Sortierung der Räume hinzugefügt",
                 "ru": "Добавлена сортировка комнат",

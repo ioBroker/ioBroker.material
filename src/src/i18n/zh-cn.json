@@ -1,4 +1,5 @@
 {
+  "": "",
   "-": "-",
   "Add custom URL": "添加自定义网址",
   "Adjusting Command": "调整命令",
@@ -14,6 +15,7 @@
   "Close": "关闭",
   "Color temperature": "色温",
   "Control ID is empty": "控件ID为空",
+  "Copy ID to clipboard": "将ID复制到剪贴板",
   "Crop": "裁剪",
   "Crop image": "裁剪图像",
   "Current": "当前",
@@ -21,6 +23,7 @@
   "Custom URL": "自定义网址",
   "Decision Value": "决定值",
   "Delete": "删除",
+  "Description": "描述",
   "Discard changes": "放弃更改",
   "Drag direction": "拖动方向",
   "Drop some files here or click...": "将文件拖拽到这里或单击这里......",
@@ -37,6 +40,7 @@
   "Lock state": "锁的状态",
   "Logout": "登出",
   "Menu instances": "实例",
+  "Name": "名称",
   "No Motion": "没有移动",
   "No elements": "没有元素",
   "Not saved!": "没有保存！",
@@ -46,6 +50,7 @@
   "On Time": "周期的",
   "Others": "其他",
   "Percent": "百分比",
+  "Please create some rooms in admin": "请在管理员中创建一些房间",
   "Precip.": "降雨",
   "Press Cont": "长按",
   "Pressure": "压力",
@@ -123,6 +128,7 @@
   "mute": "静音",
   "name": "名称",
   "newLine": "新的组-新的一行",
+  "noAck": "不要等待确认",
   "noCache": "始终加载对象",
   "opened": "已打开",
   "read app config": "读取应用配置",
@@ -142,6 +148,8 @@
   "update": "更新间隔（毫秒）",
   "updateInDialog": "对话框中的更新间隔（毫秒）",
   "useDefaultIcon": "使用默认图表",
+  "Close all blinds": "关闭所有百叶窗",
+  "Open all blinds": "打开所有百叶窗",
   "wind_E": "E",
   "wind_ENE": "ENE",
   "wind_ESE": "ESE",
@@ -157,6 +165,5 @@
   "wind_SW": "SW",
   "wind_W": "W",
   "wind_WNW": "WNW",
-  "wind_WSW": "WSW",
-  "Please create some rooms in admin": "请在管理员中创建一些房间"
+  "wind_WSW": "WSW"
 }

@@ -1,4 +1,5 @@
 {
+  "": "",
   "-": "-",
   "Add custom URL": "Adicionar URL personalizado",
   "Adjusting Command": "Comando de ajuste",
@@ -14,6 +15,7 @@
   "Close": "Fechar",
   "Color temperature": "Temperatura da cor",
   "Control ID is empty": "O ID do controle está vazio",
+  "Copy ID to clipboard": "Copiar ID para a área de transferência",
   "Crop": "Cortar",
   "Crop image": "Cortar imagem",
   "Current": "Atual",
@@ -21,6 +23,7 @@
   "Custom URL": "URL personalizado",
   "Decision Value": "Valor da decisão",
   "Delete": "Excluir",
+  "Description": "Descrição",
   "Discard changes": "Descartar mudanças",
   "Drag direction": "Direcção à tracção",
   "Drop some files here or click...": "Solte alguns arquivos aqui ou clique em ...",
@@ -37,6 +40,7 @@
   "Lock state": "Estado de bloqueio",
   "Logout": "Sair",
   "Menu instances": "Instâncias",
+  "Name": "Nome",
   "No Motion": "Nenhum movimento",
   "No elements": "Nenhum elemento",
   "Not saved!": "Não foi salvo!",
@@ -46,6 +50,7 @@
   "On Time": "Tempo ligado",
   "Others": "Outras",
   "Percent": "Por cento",
+  "Please create some rooms in admin": "Por favor, crie alguns quartos no admin",
   "Precip.": "Precipitação",
   "Press Cont": "Imprensa contínua",
   "Pressure": "Pressão",
@@ -123,6 +128,7 @@
   "mute": "mute",
   "name": "nome",
   "newLine": "Novo grupo - nova linha",
+  "noAck": "Não espere pelo reconhecimento",
   "noCache": "Sempre recarregar objetos",
   "opened": "aberto",
   "read app config": "ler configuração do aplicativo",
@@ -142,6 +148,8 @@
   "update": "Intervalo de atualização (ms)",
   "updateInDialog": "Intervalo de atualização na caixa de diálogo (ms)",
   "useDefaultIcon": "Ícone normal",
+  "Close all blinds": "Feche todos os blinds",
+  "Open all blinds": "Abra todas as persianas",
   "wind_E": "E",
   "wind_ENE": "ENE",
   "wind_ESE": "ESE",
@@ -157,6 +165,5 @@
   "wind_SW": "SO",
   "wind_W": "O",
   "wind_WNW": "ONO",
-  "wind_WSW": "OSO",
-  "Please create some rooms in admin": "Por favor, crie alguns quartos no admin"
+  "wind_WSW": "OSO"
 }

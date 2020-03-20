@@ -481,9 +481,11 @@ class SmartGeneric extends Component {
         if (props.editMode !== state.editMode) {
             newState.editMode = props.editMode;
             //this.props.tile.setVisibility(nextProps.editMode || this.state.settings.enabled);
+            changed = true;
         }
         if (JSON.stringify(props.ignoreIndicators) !== JSON.stringify(state.ignoreIndicators)) {
             newState.ignoreIndicators = props.ignoreIndicators;
+            changed = true;
         }
 
         return changed ? newState : null;
@@ -614,9 +616,17 @@ class SmartGeneric extends Component {
             });
         }
 
+        if (this.noAck) {
+            settings.unshift({
+                name: 'doubleSize',
+                value: this.state.settings.doubleSize || '',
+                type: 'boolean'
+            });
+        }
+
         settings.unshift({
-            name: 'doubleSize',
-            value: this.state.settings.doubleSize || '',
+            name: 'noAck',
+            value: this.state.settings.noAck || '',
             type: 'boolean'
         });
 

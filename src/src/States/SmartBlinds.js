@@ -76,6 +76,7 @@ class SmartBlinds extends SmartGeneric {
         this.stateRx.showDialog = false; // support dialog in this tile used in generic class)
         this.stateRx.setValue = null;
         this.key = 'smart-blinds-' + this.id + '-';
+        this.noAck = true;  // used in generic
         this.doubleState = true; // used in generic: If colors for on and for off
 
         this.componentReady();
@@ -142,7 +143,7 @@ class SmartBlinds extends SmartGeneric {
 
     setValue(percent) {
         console.log('Control ' + this.id + ' = ' + this.percentToRealValue(percent));
-        this.setState({executing: true, setValue: percent});
+        this.setState({executing: this.state.settings.noAck ? false : true, setValue: percent});
         this.props.onControl(this.id, this.percentToRealValue(percent));
     }
 

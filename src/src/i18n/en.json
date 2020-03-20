@@ -1,4 +1,5 @@
 {
+  "": "",
   "-": "-",
   "Add custom URL": "Add custom URL",
   "Adjusting Command": "Adjusting Command",
@@ -14,6 +15,7 @@
   "Close": "Close",
   "Color temperature": "Color temperature",
   "Control ID is empty": "Control ID is empty",
+  "Copy ID to clipboard": "Copy ID to clipboard",
   "Crop": "Crop",
   "Crop image": "Crop image",
   "Current": "Current",
@@ -21,6 +23,7 @@
   "Custom URL": "Custom URL",
   "Decision Value": "Decision Value",
   "Delete": "Delete",
+  "Description": "Description",
   "Discard changes": "Discard changes",
   "Drag direction": "Drag direction",
   "Drop some files here or click...": "Drop some files here or click...",
@@ -37,6 +40,7 @@
   "Lock state": "Lock state",
   "Logout": "Logout",
   "Menu instances": "Instances",
+  "Name": "Name",
   "No Motion": "No Motion",
   "No elements": "No elements",
   "Not saved!": "Not saved!",
@@ -46,6 +50,7 @@
   "On Time": "On interval",
   "Others": "Others",
   "Percent": "Percent",
+  "Please create some rooms in admin": "Please create some rooms in admin",
   "Precip.": "Precip.",
   "Press Cont": "Continuous press",
   "Pressure": "Pressure",
@@ -123,6 +128,7 @@
   "mute": "mute",
   "name": "Name",
   "newLine": "New group - new line",
+  "noAck": "Do not wait for acknowledgement",
   "noCache": "Always load objects",
   "opened": "opened",
   "read app config": "reading app configuration",
@@ -142,6 +148,8 @@
   "update": "Update interval (ms)",
   "updateInDialog": "Update interval in dialog (ms)",
   "useDefaultIcon": "Use default icon",
+  "Close all blinds": "Close all blinds",
+  "Open all blinds": "Open all blinds",
   "wind_E": "E",
   "wind_ENE": "ENE",
   "wind_ESE": "ESE",
@@ -157,6 +165,5 @@
   "wind_SW": "SW",
   "wind_W": "W",
   "wind_WNW": "WNW",
-  "wind_WSW": "WSW",
-  "Please create some rooms in admin": "Please create some rooms in admin"
+  "wind_WSW": "WSW"
 }

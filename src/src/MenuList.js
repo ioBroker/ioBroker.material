@@ -426,9 +426,10 @@ class MenuList extends Component {
 
     getSortableItem(content, style, className, id, i, parent) {
         if (this.props.editMode) {
+            // zIndex 10000 because of drag&drop
             const SortableItem = sortableElement(({content, style, className, id}) => (
                 <ListItem
-                    style={Object.assign({}, style, {zIndex: 1201})}
+                    style={Object.assign({}, style, {zIndex: 10000})}
                     button
                     className={className}
                     key={`item-${id}`}

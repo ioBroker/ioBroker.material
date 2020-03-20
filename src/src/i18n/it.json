@@ -1,4 +1,5 @@
 {
+  "": "",
   "-": "-",
   "Add custom URL": "Aggiungi URL personalizzato",
   "Adjusting Command": "Comando di regolazione",
@@ -14,6 +15,7 @@
   "Close": "Vicino",
   "Color temperature": "Temperatura di colore",
   "Control ID is empty": "L'ID di controllo è vuoto",
+  "Copy ID to clipboard": "Copia ID negli appunti",
   "Crop": "raccolto",
   "Crop image": "Ritaglia l'immagine",
   "Current": "attuale",
@@ -21,6 +23,7 @@
   "Custom URL": "URL personalizzato",
   "Decision Value": "Valore decisionale",
   "Delete": "Elimina",
+  "Description": "Descrizione",
   "Discard changes": "Non salvare le modifiche",
   "Drag direction": "Direzione del trascinamento",
   "Drop some files here or click...": "Trascina alcuni file qui o fai clic su ...",
@@ -37,6 +40,7 @@
   "Lock state": "Stato di blocco",
   "Logout": "Disconnettersi",
   "Menu instances": "istanze",
+  "Name": "Nome",
   "No Motion": "Nessun movimento",
   "No elements": "Nessun elemento",
   "Not saved!": "Non salvato!",
@@ -46,6 +50,7 @@
   "On Time": "A intervallo",
   "Others": "Altri",
   "Percent": "Per cento",
+  "Please create some rooms in admin": "Si prega di creare alcune stanze in admin",
   "Precip.": "Pioggia.",
   "Press Cont": "Stampa continua",
   "Pressure": "Pressione",
@@ -123,6 +128,7 @@
   "mute": "muto",
   "name": "Nome",
   "newLine": "Nuovo gruppo - nuova linea",
+  "noAck": "Non attendere il riconoscimento",
   "noCache": "Carica sempre oggetti",
   "opened": "ha aperto",
   "read app config": "lettura della configurazione dell'app",
@@ -142,6 +148,8 @@
   "update": "Intervallo di aggiornamento (ms)",
   "updateInDialog": "Intervallo di aggiornamento nella finestra di dialogo (ms)",
   "useDefaultIcon": "Usa icona predefinita",
+  "Close all blinds": "Chiudi tutti i bui",
+  "Open all blinds": "Apri tutti i bui",
   "wind_E": "E",
   "wind_ENE": "ENE",
   "wind_ESE": "ESE",
@@ -157,6 +165,5 @@
   "wind_SW": "SW",
   "wind_W": "W",
   "wind_WNW": "WNW",
-  "wind_WSW": "WSW",
-  "Please create some rooms in admin": "Si prega di creare alcune stanze in admin"
+  "wind_WSW": "WSW"
 }
