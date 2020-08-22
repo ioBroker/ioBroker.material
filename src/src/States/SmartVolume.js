@@ -28,7 +28,6 @@ import Types from './SmartTypes';
 import Dialog from '../Dialogs/SmartDialogKnob';
 
 import I18n from '../i18n';
-import Icon from "../icons/Thermometer";
 
 const style = {
     mute: {

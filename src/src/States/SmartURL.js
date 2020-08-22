@@ -22,7 +22,6 @@ import SmartGeneric from './SmartGeneric';
 import Dialog from '../Dialogs/SmartDialogURL';
 import Theme from '../theme';
 import Utils from '../Utils';
-import Icon from "../icons/Thermometer";
 
 const styles = {
     'title-div': {

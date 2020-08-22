@@ -27,7 +27,6 @@
 /* global document */
 /* global console */
 /* global window */
-/* global location */
 /* global setTimeout */
 /* global clearTimeout */
 /* jshint -W097 */

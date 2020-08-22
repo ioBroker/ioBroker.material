@@ -21,7 +21,6 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import {FaArrowsAltV as IconVertical} from 'react-icons/fa'
 import {MdAdd as IconAdd} from 'react-icons/md'
 import {FaArrowsAltH as IconHorizontal} from 'react-icons/fa'
-import Button from '@material-ui/core/Button';
 import Fab from '@material-ui/core/Fab';
 
 import Theme from './theme';

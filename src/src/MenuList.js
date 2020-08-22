@@ -528,7 +528,9 @@ class MenuList extends Component {
                 this.settings[item.id] = Utils.getSettings(this.props.objects[item.id], {user: this.props.user, language: this.props.language, id: item.id}, true);
             }
 
-            if (!this.props.editMode && !this.settings[item.id].enabled) return;
+            if (!this.props.editMode && !this.settings[item.id].enabled) {
+                return null;
+            }
 
             const visibilityButton = this.props.editMode ? <VisibilityButton
                 key="button"
