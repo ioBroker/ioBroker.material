@@ -556,7 +556,7 @@ class ServerConnection {
     getVersion(callback) {
         if (!this._checkConnection('getVersion', arguments)) return;
 
-        this._socket.emit('getVersion', version => callback && callback(version));
+        this._socket.emit('getVersion', (error, version) => callback && callback(version || error));
     }
 
     subscribe(idOrArray, callback) {
@@ -585,7 +585,7 @@ class ServerConnection {
             console.log('socket.io not initialized');
             return;
         }
-        this._socket.emit('getVersion', version => callback && callback(version));
+        this._socket.emit('getVersion', (error, version) => callback && callback(version || error));
     }
 
     readFile(filename, callback, isRemote) {

@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "material",
-        "version": "0.13.8",
+        "version": "0.13.9",
         "news": {
+            "0.13.9": {
+                "en": "Added support for new socket.io",
+                "de": "Unterstützung für neues socket.io hinzugefügt",
+                "ru": "Добавлена поддержка нового socket.io",
+                "pt": "Adicionado suporte para novo socket.io",
+                "nl": "Ondersteuning toegevoegd voor nieuwe socket.io",
+                "fr": "Ajout du support pour le nouveau socket.io",
+                "it": "Aggiunto supporto per il nuovo socket.io",
+                "es": "Soporte agregado para nuevo socket.io",
+                "pl": "Dodano obsługę nowego socket.io",
+                "zh-cn": "添加了对新的socket.io的支持"
+            },
             "0.13.8": {
                 "en": "Added sorting of rooms",
                 "de": "Sortierung der Räume hinzugefügt",
@@ -132,7 +144,7 @@
         ],
         "dependencies": [
             {
-                "web": ">=3.0.0"
+                "web": ">=3.0.12"
             }
         ],
         "localLink":                "%web_protocol%://%ip%:%web_port%/material/index.html",
