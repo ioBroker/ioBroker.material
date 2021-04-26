@@ -85,7 +85,7 @@ gulp.task('flat=>i18n', done => {
         keys.forEach(key => {
             words[key] = index[key][lang];
         });
-        fs.writeFileSync(dir + '/' + lang + '.json', JSON.stringify(words, null, 2));
+        fs.writeFileSync(dir + '/' + lang + '.json', JSON.stringify(words, null, 4));
     });
     done();
 });
