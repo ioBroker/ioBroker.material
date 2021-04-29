@@ -68,6 +68,16 @@
     }
 }
 
+.dialog-root {
+    height: calc(100% - 32px);
+    margin-top: 16px;
+    max-height: 1000px;
+}
+.dialog-paper {
+    width: 100%;
+    height: 100%;
+}
+
 .just-enabled-disabled-1 {
     background-color: white;
     animation-name: back-red;

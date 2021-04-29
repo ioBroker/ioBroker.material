@@ -35,7 +35,7 @@ import {MdBrightness6 as IconSun6} from 'react-icons/md';
 import {MdBrightness7 as IconSun7} from 'react-icons/md';
 
 import Theme from '../theme';
-import I18n from '../i18n';
+import I18n from '@iobroker/adapter-react/i18n';
 import Types from '../States/SmartTypes';
 // import IconLockOpened from "react-icons/lib/md/lock-open";
 // import IconLockClosed from "react-icons/lib/md/lock";

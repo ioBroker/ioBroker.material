@@ -17,10 +17,10 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Paper from '@material-ui/core/Paper';
 
-import I18n from './i18n';
+import I18n from '@iobroker/adapter-react/i18n';
 import Theme from './theme';
 import Types from './States/SmartTypes';
-import Utils from './Utils';
+import Utils from '@iobroker/adapter-react/Components/Utils';
 
 import SmartBlinds from './States/SmartBlinds';
 import SmartButton from './States/SmartButton';
@@ -86,7 +86,7 @@ class SmartTile extends Component {
         return SmartGeneric.getObjectName(this.props.objects, this.stateId, null, channelName, this.props.enumNames);
     }
 
-    onMouseDown(e) {
+    onMouseDown = e => {
         if (this.handlers.onMouseDown && !this.props.editMode) {
             //e.preventDefault();
             e.stopPropagation();
@@ -94,15 +94,11 @@ class SmartTile extends Component {
         }
     }
 
-    onMouseUp(e) {
-        if (this.handlers.onMouseUp && !this.props.editMode) this.handlers.onMouseUp(e);
-    }
+    onMouseUp = e =>
+        this.handlers.onMouseUp && !this.props.editMode && this.handlers.onMouseUp(e);
 
-    onClick(e) {
-        if (this.handlers.onClick && !this.props.editMode) {
-            this.handlers.onClick(e);
-        }
-    }
+    onClick = e =>
+        this.handlers.onClick && !this.props.editMode && this.handlers.onClick(e);
 
     getTileStyle() {
         let style;
@@ -192,35 +188,30 @@ class SmartTile extends Component {
 
         style = Object.assign(this.getTileStyle(), style);
 
-        return (
-            <Paper ref={this.tileRef}
-                   style={style}
-                   className={this.hasAnimation}
-                   onMouseDown={this.onMouseDown.bind(this)}
-                   onTouchStart={this.onMouseDown.bind(this)}
-                   onMouseUp={this.onMouseUp.bind(this)}
-                   onTouchEnd={this.onMouseUp.bind(this)}
-                   onClick={this.onClick.bind(this)}
-            >
-                <span style={{display: 'none'}}>{this.channelInfo ? this.channelInfo.states.find(state => state.id).id : 'nothing'}</span>
-                {content}
-            </Paper>);
+        return <Paper ref={this.tileRef}
+               style={style}
+               className={this.hasAnimation}
+               onMouseDown={this.onMouseDown}
+               onTouchStart={this.onMouseDown}
+               onMouseUp={this.onMouseUp}
+               onTouchEnd={this.onMouseUp}
+               onClick={this.onClick}
+        >
+            <span style={{display: 'none'}}>{this.channelInfo ? this.channelInfo.states.find(state => state.id).id : 'nothing'}</span>
+            {content}
+        </Paper>;
     }
 
-    registerHandler(eventName, handler) {
+    registerHandler = (eventName, handler) =>
         this.handlers[eventName] = handler;
-    }
 
-    unregisterHandler(eventName) {
-        if (this.handlers[eventName]) {
-            this.handlers[eventName] = null;
-        }
-    }
+    unregisterHandler = eventName =>
+        this.handlers[eventName] && (this.handlers[eventName] = null);
 
     createControl(control, channelInfo, tile) {
         let Component = control; // This will be used by rendering
         //              ↓
-        return (<Component
+        return <Component
             key={channelInfo.id + '-tile-' + Component.name}
             enumNames={this.props.enumNames}
             channelInfo={channelInfo}
@@ -230,11 +221,11 @@ class SmartTile extends Component {
             states={this.props.states}
             windowWidth={this.props.windowWidth}
             objects={this.props.objects}
-            registerHandler={this.registerHandler.bind(this)}
+            registerHandler={this.registerHandler}
             onSaveSettings={this.props.onSaveSettings}
             onCollectIds={this.props.onCollectIds}
             onControl={this.props.onControl}
-        />);
+        />;
     }
 
     render() {

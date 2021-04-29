@@ -20,7 +20,7 @@ import IconThermometer from '../icons/ThermometerSimple';
 import IconHydro from '../icons/Humidity';
 import Theme from '../theme';
 import Dialog from '../Dialogs/SmartDialogThermostat';
-import I18n from '../i18n';
+import I18n from '@iobroker/adapter-react/i18n';
 
 class SmartThermostat extends SmartGeneric {
     // props = {
@@ -92,7 +92,7 @@ class SmartThermostat extends SmartGeneric {
 
         this.stateRx.showDialog = false;
         this.props.tile.setState({state: true});
-        this.key = 'smart-thermostat-' + this.id + '-';
+        this.key = `smart-thermostat-${this.id}-`;
         this.step = this.step || 0.5;
 
         this.componentReady();
@@ -114,7 +114,7 @@ class SmartThermostat extends SmartGeneric {
         }
     }
 
-    setValue(degrees) {
+    setValue = degrees => {
         console.log('Control ' + this.id + ' = ' + degrees);
         const newValue = {};
         newValue[this.id] = degrees;
@@ -179,7 +179,7 @@ class SmartThermostat extends SmartGeneric {
             </div>);
     }
 
-    onBoostToggle(boostOn) {
+    onBoostToggle = boostOn => {
         if (boostOn === undefined) {
             boostOn = !this.state[this.boostId];
         }
@@ -194,20 +194,21 @@ class SmartThermostat extends SmartGeneric {
             this.getStandardContent(this.id, true),
             this.getSecondaryDiv(),
             this.state.showDialog ?
-                <Dialog key={this.key + 'dialog'}
-                        unit={this.unit}
-                        commaAsDelimiter={this.commaAsDelimiter}
-                        step={this.step}
-                        dialogKey={this.key + 'dialog'}
-                        startValue={this.state[this.id]}
-                        windowWidth={this.props.windowWidth}
-                        actualValue={this.state[this.actualId]}
-                        boostValue={this.boostId ? this.state[this.boostId] : null}
-                        onBoostToggle={this.onBoostToggle.bind(this)}
-                        min={this.min}
-                        max={this.max}
-                        onValueChange={this.setValue.bind(this)}
-                        onClose={this.onDialogClose.bind(this)}
+                <Dialog
+                    key={this.key + 'dialog'}
+                    unit={this.unit}
+                    commaAsDelimiter={this.commaAsDelimiter}
+                    step={this.step}
+                    dialogKey={this.key + 'dialog'}
+                    startValue={this.state[this.id] === null || this.state[this.id] === undefined ? this.min : this.state[this.id]}
+                    windowWidth={this.props.windowWidth}
+                    actualValue={this.state[this.actualId] === null || this.state[this.actualId] === undefined ? this.min : this.state[this.actualId]}
+                    boostValue={this.boostId ? this.state[this.boostId] : null}
+                    onBoostToggle={this.onBoostToggle}
+                    min={this.min}
+                    max={this.max}
+                    onValueChange={this.setValue}
+                    onClose={this.onDialogClose}
                 /> : null
         ]);
     }

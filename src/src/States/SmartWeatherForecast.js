@@ -18,9 +18,9 @@ import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 
 import SmartGeneric from './SmartGeneric';
-import Utils from '../Utils';
+import Utils from '@iobroker/adapter-react/Components/Utils';
 import Dialog from '../Dialogs/SmartDialogWeatherForecast';
-import I18n from '../i18n';
+import I18n from '@iobroker/adapter-react/i18n';
 
 const styles = {
     'currentIcon-div': {
@@ -601,7 +601,7 @@ class SmartWeatherForecast extends SmartGeneric {
                         onCollectIds={this.props.onCollectIds}
                         ids={this.ids}
                         windowWidth={this.props.windowWidth}
-                        onClose={this.onDialogClose.bind(this)}
+                        onClose={this.onDialogClose}
                 /> : null
         ]);
     }

@@ -3,7 +3,7 @@
 <head>
     <!--
     /**
-     * Copyright 2018-2020 bluefox <dogafox@gmail.com>
+     * Copyright 2018-2021 bluefox <dogafox@gmail.com>
      *
      * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
      * you may not use this file except in compliance with the License.
@@ -35,8 +35,30 @@
     <link href="manifest.json" rel="manifest">
     <link href="favicon.ico" rel="shortcut icon">
     <script type="text/javascript" src="_socket/info.js"></script>
-    <script type="text/javascript" src="vendor/socket.io.js"></script>
-    <!--script type="text/javascript" src="vendor.js"></script-->
+    <script>
+        const script = document.createElement('script');
+
+        window.registerSocketOnLoad = function (cb) {
+            window.socketLoadedHandler = cb;
+        };
+
+        script.onload = function () {
+            typeof window.socketLoadedHandler === 'function' && window.socketLoadedHandler();
+        };
+
+        script.onerror = function () {
+            console.error('Cannot load socket.io. Retry in 5 seconds');
+            setTimeout(function () {
+                window.location.reload();
+            }, 5000);
+        };
+
+        setTimeout(() => {
+            script.src = window.location.port === '3000' ? window.location.protocol + '//' + window.location.hostname + ':8082/lib/js/socket.io.js' : '%PUBLIC_URL%/lib/js/socket.io.js';
+        }, 1000);
+
+        document.head.appendChild(script);
+    </script>
     <title>Material - ioBroker</title>
 </head>
 <body>

@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2020 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2021 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import IconThermometer from '../icons/Thermometer';
 import IconHydro from '../icons/Humidity';
 
 import Theme from '../theme';
-import I18n from '../i18n';
+import I18n from '@iobroker/adapter-react/i18n';
 
 class SmartThermometer extends SmartGeneric {
     constructor(props) {
@@ -144,10 +144,10 @@ class SmartThermometer extends SmartGeneric {
         if (typeof val === 'number') {
             val = Math.round(val * 100) / 100;
         }
-        return (<div key={this.key + 'tile-secondary'} className="tile-text-second" style={Theme.tile.secondary.div} title={this.secondary.title}>
+        return <div key={this.key + 'tile-secondary'} className="tile-text-second" style={Theme.tile.secondary.div} title={this.secondary.title}>
             {Icon ? (<Icon style={Object.assign({}, Theme.tile.secondary.icon, this.secondary.iconStyle)} />) : null}
             <span style={Theme.tile.secondary.text}>{val + this.secondary.unit}</span>
-        </div>);
+        </div>;
     }
 
     render() {

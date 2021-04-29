@@ -32,8 +32,8 @@ import {
     sortableHandle,
 } from 'react-sortable-hoc';
 
-import Utils from './Utils';
-import I18n from './i18n'
+import Utils from '@iobroker/adapter-react/Components/Utils';
+import I18n from '@iobroker/adapter-react/i18n';
 import VisibilityButton from './basic-controls/react-visibility-button/VisibilityButton';
 import Theme from './theme';
 
@@ -167,22 +167,22 @@ class MenuList extends Component {
         let changed = false;
         const visibility = {};
 
-        items.forEach(function (e) {
+        items.forEach(e => {
             visibility[e.id] = !(e.settings.enabled === false);
             if (this.state && this.state.visibility[e.id] !== visibility[e.id]) {
                 changed = true;
             }
-        }.bind(this));
+        });
 
         if (root !== 'enum') {
             items = this.getElementsToShow(root, objects, editMode);
 
-            items.forEach(function (e) {
+            items.forEach(e => {
                 visibility[e.id] = !(e.settings.enabled === false);
                 if (this.state && this.state.visibility[e.id] !== visibility[e.id]) {
                     changed = true;
                 }
-            }.bind(this));
+            });
         }
 
         return {changed, visibility};
@@ -228,8 +228,8 @@ class MenuList extends Component {
         let items = this.getElementsToShow('enum');
 
         if (items && items.length) {
-            return (<ListSubheader style={{background: this.state.background || 'white', borderBottom: useBright ? '1px solid rgba(255, 255, 255, 0.12)' : '1px solid rgba(0, 0, 0, 0.12)'}}>{
-                items.map(function (item) {
+            return <ListSubheader style={{background: this.state.background || 'white', borderBottom: useBright ? '1px solid rgba(255, 255, 255, 0.12)' : '1px solid rgba(0, 0, 0, 0.12)'}}>{
+                items.map(item => {
                     let settings = this.settings[item.id];
 
                     if (!settings || this.props.objects) {
@@ -249,7 +249,7 @@ class MenuList extends Component {
                     }
 
                     if (item.id === 'enum.rooms') {
-                        return (<IconButton
+                        return <IconButton
                                     key={item.id}
                                     className={item.id === this.props.root ? this.props.classes.iconsSelected : this.props.classes.icons}
                                     style={style}
@@ -257,9 +257,9 @@ class MenuList extends Component {
                                     onClick={() => this.onRootChanged('enum.rooms')}>
                                         <IconRooms name="rooms" width={Theme.iconSize} height={Theme.iconSize} isOn={item.id === this.props.root}/>
                                 {visibilityButton}
-                        </IconButton>);
+                        </IconButton>;
                     } else if (item.id === 'enum.functions') {
-                        return (<IconButton
+                        return <IconButton
                             key={item.id}
                             className={item.id === this.props.root ? this.props.classes.iconsSelected : this.props.classes.icons}
                             style={style}
@@ -267,9 +267,9 @@ class MenuList extends Component {
                             onClick={() => this.onRootChanged('enum.functions')}>
                             <IconFunctions width={Theme.iconSize} height={Theme.iconSize}/>
                             {visibilityButton}
-                        </IconButton>);
+                        </IconButton>;
                     } else if (item.id === 'enum.favorites') {
-                        return (<IconButton
+                        return <IconButton
                             key={item.id}
                             className={item.id === this.props.root ? this.props.classes.iconsSelected : this.props.classes.icons}
                             style={style}
@@ -277,11 +277,11 @@ class MenuList extends Component {
                             onClick={() => this.onRootChanged('enum.favorites')}>
                             <IconFavorites width={Theme.iconSize} height={Theme.iconSize}/>
                             {visibilityButton}
-                        </IconButton>);
+                        </IconButton>;
                     } else {
                         const icon = Utils.getIcon(item.settings, Theme.menuIcon);
 
-                        return (<Button
+                        return <Button
                             variant="outlined"
                             className={item.id === this.props.root ? this.props.classes.iconsSelected : this.props.classes.icons}
                             style={style}
@@ -290,10 +290,10 @@ class MenuList extends Component {
                             {icon}
                             {name}
                             {visibilityButton}
-                            </Button>);
+                        </Button>;
                     }
-                }.bind(this))
-            }</ListSubheader>);
+                })
+            }</ListSubheader>;
         } else {
             return '';
         }
@@ -427,7 +427,7 @@ class MenuList extends Component {
     getSortableItem(content, style, className, id, i, parent) {
         if (this.props.editMode) {
             // zIndex 10000 because of drag&drop
-            const SortableItem = sortableElement(({content, style, className, id}) => (
+            const SortableItem = sortableElement(({content, style, className, id}) =>
                 <ListItem
                     style={Object.assign({}, style, {zIndex: 10000})}
                     button
@@ -438,7 +438,7 @@ class MenuList extends Component {
                     <DragHandle />
                     {content}
                 </ListItem>
-            ));
+            );
 
             return <SortableItem content={content} index={i} collection={parent} style={style} className={className} id={id}/>;
         } else {
@@ -497,9 +497,9 @@ class MenuList extends Component {
                 style={style}
             />;
         } else if (style) {
-            return (<List component="li" style={style} key={key}>{children}</List>);
+            return <List component="li" style={style} key={key}>{children}</List>;
         } else {
-            return (<List component="li" key={key} disablePadding>{children}</List>);
+            return <List component="li" key={key} disablePadding>{children}</List>;
         }
     }
 
@@ -541,29 +541,30 @@ class MenuList extends Component {
 
             const style = {opacity: this.props.editMode && !this.state.visibility[item.id] ? 0.5 : 1};
             style.marginLeft = 16 * level;
-            style.width = 'calc(100% - ' + (16 * level) + 'px)';
+            style.width = `calc(100% - ${16 * level}px)`;
+
             const expanded = this.state.roots[item.id] && this.state.roots[item.id].expanded;
             const styleButton = useBright ? styles.menuTextBright : styles.menuTextDark;
 
             const content = [
                 icon ? (<ListItemIcon key="icon">{icon}</ListItemIcon>) : (anyIcons ? <div style={{width: Theme.menuIcon.height + 1}}>&nbsp;</div> : null),
-                (<ListItemText key="text"
+                <ListItemText key="text"
                         classes={{
                             primary: this.props.viewEnum === item.id ? (useBright ? this.props.classes.menuSelectedBright : this.props.classes.menuSelectedDark) : (useBright ? this.props.classes.menuTextBright : this.props.classes.menuTextDark)
                         }}
-                        primary={item.settings.name}/>),
+                        primary={item.settings.name}/>,
                 visibilityButton,
                 children && children.length ? (expanded ?
-                    (<ExpandLess key="ExpandLess" style={styleButton} onClick={e => this.onExpandMenu(e, item.id)} />) :
-                    (<ExpandMore key="ExpandMore" style={styleButton} onClick={e => this.onExpandMenu(e, item.id)} />)) : ''
+                    <ExpandLess key="ExpandLess" style={styleButton} onClick={e => this.onExpandMenu(e, item.id)} /> :
+                    <ExpandMore key="ExpandMore" style={styleButton} onClick={e => this.onExpandMenu(e, item.id)} />) : ''
             ];
 
             return [
                 this.getSortableItem(content, style, this.props.viewEnum === item.id ? 'menu-selected' : '', item.id, i, parent),
                 children && children.length ?
-                    (<Collapse key={'sub_' + item.id} in={expanded} timeout="auto" unmountOnExit>
+                    <Collapse key={'sub_' + item.id} in={expanded} timeout="auto" unmountOnExit>
                         {this.getSortableContainer(children, null, 'list_' + item.id)}
-                    </Collapse>) : null
+                    </Collapse> : null
             ]
         });
     }
@@ -608,14 +609,17 @@ class MenuList extends Component {
 
         const style = {width: this.props.width};
         const useBright = Utils.isUseBright(this.state.background, false);
+
         if (this.state.background) {
             style.background = this.state.background;
         }
+
         const dividerStyle = useBright ? {backgroundColor: 'rgba(255,255,255,0.12)'} : {};
+
         if (items && items.length) {
             const list = this.getListItems(items, 0);
             if (this.state.instances && (this.props.root === 'enum.rooms' || this.props.root === Utils.INSTANCES)) {
-                list.push((<ListItem
+                list.push(<ListItem
                     button
                     key={Utils.INSTANCES}
                     onClick={el => this.onSelected(Utils.INSTANCES, el)}
@@ -627,29 +631,25 @@ class MenuList extends Component {
                     <ListItemText classes={{
                         primary: this.props.viewEnum === Utils.INSTANCES ? (useBright ? this.props.classes.menuSelectedBright : this.props.classes.menuSelectedDark) : (useBright ? this.props.classes.menuTextBright : this.props.classes.menuTextDark)
                     }} primary={I18n.t('Instances')}/>
-                </ListItem>));
+                </ListItem>);
             }
 
-            return (
-                <div style={style}>
-                    <Divider className='divider' style={dividerStyle}/>
-                    {this.getListHeader(useBright)}
-                    {this.getSortableContainer(list, this.state.background ? {background: this.state.background} : {}, 'sub_root')}
-                </div>
-            );
+            return <div style={style}>
+                <Divider className='divider' style={dividerStyle}/>
+                {this.getListHeader(useBright)}
+                {this.getSortableContainer(list, this.state.background ? {background: this.state.background} : {}, 'sub_root')}
+            </div>;
         } else {
-            return (
-                <div style={style} >
-                    <Divider className='divider' style={dividerStyle}/>
-                    {this.getListHeader(useBright)}
-                    <Divider className='divider' style={dividerStyle}/>
-                    <List>
-                        <ListItem key="0" value="0">
-                            <ListItemText>{I18n.t('No elements')}</ListItemText>
-                        </ListItem>
-                    </List>
-                </div>
-            );
+            return <div style={style} >
+                <Divider className='divider' style={dividerStyle}/>
+                {this.getListHeader(useBright)}
+                <Divider className='divider' style={dividerStyle}/>
+                <List>
+                    <ListItem key="0" value="0">
+                        <ListItemText>{I18n.t('No elements')}</ListItemText>
+                    </ListItem>
+                </List>
+            </div>;
         }
     }
 }

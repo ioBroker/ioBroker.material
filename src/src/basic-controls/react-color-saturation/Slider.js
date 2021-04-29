@@ -199,8 +199,6 @@ class Slider extends React.Component {
 
     constructor(props) {
         super(props);
-        this.handleMouseMoveBind = this.handleMouseMove.bind(this);
-        this.handleMouseUpBind = this.handleMouseUp.bind(this);
     }
 
     componentDidMount() {
@@ -211,10 +209,10 @@ class Slider extends React.Component {
 
     componentWillUnmount() {
         this.containerRef.removeEventListener('touchstart', preventPageScrolling, { passive: false });
-        document.body.removeEventListener('mousemove', this.handleMouseMoveBind);
-        document.body.removeEventListener('mouseup', this.handleMouseUpBind);
-        document.body.removeEventListener('touchmove', this.handleMouseMoveBind);
-        document.body.removeEventListener('touchend', this.handleMouseUpBind);
+        document.body.removeEventListener('mousemove', this.handleMouseMove);
+        document.body.removeEventListener('mouseup', this.handleMouseUp);
+        document.body.removeEventListener('touchmove', this.handleMouseMove);
+        document.body.removeEventListener('touchend', this.handleMouseUp);
         clearTimeout(this.jumpAnimationTimeoutId);
     }
 
@@ -290,9 +288,8 @@ class Slider extends React.Component {
             this.playJumpAnimation());
     };
 
-    handleTouchStart = event => {
-        return this.handleMouseDown(event, true);
-    };
+    handleTouchStart = event =>
+        this.handleMouseDown(event, true);
 
     handleMouseDown = (event, isTouch) => {
         event.preventDefault();
@@ -300,10 +297,10 @@ class Slider extends React.Component {
         this.touch = isTouch;
         this.moved = false;
 
-        document.body.addEventListener('mousemove', this.handleMouseMoveBind);
-        document.body.addEventListener('mouseup',   this.handleMouseUpBind);
-        document.body.addEventListener('touchmove', this.handleMouseMoveBind);
-        document.body.addEventListener('touchend',  this.handleMouseUpBind);
+        document.body.addEventListener('mousemove', this.handleMouseMove);
+        document.body.addEventListener('mouseup',   this.handleMouseUp);
+        document.body.addEventListener('touchmove', this.handleMouseMove);
+        document.body.addEventListener('touchend',  this.handleMouseUp);
 
         typeof this.props.onDragStart === 'function' && this.props.onDragStart(event);
     };
@@ -311,10 +308,10 @@ class Slider extends React.Component {
     handleMouseUp = event => {
         this.setState({ currentState: 'normal' });
 
-        document.body.removeEventListener('mousemove', this.handleMouseMoveBind);
-        document.body.removeEventListener('mouseup',   this.handleMouseUpBind);
-        document.body.removeEventListener('touchmove', this.handleMouseMoveBind);
-        document.body.removeEventListener('touchend',  this.handleMouseUpBind);
+        document.body.removeEventListener('mousemove', this.handleMouseMove);
+        document.body.removeEventListener('mouseup',   this.handleMouseUp);
+        document.body.removeEventListener('touchmove', this.handleMouseMove);
+        document.body.removeEventListener('touchend',  this.handleMouseUp);
 
         typeof this.props.onDragEnd === 'function' && this.props.onDragEnd(event);
         this.touch && !this.moved && this.handleClick(event);
@@ -449,8 +446,8 @@ class Slider extends React.Component {
                 aria-valuemax={max}
                 aria-orientation={vertical ? 'vertical' : 'horizontal'}
                 onClick={this.handleClick}
-                onMouseDown={this.handleMouseDown.bind(this)}
-                onTouchStart={this.handleTouchStart.bind(this)}
+                onMouseDown={this.handleMouseDown}
+                onTouchStart={this.handleTouchStart}
                 ref={ref => {
                     this.containerRef = findDOMNode(ref);
                 }}

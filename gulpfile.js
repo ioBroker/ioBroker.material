@@ -1,5 +1,5 @@
 /**
- * Copyright 2018 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2021 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,8 @@ const sourcemaps = require('gulp-sourcemaps');
 const crypto     = require('crypto');
 
 const dir = __dirname + '/src/src/i18n/';
+const dest = 'admin/';
+
 gulp.task('i18n=>flat', done => {
     const files = fs.readdirSync(dir).filter(name => name.match(/\.json$/));
     const index = {};
@@ -270,6 +272,37 @@ gulp.task('5-copy-dep', gulp.series('vendorJS', '4-modifyServiceWorker-dep', () 
     return copyFiles();
 }));
 
+
+function patchIndex() {
+    return new Promise(resolve => {
+        if (fs.existsSync(dest + '/index.html')) {
+            let code = fs.readFileSync(dest + '/index.html').toString('utf8');
+            // replace code
+            code = code.replace(/<script>const script=document[^<]+<\/script>/, `<script type="text/javascript" onerror="setTimeout(function(){window.location.reload()}, 5000)" src="./lib/js/socket.io.js"></script>`);
+            code = code.replace(/<script>var script=document[^<]+<\/script>/, `<script type="text/javascript" onerror="setTimeout(function(){window.location.reload()}, 5000)" src="./lib/js/socket.io.js"></script>`);
+            fs.writeFileSync(dest + '/index.html', code);
+            resolve();
+        } else {
+            // wait till finished
+            setTimeout(() => {
+                if (fs.existsSync(dest + '/index.html')) {
+                    let code = fs.readFileSync(dest + '/index.html').toString('utf8');
+                    // replace code
+                    code = code.replace(/<script>const script=document[^<]+<\/script>/, `<script type="text/javascript" onerror="setTimeout(function(){window.location.reload()}, 5000)" src="./lib/js/socket.io.js"></script>`);
+                    code = code.replace(/<script>var script=document[^<]+<\/script>/, `<script type="text/javascript" onerror="setTimeout(function(){window.location.reload()}, 5000)" src="./lib/js/socket.io.js"></script>`);
+                    fs.writeFileSync(dest + '/index.html', code);
+                }
+                resolve();
+            }, 2000);
+        }
+    });
+}
+
+gulp.task('6-patch', () => patchIndex(gulp));
+
+gulp.task('6-patch-dep', gulp.series('5-copy-dep', '6-patch'));
+
+
 gulp.task('webserver', () => {
     connect.server({
         root: 'src/build',
@@ -282,4 +315,4 @@ gulp.task('watch', gulp.series('webserver', () => {
     return watch(['src/src/*/**', 'src/src/*'], { ignoreInitial: true }, ['build']);
 }));
 
-gulp.task('default', gulp.series('5-copy-dep'));
+gulp.task('default', gulp.series('6-patch-dep'));

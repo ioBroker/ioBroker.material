@@ -15,45 +15,27 @@
  **/
 import React from 'react';
 import PropTypes from 'prop-types';
+import clsx from 'clsx';
+
+import {darken} from '@material-ui/core/styles/colorManipulator';
+import Fab from '@material-ui/core/Fab';
+
 import {FaAngleDoubleUp as IconUp} from 'react-icons/fa';
 import {FaAngleDoubleDown as IconDown} from 'react-icons/fa';
 import {TiLightbulb as IconLamp} from 'react-icons/ti';
 import {MdStop as IconStop} from 'react-icons/md'
-import {darken} from '@material-ui/core/styles/colorManipulator';
-import Button from '@material-ui/core/Button';
+
+import I18n from '@iobroker/adapter-react/i18n';
 
 import Theme from '../theme';
-import I18n from '../i18n';
 import SmartDialogGeneric from './SmartDialogGeneric';
+import {withStyles} from "@material-ui/core/styles";
 
-class SmartDialogSlider extends SmartDialogGeneric  {
-    // expected:
-
-    static propTypes = {
-        name:               PropTypes.oneOfType([
-            PropTypes.string,
-            PropTypes.object
-        ]),
-        dialogKey:          PropTypes.string,
-        windowWidth:        PropTypes.number,
-
-        onClose:            PropTypes.func,
-
-        onStop:             PropTypes.func,
-        onToggle:           PropTypes.func,
-
-        onValueChange:      PropTypes.func,
-        startValue:         PropTypes.number,
-        startToggleValue:   PropTypes.bool,
-        type:               PropTypes.number
-    };
-    static types = {
-        value:  0,
-        dimmer: 1,
-        blinds: 2
-    };
-
-    static buttonStyle = {
+const styles = theme => ({
+    dialogPaper: {
+        maxHeight: 800,
+    },
+    buttonStyle: {
         position: 'absolute',
         left: 'calc(50% - 2em)',
         height: '1.3em',
@@ -66,15 +48,15 @@ class SmartDialogSlider extends SmartDialogGeneric  {
         textAlign: 'center',
         cursor: 'pointer',
         boxShadow: '0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 6px 10px 0px rgba(0, 0, 0, 0.14), 0px 1px 18px 0px rgba(0, 0, 0, 0.12)'
-    };
-    static buttonStopStyle = {
+    },
+    buttonStopStyle: {
         position: 'absolute',
         left: 'calc(50% + 6em)',
         bottom: '4.5em',
         height: '2em',
         width: '2.5em'
-    };
-    static sliderStyle = {
+    },
+    sliderStyle: {
         position: 'absolute',
         zIndex: 11,
         width: 200,
@@ -87,15 +69,22 @@ class SmartDialogSlider extends SmartDialogGeneric  {
         height: 'calc(100% - 12em - 48px)',
         top: 'calc(4em + 48px)',
         left: 'calc(50% - 100px)'
+    }
+});
+
+class SmartDialogSlider extends SmartDialogGeneric  {
+    // expected:
+    static types = {
+        value:  0,
+        dimmer: 1,
+        blinds: 2
     };
 
     constructor(props) {
         super(props);
         this.stateRx.value       = this.externalValue2localValue(this.props.startValue || 0);
         this.stateRx.toggleValue = this.props.startToggleValue || false;
-        this.onMouseMoveBind = this.onMouseMove.bind(this);
-        this.onMouseUpBind   = this.onMouseUp.bind(this);
-        this.lastControl = 0;
+        this.lastControl         = 0;
 
         this.refSlider = React.createRef();
 
@@ -137,13 +126,13 @@ class SmartDialogSlider extends SmartDialogGeneric  {
         }
     }
 
-    onMouseMove(e) {
+    onMouseMove = e => {
         e.preventDefault();
         e.stopPropagation();
         this.eventToValue(e);
     }
 
-    onMouseDown(e) {
+    onMouseDown = e => {
         e.preventDefault();
         e.stopPropagation();
 
@@ -160,10 +149,10 @@ class SmartDialogSlider extends SmartDialogGeneric  {
 
         this.eventToValue(e);
 
-        document.addEventListener('mousemove',  this.onMouseMoveBind,   {passive: false, capture: true});
-        document.addEventListener('mouseup',    this.onMouseUpBind,     {passive: false, capture: true});
-        document.addEventListener('touchmove',  this.onMouseMoveBind,   {passive: false, capture: true});
-        document.addEventListener('touchend',   this.onMouseUpBind,     {passive: false, capture: true});
+        document.addEventListener('mousemove',  this.onMouseMove,   {passive: false, capture: true});
+        document.addEventListener('mouseup',    this.onMouseUp,     {passive: false, capture: true});
+        document.addEventListener('touchmove',  this.onMouseMove,   {passive: false, capture: true});
+        document.addEventListener('touchend',   this.onMouseUp,     {passive: false, capture: true});
     }
 
     localValue2externalValue(value) {
@@ -188,10 +177,10 @@ class SmartDialogSlider extends SmartDialogGeneric  {
         this.click = Date.now();
         this.mouseDown = false;
         console.log('Stopped');
-        document.removeEventListener('mousemove',   this.onMouseMoveBind,   {passive: false, capture: true});
-        document.removeEventListener('mouseup',     this.onMouseUpBind,     {passive: false, capture: true});
-        document.removeEventListener('touchmove',   this.onMouseMoveBind,   {passive: false, capture: true});
-        document.removeEventListener('touchend',    this.onMouseUpBind,     {passive: false, capture: true});
+        document.removeEventListener('mousemove',   this.onMouseMove,   {passive: false, capture: true});
+        document.removeEventListener('mouseup',     this.onMouseUp,     {passive: false, capture: true});
+        document.removeEventListener('touchmove',   this.onMouseMove,   {passive: false, capture: true});
+        document.removeEventListener('touchend',    this.onMouseUp,     {passive: false, capture: true});
 
         this.lastControl = Date.now();
         this.props.onValueChange && this.props.onValueChange(this.localValue2externalValue(this.state.value));
@@ -259,7 +248,7 @@ class SmartDialogSlider extends SmartDialogGeneric  {
         }, 400);
     }
 
-    onButtonUp(e) {
+    onButtonUp = e => {
         e && e.stopPropagation();
         if (Date.now() - this.button.timeUp < 100) {
             if (this.button.timer) {
@@ -316,14 +305,14 @@ class SmartDialogSlider extends SmartDialogGeneric  {
         }
     }
 
-    onStop(e) {
+    onStop = e => {
         e && e.preventDefault();
         e && e.stopPropagation();
         this.setState({toast: I18n.t('sent')});
         this.props.onStop && this.props.onStop();
     }
 
-    onToggle(e) {
+    onToggle = e => {
         e && e.preventDefault();
         e && e.stopPropagation();
         this.props.onToggle && this.props.onToggle();
@@ -342,33 +331,33 @@ class SmartDialogSlider extends SmartDialogGeneric  {
     }
 
     getToggleButton() {
-        if (!this.props.onToggle) return null;
-        const style = Object.assign({}, SmartDialogSlider.buttonStopStyle, this.state.toggleValue ? {background: Theme.palette.lampOn} : {});
-        return (
-           <Button key={this.props.dialogKey + '-toggle-button'}
-                     variant="fab"
-                     color="primary"
-                     aria-label="on off"
-                     style={style}
-                     onClick={this.onToggle.bind(this)}
-                     className="dimmer-button">
-               <IconLamp/>
-           </Button>);
+        if (!this.props.onToggle) {
+            return null;
+        }
+        return <Fab
+            key={this.props.dialogKey + '-toggle-button'}
+            color="primary"
+            aria-label="on off"
+            style={this.state.toggleValue ? {background: Theme.palette.lampOn} : {}}
+            onClick={this.onToggle}
+            className={clsx('dimmer-button', this.props.classes.buttonStopStyle)}>
+            <IconLamp/>
+        </Fab>;
     }
 
     getStopButton() {
-        if (!this.props.onStop) return null;
+        if (!this.props.onStop) {
+            return null;
+        }
 
-        return (
-            <Button key={this.props.dialogKey + '-stop-button'}
-                     variant="fab"
-                     color="secondary"
-                     aria-label="stop"
-                     style={SmartDialogSlider.buttonStopStyle}
-                     onClick={this.onStop.bind(this)}
-                     className="dimmer-button">
-                <IconStop/>
-            </Button>);
+        return <Fab
+            key={this.props.dialogKey + '-stop-button'}
+            color="secondary"
+            aria-label="stop"
+            onClick={this.onStop}
+            className={clsx('dimmer-button', this.props.classes.buttonStopStyle)}>
+            <IconStop/>
+        </Fab>;
     }
 
     generateContent() {
@@ -404,37 +393,69 @@ class SmartDialogSlider extends SmartDialogGeneric  {
         }
 
         return [
-            (<div key={this.props.dialogKey + '-top-button'}
+            <div key={this.props.dialogKey + '-top-button'}
                   onTouchStart={e => this.onButtonDown(e, 'top')}
                   onMouseDown={e => this.onButtonDown(e, 'top')}
-                  onTouchEnd={this.onButtonUp.bind(this)}
-                  onMouseUp={this.onButtonUp.bind(this)}
+                  onTouchEnd={this.onButtonUp}
+                  onMouseUp={this.onButtonUp}
                   onClick={e => e.stopPropagation()}
-                  style={Object.assign({}, SmartDialogSlider.buttonStyle, {top: '1.3em'})} className="dimmer-button">{this.getTopButtonName()}</div>),
-            (<div key={this.props.dialogKey + '-slider'}
-                  ref={this.refSlider}
-                  onMouseDown={this.onMouseDown.bind(this)}
-                  onTouchStart={this.onMouseDown.bind(this)}
-                  onClick={e => e.stopPropagation()}
-                  style={SmartDialogSlider.sliderStyle}>
-                    <div style={sliderStyle}>
-                        <div style={handlerStyle} />
-                    </div>
-                    <div style={{position: 'absolute', top: 'calc(50% - 0.55em)', userSelect: 'none', width: '100%', textAlign: 'center', fontSize: '2em'}}>
-                        {this.getValueText()}
-                    </div>
-                </div>),
-            (<div key={this.props.dialogKey + '-bottom-button'}
-                  onTouchStart={e => this.onButtonDown(e, 'bottom')}
-                  onMouseDown={e => this.onButtonDown(e, 'bottom')}
-                  onTouchEnd={this.onButtonUp.bind(this)}
-                  onMouseUp={this.onButtonUp.bind(this)}
-                  onClick={e => e.stopPropagation()}
-                  style={Object.assign({}, SmartDialogSlider.buttonStyle, {bottom: '1.8em'})} className="dimmer-button">{this.getBottomButtonName()}</div>),
+                  className={clsx('dimmer-button', this.props.classes.buttonStyle)}
+                  style={{top: '1.3em'}}
+            >{this.getTopButtonName()}</div>,
+            <div
+                key={this.props.dialogKey + '-slider'}
+                ref={this.refSlider}
+                onMouseDown={this.onMouseDown}
+                onTouchStart={this.onMouseDown}
+                onClick={e => e.stopPropagation()}
+                className={this.props.classes.sliderStyle}
+            >
+                <div style={sliderStyle}>
+                    <div style={handlerStyle}/>
+                </div>
+                <div style={{
+                    position: 'absolute',
+                    top: 'calc(50% - 0.55em)',
+                    userSelect: 'none',
+                    width: '100%',
+                    textAlign: 'center',
+                    fontSize: '2em'
+                }}>
+                    {this.getValueText()}
+                </div>
+            </div>,
+            <div
+                key={this.props.dialogKey + '-bottom-button'}
+                onTouchStart={e => this.onButtonDown(e, 'bottom')}
+                onMouseDown={e => this.onButtonDown(e, 'bottom')}
+                onTouchEnd={this.onButtonUp}
+                onMouseUp={this.onButtonUp}
+                onClick={e => e.stopPropagation()}
+                className={clsx('dimmer-button', this.props.classes.buttonStyle)}
+                style={{bottom: '1.8em'}}>{this.getBottomButtonName()}</div>,
             this.getStopButton(),
             this.getToggleButton()
         ];
     }
 }
 
-export default SmartDialogSlider;
+SmartDialogSlider.propTypes = {
+    name:               PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.object
+    ]),
+    dialogKey:          PropTypes.string,
+    windowWidth:        PropTypes.number,
+
+    onClose:            PropTypes.func,
+
+    onStop:             PropTypes.func,
+    onToggle:           PropTypes.func,
+
+    onValueChange:      PropTypes.func,
+    startValue:         PropTypes.number,
+    startToggleValue:   PropTypes.bool,
+    type:               PropTypes.number
+};
+
+export default withStyles(styles)(SmartDialogSlider);

@@ -23,9 +23,9 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-import Utils from '../Utils';
+import Utils from '@iobroker/adapter-react/Components/Utils';
 import SmartDialogGeneric from './SmartDialogGeneric';
-import I18n from '../i18n';
+import I18n from '@iobroker/adapter-react/i18n';
 
 const HEIGHT_HEADER  = 64;
 const HEIGHT_CURRENT = 200;
@@ -570,10 +570,7 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric  {
         }
     }
 
-    getHeaderDiv() {
-        if (!this.divs.header.visible) return null;
-        return (<div key="header" className={this.props.classes['header-div']}>{this.name}</div>);
-    }
+    getHeader = this.divs.header.visible ? () => this.name : null;
 
     getDayIconDiv(d) {
         const classes = this.props.classes;
@@ -920,21 +917,20 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric  {
     }
 
     getCurrentDiv() {
-        return (
-            <Paper key="current"
-                   className={this.props.classes['current-div']}
-                   style={this.ids.current.chart && this.state[this.ids.current.chart] ? {cursor: 'pointer'} : {}}
-                   onClick={() => this.onOpenHistory()}>
-                {this.getCurrentIconDiv()}
-                {this.getCurrentDateLocationDiv()}
-                {this.getTodayWindDiv()}
-                {this.getTodayTempDiv()}
-            </Paper>);
+        return <Paper key="current"
+               className={this.props.classes['current-div']}
+               style={this.ids.current.chart && this.state[this.ids.current.chart] ? {cursor: 'pointer'} : {}}
+               onClick={() => this.onOpenHistory()}>
+            {this.getCurrentIconDiv()}
+            {this.getCurrentDateLocationDiv()}
+            {this.getTodayWindDiv()}
+            {this.getTodayTempDiv()}
+        </Paper>;
     }
 
     generateContent() {
         return [
-            this.getHeaderDiv(),
+            //this.getHeaderDiv(),
             this.getCurrentDiv(),
             this.getDaysDiv()
         ];

@@ -64,7 +64,7 @@ class InputControl extends Component {
         this.setState({val});
     }
 
-    onKeyDown(e) {
+    onKeyDown = e => {
         if (e.keyCode === 13) {
             this.props.onChange(this.type === 'number' ? parseFloat(this.state.val) : this.state.val);
         }
@@ -76,35 +76,34 @@ class InputControl extends Component {
         if (icon) {
             if (typeof icon === 'object') {
                 Icon = icon;
-                Icon = (<Icon className={classes.icon} />);
+                Icon = <Icon className={classes.icon} />;
             } else {
-                Icon = (<img alt={label} src={icon} className={classes.icon}/>);
+                Icon = <img alt={label} src={icon} className={classes.icon}/>;
             }
         }
-        return (
-            <div className={classes.line}>
-                <TextField
-                    tabIndex="0"
-                    className={classes.input}
-                    type={this.type}
-                    label={label}
-                    min={this.props.min}
-                    max={this.props.max}
-                    value={this.state.val}
-                    onKeyDown={this.onKeyDown.bind(this)}
-                    onChange={event => this.onChange(event.target.value)}
-                    margin="normal"
-                />
-                <Button
-                    tabIndex="1"
-                    className={classes.button}
-                    onClick={e => onChange(this.type === 'number' ? parseFloat(this.state.val) : this.state.val)}
-                    variant="contained">
-                    {Icon}
-                    {label}
-                </Button>
-            </div>
-        );
+
+        return <div className={classes.line}>
+            <TextField
+                tabIndex="0"
+                className={classes.input}
+                type={this.type}
+                label={label}
+                min={this.props.min}
+                max={this.props.max}
+                value={this.state.val}
+                onKeyDown={this.onKeyDown}
+                onChange={event => this.onChange(event.target.value)}
+                margin="normal"
+            />
+            <Button
+                tabIndex="1"
+                className={classes.button}
+                onClick={e => onChange(this.type === 'number' ? parseFloat(this.state.val) : this.state.val)}
+                variant="contained">
+                {Icon}
+                {label}
+            </Button>
+        </div>;
     }
 }
 

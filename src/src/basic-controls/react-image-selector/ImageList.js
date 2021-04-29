@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2020 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2021 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -105,35 +105,32 @@ class ImageList extends React.Component {
     }
 
     render() {
-        return (
-            <div className={this.classes.root} style={this.props.maxHeight ? {maxHeight: this.props.maxHeight} : {}}>
-                {this.props.images.map(function(image, i) {
-                    let Image;
+        return <div className={this.classes.root} style={this.props.maxHeight ? {maxHeight: this.props.maxHeight} : {}}>
+            {this.props.images.map((image, i) => {
+                let Image;
 
-                    if (typeof image === 'object') {
-                        Image = image.icon;
+                if (typeof image === 'object') {
+                    Image = image.icon;
+                }
+
+                return <ButtonBase
+                    tabIndex={i}
+                    onClick={() => this.onSelect(image, i)}
+                    focusRipple
+                    key={'images-' + i}
+                    className={this.classes.image}
+                    focusVisibleClassName={this.classes.focusVisible}
+                    style={{width: 64, height: 64, background: 'grey', marginRight: 2, marginBottom: 2}}
+                >
+                    {Image ?
+                        <Image className={this.classes.imageSrc} width={'calc(100% - 10px)'} height={'calc(100% - 10px)'}/> :
+                        <span className={this.classes.imageSrc} style={{backgroundImage: `url(${image})`}}/>
                     }
-                    return (
-                        <ButtonBase
-                            tabIndex={i}
-                            onClick={() => this.onSelect(image, i)}
-                            focusRipple
-                            key={'images-' + i}
-                            className={this.classes.image}
-                            focusVisibleClassName={this.classes.focusVisible}
-                            style={{width: 64, height: 64, background: 'grey', marginRight: 2, marginBottom: 2}}
-                        >
-                            {Image ?
-                                (<Image className={this.classes.imageSrc} width={'calc(100% - 10px)'} height={'calc(100% - 10px)'}/>) :
-                                (<span className={this.classes.imageSrc} style={{backgroundImage: `url(${image})`,}}/>)
-                            }
-                            <span className={this.classes.imageBackdrop} />
-                            <span className={this.classes.imageButton}/>
-                        </ButtonBase>
-                    );
-                }.bind(this))}
-            </div>
-        );
+                    <span className={this.classes.imageBackdrop} />
+                    <span className={this.classes.imageButton}/>
+                </ButtonBase>;
+            })}
+        </div>;
     }
 
 }

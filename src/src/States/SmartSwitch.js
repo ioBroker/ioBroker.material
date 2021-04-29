@@ -23,7 +23,7 @@ import IconSwitch from '../icons/Socket';
 
 import Types from './SmartTypes';
 import Theme from '../theme';
-import I18n from '../i18n';
+import I18n from '@iobroker/adapter-react/i18n';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 class SmartSwitch extends SmartGeneric {

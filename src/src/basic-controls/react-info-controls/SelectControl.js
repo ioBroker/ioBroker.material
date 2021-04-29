@@ -62,7 +62,7 @@ const SelectControl = ({classes, label, value, onChange, options}) => {
         value = value.value;
     }
 
-    return (<div className={classes.line}>
+    return <div className={classes.line}>
         <InputLabel htmlFor="selection" className={classes.subTitle}>{label}</InputLabel>
         <NativeSelect
             className={classes.line}
@@ -72,7 +72,7 @@ const SelectControl = ({classes, label, value, onChange, options}) => {
         >
             {getOptions(options)}
         </NativeSelect>
-    </div>);
+    </div>;
 };
 
 SelectControl.propTypes = {

@@ -17,7 +17,7 @@
 import React, {Component} from 'react';
 import Dialog from '@material-ui/core/Dialog';
 import Button from '@material-ui/core/Button';
-import I18n from './i18n';
+import I18n from '@iobroker/adapter-react/i18n';
 import PropTypes from 'prop-types';
 
 class SpeechDialog extends Component {

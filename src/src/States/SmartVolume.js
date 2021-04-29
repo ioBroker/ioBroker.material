@@ -15,7 +15,7 @@
  **/
 import React from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
 
 import {MdVolumeMute as IconVolume0} from 'react-icons/md';
 import {MdVolumeDown as IconVolume50} from 'react-icons/md';
@@ -27,7 +27,7 @@ import Types from './SmartTypes';
 //import Dialog from './SmartDialogSlider';
 import Dialog from '../Dialogs/SmartDialogKnob';
 
-import I18n from '../i18n';
+import I18n from '@iobroker/adapter-react/i18n';
 
 const style = {
     mute: {
@@ -123,10 +123,10 @@ class SmartVolume extends SmartGeneric {
         }
     }
 
-    setValue(value) {
+    setValue = value => {
         console.log('Control ' + this.id + ' = ' + value);
         if (this.actualId !== this.id) {
-            this.setState({executing: this.state.settings.noAck ? false : true, setValue: value});
+            this.setState({executing: !this.state.settings.noAck, setValue: value});
         }
         if (this.max - this.min > 9) {
             value = Math.round(value);
@@ -134,7 +134,7 @@ class SmartVolume extends SmartGeneric {
         this.props.onControl(this.id, value);
     }
 
-    toggle() {
+    toggle = () => {
         this.props.onControl(this.muteId, !this.state[this.muteId]);
     }
 
@@ -155,21 +155,20 @@ class SmartVolume extends SmartGeneric {
         let customIcon;
 
         if (this.state.settings.useDefaultIcon) {
-            customIcon = (<img alt="icon" src={this.getDefaultIcon()} style={{height: '100%', zIndex: 1}}/>);
+            customIcon = <img alt="icon" src={this.getDefaultIcon()} style={{height: '100%', zIndex: 1}}/>;
         } else {
-            customIcon = (<Icon width={Theme.tile.tileIconSvg.size} height={Theme.tile.tileIconSvg.size} style={{zIndex: 1, height: Theme.tile.tileIconSvg.size, width: Theme.tile.tileIconSvg.size}}/>);
+            customIcon = <Icon width={Theme.tile.tileIconSvg.size} height={Theme.tile.tileIconSvg.size} style={{zIndex: 1, height: Theme.tile.tileIconSvg.size, width: Theme.tile.tileIconSvg.size}}/>;
         }
 
-        return (<div key={this.key + 'tile-secondary'} className="tile-text-second"
+        return <div key={this.key + 'tile-secondary'} className="tile-text-second"
                      style={Theme.tile.secondary.button} title={text}>
-            <Button variant="fab" mini onClick={this.toggle.bind(this)} style={{background: color, boxShadow: 'none'}} aria-label={text}>
+            <IconButton size="small" onClick={this.toggle} style={{backgroundColor: color, width: 24, height: 24}} aria-label={text}>
                 {customIcon}
-            </Button>
-        </div>);
+            </IconButton>
+        </div>;
     }
 
     getIcon() {
-
         let customIcon;
 
         if (this.state.settings.useDefaultIcon) {
@@ -231,16 +230,16 @@ class SmartVolume extends SmartGeneric {
             this.muteId && this.getSecondaryDiv(),
             this.state.showDialog ?
                 <Dialog key={this.key + 'dialog'}
-                        startValue={this.state[this.id]}
-                        startMuteValue={this.muteId ? this.state[this.muteId] : false}
-                        onMute={this.muteId ? this.toggle.bind(this) : null}
-                        windowWidth={this.props.windowWidth}
-                        min={this.min}
-                        max={this.max}
-                        unit={this.unit}
-                        onValueChange={this.setValue.bind(this)}
-                        onClose={this.onDialogClose.bind(this)}
- //                       type={Dialog.types.value}
+                    startValue={this.state[this.id]}
+                    startMuteValue={this.muteId ? this.state[this.muteId] : false}
+                    onMute={this.muteId ? this.toggle : null}
+                    windowWidth={this.props.windowWidth}
+                    min={this.min}
+                    max={this.max}
+                    unit={this.unit}
+                    onValueChange={this.setValue}
+                    onClose={this.onDialogClose}
+//                       type={Dialog.types.value}
                 /> : null
         ]);
     }

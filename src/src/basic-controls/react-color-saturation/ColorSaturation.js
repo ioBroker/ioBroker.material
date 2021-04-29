@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2020 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2021 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,13 +23,13 @@ import UtilsColor from '../../UtilsColors';
 
 const styles = {
     track: {
-        background: 'rgba(0,0,0,0) !important',
+        background: 'rgba(0, 0, 0, 0) !important',
     },
     trackBefore: {
-        background: 'rgba(0,0,0,0) !important',
+        background: 'rgba(0, 0, 0, 0) !important',
     },
     trackAfter: {
-        background: 'rgba(0,0,0,0) !important',
+        background: 'rgba(0, 0, 0, 0) !important',
     },
     thumb: {
         background: 'rgba(255,255,255,0.8)',
@@ -77,8 +77,8 @@ class ColorSaturation extends React.Component {
         return changed ? newState : null;
     }
 
-    handleChange(event, value) {
-        if (event) event.stopPropagation();
+    handleChange = (event, value) => {
+        event && event.stopPropagation();
         this.props.onChange && this.props.onChange(value);
         this.setState({saturation: value});
     };
@@ -86,23 +86,21 @@ class ColorSaturation extends React.Component {
     render() {
         const rgb = this.state.hue === '#FFFFFF' ? '#FFFFFF' : UtilsColor.rgb2string(UtilsColor.hslToRgb(this.state.hue / 360, 1, 0.5));
         const rgba = UtilsColor.hexToRgbA(rgb, 1);
-        const color = 'linear-gradient(to right, rgba(0,0,0,1) 0%,' + rgba + ' 100%)';
-        return (
-            <div className={this.props.classes.div} style={{background: color}}>
-                <Slider
-                    value={this.state.saturation}
-                    aria-labelledby="label"
-                    min={0}
-                    max={100}
-                    classes={{
-                        track: this.props.classes.track,
-                        trackBefore: this.props.classes.trackBefore,
-                        trackAfter: this.props.classes.trackAfter,
-                        thumb: this.props.classes.thumb
-                    }}
-                    onChange={this.handleChange.bind(this)} />
-            </div>
-        )
+        const color = 'linear-gradient(to right, rgba(0, 0, 0, 1) 0%,' + rgba + ' 100%)';
+        return <div className={this.props.classes.div} style={{background: color}}>
+            <Slider
+                value={this.state.saturation}
+                aria-labelledby="label"
+                min={0}
+                max={100}
+                classes={{
+                    track: this.props.classes.track,
+                    trackBefore: this.props.classes.trackBefore,
+                    trackAfter: this.props.classes.trackAfter,
+                    thumb: this.props.classes.thumb
+                }}
+                onChange={this.handleChange} />
+        </div>;
     }
 }
 

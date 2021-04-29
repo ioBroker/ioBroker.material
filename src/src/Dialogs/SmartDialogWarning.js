@@ -24,7 +24,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 import SmartDialogGeneric from './SmartDialogGeneric';
-import I18n from '../i18n';
+import I18n from '@iobroker/adapter-react/i18n';
 
 const HEIGHT_HEADER  = 64;
 const HEIGHT_ICON    = 300;
@@ -145,6 +145,10 @@ class SmartDialogWarning extends SmartDialogGeneric  {
             overflowY: 'auto'
         };
 
+        if (!this.ids.title) {
+            this.getHeader = null;
+        }
+
         const enums = [];
         this.props.enumNames.forEach(e => (enums.indexOf(e) === -1) && enums.push(e));
         if (enums.indexOf(this.props.name) === -1) {
@@ -215,11 +219,6 @@ class SmartDialogWarning extends SmartDialogGeneric  {
         }
     }
 
-    getHeaderDiv() {
-        if (!this.divs.header.visible) return null;
-        return (<div key="header" className={this.props.classes['header-div']}>{this.name}</div>);
-    }
-
     onOpenNewWindow() {
         if (this.ids.icon && this.state[this.ids.icon]) {
             const win = window.open(this.state[this.ids.icon], '_blank');
@@ -228,16 +227,20 @@ class SmartDialogWarning extends SmartDialogGeneric  {
     }
 
     getIconDiv() {
-        if (!this.ids.icon || !this.state[this.ids.icon]) return null;
+        if (!this.ids.icon || !this.state[this.ids.icon]) {
+            return null;
+        }
         const chart = this.state[this.ids.icon];
 
-        return [(<Paper key="icon"
-                    className={this.props.classes['icon-div']}
-                    style={{
-                        backgroundImage: 'url(' + chart + ')'
-                    }}
-                        onClick={() => this.setState({chartOpened: true})}>&nbsp;</Paper>),
-            this.state.chartOpened ? (<Dialog
+        return [<Paper
+                key="icon"
+                className={this.props.classes['icon-div']}
+                style={{backgroundImage: 'url(' + chart + ')'}}
+                onClick={() => this.setState({chartOpened: true})}
+            >
+                &nbsp;
+            </Paper>,
+            this.state.chartOpened ? <Dialog
                 key="chart-dialog"
                 open={true}
                 classes={{paper: this.props.classes['chart-dialog-paper']}}
@@ -247,60 +250,65 @@ class SmartDialogWarning extends SmartDialogGeneric  {
                 aria-describedby="alert-dialog-description"
             >
                 <DialogTitle id="alert-dialog-title">{I18n.t('Chart')}</DialogTitle>
-                <DialogContent className={this.props.classes['chart-dialog-content']}
-                               onClick={() => this.onOpenNewWindow()}
-                               style={{
-                                   backgroundImage: 'url(' + chart + ')'
-                               }}
+                <DialogContent
+                    className={this.props.classes['chart-dialog-content']}
+                    onClick={() => this.onOpenNewWindow()}
+                    style={{backgroundImage: 'url(' + chart + ')'}}
                 >
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => this.setState({chartOpened: false})} color="primary" autoFocus>{I18n.t('Close')}</Button>
                 </DialogActions>
-            </Dialog>) : null];
+            </Dialog> : null];
     }
 
     getDateDiv() {
         const classes = this.props.classes;
         let start = this.ids.start && this.state[this.ids.start];
-        let end = this.ids.end && this.state[this.ids.end];
+        let end   = this.ids.end   && this.state[this.ids.end];
 
-        return (<div key="date" className={classes['date-div']}>
-            <div className={classes['date-start']}>{start + (end ? ' - ' + end : '')}</div>
-        </div>);
+        if (start || end) {
+            return <div key="date" className={classes['date-div']}>
+                <div className={classes['date-start']}>{start + (end ? ' - ' + end : '')}</div>
+            </div>;
+        } else {
+            return null;
+        }
     }
 
-    getTitleDiv() {
+    /*getTitleDiv() {
         const classes = this.props.classes;
         let title = this.ids.title && this.state[this.ids.title];
 
-        return (<div key="title" className={classes['title-div']}>
+        return <div key="title" className={classes['title-div']}>
             <div className={classes['title-text']}>{title}</div>
-        </div>);
-    }
+        </div>;
+    }*/
+
+    getHeader = () => this.ids.title && (this.state[this.ids.title] || null);
 
     getInfoDiv() {
         const classes = this.props.classes;
         let info = this.ids.info && this.state[this.ids.info];
 
-        return (<div key="info" className={classes['info-div']}>
+        return <div key="info" className={classes['info-div']}>
             <div className={classes['info-text']}>{info}</div>
-        </div>);
+        </div>;
     }
 
     getDescDiv() {
         const classes = this.props.classes;
         let info = this.ids.description && this.state[this.ids.description];
 
-        return (<div key="info" className={classes['desc-div']}>
+        return <div key="desc" className={classes['desc-div']}>
             <div className={classes['desc-text']}>{info}</div>
-        </div>);
+        </div>;
     }
 
     generateContent() {
         return [
-            this.getHeaderDiv(),
-            this.getTitleDiv(),
+            //this.getHeaderDiv(),
+            //this.getTitleDiv(),
             this.getDateDiv(),
             this.getInfoDiv(),
             this.getIconDiv(),

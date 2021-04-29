@@ -64,16 +64,14 @@ class SmallVisibilityButton extends React.Component {
 
     render() {
         if (this.props.big) {
-            return (<div onClick={e => this.toggleState(e)} style={Object.assign({}, styles.button, styles.buttonBig, this.props.useBright ? {color: 'white'} : {color: 'black'}, this.props.style || {})}>
+            return <div onClick={e => this.toggleState(e)} style={Object.assign({}, styles.button, styles.buttonBig, this.props.useBright ? {color: 'white'} : {color: 'black'}, this.props.style || {})}>
                 {this.state.visible ? <IconCheck style={styles.buttonBig} size={'100%'}/> : <IconUncheck size={'100%'}/>}
-            </div>);
+            </div>;
         } else {
             const iconStyle = {marginTop: 1, verticalAlign: 'top'};
-            return (
-                <div style={Object.assign({}, styles.button, styles.buttonSmall, this.props.useBright ? {color: 'white'} : {color: 'black'}, this.props.style || {})} onClick={e => this.toggleState(e)} className="small-visibility-button">
-                    {this.state.visible ? <IconCheck size={16} style={iconStyle}/> : <IconUncheck size={16} style={iconStyle}/>}
-                </div>
-            )
+            return <div style={Object.assign({}, styles.button, styles.buttonSmall, this.props.useBright ? {color: 'white'} : {color: 'black'}, this.props.style || {})} onClick={e => this.toggleState(e)} className="small-visibility-button">
+                {this.state.visible ? <IconCheck size={16} style={iconStyle}/> : <IconUncheck size={16} style={iconStyle}/>}
+            </div>;
         }
     }
 }

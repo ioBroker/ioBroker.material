@@ -22,6 +22,7 @@
     "material"
   ],
   "devDependencies": {
+    "@alcalzone/release-script": "^1.9.0",
     "del": "^5.1.0",
     "gulp": "^4.0.2",
     "gulp-concat": "^2.6.1",
@@ -31,8 +32,8 @@
     "gulp-sourcemaps": "^2.6.5",
     "gulp-uglify": "^3.0.2",
     "gulp-watch": "^5.0.1",
-    "mocha": "^7.1.0",
-    "chai": "^4.2.0"
+    "mocha": "^8.3.2",
+    "chai": "^4.3.4"
   },
   "bugs": {
     "url": "https://github.com/ioBroker/ioBroker.material/issues"
@@ -43,7 +44,8 @@
     "build": "node node_modules/gulp/bin/gulp.js",
     "prepare": "node node_modules/gulp/bin/gulp.js",
     "prepublishOnly": "node node_modules/gulp/bin/gulp.js",
-    "beforePush": "node node_modules/gulp/bin/gulp.js"
+    "beforePush": "node node_modules/gulp/bin/gulp.js",
+    "release": "release-script"
   },
   "license": "CC-BY-NC-4.0",
   "dependencies": {}

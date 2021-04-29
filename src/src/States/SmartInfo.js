@@ -18,10 +18,10 @@ import SmartGeneric from './SmartGeneric';
 import IconThermometer from '../icons/ThermometerSimple';
 import IconHydro from '../icons/Humidity';
 import {MdInfo as IconInfo} from 'react-icons/md';
-import Utils from '../Utils';
+import Utils from '@iobroker/adapter-react/Components/Utils';
 
 import Theme from '../theme';
-import I18n from '../i18n';
+import I18n from '@iobroker/adapter-react/i18n';
 import Dialog from '../Dialogs/SmartDialogInfo';
 import PropTypes from 'prop-types';
 
@@ -217,7 +217,7 @@ class SmartInfo extends SmartGeneric {
         return [(<span key={this.key + 'tile-name'}>{this.state.settings.name} </span>),(<span key={this.key + 'tile-first-name'} style={Theme.tile.tileNameSmall}>{this.firstName}</span>)];
     }
 
-    setValue(id, value) {
+    setValue = (id, value) => {
         console.log('Control ' + id + ' = ' + value);
         this.props.onControl(id, value);
     }
@@ -234,8 +234,8 @@ class SmartInfo extends SmartGeneric {
                         points={this.infos}
                         onCollectIds={this.props.onCollectIds}
                         name={this.state.settings.name}
-                        onValueChange={this.setValue.bind(this)}
-                        onClose={this.onDialogClose.bind(this)}
+                        onValueChange={this.setValue}
+                        onClose={this.onDialogClose}
                         objects={this.props.objects}
                         states={this.props.states}
                 /> : null

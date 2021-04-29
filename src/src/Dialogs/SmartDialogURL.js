@@ -156,7 +156,9 @@ class SmartDialogURL extends SmartDialogGeneric  {
         }
     }
 
-    getTitleDiv() {
+    getHeader = this.props.settings.title ? () => this.props.settings.title : null;
+
+    /*getTitleDiv() {
         const classes = this.props.classes;
         let title = this.props.settings.title;
 
@@ -167,24 +169,24 @@ class SmartDialogURL extends SmartDialogGeneric  {
         } else {
             return null;
         }
-    }
+    }*/
 
     getIFrameDiv() {
         const style = {height: 'calc(100% - ' + (this.props.settings.title ? HEIGHT_TITLE : '0') + 'px)'};
         if (!this.props.image && this.state.url) {
-            return (<Paper onClick={() => this.onOpenNewWindow()} className={this.props.classes['iframe-div']} style={style}>
+            return <Paper onClick={() => this.onOpenNewWindow()} className={this.props.classes['iframe-div']} style={style}>
                 <iframe className={this.props.classes['iframe']} title={this.state.url} src={this.state.url}/>
-            </Paper>);
+            </Paper>;
         } else if (this.state.url) {
-            return (<Paper key="image"  style={style} onClick={() => this.onOpenNewWindow()} className={this.props.classes['iframe-div']}>
+            return <Paper key="image"  style={style} onClick={() => this.onOpenNewWindow()} className={this.props.classes['iframe-div']}>
                 <img className={this.props.classes['image-img']} alt="" src={this.state.url}/>
-            </Paper>);
+            </Paper>;
         }
     }
 
     generateContent() {
         return [
-            this.getTitleDiv(),
+            //this.getTitleDiv(),
             this.getIFrameDiv()
         ];
     }

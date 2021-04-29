@@ -111,7 +111,7 @@
             "pl": "Interfejs użytkownika ioBroker oparty na interfejsie użytkownika",
             "zh-cn": "基于Material UI的ioBroker用户界面"
         },
-        "platform":                 "javascript/Node.js",
+        "platform":                 "Javascript/Node.js",
         "onlyWWW":                  true,
         "loglevel":                 "info",
         "icon":                     "material.png",
@@ -133,9 +133,12 @@
                 "web": ">=3.0.12"
             }
         ],
-        "localLink":                "%web_protocol%://%ip%:%web_port%/material/index.html",
+        "localLinks":               {"_default": "%web_protocol%://%web_bind%:%web_port%/material/index.html"},
         "type":                     "visualization",
         "license":                  "CC-BY-NC-4.0",
+        "adminUI": {
+            "config": "none"
+        },
         "noConfig":                 true,
         "eraseOnUpload":            true,
         "webByVersion":             true,

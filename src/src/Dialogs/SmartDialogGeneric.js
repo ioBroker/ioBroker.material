@@ -15,12 +15,18 @@
  **/
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import clsx from 'clsx';
+
 import Theme from '../theme';
-import Paper from '@material-ui/core/Paper';
 import Snackbar from '@material-ui/core/Snackbar';
 import {MdClose as CloseIcon} from 'react-icons/md';
 import Fab from '@material-ui/core/Fab';
-import I18n from '../i18n';
+import I18n from '@iobroker/adapter-react/i18n';
+import {Dialog} from "@material-ui/core";
+import DialogActions from '@material-ui/core/DialogActions';
+import Button from '@material-ui/core/Button';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 class SmartDialogGeneric extends Component  {
 
@@ -46,13 +52,14 @@ class SmartDialogGeneric extends Component  {
 
     constructor(props) {
         super(props);
+
         this.stateRx = {
             toast: ''
         };
 
         // disable context menu after long click
-        window.addEventListener('contextmenu', SmartDialogGeneric.onContextMenu, false);
-        this.refModal = React.createRef();
+        // window.addEventListener('contextmenu', SmartDialogGeneric.onContextMenu, false);
+        //this.refModal = React.createRef();
         this.dialogStyle = {};
         this.closeOnPaperClick = false;
         this.savedParent = null;
@@ -81,24 +88,24 @@ class SmartDialogGeneric extends Component  {
 
     componentDidMount() {
         // move this element to the top of body
-        if (this.refModal) {
+        /*if (this.refModal) {
             this.savedParent = this.refModal.current.parentElement;
             document.body.appendChild(this.refModal.current);
-        }
+        }*/
 
         if (this.subscribes && !this.subscribed) {
             this.subscribed = true;
             this.props.onCollectIds(this, this.subscribes, true);
         }
 
-        if (!this.positionTuned) {
+        /*if (!this.positionTuned) {
             Object.assign(this.dialogStyle, {left: 'calc(50% - ' + (this.refModal.current.firstChild.offsetWidth / 2) + 'px)'});
             this.forceUpdate();
-        }
+        }*/
     }
 
     componentWillUnmount() {
-        this.refModal && this.savedParent.appendChild(this.refModal.current);
+        //this.refModal && this.savedParent.appendChild(this.refModal.current);
 
         if (this.props.onCollectIds && this.subscribed) {
             this.props.onCollectIds(this, this.subscribes, false);
@@ -123,34 +130,34 @@ class SmartDialogGeneric extends Component  {
 
     onClose(forceClose) {
         if (forceClose || this.mayClose()) {
-            window.removeEventListener('contextmenu', SmartDialogGeneric.onContextMenu, false);
+            // window.removeEventListener('contextmenu', SmartDialogGeneric.onContextMenu, false);
             this.props.onClose && this.props.onClose();
         }
     }
 
-    handleToastClose() {
+    handleToastClose = () =>
         this.setState({toast: ''});
-    }
 
     generateContent() {
         return null;
     }
 
-    onClick(e) {
+    onClick = e => {
         if (!this.closeOnPaperClick) {
             e && e.stopPropagation();
             this.click = Date.now();
         }
-    }
+    };
 
     showCloseButton() {
         if (this.props.windowWidth < 500) {
-            return (<Fab size="small"
-                            aria-label={I18n.t('close')}
-                            onClick={() => this.onClose(true)}
-                            style={Theme.dialog.closeButtonLeft}>
+            return <Fab
+                size="small"
+                aria-label={I18n.t('close')}
+                onClick={() => this.onClose(true)}
+                style={Theme.dialog.closeButtonLeft}>
                 <CloseIcon />
-            </Fab>)
+            </Fab>;
         } else {
             return null;
         }
@@ -162,20 +169,20 @@ class SmartDialogGeneric extends Component  {
     }
 
     render() {
-        return (<div key={this.props.dialogKey + '-dialog'}
+        /*return <div key={this.props.dialogKey + '-dialog'}
                      ref={this.refModal}
                      onClick={() => this.onClose()}
                      style={Theme.dialog.back}>
-                <Paper onClick={this.onClick.bind(this)}
-                       style={Object.assign({}, Theme.dialog.inner, this.dialogStyle)}
+                <Paper onClick={this.onClick}
+                   style={Object.assign({}, Theme.dialog.inner, this.dialogStyle)}
                 >
                     {this.generateContent()}
                     <Snackbar
                         key={this.props.dialogKey + '-toast'}
                         anchorOrigin={{vertical: 'top', horizontal: 'right'}}
                         open={!!this.state.toast}
-                        onClick={this.handleToastClose.bind(this)}
-                        onClose={this.handleToastClose.bind(this)}
+                        onClick={this.handleToastClose}
+                        onClose={this.handleToastClose}
                         autoHideDuration={4000}
                         ContentProps={{
                             'aria-describedby': 'message-id',
@@ -186,10 +193,43 @@ class SmartDialogGeneric extends Component  {
                 </Paper>
 
             {this.getAdditionalElements && this.getAdditionalElements()}
-
-        </div>);
+        </div>;*/
+        return <Dialog
+            fullWidth
+            scroll="paper"
+            classes={{paper: clsx('dialog-paper', this.props.classes?.dialogPaper)}}
+            open={true}
+            disableBackdropClick={!!this.getButtons}
+            onClose={() => this.onClose()}
+            maxWidth="sm"
+        >
+            {this.getHeader ? <DialogTitle>{this.getHeader()}</DialogTitle> : null}
+            <DialogContent style={{position: 'relative'}}>
+                {this.generateContent()}
+            </DialogContent>
+            <DialogActions>
+                {this.getButtons ? this.getButtons() : null}
+                {this.getButtons ?
+                    <Button onClick={() => this.onClose(true)} variant="contained" autoFocus>
+                        <CloseIcon style={{marginRight: 8}}/>{I18n.t('Close')}
+                    </Button> :
+                <Fab onClick={() => this.onClose(true)} size="small" autoFocus>
+                    <CloseIcon/>{/*I18n.t('Close')*/}
+                </Fab>}
+            </DialogActions>
+            {this.getAdditionalElements && this.getAdditionalElements()}
+            <Snackbar
+                key={this.props.dialogKey + '-toast'}
+                anchorOrigin={{vertical: 'top', horizontal: 'right'}}
+                open={!!this.state.toast}
+                onClick={this.handleToastClose}
+                onClose={this.handleToastClose}
+                autoHideDuration={4000}
+                ContentProps={{'aria-describedby': 'message-id'}}
+                message={<span id="message-id">{this.state.toast}</span>}
+            />
+        </Dialog>
     }
 }
 
-//export default withStyles(styles)(SmartDialogGeneric);
 export default SmartDialogGeneric;

@@ -141,13 +141,13 @@ class SmartBlinds extends SmartGeneric {
         }
     }
 
-    setValue(percent) {
+    setValue = percent => {
         console.log('Control ' + this.id + ' = ' + this.percentToRealValue(percent));
-        this.setState({executing: this.state.settings.noAck ? false : true, setValue: percent});
+        this.setState({executing: !this.state.settings.noAck, setValue: percent});
         this.props.onControl(this.id, this.percentToRealValue(percent));
     }
 
-    onStop() {
+    onStop = () => {
         this.setState({executing: false});
         this.stopId && this.props.onControl && this.props.onControl(this.stopId, true);
     }
@@ -168,12 +168,12 @@ class SmartBlinds extends SmartGeneric {
     getIcon() {
         let customIcon;
         if (this.state.settings.useDefaultIcon) {
-            customIcon = (<img src={this.getDefaultIcon()} alt="icon" style={{height: '100%', zIndex: 1}}/>);
+            customIcon = <img src={this.getDefaultIcon()} alt="icon" style={{height: '100%', zIndex: 1}}/>;
         } else {
             if (this.state.settings.icon) {
-                customIcon = (<img src={this.state.settings.icon} alt="icon" style={{height: '100%', zIndex: 1}}/>);
+                customIcon = <img src={this.state.settings.icon} alt="icon" style={{height: '100%', zIndex: 1}}/>;
             } else {
-                customIcon = (<Icon width={Theme.tile.tileIconSvg.size} height={Theme.tile.tileIconSvg.size} style={{zIndex: 1, height: Theme.tile.tileIconSvg.size, width: Theme.tile.tileIconSvg.size}}/>);
+                customIcon = <Icon width={Theme.tile.tileIconSvg.size} height={Theme.tile.tileIconSvg.size} style={{zIndex: 1, height: Theme.tile.tileIconSvg.size, width: Theme.tile.tileIconSvg.size}}/>;
             }
         }
 
@@ -182,13 +182,11 @@ class SmartBlinds extends SmartGeneric {
             Object.assign(overlapStyle, {background: this.state.settings.colorOn});
         }
 
-        return (
-            <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, /*this.state[this.actualId] !== this.min ? {color: Theme.palette.lampOn} : */{}, {left: '1rem'})} className="tile-icon">
-                {customIcon}
-                {this.state.executing ? <CircularProgress style={{zIndex: 3, position: 'absolute', top: 0, left: 0}} size={Theme.tile.tileIcon.width}/> : null}
-                <div style={overlapStyle} />
-            </div>
-        );
+        return <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, /*this.state[this.actualId] !== this.min ? {color: Theme.palette.lampOn} : */{}, {left: '1rem'})} className="tile-icon">
+            {customIcon}
+            {this.state.executing ? <CircularProgress style={{zIndex: 3, position: 'absolute', top: 0, left: 0}} size={Theme.tile.tileIcon.width}/> : null}
+            <div style={overlapStyle} />
+        </div>;
     }
 
     getDialogSettings () {
@@ -219,7 +217,7 @@ class SmartBlinds extends SmartGeneric {
             return '---';
         } else {
             if (this.workingId && this.state[this.workingId] && this.state.setValue !== null && this.state.setValue !== undefined) {
-                return this.realValueToPercent() + '% → ' + this.state.setValue + '%';
+                return `${this.realValueToPercent()}% → ${this.state.setValue}%`;
             } else {
                 return this.realValueToPercent() + '%';
             }
@@ -232,11 +230,11 @@ class SmartBlinds extends SmartGeneric {
             this.state.showDialog ?
                 <Dialog key={this.key + 'dialog'}
                         startValue={this.realValueToPercent()}
-                        onValueChange={this.setValue.bind(this)}
+                        onValueChange={this.setValue}
                         windowWidth={this.props.windowWidth}
                         inverted={this.state.settings.inverted}
-                        onStop={this.stopId ? this.onStop.bind(this) : null}
-                        onClose={this.onDialogClose.bind(this)}
+                        onStop={this.stopId ? this.onStop : null}
+                        onClose={this.onDialogClose}
                         type={Dialog.types.blinds}
                 /> : null
         ]);

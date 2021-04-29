@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2020 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2021 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,42 +14,31 @@
  * limitations under the License.
  **/
 import React from 'react'
+import { withStyles } from '@material-ui/core/styles';
 import {ChromePicker} from 'react-color'
+
 import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog';
 import IconButton from '@material-ui/core/IconButton';
+
 import {MdDelete as IconDelete} from 'react-icons/md';
 
-const styles = {
+const styles = theme => ({
     color: {
-        width: '36px',
-        height: '14px',
-        borderRadius: '2px',
-    },
-    delButton: {
-        width: 32,
-        height: 32
+        width: 36,
+        height: 14,
+        borderRadius: 2,
     },
     swatch: {
-        padding: '5px',
+        padding: 5,
         background: '#fff',
-        borderRadius: '1px',
+        borderRadius: 1,
         boxShadow: '0 0 0 1px rgba(0,0,0,.1)',
         display: 'inline-block',
         cursor: 'pointer',
         verticalAlign: 'middle'
-    },
-    popover: {
-        position: 'absolute',
-        zIndex: '2',
-    },
-    cover: {
-        position: 'fixed',
-        top: '0px',
-        right: '0px',
-        bottom: '0px',
-        left: '0px',
     }
-};
+});
 
 class ColorPicker extends React.Component {
     constructor(props) {
@@ -71,9 +60,9 @@ class ColorPicker extends React.Component {
     static getColor(color) {
         if (color && typeof color === 'object') {
             if (color.rgb) {
-                return 'rgba(' + color.rgb.r + ',' + color.rgb.g + ',' + color.rgb.b + ',' + color.rgb.a + ')';
+                return `rgba(${color.rgb.r},${color.rgb.g},${color.rgb.b},${color.rgb.a})`;
             } else {
-                return 'rgba(' + color.r + ',' + color.g + ',' + color.b + ',' + color.a + ')';
+                return `rgba(${color.r},${color.g},${color.b},${color.a})`;
             }
         } else {
             return color || '';
@@ -87,28 +76,30 @@ class ColorPicker extends React.Component {
 
     render() {
         const color = ColorPicker.getColor(this.state.color);
-        return (
-            <div style={this.props.style}>
-                <TextField
-                    id="name"
-                    style={{width: 'calc(100% - 80px)'}}
-                    label={this.props.name || 'color'}
-                    value={color}
-                    onChange={e => this.handleChange(e.target.value)}
-                    margin="normal"
-                />
-                <IconButton onClick={() => this.handleChange('')} style={Object.assign({}, styles.delButton, color ? {} : {opacity: 0, cursor: 'default'})}><IconDelete/></IconButton>
-                <div style={styles.swatch} onClick={() => this.handleClick()}>
-                    <div style={Object.assign({}, styles.color, {background: color})} />
-                </div>
-                { this.state.displayColorPicker ? <div style={styles.popover}>
-                    <div style={styles.cover} onClick={() => this.handleClose()}/>
-                    <ChromePicker color={ this.state.color } onChangeComplete={color => this.handleChange(color)} />
-                </div> : null }
-
+        return <div style={this.props.style}>
+            <TextField
+                id="name"
+                style={{width: 'calc(100% - 80px)'}}
+                label={this.props.name || 'color'}
+                value={color}
+                onChange={e => this.handleChange(e.target.value)}
+                margin="normal"
+            />
+            <IconButton
+                size="small"
+                onClick={() => this.handleChange('')}
+                style={color ? {} : {opacity: 0, cursor: 'default'}}>
+                <IconDelete/>
+            </IconButton>
+            <div className={this.props.classes.swatch}
+                 onClick={() => this.handleClick()}>
+                <div className={this.props.classes.color} style={{background: color}}/>
             </div>
-        )
+            <Dialog onClose={() => this.handleClose()} open={this.state.displayColorPicker}>
+                <ChromePicker color={ this.state.color } onChangeComplete={color => this.handleChange(color)} />
+            </Dialog>
+        </div>;
     }
 }
 
-export default ColorPicker
+export default withStyles(styles)(ColorPicker);

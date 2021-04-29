@@ -1,33 +1,4 @@
 {
-  "_from": "react-nest-thermostat",
-  "_id": "react-nest-thermostat@1.0.8",
-  "_inBundle": false,
-  "_integrity": "sha1-sLw/Gdr/vGwf7atgKkPI6paTJTk=",
-  "_location": "/react-nest-thermostat",
-  "_phantomChildren": {
-    "envify": "3.4.1",
-    "loose-envify": "1.3.1",
-    "promise": "7.3.1",
-    "ua-parser-js": "0.7.18"
-  },
-  "_requested": {
-    "type": "tag",
-    "registry": true,
-    "raw": "react-nest-thermostat",
-    "name": "react-nest-thermostat",
-    "escapedName": "react-nest-thermostat",
-    "rawSpec": "",
-    "saveSpec": null,
-    "fetchSpec": "latest"
-  },
-  "_requiredBy": [
-    "#USER",
-    "/"
-  ],
-  "_resolved": "https://registry.npmjs.org/react-nest-thermostat/-/react-nest-thermostat-1.0.8.tgz",
-  "_shasum": "b0bc3f19daffbc6c1fedab602a43c8ea96932539",
-  "_spec": "react-nest-thermostat",
-  "_where": "C:\\pWork\\ioBroker.material\\src",
   "author": {
     "name": "Kevin Mellott",
     "email": "kevin.r.mellott@gmail.com",

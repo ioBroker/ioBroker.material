@@ -19,7 +19,7 @@ import IconWindowOpened from '../icons/WindowOpened';
 import IconWindowClosed from '../icons/WindowClosed';
 import IconWindowTilted from '../icons/WindowTilted';
 import Theme from '../theme';
-import I18n from '../i18n';
+import I18n from '@iobroker/adapter-react/i18n';
 
 const VALUES = {
     closed: [/close/i],

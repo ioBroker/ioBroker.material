@@ -24,8 +24,8 @@ import {FaArrowsAltH as IconHorizontal} from 'react-icons/fa'
 import Fab from '@material-ui/core/Fab';
 
 import Theme from './theme';
-import Utils from './Utils';
-import I18n from './i18n';
+import Utils from '@iobroker/adapter-react/Components/Utils';
+import I18n from '@iobroker/adapter-react/i18n';
 import StatesSubList from './StatesSubList';
 
 const styles = {
@@ -233,7 +233,7 @@ class StatesList extends Component {
         this.collectVisibility = null;
     }
 
-    onVisibilityControl(id, visible) {
+    onVisibilityControl = (id, visible) => {
         const oldState = this.collectVisibility && this.collectVisibility[id] !== undefined ? this.collectVisibility[id] : this.state.visibleChildren[id];
 
         if (oldState !== visible) {
@@ -246,7 +246,7 @@ class StatesList extends Component {
         }
     }
 
-    onDelete(id) {
+    onDelete = id => {
         if (id === this.props.enumID) {
             const customURLs = Utils.getSettingsCustomURLs(this.props.objects[this.props.enumID], null, {user: this.props.user});
             this.setState({customURLs});
@@ -279,8 +279,8 @@ class StatesList extends Component {
                         items={items}
                         isUseBright={isUseBright}
                         ignoreIndicators={this.props.ignoreIndicators}
-                        onVisibilityControl={this.onVisibilityControl.bind(this)}
-                        onDelete={this.onDelete.bind(this)}
+                        onVisibilityControl={this.onVisibilityControl}
+                        onDelete={this.onDelete}
                         debug={this.props.debug}
                         align={this.state.align}
                         editMode={this.props.editMode}
@@ -308,8 +308,8 @@ class StatesList extends Component {
                 items={items}
                 isUseBright={isUseBright}
                 ignoreIndicators={this.props.ignoreIndicators}
-                onVisibilityControl={this.onVisibilityControl.bind(this)}
-                onDelete={this.onDelete.bind(this)}
+                onVisibilityControl={this.onVisibilityControl}
+                onDelete={this.onDelete}
                 debug={this.props.debug}
                 align={this.state.align}
                 editMode={this.props.editMode}

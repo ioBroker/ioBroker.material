@@ -93,10 +93,10 @@ class SmartSlider extends SmartGeneric {
         }
     }
 
-    setValue(value) {
+    setValue = value => {
         console.log('Control ' + this.id + ' = ' + value);
         if (this.actualId !== this.id) {
-            this.setState({executing: this.state.settings.noAck ? false : true, setValue: value});
+            this.setState({executing: !this.state.settings.noAck, setValue: value});
         }
         this.props.onControl(this.id, value);
     }
@@ -105,24 +105,22 @@ class SmartSlider extends SmartGeneric {
         let customIcon;
 
         if (this.state.settings.useDefaultIcon) {
-            customIcon = (<img src={this.getDefaultIcon()} alt="icon" style={{height: '100%'}}/>);
+            customIcon = <img src={this.getDefaultIcon()} alt="icon" style={{height: '100%'}}/>;
         } else {
             if (this.state.settings.icon) {
-                customIcon = (<img src={this.state.settings.icon} alt="icon" style={{height: '100%'}}/>);
+                customIcon = <img src={this.state.settings.icon} alt="icon" style={{height: '100%'}}/>;
             } else {
                 let IconCustom = this.icon;
                 if (IconCustom) {
-                    customIcon = (<IconCustom width={Theme.tile.tileIconSvg.size} height={Theme.tile.tileIconSvg.size} style={{height: Theme.tile.tileIconSvg.size, width: Theme.tile.tileIconSvg.size}}/>);
+                    customIcon = <IconCustom width={Theme.tile.tileIconSvg.size} height={Theme.tile.tileIconSvg.size} style={{height: Theme.tile.tileIconSvg.size, width: Theme.tile.tileIconSvg.size}}/>;
                 }
             }
         }
         if (customIcon) {
-            return (
-                <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, this.state[this.actualId] !== this.min ? {color: Theme.palette.lampOn} : {})} className="tile-icon">
-                    {customIcon}
-                    {this.state.executing ? <CircularProgress style={{position: 'absolute', top: 0, left: 0}} size={Theme.tile.tileIcon.width}/> : null}
-                </div>
-            );
+            return <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, this.state[this.actualId] !== this.min ? {color: Theme.palette.lampOn} : {})} className="tile-icon">
+                {customIcon}
+                {this.state.executing ? <CircularProgress style={{position: 'absolute', top: 0, left: 0}} size={Theme.tile.tileIcon.width}/> : null}
+            </div>;
         } else {
             return null;
         }
@@ -164,8 +162,8 @@ class SmartSlider extends SmartGeneric {
                         min={this.min}
                         max={this.max}
                         unit={this.unit}
-                        onValueChange={this.setValue.bind(this)}
-                        onClose={this.onDialogClose.bind(this)}
+                        onValueChange={this.setValue}
+                        onClose={this.onDialogClose}
                         type={Dialog.types.value}
                 /> : null
         ]);

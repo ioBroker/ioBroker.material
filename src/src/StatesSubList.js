@@ -17,7 +17,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
-import ButtonBase from '@material-ui/core/ButtonBase';
+import IconButton from '@material-ui/core/IconButton';
 
 import {MdPermScanWifi as IconUnreach} from 'react-icons/md';
 import {MdDragHandle as IconGrip} from 'react-icons/md';
@@ -26,9 +26,9 @@ import {TiLightbulb as IconLight} from 'react-icons/ti';
 //import {TiLightbulb as IconBlind100} from 'react-icons/ti';
 import IconBlind from './icons/Jalousie'
 
-import Utils from './Utils';
+import Utils from '@iobroker/adapter-react/Components/Utils';
 import Theme from './theme';
-import I18n from './i18n';
+import I18n from '@iobroker/adapter-react/i18n';
 import SmartTile from './SmartTile';
 import SmartDetector from './States/SmartDetector';
 import Types from './States/SmartTypes';
@@ -198,7 +198,7 @@ class StatesSubList extends Component {
     }
 
 
-    onVisibilityControl(id, visible, isDelete) {
+    onVisibilityControl = (id, visible, isDelete) => {
         const oldState = this.collectVisibility && this.collectVisibility[id] !== undefined ? this.collectVisibility[id] : this.state.visibleChildren[id];
 
         if (oldState !== visible) {
@@ -232,7 +232,7 @@ class StatesSubList extends Component {
             states={this.props.states}
             objects={this.props.objects}
             user={this.props.user}
-            onVisibilityControl={this.onVisibilityControl.bind(this)}
+            onVisibilityControl={this.onVisibilityControl}
             onDelete={this.props.onDelete}
             onSaveSettings={this.props.onSaveSettings}
             onCollectIds={this.props.onCollectIds}
@@ -529,12 +529,12 @@ class StatesSubList extends Component {
         const controls = [];
 
         if (countLights > 1) {
-            controls.push((<ButtonBase key="light-off" variant="fab" mini="true" aria-label="Off" onClick={() => this.controlAllLights(false)} style={Object.assign({}, Theme.buttonAllLight, {color: 'black'})}              title={I18n.t('All lights off')}><IconLight /></ButtonBase>));
-            controls.push((<ButtonBase key="light-on"  variant="fab" mini="true" aria-label="On"  onClick={() => this.controlAllLights(true)}  style={Object.assign({}, Theme.buttonAllLight, {color: Theme.palette.lampOn})} title={I18n.t('All lights on')}><IconLight  /></ButtonBase>));
+            controls.push(<IconButton key="light-off" size="small" aria-label="Off" onClick={() => this.controlAllLights(false)} style={Object.assign({}, Theme.buttonAllLight, {color: 'black'})}              title={I18n.t('All lights off')}><IconLight style={Theme.buttonAllIcon}/></IconButton>);
+            controls.push(<IconButton key="light-on"  size="small" aria-label="On"  onClick={() => this.controlAllLights(true)}  style={Object.assign({}, Theme.buttonAllLight, {color: Theme.palette.lampOn})} title={I18n.t('All lights on')}><IconLight  style={Theme.buttonAllIcon}/></IconButton>);
         }
-        if (countBlinds > 1) {
-            controls.push((<ButtonBase key="blind-off" variant="fab" mini="true" aria-label="Off" onClick={() => this.controlAllBlinds(false)} style={Object.assign({}, Theme.buttonAllLight, {color: 'black'})}              title={I18n.t('Close all blinds')}><IconBlind  style={Object.assign({}, Theme.iconAllBlinds, {color: 'black'})}/></ButtonBase>));
-            controls.push((<ButtonBase key="blind-on"  variant="fab" mini="true" aria-label="On"  onClick={() => this.controlAllBlinds(true)}  style={Object.assign({}, Theme.buttonAllLight, {color: Theme.palette.lampOn})} title={I18n.t('Open all blinds')}><IconBlind style={Object.assign({}, Theme.iconAllBlinds, {color: 'black', opacity: 0.3})} /></ButtonBase>));
+        if (countBlinds > 0) {
+            controls.push(<IconButton key="blind-off" size="small" aria-label="Off" onClick={() => this.controlAllBlinds(false)} style={Object.assign({}, Theme.buttonAllLight, {color: 'black'})}              title={I18n.t('Close all blinds')}><IconBlind style={Object.assign({}, Theme.iconAllBlinds, {color: 'black'})}/></IconButton>);
+            controls.push(<IconButton key="blind-on"  size="small" aria-label="On"  onClick={() => this.controlAllBlinds(true)}  style={Object.assign({}, Theme.buttonAllLight, {color: Theme.palette.lampOn})} title={I18n.t('Open all blinds')}><IconBlind  style={Object.assign({}, Theme.iconAllBlinds, {color: 'black', opacity: 0.3})} /></IconButton>);
         }
 
         return controls.length ? controls : null;

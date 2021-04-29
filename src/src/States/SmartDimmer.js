@@ -21,7 +21,7 @@ import {TiLightbulb as Icon} from 'react-icons/ti'
 import SmartGeneric from './SmartGeneric';
 import Theme from '../theme';
 import Dialog from '../Dialogs/SmartDialogSlider';
-import I18n from '../i18n';
+import I18n from '@iobroker/adapter-react/i18n';
 
 class SmartDimmer extends SmartGeneric {
     constructor(props) {
@@ -150,7 +150,7 @@ class SmartDimmer extends SmartGeneric {
         }
     }
 
-    setValue(percent) {
+    setValue = percent => {
         if (percent) {
             this.lastNotNullPercent = percent;
         } else {
@@ -165,7 +165,7 @@ class SmartDimmer extends SmartGeneric {
         this.props.onControl(this.id, this.percentToRealValue(percent));
     }
 
-    onToggleValue() {
+    onToggleValue = () => {
         if (this.onId) {
             this.props.onControl(this.onId, !this.state[this.onActualId]);
         } else {
@@ -221,10 +221,10 @@ class SmartDimmer extends SmartGeneric {
                 <Dialog key={this.key + 'dialog'}
                     windowWidth={this.props.windowWidth}
                     startValue={this.realValueToPercent()}
-                    onValueChange={this.setValue.bind(this)}
+                    onValueChange={this.setValue}
                     startToggleValue={this.onActualId ? this.state[this.onActualId] : false}
-                    onToggle={this.onId && this.onToggleValue.bind(this)}
-                    onClose={this.onDialogClose.bind(this)}
+                    onToggle={this.onId && this.onToggleValue}
+                    onClose={this.onDialogClose}
                     type={Dialog.types.dimmer}
                 /> : null
         ]);

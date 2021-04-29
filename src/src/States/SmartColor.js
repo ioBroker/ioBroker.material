@@ -22,7 +22,7 @@ import {TiLightbulb as Icon} from 'react-icons/ti'
 import SmartGeneric from './SmartGeneric';
 import Theme from '../theme';
 import Dialog from '../Dialogs/SmartDialogColor';
-import I18n from '../i18n';
+import I18n from '@iobroker/adapter-react/i18n';
 import UtilsColors from '../UtilsColors';
 
 class SmartColor extends SmartGeneric {
@@ -311,7 +311,7 @@ class SmartColor extends SmartGeneric {
         }
     }
 
-    onRgbChange(rgb, temperature, colorMode) {
+    onRgbChange = (rgb, temperature, colorMode) => {
         const newValue = {};
         if (colorMode !== undefined) {
             newValue.colorMode = colorMode;
@@ -388,7 +388,7 @@ class SmartColor extends SmartGeneric {
 
     }
 
-    onDimmerChange(dimmer) {
+    onDimmerChange = dimmer => {
         this.setState({dimmer});
         this.props.onControl(this.ids.dimmer.id, this.percentToRealValue(this.ids.dimmer, dimmer));
     }
@@ -410,7 +410,7 @@ class SmartColor extends SmartGeneric {
         return settings;
     }
 
-    onToggle(value) {
+    onToggle = value => {
         if (this.ids.on) {
             const newValue = value === undefined || typeof value === 'object' ? !this.state[this.ids.on.id] : value;
             this.setState({[this.ids.on.id]: newValue});
@@ -561,18 +561,18 @@ class SmartColor extends SmartGeneric {
                     temperatureMax={(this.ids.temperature && this.ids.temperature.max) || 6500}
 
                     startRGB={color}
-                    onRgbChange={this.onRgbChange.bind(this)}
+                    onRgbChange={this.onRgbChange}
                     startTemp={(this.ids.temperature && this.state[this.ids.temperature.id]) ? this.percentToRealValue(this.ids.temperature, this.state[this.ids.temperature.id]) : UtilsColors.rgb2temperature(color)}
 
                     startOn={this.ids.on && this.state[this.ids.on.id]}
                     useOn={!!this.ids.on}
-                    onToggle={this.ids.on && this.onToggle.bind(this)}
+                    onToggle={this.ids.on && this.onToggle}
 
                     startDimmer={this.ids.dimmer && this.state[this.ids.dimmer.id]}
                     useDimmer={!!this.ids.dimmer}
-                    onDimmerChange={this.onDimmerChange.bind(this)}
+                    onDimmerChange={this.onDimmerChange}
 
-                    onClose={this.onDialogClose.bind(this)}
+                    onClose={this.onDialogClose}
                 /> : null
         ]);
     }

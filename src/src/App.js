@@ -43,9 +43,9 @@ import {MdRefresh as IconRefresh} from 'react-icons/md';
 import {FaSignOutAlt as IconLogout} from 'react-icons/fa';
 
 import Theme from './theme';
-import I18n from './i18n';
+import I18n from '@iobroker/adapter-react/i18n';
 import VERSION from './version';
-import Utils from './Utils';
+import Utils from '@iobroker/adapter-react/Components/Utils';
 import MenuList from './MenuList';
 import StatesList from './StatesList';
 import SpeechDialog from './SpeechDialog';
@@ -96,6 +96,17 @@ class App extends Component {
         };
         this.state.open = this.state.menuFixed;
 
+        this.translations = {
+            'en': require('./i18n/en'),
+            'ru': require('./i18n/ru'),
+            'de': require('./i18n/de'),
+            'zh-cn': require('./i18n/zh-cn'),
+        };
+
+        // init translations
+        I18n.setTranslations(this.translations);
+        I18n.setLanguage((navigator.language || navigator.userLanguage || 'en').substring(0, 2).toLowerCase());
+
         this.objects = {};
         this.states = {};
         this.instances = null;
@@ -107,7 +118,6 @@ class App extends Component {
         this.subscribes = {};
         this.requestStates = [];
         this.conn = null;
-        this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
         this.initialFullScreenMode = window.document.fullScreen || window.document.mozFullScreen || window.document.webkitIsFullScreen;
         this.isCloud = !!window.document.location.hostname.match(/^iobroker\./);
 
@@ -235,9 +245,9 @@ class App extends Component {
         this.user = this.conn.getUser().replace(/^system\.user\./, '');
         this.auth = this.conn.getIsLoginRequired();
 
-        this.conn.getObject('system.adapter.material', function (err, obj) {
+        this.conn.getObject('system.adapter.material', (err, obj) => {
             obj && obj.common && obj.common.version && this.setState({actualVersion: obj.common.version});
-        }.bind(this));
+        });
 
         this.readRemoteData((err, data) => {
             let objects = data.objects || {};
@@ -330,7 +340,7 @@ class App extends Component {
             },
             useStorage: false,
             connCallbacks: {
-                onConnChange: function (isConnected) { // no lambda here
+                onConnChange: isConnected => { // no lambda here
                     if (isConnected) {
                         this.setState({connected: true, loading: true});
                         if (this.gotObjects) {
@@ -347,11 +357,11 @@ class App extends Component {
                             loadingStep: 'connecting'
                         });
                     }
-                }.bind(this),
+                },
                 onRefresh: () => {
                     window.location.reload();
                 },
-                onUpdate: function (id, state) { // no lambda here
+                onUpdate: (id, state) => { // no lambda here
                     setTimeout(() => {
                         if (id) {
                             this.states[id] = state;
@@ -369,11 +379,11 @@ class App extends Component {
                             }
                         }
                     }, 0);
-                }.bind(this),
-                onError: function (err) { // no lambda here
+                },
+                onError: err => { // no lambda here
                     this.showError(err);
-                }.bind(this),
-                onObjectChange: function (id, obj) {
+                },
+                onObjectChange: (id, obj) => {
                     if (this.instances) {
                         if (obj) {
                             this.instances[id] = obj;
@@ -382,7 +392,7 @@ class App extends Component {
                         }
                         this.forceUpdate();
                     }
-                }.bind(this)
+                }
             },
             objectsRequired: false,
             autoSubscribe: false
@@ -413,7 +423,7 @@ class App extends Component {
         window.removeEventListener('resize', this.updateWindowDimensions);
     }
 
-    updateWindowDimensions() {
+    updateWindowDimensions = () => {
         if (this.resizeTimer) {
             clearTimeout(this.resizeTimer);
         }
@@ -423,7 +433,7 @@ class App extends Component {
         }, 200);
     }
 
-    onToggleMenu () {
+    onToggleMenu = () => {
         if (this.state.menuFixed && typeof Storage !== 'undefined') {
             window.localStorage.setItem('menuFixed', '0');
         }
@@ -433,7 +443,7 @@ class App extends Component {
         });
     }
 
-    onToggleLock () {
+    onToggleLock = () => {
         if (typeof Storage !== 'undefined') {
             window.localStorage.setItem('menuFixed', this.state.menuFixed ? '0': '1')
         }
@@ -475,13 +485,13 @@ class App extends Component {
         }
     }
 
-    onToggleFullScreen () {
+    onToggleFullScreen = () => {
         App.controlFullScreen(!this.state.fullScreen);
 
         this.setState({fullScreen: !this.state.fullScreen});
     }
 
-    onItemSelected(enumId, masterPath, doNotCloseMenu) {
+    onItemSelected = (enumId, masterPath, doNotCloseMenu) => {
         window.location.hash = encodeURIComponent(enumId.replace(/^enum\./, ''));
 
         const states = {
@@ -513,7 +523,7 @@ class App extends Component {
         }
     }
 
-    onRootChanged(root, page, doNotCloseMenu) {
+    onRootChanged = (root, page, doNotCloseMenu) => {
         if (page) {
             this.onItemSelected(page, root, doNotCloseMenu);
         } else {
@@ -561,7 +571,7 @@ class App extends Component {
      * @param {array} ids string or array of strings with IDs that must be subscribed or un-subscribed
      * @param {boolean} isMount true if subscribe and false if un-sibscribe
      */
-    onCollectIds(elem, ids, isMount) {
+    onCollectIds = (elem, ids, isMount) => {
         if (typeof ids !== 'object') {
             ids = [ids];
         }
@@ -629,7 +639,7 @@ class App extends Component {
         }
     }
 
-    onControl(id, val, objectAttribute) {
+    onControl = (id, val, objectAttribute) => {
         if (!id) {
             this.showError(I18n.t('Control ID is empty'));
         } else
@@ -656,7 +666,7 @@ class App extends Component {
         }
     }
 
-    processTasks() {
+    processTasks = () => {
         if (!this.tasks.length) {
             return;
         }
@@ -682,7 +692,7 @@ class App extends Component {
                             } else {
                                 this.clearCachedObjects();
                             }
-                            setTimeout(this.processTasks.bind(this), 0);
+                            setTimeout(this.processTasks, 0);
                         });
                     } else {
                         console.log('Invalid object: ' + task.id);
@@ -690,14 +700,14 @@ class App extends Component {
                             this.tasks[0].cb();
                         }
                         this.tasks.shift();
-                        setTimeout(this.processTasks.bind(this), 0);
+                        setTimeout(this.processTasks, 0);
                     }
                 } else {
                     if (typeof this.tasks[0].cb === 'function') {
                         this.tasks[0].cb();
                     }
                     this.tasks.shift();
-                    setTimeout(this.processTasks.bind(this), 0);
+                    setTimeout(this.processTasks, 0);
                 }
             });
         } else if (task.name === 'saveNativeSettings') {
@@ -718,14 +728,14 @@ class App extends Component {
                         } else {
                             this.clearCachedObjects();
                         }
-                        setTimeout(this.processTasks.bind(this), 0);
+                        setTimeout(this.processTasks, 0);
                     });
                 } else {
                     if (typeof this.tasks[0].cb === 'function') {
                         this.tasks[0].cb();
                     }
                     this.tasks.shift();
-                    setTimeout(this.processTasks.bind(this), 0);
+                    setTimeout(this.processTasks, 0);
                 }
             });
         } else {
@@ -733,11 +743,11 @@ class App extends Component {
                 this.tasks[0].cb();
             }
             this.tasks.shift();
-            setTimeout(this.processTasks.bind(this), 0);
+            setTimeout(this.processTasks, 0);
         }
     }
 
-    onSaveSettings(id, settings, defaultSettings, cb) {
+    onSaveSettings = (id, settings, defaultSettings, cb) => {
         if (typeof defaultSettings === 'function') {
             cb = defaultSettings;
             defaultSettings = {};
@@ -750,7 +760,7 @@ class App extends Component {
                 settings.background.data = settings.background.data.split(',')[1];
             }
             // upload image
-            this.conn.writeFile64(fileName, settings.background.data, function (err) {
+            this.conn.writeFile64(fileName, settings.background.data, err => {
                 if (err) {
                     window.alert(err);
                 } else {
@@ -761,7 +771,7 @@ class App extends Component {
                         this.processTasks();
                     }
                 }
-            }.bind(this));
+            });
         } else {
             //Utils.setSettings(objects[id], settings, {user: this.user, language: I18n.getLanguage()});
             this.tasks.push({name: 'saveSettings', id, settings, defaultSettings, cb});
@@ -790,13 +800,11 @@ class App extends Component {
         }
     }
 
-    onSpeech(isStart) {
+    onSpeech = isStart =>
         this.setState({isListening: isStart});
-    }
 
-    onSpeechRec(text) {
+    onSpeechRec = text =>
         this.conn.setState('text2command.' + ((this.state.appSettings && this.state.appSettings.text2command) || 0) + '.text', text);
-    }
 
     speak(text) {
         if (!window.SpeechSynthesisUtterance) {
@@ -846,19 +854,16 @@ class App extends Component {
         return locale;
     }
 
-    toggleEditMode() {
+    toggleEditMode = () =>
         this.setState({editMode: !this.state.editMode});
-    }
 
-    editEnumSettingsOpen() {
+    editEnumSettingsOpen = () =>
         this.setState({editEnumSettings: true});
-    }
 
-    editEnumSettingsClose() {
+    editEnumSettingsClose = () =>
         this.setState({editEnumSettings: false});
-    }
 
-    editAppSettingsOpen() {
+    editAppSettingsOpen = () => {
         if (!this.state.appSettings || !this.state.appSettings.instances) {
             this.readInstancesData(true, () => {
                 this.setState({editAppSettings: true});
@@ -868,9 +873,8 @@ class App extends Component {
         }
     }
 
-    editAppSettingsClose() {
+    editAppSettingsClose = () =>
         this.setState({editAppSettings: false});
-    }
 
     getDialogSettings() {
         const settings = [];
@@ -1036,14 +1040,14 @@ class App extends Component {
         return settings;
     }
 
-    readImageNames(cb) {
+    readImageNames = cb => {
         const dir = `/${Utils.namespace}.0/${this.user}/`;
         this.conn.readDir(dir, (err, files) => {
             cb(files.map(file => dir + file.file));
         });
     }
 
-    saveDialogSettings(settings) {
+    saveDialogSettings = settings => {
         settings = settings || this.state.settings;
         if (settings.background && typeof settings.background === 'object') {
             let fileName = `/${Utils.namespace}.0/${this.user}/${this.state.viewEnum}.${settings.background.name.toLowerCase().split('.').pop()}`;
@@ -1052,7 +1056,7 @@ class App extends Component {
                 settings.background.data = settings.background.data.split(',')[1];
             }
             // upload image
-            this.conn.writeFile64(fileName, settings.background.data, function (err) {
+            this.conn.writeFile64(fileName, settings.background.data, err => {
                 if (err) {
                     window.alert(err);
                 } else {
@@ -1067,7 +1071,7 @@ class App extends Component {
                         this.onSaveSettings(this.state.viewEnum, settings);
                     }
                 }
-            }.bind(this));
+            });
         } else {
             if (this.state.viewEnum === Utils.INSTANCES) {
                 const appSettings = JSON.parse(JSON.stringify(this.state.appSettings || {}));
@@ -1081,14 +1085,14 @@ class App extends Component {
         }
     }
 
-    syncObjects() {
+    syncObjects = () => {
         this.setState({refresh: true}, () => {
             window.localStorage.removeItem('data');
             window.location.reload();
         });
     }
 
-    saveAppSettings(appSettings) {
+    saveAppSettings = appSettings => {
         appSettings = appSettings || this.state.appSettings || {};
         const nativeSettings = {
             loadingBackground: appSettings.loadingBackground
@@ -1137,7 +1141,7 @@ class App extends Component {
         }
     }
 
-    logout() {
+    logout = () => {
         if (this.isCloud) {
             window.location.href = '/logout';
         } else {
@@ -1159,7 +1163,7 @@ class App extends Component {
 
         return (
             <IconButton
-            onClick={this.toggleEditMode.bind(this)}
+            onClick={this.toggleEditMode}
             style={style}>
                 <IconEdit width={Theme.iconSize} height={Theme.iconSize}/>
             </IconButton>
@@ -1181,16 +1185,16 @@ class App extends Component {
                 background: (this.state.appSettings && this.state.appSettings.menuBackground) || 'white'
             }}>
             <Toolbar style={this.state.appSettings && this.state.appSettings.menuBackground ? {background: this.state.appSettings.menuBackground} : {}}>
-                <IconButton onClick={this.onToggleMenu.bind(this)} style={{color: useBright ? Theme.palette.textColorBright : Theme.palette.textColorDark}}>
+                <IconButton onClick={this.onToggleMenu} style={{color: useBright ? Theme.palette.textColorBright : Theme.palette.textColorDark}}>
                     <IconClose width={Theme.iconSize} height={Theme.iconSize} />
                 </IconButton>
 
-                {this.state.connected && this.state.editMode ? (<IconButton onClick={this.editAppSettingsOpen.bind(this)} style={{color: this.state.editEnumSettings ? Theme.palette.editActive : (useBright ? Theme.palette.textColorBright : Theme.palette.textColorDark)}}><IconSettings width={Theme.iconSize} height={Theme.iconSize}/></IconButton>) : null}
+                {this.state.connected && this.state.editMode ? (<IconButton onClick={this.editAppSettingsOpen} style={{color: this.state.editEnumSettings ? Theme.palette.editActive : (useBright ? Theme.palette.textColorBright : Theme.palette.textColorDark)}}><IconSettings width={Theme.iconSize} height={Theme.iconSize}/></IconButton>) : null}
 
                 <div style={{flexGrow: 1}}/>
 
                 {this.state.width > 500 && !this.state.menuFixed ?
-                    (<IconButton onClick={this.onToggleLock.bind(this)} style={{float: 'right', color: useBright ? Theme.palette.textColorBright : Theme.palette.textColorDark}}>
+                    (<IconButton onClick={this.onToggleLock} style={{float: 'right', color: useBright ? Theme.palette.textColorBright : Theme.palette.textColorDark}}>
                         <IconLock width={Theme.iconSize} height={Theme.iconSize}/>
                     </IconButton>)
                     : null
@@ -1207,9 +1211,9 @@ class App extends Component {
                 viewEnum={this.state.viewEnum}
                 editMode={this.state.editMode}
                 root={this.state.masterPath}
-                onSaveSettings={this.onSaveSettings.bind(this)}
-                onRootChanged={this.onRootChanged.bind(this)}
-                onSelectedItemChanged={this.onItemSelected.bind(this)}
+                onSaveSettings={this.onSaveSettings}
+                onRootChanged={this.onRootChanged}
+                onSelectedItemChanged={this.onItemSelected}
             />
         </Drawer>);
     }
@@ -1219,7 +1223,7 @@ class App extends Component {
             return (
                 <IconButton
                     style={{color: useBright ? Theme.palette.textColorBright : Theme.palette.textColorDark}}
-                    onClick={this.onToggleFullScreen.bind(this)}>
+                    onClick={this.onToggleFullScreen}>
                     {this.state.fullScreen ?
                         <IconFullScreenExit width={Theme.iconSize} height={Theme.iconSize} /> :
                         <IconFullScreen width={Theme.iconSize} height={Theme.iconSize} />
@@ -1249,7 +1253,7 @@ class App extends Component {
         if (this.state.connected && this.state.editMode) {
             return (
                 <IconButton
-                    onClick={this.editEnumSettingsOpen.bind(this)}
+                    onClick={this.editEnumSettingsOpen}
                     style={{color: this.state.editEnumSettings ? Theme.palette.editActive : (useBright ? Theme.palette.textColorBright : Theme.palette.textColorDark)}}>
                     <IconSettings width={Theme.iconSize} height={Theme.iconSize}/>
                 </IconButton>);
@@ -1262,7 +1266,7 @@ class App extends Component {
         if (this.state.connected && this.state.editMode && (!this.state.appSettings || !this.state.appSettings.noCache)) {
             return (
                 <IconButton
-                    onClick={this.syncObjects.bind(this)}
+                    onClick={this.syncObjects}
                     title={I18n.t('Re-sync objects')}
                     style={{color: this.state.editEnumSettings ? Theme.palette.editActive : (useBright ? Theme.palette.textColorBright : Theme.palette.textColorDark)}}>
                     <IconRefresh width={Theme.iconSize} height={Theme.iconSize}/>
@@ -1276,7 +1280,7 @@ class App extends Component {
         if (this.isCloud || this.auth) {
             return (
                 <IconButton
-                    onClick={this.logout.bind(this)}
+                    onClick={this.logout}
                     title={I18n.t('Logout')}
                     style={{color: this.state.editEnumSettings ? Theme.palette.editActive : (useBright ? Theme.palette.textColorBright : Theme.palette.textColorDark)}}>
                     <IconLogout width={Theme.iconSize} height={Theme.iconSize}/>
@@ -1309,7 +1313,7 @@ class App extends Component {
         >
             <Toolbar style={{background: toolbarBackground, color: useBright ? Theme.palette.textColorBright : Theme.palette.textColorDark}}>
                 {!this.state.menuFixed &&
-                (<IconButton color="inherit" aria-label="Menu" onClick={this.onToggleMenu.bind(this)} >
+                (<IconButton color="inherit" aria-label="Menu" onClick={this.onToggleMenu} >
                     <IconMenu/>
                 </IconButton>)}
                 {Utils.getIcon(this.state.settings, Theme.appBarIcon)}
@@ -1329,11 +1333,11 @@ class App extends Component {
                 {this.state.editEnumSettings ? (<DialogSettings key={'enum-settings'}
                                                                 name={this.getTitle()}
                                                                 windowWidth={parseFloat(this.state.width)}
-                                                                getImages={this.readImageNames.bind(this)}
+                                                                getImages={this.readImageNames}
                                                                 dialogKey={'enum-settings'}
                                                                 settings={this.getDialogSettings()}
-                                                                onSave={this.saveDialogSettings.bind(this)}
-                                                                onClose={this.editEnumSettingsClose.bind(this)}
+                                                                onSave={this.saveDialogSettings}
+                                                                onClose={this.editEnumSettingsClose}
 
                 />): null}
                 {this.state.editAppSettings ? (<DialogSettings key={'app-settings'}
@@ -1341,8 +1345,8 @@ class App extends Component {
                                                                name={I18n.t('App settings')}
                                                                dialogKey={'app-settings'}
                                                                settings={this.getAppSettings()}
-                                                               onSave={this.saveAppSettings.bind(this)}
-                                                               onClose={this.editAppSettingsClose.bind(this)}
+                                                               onSave={this.saveAppSettings}
+                                                               onClose={this.editAppSettingsClose}
 
                 />): null}
             </Toolbar>
@@ -1367,14 +1371,14 @@ class App extends Component {
                 windowHeight={parseFloat(this.state.height)}
                 marginLeft={this.state.menuFixed ? Theme.menu.width : 0}
                 enumID={this.state.viewEnum}
-                onSaveSettings={this.onSaveSettings.bind(this)}
-                onControl={this.onControl.bind(this)}
-                onCollectIds={this.onCollectIds.bind(this)}/>
+                onSaveSettings={this.onSaveSettings}
+                onControl={this.onControl}
+                onCollectIds={this.onCollectIds}/>
         );
     }
 
     getErrorDialog() {
-        return (<Dialog
+        return <Dialog
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
             onClose={() => this.setState({errorShow: false})}
@@ -1389,7 +1393,7 @@ class App extends Component {
             <DialogActions>
                 <Button onClick={() => this.setState({errorShow: false})} color="primary">OK</Button>
             </DialogActions>
-        </Dialog>);
+        </Dialog>;
     }
 
     getSpeechDialog() {
@@ -1399,7 +1403,7 @@ class App extends Component {
                     objects={this.objects}
                     isShow={this.state.isListening}
                     locale={this.getLocale()}
-                    onSpeech={this.onSpeechRec.bind(this)}
+                    onSpeech={this.onSpeechRec}
                     onFinished={() => this.onSpeech(false)}
                 /> : null);
         } else {

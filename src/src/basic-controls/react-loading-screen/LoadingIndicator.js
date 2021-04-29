@@ -35,8 +35,8 @@ const styles = {
 };
 const LoadingIndicator = ({classes, label, value, color, variant}) => {
     return [
-        (<LinearProgress key="progress" variant={variant || 'determinate'} className={classes.progress} value={value} />),
-        (<div key="text" className={classes.progressText} style={{color: color}}>{label}</div>)
+        <LinearProgress key="progress" variant={variant || 'determinate'} className={classes.progress} value={value} />,
+        <div key="text" className={classes.progressText} style={{color: color}}>{label}</div>
     ];
 };
 

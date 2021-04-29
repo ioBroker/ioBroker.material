@@ -16,10 +16,12 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
+
 import TextField from '@material-ui/core/TextField';
 import Chip from '@material-ui/core/Chip';
+import Fab from '@material-ui/core/Fab';
+
 import {MdAdd as AddIcon} from 'react-icons/md';
-import Button from '@material-ui/core/Button';
 
 const styles = theme => ({
     line: {
@@ -66,14 +68,15 @@ class ChipsControl extends Component {
         }
     }
 
-    onAdd() {
+    onAdd = () => {
         const chips = JSON.parse(JSON.stringify(this.state.chips));
         chips.push(this.state.add);
         chips.sort();
         this.setState({chips, add: ''});
         this.props.onChange(chips.join(','));
     }
-    onKeyDown(e) {
+
+    onKeyDown = e => {
         if (e.keyCode === 13 || e.keyCode === 9) {
             this.onAdd();
         }
@@ -88,39 +91,37 @@ class ChipsControl extends Component {
     render() {
         const {classes, label} = this.props;
 
-        return (
-            <div className={classes.line}>
-                <div className={classes.label}>{label}</div>
-                <div className={classes.chips}>
-                    {
-                        this.state.chips.map(word => (<Chip
-                            key={word}
-                            label={word}
-                            onDelete={() => this.handleDelete(word)}
-                            className={classes.chip}
-                        />))
-                    }
-                </div>
-                <div className={classes.inputLine}>
-                    <TextField
-                        tabIndex="0"
-                        className={classes.input}
-                        type={this.type}
-                        label={this.props.textAdd || 'Add word'}
-                        value={this.state.add}
-                        onKeyDown={this.onKeyDown.bind(this)}
-                        onChange={event => this.setState({add: event.target.value})}
-                        margin="normal"
-                    />
-                    <Button variant="fab" mini disabled={!this.state.add}
-                            color="secondary"
-                            onClick={this.onAdd.bind(this)}
-                            aria-label="add" className={classes.button}>
-                        <AddIcon />
-                    </Button>
-                </div>
+        return <div className={classes.line}>
+            <div className={classes.label}>{label}</div>
+            <div className={classes.chips}>
+                {
+                    this.state.chips.map(word => (<Chip
+                        key={word}
+                        label={word}
+                        onDelete={() => this.handleDelete(word)}
+                        className={classes.chip}
+                    />))
+                }
             </div>
-        );
+            <div className={classes.inputLine}>
+                <TextField
+                    tabIndex="0"
+                    className={classes.input}
+                    type={this.type}
+                    label={this.props.textAdd || 'Add word'}
+                    value={this.state.add}
+                    onKeyDown={this.onKeyDown}
+                    onChange={event => this.setState({add: event.target.value})}
+                    margin="normal"
+                />
+                <Fab size="small" disabled={!this.state.add}
+                        color="secondary"
+                        onClick={this.onAdd}
+                        aria-label="add" className={classes.button}>
+                    <AddIcon />
+                </Fab>
+            </div>
+        </div>;
     }
 }
 

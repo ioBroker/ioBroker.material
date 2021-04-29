@@ -15,6 +15,7 @@
  **/
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import clsx from 'clsx';
 import {withStyles} from '@material-ui/core/styles';
 
 const styles = theme => ({
@@ -98,22 +99,6 @@ const activeTitleMax = {
     textShadow: '0 0 0.3em rgba(23,23,23)'//'0 0 0.3em 0.08em #79c3f4',
 };
 class KnobControl extends Component {
-    static propTypes = {
-        classes:        PropTypes.object.isRequired,
-        unit:           PropTypes.string,
-        value:          PropTypes.string.isRequired,
-        onChange:       PropTypes.func.isRequired,
-        min:            PropTypes.number,
-        max:            PropTypes.number,
-        ticks:          PropTypes.number,
-        style:          PropTypes.object,
-        hideValue:      PropTypes.bool,
-        angleStart:     PropTypes.number,
-        angleEnd:       PropTypes.number,
-        ticksNumber:    PropTypes.number,
-        parent:         PropTypes.object
-    };
-
     constructor(props) {
         super(props);
         this.type = this.props.type || (typeof this.props.value === 'number' ? 'number' : 'text');
@@ -130,9 +115,6 @@ class KnobControl extends Component {
         this.max = this.props.max || 100;
 
         this.refKnob = React.createRef();
-
-        this.onMouseMoveBind = this.onMouseMove.bind(this);
-        this.onMouseUpBind = this.onMouseUp.bind(this);
 
         const value = this.externalValue2localValue(this.props.value);
 
@@ -268,7 +250,7 @@ class KnobControl extends Component {
         return result;
     }
 
-    onWheel(e) {
+    onWheel = e => {
         // return;
         let value = this.state.value;
         if (e.deltaY < 0) {
@@ -323,13 +305,13 @@ class KnobControl extends Component {
         this.onValueChange(value);
     }
 
-    onMouseMove(e) {
+    onMouseMove = e => {
         e.preventDefault();
         e.stopPropagation();
         this.eventToValue(e);
     }
 
-    onMouseDown(e) {
+    onMouseDown = e => {
         e.preventDefault();
         e.stopPropagation();
 
@@ -337,13 +319,13 @@ class KnobControl extends Component {
 
         this.eventToValue(e);
 
-        document.addEventListener('mousemove',  this.onMouseMoveBind,   {passive: false, capture: true});
-        document.addEventListener('mouseup',    this.onMouseUpBind,     {passive: false, capture: true});
-        document.addEventListener('touchmove',  this.onMouseMoveBind,   {passive: false, capture: true});
-        document.addEventListener('touchend',   this.onMouseUpBind,     {passive: false, capture: true});
+        document.addEventListener('mousemove',  this.onMouseMove,   {passive: false, capture: true});
+        document.addEventListener('mouseup',    this.onMouseUp,     {passive: false, capture: true});
+        document.addEventListener('touchmove',  this.onMouseMove,   {passive: false, capture: true});
+        document.addEventListener('touchend',   this.onMouseUp,     {passive: false, capture: true});
     }
 
-    onMouseUp(e) {
+    onMouseUp = e => {
         e.preventDefault();
         e.stopPropagation();
 
@@ -351,10 +333,10 @@ class KnobControl extends Component {
 
         console.log('Stopped');
 
-        document.removeEventListener('mousemove',   this.onMouseMoveBind,   {passive: false, capture: true});
-        document.removeEventListener('mouseup',     this.onMouseUpBind,     {passive: false, capture: true});
-        document.removeEventListener('touchmove',   this.onMouseMoveBind,   {passive: false, capture: true});
-        document.removeEventListener('touchend',    this.onMouseUpBind,     {passive: false, capture: true});
+        document.removeEventListener('mousemove',   this.onMouseMove,   {passive: false, capture: true});
+        document.removeEventListener('mouseup',     this.onMouseUp,     {passive: false, capture: true});
+        document.removeEventListener('touchmove',   this.onMouseMove,   {passive: false, capture: true});
+        document.removeEventListener('touchend',    this.onMouseUp,     {passive: false, capture: true});
 
         this.props.onChange && this.props.onChange(this.localValue2externalValue(this.state.value));
     }
@@ -373,31 +355,47 @@ class KnobControl extends Component {
         let styleMax = Object.assign({}, this.state.value === 100 ? activeTitleMax : {}, {left: this.maxPos.x, top: this.maxPos.y});
 
         return [
-            (<span key="min" className={this.props.classes.min} style={styleMin}>Min</span>),
-            (<span key="max" className={this.props.classes.max} style={styleMax}>Max</span>)
+            <span key="min" className={this.props.classes.min} style={styleMin}>Min</span>,
+            <span key="max" className={this.props.classes.max} style={styleMax}>Max</span>
         ];
 
     }
     render() {
-        return (
-            <div ref={this.refKnob}
-                 style={this.props.style}
+        return <div
+            ref={this.refKnob}
+            style={this.props.style}
 
-                 onMouseDown={this.onMouseDown.bind(this)}
-                 onTouchStart={this.onMouseDown.bind(this)}
+            onMouseDown={this.onMouseDown}
+            onTouchStart={this.onMouseDown}
 
-                 className={this.props.classes.knobSurround} onWheel={this.onWheel.bind(this)}>
-                {this.drawMinMax()}
-                {this.drawKnob()}
+            className={clsx(this.props.className, this.props.classes.knobSurround)} onWheel={this.onWheel}>
+            {this.drawMinMax()}
+            {this.drawKnob()}
 
-
-                {this.drawValue()}
-                <div className={this.props.classes.knob}>
-                    {this.drawTicks()}
-                </div>
+            {this.drawValue()}
+            <div className={this.props.classes.knob}>
+                {this.drawTicks()}
             </div>
-        );
+        </div>;
     }
 }
+
+KnobControl.propTypes = {
+    classes:        PropTypes.object.isRequired,
+    unit:           PropTypes.string,
+    value:          PropTypes.string.isRequired,
+    onChange:       PropTypes.func.isRequired,
+    min:            PropTypes.number,
+    max:            PropTypes.number,
+    ticks:          PropTypes.number,
+    style:          PropTypes.object,
+    hideValue:      PropTypes.bool,
+    angleStart:     PropTypes.number,
+    angleEnd:       PropTypes.number,
+    ticksNumber:    PropTypes.number,
+    parent:         PropTypes.object,
+    className:      PropTypes.string
+};
+
 
 export default withStyles(styles)(KnobControl);

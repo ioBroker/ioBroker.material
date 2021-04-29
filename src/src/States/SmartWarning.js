@@ -246,7 +246,7 @@ class SmartWeatherForecast extends SmartGeneric {
                         onCollectIds={this.props.onCollectIds}
                         ids={this.ids}
                         windowWidth={this.props.windowWidth}
-                        onClose={this.onDialogClose.bind(this)}
+                        onClose={this.onDialogClose}
                 /> : null
         ]);
     }

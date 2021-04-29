@@ -21,7 +21,7 @@ import {FaVideo as IconCam} from 'react-icons/fa';
 import SmartGeneric from './SmartGeneric';
 import Dialog from '../Dialogs/SmartDialogURL';
 import Theme from '../theme';
-import Utils from '../Utils';
+import Utils from '@iobroker/adapter-react/Components/Utils';
 
 const styles = {
     'title-div': {
@@ -292,8 +292,9 @@ class SmartURL extends SmartGeneric {
         }
     }
 
-    onDialogClose() {
-        super.onDialogClose();
+    onDialogClose = () => {
+        // super.onDialogClose();
+        this.setState({showDialog: false});
         // start timer again
         this.componentDidMount();
     }
@@ -323,7 +324,7 @@ class SmartURL extends SmartGeneric {
                         onCollectIds={this.props.onCollectIds}
                         ids={this.ids}
                         windowWidth={this.props.windowWidth}
-                        onClose={this.onDialogClose.bind(this)}
+                        onClose={this.onDialogClose}
                 /> : null
         ]);
     }

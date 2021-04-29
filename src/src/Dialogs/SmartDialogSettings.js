@@ -41,9 +41,9 @@ import SelectControl from '../basic-controls/react-info-controls/SelectControl';
 import BoolControl from '../basic-controls/react-info-controls/BoolControl';
 
 import SmartDialogGeneric from './SmartDialogGeneric';
-import Utils from '../Utils';
+import Utils from '@iobroker/adapter-react/Components/Utils';
 import Theme from '../theme';
-import I18n from '../i18n';
+import I18n from '@iobroker/adapter-react/i18n';
 
 const styles = {
     descCopyIcon: {
@@ -64,8 +64,8 @@ const styles = {
         right: 3,
         background: 'white'
     }
-
 };
+
 class SmartDialogSettings extends SmartDialogGeneric  {
 
     // expected:
@@ -118,7 +118,7 @@ class SmartDialogSettings extends SmartDialogGeneric  {
         }
     }
 
-    onSave() {
+    onSave = () => {
         const settings = {};
         this.props.settings.forEach(item => {
             settings[item.name] = this.state.values[item.name];
@@ -126,7 +126,7 @@ class SmartDialogSettings extends SmartDialogGeneric  {
         this.props.onSave(settings);
         this.ignoreUnsaved = true;
         this.onClose();
-    }
+    };
 
     handleWarningCancel = () => {
         this.ignoreUnsaved = false;
@@ -204,7 +204,7 @@ class SmartDialogSettings extends SmartDialogGeneric  {
         });
     }
 
-    copyId(event) {
+    copyId = event => {
         this.setState({anchorEl: event.currentTarget});
         setTimeout(() => {
             this.setState({anchorEl: null});
@@ -218,7 +218,7 @@ class SmartDialogSettings extends SmartDialogGeneric  {
                     text={this.props.settingsId}>
                     <IconButton
                         title={I18n.t('Copy ID to clipboard')}
-                        onClick={this.copyId.bind(this)}
+                        onClick={this.copyId}
                         style={styles.descCopyIcon}>
                         <CopyIcon width={Theme.iconSize} height={Theme.iconSize}/>
                     </IconButton>
@@ -233,50 +233,57 @@ class SmartDialogSettings extends SmartDialogGeneric  {
         }
     }
 
+    getHeader() {
+        return this.props.name;
+    }
+    getButtons() {
+        return <Button onClick={this.onSave} variant="contained" color="primary"><OkIcon />{I18n.t('Save')}</Button>
+    }
+
     generateContent() {
-        const result = this.props.settings.map(function (e, i) {
-            const divider = i !== this.props.settings.length - 1 ? (<ListItem key={e.id + '_div'} style={Theme.dialog.divider}/>) : null;
+        const result = this.props.settings.map((e, i) => {
+            const divider = i !== this.props.settings.length - 1 ? <ListItem key={e.id + '_div'} style={Theme.dialog.divider}/> : null;
 
             let item;
             if (e.type === 'delete') {
-                item = (<Button
+                item = <Button
                     color="secondary"
                     variant="contained"
                     key={this.props.dialogKey + '-delete'}
                     onClick={() => this.onDelete()}
-                >{I18n.t('Delete')}</Button>);
+                >{I18n.t('Delete')}</Button>;
             } else  if (e.type === 'boolean') {
-                item = (<BoolControl
-                            key={this.props.dialogKey + '-' + e.name + '-bool'}
-                            label={I18n.t(e.name)}
-                            onChange={() => this.handleToggle(e.name)}
-                            icon={e.icon}
-                            language={I18n.getLanguage()}
-                            value={this.state.values[e.name] || false}
-                        />);
+                item = <BoolControl
+                    key={this.props.dialogKey + '-' + e.name + '-bool'}
+                    label={I18n.t(e.name)}
+                    onChange={() => this.handleToggle(e.name)}
+                    icon={e.icon}
+                    language={I18n.getLanguage()}
+                    value={this.state.values[e.name] || false}
+                />;
             } else if (e.type === 'color') {
-                item = (<ColorPicker
-                            key={this.props.dialogKey + '-' + e.name + '-color'}
-                            name={I18n.t(e.name)}
-                            color={this.state.values[e.name] || ''}
-                            onChange={color => this.handleValue(e.name, color)}
-                        />);
+                item = <ColorPicker
+                    key={this.props.dialogKey + '-' + e.name + '-color'}
+                    name={I18n.t(e.name)}
+                    color={this.state.values[e.name] || ''}
+                    onChange={color => this.handleValue(e.name, color)}
+                />;
             } else if (e.type === 'chips') {
-                item = (<ChipsControl
+                item = <ChipsControl
                     label={I18n.t(e.name)}
                     textAdd={I18n.t('add indicator')}
                     value={this.state.values[e.name] || ''}
                     onChange={value => this.handleValue(e.name, value)}
-                />);
+                />;
             } else if (e.type === 'select') {
-                item = (<SelectControl
+                item = <SelectControl
                     value={this.state.values[e.name] || ''}
                     onChange={value => this.handleValue(e.name, value)}
                     label={I18n.t(e.name)}
                     options={e.options}
-                />);
+                />;
             } else if (e.type === 'icon') {
-                item = (<ImageSelector
+                item = <ImageSelector
                     maxSize={15000}
                     icons={true}
                     height={64}
@@ -289,9 +296,9 @@ class SmartDialogSettings extends SmartDialogGeneric  {
                     textAccepted={I18n.t('All files will be accepted')}
                     textRejected={I18n.t('Some files will be rejected')}
                     textWaiting={I18n.t('Drop some files here or click...')}
-                />);
+                />;
             } else if (e.type === 'image') {
-                item = (<ImageSelector
+                item = <ImageSelector
                     maxSize={6000000}
                     images={this.state.images}
                     key={this.props.dialogKey + '-' + e.name + '-image'}
@@ -303,10 +310,10 @@ class SmartDialogSettings extends SmartDialogGeneric  {
                     textAccepted={I18n.t('All files will be accepted')}
                     textRejected={I18n.t('Some files will be rejected')}
                     textWaiting={I18n.t('Drop some files here or click...')}
-                />);
+                />;
             } else if (e.type === 'number') {
                 // input field
-                item = (<TextField
+                item = <TextField
                     key={this.props.dialogKey + '-' + e.name + '-text'}
                     id={e.name}
                     label={I18n.t(e.name)}
@@ -316,10 +323,10 @@ class SmartDialogSettings extends SmartDialogGeneric  {
                     value={this.state.values[e.name] || ''}
                     onChange={ev => this.handleText(e.name, ev)}
                     margin="normal"
-                />);
+                />;
             } else {
                 // input field
-                item = (<TextField
+                item = <TextField
                     key={this.props.dialogKey + '-' + e.name + '-text'}
                     id={e.name}
                     label={I18n.t(e.name)}
@@ -327,43 +334,43 @@ class SmartDialogSettings extends SmartDialogGeneric  {
                     value={this.state.values[e.name] || ''}
                     onChange={ev => this.handleText(e.name, ev)}
                     margin="normal"
-                />);
+                />;
             }
 
             if (0 && divider) {
                 return [item, divider];
             } else {
-                return (<Paper key={this.props.dialogKey + '-' + e.name + '-paper'} style={{margin: 5, padding: 5}} elevation={1}>{item}</Paper>);
+                return <Paper key={this.props.dialogKey + '-' + e.name + '-paper'} style={{margin: 5, padding: 5}} elevation={1}>{item}</Paper>;
             }
-        }.bind(this));
+        });
 
         result.push(this.generateObjectInfo());
 
-        return [
-            (<Toolbar key={this.props.dialogKey + '-toolbar'} >
-                <h4   key={this.props.dialogKey + '-header'} style={Theme.dialog.header}>{this.props.name}</h4>
+        return <List key={this.props.dialogKey + '-list'} style={Theme.dialog.list}>{result}</List>;
+        /*return [
+            <Toolbar key={this.props.dialogKey + '-toolbar'} >
+                <h4 key={this.props.dialogKey + '-header'} style={Theme.dialog.header}>{this.props.name}</h4>
                 <Fab onClick={this.onSave.bind(this)}  key={this.props.dialogKey + '-ok'} style={Theme.dialog.saveButton}  disabled={!this.state.changed} size="small" variant="extended" color="primary"   aria-label="save"><OkIcon />{I18n.t('Save')}</Fab>
-            </Toolbar>),
-            (<List key={this.props.dialogKey + '-list'} style={Theme.dialog.list}>{result}</List>)
-        ];
+            </Toolbar>,
+            <List key={this.props.dialogKey + '-list'} style={Theme.dialog.list}>{result}</List>
+        ];*/
     }
 
     getAdditionalElements() {
-        return (<Dialog
-            style={{zIndex: 2101}}
+        return <Dialog
             open={this.state.unsavedDialog}
             aria-labelledby={I18n.t('Not saved!')}
             aria-describedby={I18n.t('Changes not saved!')}
         >
-            <DialogTitle id="alert-dialog-title">{I18n.t('Ignore changes?')}</DialogTitle>
+            <DialogTitle>{I18n.t('Ignore changes?')}</DialogTitle>
             <DialogContent>
-                <DialogContentText id="alert-dialog-description">{I18n.t('Changes are not saved.')}</DialogContentText>
+                <DialogContentText>{I18n.t('Changes are not saved.')}</DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button onClick={this.handleWarningCancel.bind(this)} color="primary" autoFocus>{I18n.t('Stay edit')}</Button>
-                <Button onClick={this.handleWarningIgnore.bind(this)} color="secondary">{I18n.t('Discard changes')}</Button>
+                <Button onClick={this.handleWarningCancel} color="primary" autoFocus>{I18n.t('Stay edit')}</Button>
+                <Button onClick={this.handleWarningIgnore}>{I18n.t('Discard changes')}</Button>
             </DialogActions>
-        </Dialog>);
+        </Dialog>;
     }
 }
 

@@ -33,19 +33,17 @@ const InfoControl = ({classes, label, value, onChange, language, icon, unit}) =>
         }
     }
 
-    return (
-        <div className={classes.line}>
-            {Icon}
-            <Typography>
-                <span className={classes.label}>{label}</span>
-                <span className={classes.valueUnit}>
-                    <span className={classes.value}>{value && value.val !== undefined && value.val !== null ? value.val.toString() : '?'}</span>
-                    {unit && (<span className={classes.unit}>{unit}</span>)}
-                </span>
-                {value && value.lc && (<Moment className={classes.lc} date={value.lc} interval={15} fromNow locale={language}/>)}
-            </Typography>
-        </div>
-    );
+    return <div className={classes.line}>
+        {Icon}
+        <Typography>
+            <span className={classes.label}>{label}</span>
+            <span className={classes.valueUnit}>
+                <span className={classes.value}>{value && value.val !== undefined && value.val !== null ? value.val.toString() : '?'}</span>
+                {unit && (<span className={classes.unit}>{unit}</span>)}
+            </span>
+            {value && value.lc && (<Moment className={classes.lc} date={value.lc} interval={15} fromNow locale={language}/>)}
+        </Typography>
+    </div>;
 };
 
 InfoControl.propTypes = {

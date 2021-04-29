@@ -26,7 +26,7 @@ import ColorSaturation from '../basic-controls/react-color-saturation/ColorSatur
 import {TiLightbulb as IconLight} from 'react-icons/ti';
 import {TiThermometer as IconTemp} from 'react-icons/ti';
 import {MdColorLens as IconRGB} from 'react-icons/md';
-import I18n from '../i18n';
+import I18n from '@iobroker/adapter-react/i18n';
 import {withStyles} from '@material-ui/core/styles/index';
 
 const HANDLER_SIZE = 32;
@@ -152,9 +152,6 @@ class SmartDialogColor extends SmartDialogGeneric  {
         this.stateRx.dimmer   = this.props.useDimmer ? (this.props.startDimmer === null ? 100 : parseFloat(this.props.startDimmer) || 0) : 0;
         this.stateRx.on       = this.props.useOn ? (this.props.startOn === null ? true : !!this.props.startOn) : true;
         this.stateRx.tempMode = (this.props.startModeTemp && this.props.modeTemperature) || (!this.props.modeRGB && this.props.modeTemperature);
-
-        this.onMouseMoveBind  = this.onMouseMove.bind(this);
-        this.onMouseUpBind    = this.onMouseUp.bind(this);
 
         this.refColor         = React.createRef();
         this.refColorCursor   = React.createRef();
@@ -377,7 +374,7 @@ class SmartDialogColor extends SmartDialogGeneric  {
         }
     }
 
-    onSwitchColorMode() {
+    onSwitchColorMode = () => {
         const newState = {tempMode: !this.state.tempMode};
         if (newState.tempMode) {
             // Temperature mode
@@ -415,22 +412,22 @@ class SmartDialogColor extends SmartDialogGeneric  {
         }
     }
 
-    onMouseMove(e) {
+    onMouseMove = e => {
         e.preventDefault();
         e.stopPropagation();
         this.eventToValue(e);
     }
 
-    onMouseDown(e) {
+    onMouseDown = e => {
         e.preventDefault();
         e.stopPropagation();
 
         this.eventToValue(e);
 
-        document.addEventListener('mousemove',  this.onMouseMoveBind,   {passive: false, capture: true});
-        document.addEventListener('mouseup',    this.onMouseUpBind,     {passive: false, capture: true});
-        document.addEventListener('touchmove',  this.onMouseMoveBind,   {passive: false, capture: true});
-        document.addEventListener('touchend',   this.onMouseUpBind,     {passive: false, capture: true});
+        document.addEventListener('mousemove',  this.onMouseMove,   {passive: false, capture: true});
+        document.addEventListener('mouseup',    this.onMouseUp,     {passive: false, capture: true});
+        document.addEventListener('touchmove',  this.onMouseMove,   {passive: false, capture: true});
+        document.addEventListener('touchend',   this.onMouseUp,     {passive: false, capture: true});
     }
 
     onMouseUp(e) {
@@ -443,10 +440,10 @@ class SmartDialogColor extends SmartDialogGeneric  {
             this.changeTimer = null;
         }
 
-        document.removeEventListener('mousemove',   this.onMouseMoveBind,   {passive: false, capture: true});
-        document.removeEventListener('mouseup',     this.onMouseUpBind,     {passive: false, capture: true});
-        document.removeEventListener('touchmove',   this.onMouseMoveBind,   {passive: false, capture: true});
-        document.removeEventListener('touchend',    this.onMouseUpBind,     {passive: false, capture: true});
+        document.removeEventListener('mousemove',   this.onMouseMove,   {passive: false, capture: true});
+        document.removeEventListener('mouseup',     this.onMouseUp,     {passive: false, capture: true});
+        document.removeEventListener('touchmove',   this.onMouseMove,   {passive: false, capture: true});
+        document.removeEventListener('touchend',    this.onMouseUp,     {passive: false, capture: true});
 
         this.sendRGB();
     }
@@ -468,12 +465,12 @@ class SmartDialogColor extends SmartDialogGeneric  {
         return h * 360;
     }
 
-    onDimmerChanged(dimmer) {
+    onDimmerChanged = dimmer => {
         this.click = Date.now();
         this.setState({dimmer});
-        if (this.changeTimer) {
-            clearTimeout(this.changeTimer);
-        }
+        this.changeTimer && clearTimeout(this.changeTimer);
+        this.changeTimer = null;
+
         if (this.props.onRgbChange) {
             this.changeTimer = setTimeout(dimmer => {
                 this.changeTimer = null;
@@ -487,23 +484,25 @@ class SmartDialogColor extends SmartDialogGeneric  {
     }
 
     getOnOffButton() {
-        if (!this.props.useOn) return null;
+        if (!this.props.useOn) {
+            return null;
+        }
+
         const style = Object.assign(
             {},
             styles.buttonOnOff,
             this.state.on ? styles.buttonOn : styles.buttonOff);
-        return (
-            <Fab key="onoff-button"
-                    variant="round"
-                    color="primary"
-                    aria-label="mute"
-                    className={this.props.classes.button}
-                    title={this.state.on ? I18n.t('Off') : I18n.t('On')}
-                    style={style}
-                    onClick={this.onToggle.bind(this)}
-                    >
-                <IconLight/>
-            </Fab>);
+        return <Fab key="onoff-button"
+                variant="round"
+                color="primary"
+                aria-label="mute"
+                className={this.props.classes.button}
+                title={this.state.on ? I18n.t('Off') : I18n.t('On')}
+                style={style}
+                onClick={this.onToggle}
+                >
+            <IconLight/>
+        </Fab>;
     }
 
     getColorModeButton() {
@@ -512,21 +511,20 @@ class SmartDialogColor extends SmartDialogGeneric  {
             {},
             styles.buttonColor,
             this.state.tempMode ?  styles.buttonRgb : styles.buttonTemp);
-        return (
-            <Fab key="color-mode-button"
-                    variant="round"
-                    className={this.props.classes.button}
-                    color="primary"
-                    aria-label="mute"
-                    title={this.state.tempMode ? I18n.t('HUE') : I18n.t('Color temperature')}
-                    style={style}
-                    onClick={this.onSwitchColorMode.bind(this)}
-            >
-                {this.state.tempMode ? (<IconRGB/>) : (<IconTemp/>)}
-            </Fab>);
+        return <Fab key="color-mode-button"
+                variant="round"
+                className={this.props.classes.button}
+                color="primary"
+                aria-label="mute"
+                title={this.state.tempMode ? I18n.t('HUE') : I18n.t('Color temperature')}
+                style={style}
+                onClick={this.onSwitchColorMode}
+        >
+            {this.state.tempMode ? (<IconRGB/>) : (<IconTemp/>)}
+        </Fab>;
     }
 
-    onToggle() {
+    onToggle = () => {
         this.onClick();
         this.props.onToggle && this.props.onToggle(!this.state.on);
         this.setState({on: !this.state.on});
@@ -541,7 +539,7 @@ class SmartDialogColor extends SmartDialogGeneric  {
             this.imageCT = ColorsTempImg;// this.imageCT || this.createCT(600);
         }
 
-        return [(
+        return [
             <div key="color-dialog" ref={this.refColor}
                  className={this.props.classes.div}
                   style={{
@@ -551,8 +549,8 @@ class SmartDialogColor extends SmartDialogGeneric  {
                 <img ref={this.refColorImage}
                      alt="color"
                      src={this.state.tempMode ? this.imageCT : ColorsImg}//{ColorsImg}this.rgb || SmartDialogColor.createCT(600)}
-                     onMouseDown={this.onMouseDown.bind(this)}
-                     onTouchStart={this.onMouseDown.bind(this)}
+                     onMouseDown={this.onMouseDown}
+                     onTouchStart={this.onMouseDown}
                      className={this.props.classes.colorCircle}/>
                 <div ref={this.refColorCursor}
                      className={this.props.classes.cursor}
@@ -562,14 +560,14 @@ class SmartDialogColor extends SmartDialogGeneric  {
                          left: pos.x + this.colorLeft + (pos.x > 0 ? 0 : -HANDLER_SIZE),
                      }}>
                 </div>
-            </div>),
-            this.props.useDimmer ? (<div style={styles.dimmerSlider} key="dimmer">
+            </div>,
+            this.props.useDimmer ? <div style={styles.dimmerSlider} key="dimmer">
                 <ColorSaturation
                     hue={this.getHue()}
                     saturation={this.state.dimmer}
-                    onChange={this.onDimmerChanged.bind(this)
-                    }/>
-            </div>) : null,
+                    onChange={this.onDimmerChanged}
+                />
+            </div> : null,
             this.getOnOffButton(),
             this.getColorModeButton()
         ];

@@ -18,7 +18,7 @@ import Fab from '@material-ui/core/Fab';
 
 import SmartGeneric from './SmartGeneric';
 import Theme from '../theme';
-import I18n from '../i18n';
+import I18n from '@iobroker/adapter-react/i18n';
 
 import {MdPlayArrow as IconPlay} from 'react-icons/md';
 import {MdPause as IconPause} from 'react-icons/md';
@@ -91,9 +91,8 @@ class SmartInstance extends SmartGeneric {
             super.updateState(id, state);
         }
     }
-    toggle() {
+    toggle = () =>
         this.props.onControl(this.instanceId, !this.props.objects[this.instanceId].common.enabled, 'common.enabled');
-    }
 
     onTileClick() {
         this.toggle();
@@ -134,7 +133,7 @@ class SmartInstance extends SmartGeneric {
 
         return (<div key={this.key + 'tile-secondary'} className="tile-text-second"
                      style={Theme.tile.secondary.button} title={text}>
-            <Fab variant="round" size="small" onClick={this.toggle.bind(this)} style={{background: color, boxShadow: 'none'}} aria-label={text}>
+            <Fab variant="round" size="small" onClick={this.toggle} style={{background: color, boxShadow: 'none'}} aria-label={text}>
                 <Icon />
             </Fab>
         </div>);

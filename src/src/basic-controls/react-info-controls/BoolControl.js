@@ -28,13 +28,13 @@ const BoolControl = ({classes, label, value, onChange, language, icon}) => {
     if (icon) {
         if (typeof icon === 'object') {
             Icon = icon;
-            Icon = (<Icon className={classes.icon} />);
+            Icon = <Icon className={classes.icon} />;
         } else {
-            Icon = (<img alt={label} src={icon} className={classes.icon}/>);
+            Icon = <img alt={label} src={icon} className={classes.icon}/>;
         }
     }
 
-    return (<div className={classes.line}>
+    return <div className={classes.line}>
         <Typography className={classes.label} style={{lineHeight: '45px'}}>
             {Icon}
             {label}
@@ -47,7 +47,7 @@ const BoolControl = ({classes, label, value, onChange, language, icon}) => {
             onChange={() => onChange && onChange()}
         />
         {value && value.lc ? (<Moment className={classes.lc} date={value.lc} interval={15} fromNow locale={language}/>) : null}
-    </div>);
+    </div>;
 };
 
 BoolControl.propTypes = {

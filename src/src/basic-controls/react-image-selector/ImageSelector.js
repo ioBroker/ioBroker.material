@@ -41,7 +41,7 @@ import 'react-image-crop/dist/ReactCrop.css'
 
 // Icons
 import IconList from '../../icons/icons';
-import I18n from "../../i18n";
+import I18n from '@iobroker/adapter-react/i18n';
 
 const style = {
     label: {
@@ -231,7 +231,7 @@ class ImageSelector extends React.Component {
         reader.readAsDataURL(file)
     }
 
-    handleSelectImage(file) {
+    handleSelectImage = file => {
         if (typeof file === 'object') {
             if (this.props.aspect) {
                 this.setState({beforeCrop: file, cropOpened: true});
@@ -265,7 +265,7 @@ class ImageSelector extends React.Component {
         });
     }
 
-    removeImage() {
+    removeImage = () => {
         this.setState({image: '', opened: true});
         this.props.onUpload && this.props.onUpload('');
     }
@@ -341,7 +341,7 @@ class ImageSelector extends React.Component {
                       onError={() => this.setState({errored: true})}
                       src={this.state.errored ? NoImage : (typeof this.state.image === 'object' ? this.state.image.preview : this.state.image)}
                       alt={this.props.label || ''} style={{width: this.props.height || '100%', height: 'auto'}}/>),
-                (<Fab key={'image-delete'} onClick={this.removeImage.bind(this)} style={style.deleteIcon} size="small" aria-label="delete">
+                (<Fab key={'image-delete'} onClick={this.removeImage} style={style.deleteIcon} size="small" aria-label="delete">
                     <IconDelete />
                 </Fab>),
                 (<Fab key={'image-open'} onClick={() => this.setState({opened: !this.state.opened})}
@@ -351,7 +351,7 @@ class ImageSelector extends React.Component {
             ] : null}
             {this.state.opened &&
                 [
-                    ((this.state.images && this.state.images.length) || this.icons) && (<ImageList key={'image-list'} images={this.state.images || this.icons} onSelect={this.handleSelectImage.bind(this)}/>),
+                    ((this.state.images && this.state.images.length) || this.icons) && (<ImageList key={'image-list'} images={this.state.images || this.icons} onSelect={this.handleSelectImage}/>),
                     ImageSelector.isMobile() && !this.props.icons ?
                         (<Fab key={'image-camera'} onClick={() => this.onCamera()}
                                   style={Object.assign({}, style.camIcon)} size="small" aria-label="camera">

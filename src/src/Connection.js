@@ -286,6 +286,23 @@ class ServerConnection {
             if (typeof window.app !== 'undefined') {
                 window.app.onConnChange(this._isConnected);
             }
+        } else if (typeof window.io === 'undefined') {
+            // if in index.html the onLoad function not defined
+            if (typeof window.registerSocketOnLoad !== 'function') {
+                // poll if loaded
+                this.scriptLoadCounter = this.scriptLoadCounter || 0;
+                this.scriptLoadCounter++;
+
+                if (this.scriptLoadCounter < 30) {
+                    // wait till the script loaded
+                    setTimeout(() => this._init(connOptions, connCallbacks, objectsRequired, autoSubscribe), 100);
+                } else {
+                    window.alert('Cannot load socket.io.js!');
+                }
+            } else {
+                // register on load
+                window.registerSocketOnLoad(() => this._init(connOptions, connCallbacks, objectsRequired, autoSubscribe));
+            }
         } else if (typeof window.io !== 'undefined') {
             connOptions.socketSession = connOptions.socketSession || 'nokey';
 

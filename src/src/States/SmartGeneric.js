@@ -15,8 +15,8 @@
  **/
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import Utils from '../Utils';
-import I18n from '../i18n';
+import Utils from '@iobroker/adapter-react/Components/Utils';
+import I18n from '@iobroker/adapter-react/i18n';
 import Theme from '../theme';
 
 import {MdVisibility as IconCheck} from 'react-icons/md';
@@ -181,7 +181,6 @@ class SmartGeneric extends Component {
 
         if (this.stateRx.showDialog !== undefined) {
             this.showCorner = true;
-            this.onMouseUpBind = this.onMouseUp.bind(this);
             this.props.tile.registerHandler('onMouseDown', this.onTileMouseDown.bind(this));
         }
 
@@ -367,7 +366,7 @@ class SmartGeneric extends Component {
     }
 
     // default handler
-    onLongClick(e) {
+    onLongClick = e => {
         if (e) {
             e.preventDefault();
             e.stopPropagation();
@@ -379,13 +378,12 @@ class SmartGeneric extends Component {
         this.setState({showDialog: true});
     }
 
-    onDialogClose() {
+    onDialogClose = () =>
         this.setState({showDialog: false});
-    }
 
-    onMouseUp() {
-        document.removeEventListener('mouseup',     this.onMouseUpBind,     {passive: false, capture: true});
-        document.removeEventListener('touchend',    this.onMouseUpBind,     {passive: false, capture: true});
+    onMouseUp = () => {
+        document.removeEventListener('mouseup',     this.onMouseUp,     {passive: false, capture: true});
+        document.removeEventListener('touchend',    this.onMouseUp,     {passive: false, capture: true});
 
         if (this.timer) {
             clearTimeout(this.timer);
@@ -394,15 +392,17 @@ class SmartGeneric extends Component {
         }
     }
 
-    onTileMouseDown(e) {
-        if (this.state.showDialog) return;
+    onTileMouseDown = e =>  {
+        if (this.state.showDialog) {
+            return;
+        }
         //e.preventDefault();
         e.stopPropagation();
 
-        this.timer = setTimeout(this.onLongClick.bind(this), 500);
+        this.timer = setTimeout(this.onLongClick, 500);
 
-        document.addEventListener('mouseup',    this.onMouseUpBind,     {passive: false, capture: true});
-        document.addEventListener('touchend',   this.onMouseUpBind,     {passive: false, capture: true});
+        document.addEventListener('mouseup',    this.onMouseUp,     {passive: false, capture: true});
+        document.addEventListener('touchend',   this.onMouseUp,     {passive: false, capture: true});
     }
 
     componentWillUnmount() {
@@ -468,7 +468,7 @@ class SmartGeneric extends Component {
         }
     }
 
-    toggleEnabled() {
+    toggleEnabled = () => {
         let settings = JSON.parse(JSON.stringify(this.state.settings));
         settings.enabled = !settings.enabled;
 
@@ -660,7 +660,7 @@ class SmartGeneric extends Component {
         return settings;
     }
 
-    saveDialogSettings(settings, cb) {
+    saveDialogSettings = (settings, cb) => {
         if (settings) {
             settings.enabled = this.state.settings.enabled;
             if (settings.background && typeof settings.background === 'object') {
@@ -678,13 +678,11 @@ class SmartGeneric extends Component {
         });
     }
 
-    showSettings() {
+    showSettings = () =>
         this.setState({showSettings: true});
-    }
 
-    onSettingsClose() {
+    onSettingsClose = () =>
         this.setState({showSettings: false});
-    }
 
     getAdditionalName() {
         return null;
@@ -738,24 +736,24 @@ class SmartGeneric extends Component {
     wrapContent(content) {
         if (this.state.editMode) {
             return [
-                (<div key={this.key + 'type'} style={{display: 'none'}}>{this.channelInfo.type}</div>),
-                (<div key={this.key + 'wrapper'}>
+                <div key={this.key + 'type'} style={{display: 'none'}}>{this.channelInfo.type}</div>,
+                <div key={this.key + 'wrapper'}>
                     {this.state.settings.enabled ?
-                        [(<div onClick={this.toggleEnabled.bind(this)} key={this.key + 'icon-check'} style={Theme.tile.editMode.checkIcon} className="edit-buttons">
+                        [<div onClick={this.toggleEnabled} key={this.key + 'icon-check'} style={Theme.tile.editMode.checkIcon} className="edit-buttons">
                             <IconCheck size={'50%'} style={Theme.tile.editMode.buttonIcon}/>
-                        </div>),
-                        (<div onClick={this.showSettings.bind(this)} key={this.key + 'icon-edit'} style={Theme.tile.editMode.editIcon} className="edit-buttons">
+                        </div>,
+                        <div onClick={this.showSettings} key={this.key + 'icon-edit'} style={Theme.tile.editMode.editIcon} className="edit-buttons">
                             <IconEdit size={'50%'} style={Object.assign({}, Theme.tile.editMode.buttonIcon, {width: '80%', marginLeft: '20%'})}/>
                             </div>
-                        )]
+                        ]
                         :
-                        (<div onClick={this.toggleEnabled.bind(this)} key={this.key + '.icon-check'} style={Theme.tile.editMode.removeIcon}>
+                        <div onClick={this.toggleEnabled} key={this.key + '.icon-check'} style={Theme.tile.editMode.removeIcon}>
                             <IconRemoved size={'100%'} style={Theme.tile.editMode.buttonIconRemoved}/>
-                        </div>)
+                        </div>
                     }
                     {content}
-                </div>),
-                this.state.showSettings ? (
+                </div>,
+                this.state.showSettings ?
                     <Dialog key={this.key + 'settings'}
                          windowWidth={this.props.windowWidth}
                          name={this.state.settings.name}
@@ -763,22 +761,22 @@ class SmartGeneric extends Component {
                          settings={this.getDialogSettings()}
                          objects={this.props.objects}
                          settingsId={this.settingsId}
-                         onSave={this.saveDialogSettings.bind(this)}
-                         onClose={this.onSettingsClose.bind(this)}
-                />): null];
+                         onSave={this.saveDialogSettings}
+                         onClose={this.onSettingsClose}
+                /> : null];
         } else if (this.state.settings.enabled) {
             return [
-                (<div key={this.key + 'type'} style={{display: 'none'}}>{this.channelInfo.type}</div>),
-                (<div key={this.key + 'wrapper'} >
+                <div key={this.key + 'type'} style={{display: 'none'}}>{this.channelInfo.type}</div>,
+                <div key={this.key + 'wrapper'} >
                     {this.showCorner ? (<div
                         key={this.key + 'corner'}
-                        onMouseDown={this.onLongClick.bind(this)}
+                        onMouseDown={this.onLongClick}
                         className={'corner' + (isTouch ? ' corner-touch' : '')}
                         style={Object.assign({}, Theme.tile.tileCorner, isTouch ? Theme.tile.tileCornerTouch : {})}
                         />) : null}
                     {this.getIndicators()}
                     {content}
-                </div>)
+                </div>
             ];
         } else {
             return null;

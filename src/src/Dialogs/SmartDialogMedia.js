@@ -16,7 +16,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Button from '@material-ui/core/Button';
+import Fab from '@material-ui/core/Fab';
 import Slider from '@material-ui/core/Slider';
 
 import {MdMusicNote as IconNote} from 'react-icons/md';
@@ -32,10 +32,11 @@ import {MdRepeatOne as IconRepeatOne} from 'react-icons/md';
 import {MdVolumeUp as IconVolume100} from 'react-icons/md';
 import {MdVolumeMute as IconVolume0} from 'react-icons/md';
 
-import Utils from '../Utils';
+import Utils from '@iobroker/adapter-react/Components/Utils';
 import SmartDialogGeneric from './SmartDialogGeneric';
-import I18n from '../i18n';
-import Theme from "../theme";
+import I18n from '@iobroker/adapter-react/i18n';
+import Theme from '../theme';
+import {withStyles} from "@material-ui/core/styles";
 //import cover from '../assets/cover.png';
 
 const HEIGHT_HEADER = 48;
@@ -55,11 +56,11 @@ const styles = {
     info: {
         div: {
             zIndex: 1,
-            background: 'rgba(0,0,0,0.55)',
+            background: 'rgba(0, 0, 0, 0.55)',
             position: 'absolute',
             bottom: 100,
-            width: 'calc(100% + 1em)',
-            left: '-0.5em',
+            width: 'calc(100% - 2.4em)',
+            left: 0,
             padding: '1.2em',
         },
         artist: {
@@ -81,11 +82,11 @@ const styles = {
     control: {
         div: {
             zIndex: 1,
-            background: 'rgba(255,255,255,0.9)',
+            background: 'rgba(255, 255, 255, 0.9)',
             position: 'absolute',
-            width: 'calc(100% + 1em)',
+            width: '100%',
             bottom: 48,
-            left: '-0.5em',
+            left: 0,
             height: HEIGHT_CONTROL,
             textAlign: 'center',
             lineHeight: '48px',
@@ -107,7 +108,7 @@ const styles = {
             minHeight: 24,
             verticalAlign: 'middle',
             boxShadow: 'none',
-            background: 'rgba(255,255,255,1)'
+            background: 'rgba(255, 255, 255, 1)'
         },
         stop: {
             height: 24,
@@ -116,7 +117,7 @@ const styles = {
             minHeight: 24,
             verticalAlign: 'middle',
             boxShadow: 'none',
-            background: 'rgba(255,255,255,1)'
+            background: 'rgba(255, 255, 255, 1)'
         },
         play: {
 
@@ -134,7 +135,7 @@ const styles = {
             marginLeft: 3,
             verticalAlign: 'middle',
             boxShadow: 'none',
-            background: 'rgba(255,255,255,1)',
+            background: 'rgba(255, 255, 255, 1)',
             float: 'right'
         },
         shuffle: {
@@ -163,9 +164,9 @@ const styles = {
             zIndex: 1,
             background: 'rgba(255,255,255,0.9)',
             position: 'absolute',
-            width: 'calc(100% + 1em)',
+            width: '100%',
             bottom: 0,
-            left: '-0.5em',
+            left: 0,
             height: HEIGHT_TIME,
             lineHeight: '48px',
             textAlign: 'center',
@@ -193,9 +194,9 @@ const styles = {
             zIndex: 1,
             background: 'rgba(255,255,255,0.9)',
             position: 'absolute',
-            width: 'calc(100% + 1em)',
+            width: '100%',
             bottom: 0,
-            left: '-0.5em',
+            left: 0,
             height: HEIGHT_TIME,
             lineHeight: '48px',
             textAlign: 'center',
@@ -244,24 +245,6 @@ const styles = {
 };
 
 class SmartDialogMedia extends SmartDialogGeneric  {
-    // expected:
-    static propTypes = {
-        name:               PropTypes.oneOfType([
-            PropTypes.string,
-            PropTypes.object
-        ]),
-        dialogKey:          PropTypes.string.isRequired,
-        windowWidth:        PropTypes.number,
-        onClose:            PropTypes.func.isRequired,
-        objects:            PropTypes.object,
-        states:             PropTypes.object,
-        onCollectIds:       PropTypes.func,
-        enumNames:          PropTypes.array,
-        onControl:          PropTypes.func,
-        ids:                PropTypes.object.isRequired,
-        settings:           PropTypes.object
-    };
-
     constructor(props) {
         super(props);
 
@@ -287,6 +270,11 @@ class SmartDialogMedia extends SmartDialogGeneric  {
             'control': {height: HEIGHT_CONTROL, position: 'bottom', visible: true},
             'time':    {height: HEIGHT_TIME,    position: 'bottom', visible: this.ids.control.elapsed || this.ids.control.duration || this.ids.control.seek},
         };
+
+        if (!this.divs.header.visible) {
+            this.getHeader = null;
+        }
+
         // calculate positions
         let top = 0;
         let bottom = 0;
@@ -317,8 +305,8 @@ class SmartDialogMedia extends SmartDialogGeneric  {
         };
 
         const enums = [];
-        this.props.enumNames.forEach(e => (enums.indexOf(e) === -1) && enums.push(e));
-        if (enums.indexOf(this.props.name) === -1) {
+        this.props.enumNames.forEach(e => !enums.includes(e) && enums.push(e));
+        if (!enums.includes(this.props.name)) {
             enums.push(this.props.name);
         }
         this.name = enums.join(' / ');
@@ -335,9 +323,8 @@ class SmartDialogMedia extends SmartDialogGeneric  {
         if (value !== this.state[this.ids.control.seek]){
             this.setState({[this.ids.control.seek]: value});
 
-            if (this.seekTimer) {
-                clearTimeout(this.seekTimer);
-            }
+            this.seekTimer && clearTimeout(this.seekTimer);
+
             this.seekTimer = setTimeout((_value) => {
                 this.seekTimer = null;
                 this.props.onControl(this.ids.control.seek, _value);
@@ -349,9 +336,8 @@ class SmartDialogMedia extends SmartDialogGeneric  {
         if (value !== this.state[this.ids.volume.actual]){
             this.setState({[this.ids.volume.actual]: value});
 
-            if (this.volumeTimer) {
-                clearTimeout(this.volumeTimer);
-            }
+            this.volumeTimer && clearTimeout(this.volumeTimer);
+
             this.volumeTimer = setTimeout((_value) => {
                 this.volumeTimer = null;
                 this.props.onControl(this.ids.volume.set, _value);
@@ -359,9 +345,8 @@ class SmartDialogMedia extends SmartDialogGeneric  {
         }
     }
 
-    onToggleMute() {
+    onToggleMute = () =>
         this.props.onControl(this.ids.volume.mute, !this.state[this.ids.volume.mute]);
-    }
 
     onShuffle() {
         this.props.onControl(this.ids.mode.shuffle, !this.state[this.ids.mode.shuffle]);
@@ -474,27 +459,28 @@ class SmartDialogMedia extends SmartDialogGeneric  {
 
     getVolumeSlider() {
         if (this.ids.volume.set) {
-            return (<Slider
-                classes={{}}
+            return <Slider
                 value={this.state[this.ids.volume.actual] || 0}
                 style={styles.volume.slider}
                 onChange={(event, value) => this.onVolume(value)}
                 valueLabelDisplay="auto"
-            />);
+            />;
         } else if (this.ids.volume.actual) {
-            return (<Slider
-                classes={{}}
+            return <Slider
                 value={this.state[this.ids.volume.actual] || 0}
-                style={styles.volume.slider} disabled
+                style={styles.volume.slider}
+                disabled
                 valueLabelDisplay="auto"
-            />);
+            />;
         } else {
             return null;
         }
     }
 
     getMute() {
-        if (!this.ids.volume.mute) return null;
+        if (!this.ids.volume.mute) {
+            return null;
+        }
         let Icon;
         let text;
         let background;
@@ -515,64 +501,65 @@ class SmartDialogMedia extends SmartDialogGeneric  {
             title = I18n.t('unmuted');
         }
 
-        return (
-            <Button variant="fab" mini
-                    title={title}
-                    onClick={this.onToggleMute.bind(this)}
-                    style={Object.assign({}, styles.volume.mute, {background, color})}
-                    aria-label={text}>
-                <Icon />
-            </Button>
-        );
+        return <Fab
+            mini
+            title={title}
+            onClick={this.onToggleMute}
+            style={Object.assign({}, styles.volume.mute, {background, color})}
+            aria-label={text}>
+            <Icon/>
+        </Fab>;
     }
 
     getVolumeDiv() {
-        if (!this.divs.volume.visible) return null;
+        if (!this.divs.volume.visible) {
+            return null;
+        }
 
-        return (
-            <div key={this.key + 'tile-volume'} style={this.divs.volume.style}>
-                {this.getMute()}
-                {this.getVolumeSlider()}
-            </div>
-        );
+        return <div key={this.key + 'tile-volume'} style={this.divs.volume.style}>
+            {this.getMute()}
+            {this.getVolumeSlider()}
+        </div>;
     }
 
     getSlider() {
         if (this.ids.control.seek) {
-            return (<Slider
+            return <Slider
                 classes={{}}
                 value={this.state[this.ids.control.seek] || 0}
                 style={styles.time.slider}
                 onChange={(event, value) => this.onSeek(value)}
                 valueLabelDisplay="auto"
-            />);
+            />;
         } else if (this.ids.control.elapsed && this.ids.control.duration && this.state[this.ids.control.duration]) {
             const value = Math.round(this.state[this.ids.control.elapsed] / this.state[this.ids.control.duration] * 100);
-            return (<Slider
+            return <Slider
                 classes={{}}
                 value={value || 0}
                 disabled
                 style={styles.time.slider}
                 valueLabelDisplay="auto"
-            />);
+            />;
         } else {
             return null;
         }
     }
 
     getTimeDiv() {
-        if (!this.divs.time.visible) return null;
-        return (
-            <div key={this.key + 'tile-time'} style={this.divs.time.style}>
-                {this.ids.control.elapsed ? (<div style={styles.time.elapsed}>{Utils.getTimeString(this.state[this.ids.control.elapsed])}</div>) : null}
-                {this.getSlider()}
-                {this.ids.control.duration  ? (<div style={styles.time.duration}>{Utils.getTimeString(this.state[this.ids.control.duration])}</div>) : null}
-            </div>
-        );
+        if (!this.divs.time.visible) {
+            return null;
+        }
+        return <div key={this.key + 'tile-time'} style={this.divs.time.style}>
+            {this.ids.control.elapsed ? (<div style={styles.time.elapsed}>{Utils.getTimeString(this.state[this.ids.control.elapsed])}</div>) : null}
+            {this.getSlider()}
+            {this.ids.control.duration  ? (<div style={styles.time.duration}>{Utils.getTimeString(this.state[this.ids.control.duration])}</div>) : null}
+        </div>;
     }
 
     getRepeat() {
-        if (!this.ids.mode.repeat) return null;
+        if (!this.ids.mode.repeat) {
+            return null;
+        }
         let style;
         let title;
         if (this.state[this.ids.mode.repeat]) {
@@ -590,13 +577,15 @@ class SmartDialogMedia extends SmartDialogGeneric  {
             title = title || I18n.t('Repeat mode: one');
         }
 
-        return (<Button variant="fab" mini onClick={() => this.onRepeat()}  style={style} title={title} aria-label="repeat">
+        return <Fab size="small" onClick={() => this.onRepeat()}  style={style} title={title} aria-label="repeat">
             <Icon/>
-        </Button>);
+        </Fab>;
     }
 
     getShuffle() {
-        if (!this.ids.mode.shuffle) return null;
+        if (!this.ids.mode.shuffle) {
+            return null;
+        }
         let style;
         if (this.state[this.ids.mode.shuffle]) {
             style = Object.assign({}, styles.control.shuffle, {background: '#b6b6f3'});
@@ -604,65 +593,64 @@ class SmartDialogMedia extends SmartDialogGeneric  {
             style = styles.control.shuffle;
         }
 
-        return (<Button variant="fab" mini onClick={() => this.onShuffle()} title={I18n.t('Shuffle mode')} style={style} aria-label="shuffle">
+        return <Fab size="small" onClick={() => this.onShuffle()} title={I18n.t('Shuffle mode')} style={style} aria-label="shuffle">
             <IconShuffle/>
-        </Button>);
-
+        </Fab>;
     }
 
     getControlsDiv() {
         const state = this.state[this.ids.control.state];
-        return (<div key={this.key + 'tile-control'} style={this.divs.control.style}>
-            {this.ids.buttons.prev ? (<Button variant="fab" mini onClick={() => this.onButton(this.ids.buttons.prev)} style={styles.control.prev} aria-label="prev"><IconPrev/></Button>) : null}
-            <Button variant="fab" mini
-                    color={state ? 'primary' : 'secondary'}
-                    onClick={() => this.onButton(this.state[this.ids.control.state] ? this.ids.buttons.pause : this.ids.buttons.play)}
-                    style={state ? styles.control.pause : styles.control.play} aria-label="play pause">
-                {state ? (<IconPause/>) : (<IconPlay/>)}
-            </Button>
-            {this.props.settings.showStop && this.ids.buttons.stop ? (<Button variant="fab" mini onClick={() => this.onButton(this.ids.buttons.stop)} style={Object.assign({}, styles.control.stop, this.state.stop ? {color: 'red'} : {})} aria-label="stop"><IconStop/></Button>) : null}
-            {this.ids.buttons.next ? (<Button variant="fab" mini onClick={() => this.onButton(this.ids.buttons.next)} style={styles.control.prev} aria-label="next"><IconNext/></Button>) : null}
+        return <div key={this.key + 'tile-control'} style={this.divs.control.style}>
+            {this.ids.buttons.prev ? <Fab size="small" onClick={() => this.onButton(this.ids.buttons.prev)} style={styles.control.prev} aria-label="prev"><IconPrev/></Fab> : null}
+            <Fab
+                size="small"
+                color={state ? 'primary' : 'secondary'}
+                onClick={() => this.onButton(this.state[this.ids.control.state] ? this.ids.buttons.pause : this.ids.buttons.play)}
+                style={state ? styles.control.pause : styles.control.play} aria-label="play pause">
+                {state ? <IconPause/> : <IconPlay/>}
+            </Fab>
+            {this.props.settings.showStop && this.ids.buttons.stop ? <Fab size="small" onClick={() => this.onButton(this.ids.buttons.stop)} style={Object.assign({}, styles.control.stop, this.state.stop ? {color: 'red'} : {})} aria-label="stop"><IconStop/></Fab> : null}
+            {this.ids.buttons.next ? <Fab size="small" onClick={() => this.onButton(this.ids.buttons.next)} style={styles.control.prev} aria-label="next"><IconNext/></Fab> : null}
             {this.getShuffle()}
             {this.getRepeat()}
-       </div>);
+       </div>;
     }
 
     getInfoDiv() {
-        if (!this.divs.info.visible) return null;
+        if (!this.divs.info.visible) {
+            return null;
+        }
 
-        return (<div key={this.key + 'tile-info'} style={this.divs.info.style}>
-            {this.ids.info.artist && this.state[this.ids.info.artist] ? (<div style={styles.info.artist}>{this.state[this.ids.info.artist]}</div>) : null}
-            {this.ids.info.album  && this.state[this.ids.info.album]  ? (<div style={styles.info.album}>{this.state[this.ids.info.album]}</div>) : null}
-            {this.ids.info.title  && this.state[this.ids.info.title]  ? (<div style={styles.info.title}>{this.state[this.ids.info.title]}</div>) : null}
-            {this.ids.info.title  && this.state[this.ids.info.title]  ? (<div style={styles.info.title}>{this.state[this.ids.info.title]}</div>) : null}
-        </div>);
+        return <div key={this.key + 'tile-info'} style={this.divs.info.style}>
+            {this.ids.info.artist && this.state[this.ids.info.artist] ? <div style={styles.info.artist}>{this.state[this.ids.info.artist]}</div> : null}
+            {this.ids.info.album  && this.state[this.ids.info.album]  ? <div style={styles.info.album}>{this.state[this.ids.info.album]}</div>   : null}
+            {this.ids.info.title  && this.state[this.ids.info.title]  ? <div style={styles.info.title}>{this.state[this.ids.info.title]}</div>   : null}
+            {this.ids.info.title  && this.state[this.ids.info.title]  ? <div style={styles.info.title}>{this.state[this.ids.info.title]}</div>   : null}
+        </div>;
     }
 
     getCoverDiv() {
-        if (!this.divs.cover.visible) return null;
+        if (!this.divs.cover.visible) {
+            return null;
+        }
 
         if (this.state[this.ids.info.cover]) {
             const style = Object.assign({}, this.divs.cover.style, {backgroundImage: 'url(' + this.state[this.ids.info.cover] + ')'});
-            return (<div style={style}/>);
+            return <div key={this.key + 'icon'} style={style}/>;
         } else {
-            return (
-                <div style={this.divs.cover.style}>
-                    <div key={this.key + 'icon'} style={styles.cover.img}>
-                        <IconNote width={Theme.tile.tileIconSvg.size} height={Theme.tile.tileIconSvg.size} style={{height: Theme.tile.tileIconSvg.size, width: Theme.tile.tileIconSvg.size}}/>
-                    </div>
+            return <div style={this.divs.cover.style}>
+                <div key={this.key + 'icon'} style={styles.cover.img}>
+                    <IconNote width={Theme.tile.tileIconSvg.size} height={Theme.tile.tileIconSvg.size} style={{height: Theme.tile.tileIconSvg.size, width: Theme.tile.tileIconSvg.size}}/>
                 </div>
-            );
+            </div>;
         }
     }
 
-    getHeaderDiv() {
-        if (!this.divs.header.visible) return null;
-        return (<div style={this.divs.header.style}>{this.name}</div>);
-    }
+    getHeader = () => this.name;
 
     generateContent() {
         return [
-            this.getHeaderDiv(),
+            //this.getHeaderDiv(),
             this.getVolumeDiv(),
             this.getCoverDiv(),
             this.getInfoDiv(),
@@ -672,4 +660,22 @@ class SmartDialogMedia extends SmartDialogGeneric  {
     }
 }
 
+SmartDialogMedia.propTypes = {
+    name:               PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.object
+    ]),
+    dialogKey:          PropTypes.string.isRequired,
+    windowWidth:        PropTypes.number,
+    onClose:            PropTypes.func.isRequired,
+    objects:            PropTypes.object,
+    states:             PropTypes.object,
+    onCollectIds:       PropTypes.func,
+    enumNames:          PropTypes.array,
+    onControl:          PropTypes.func,
+    ids:                PropTypes.object.isRequired,
+    settings:           PropTypes.object
+};
+
 export default SmartDialogMedia;
+//export default withStyles(styles)(SmartDialogMedia);

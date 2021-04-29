@@ -15,7 +15,7 @@
  **/
 import React from 'react';
 import SmartGeneric from './SmartGeneric';
-import Button from '@material-ui/core/Button';
+import Fab from '@material-ui/core/Fab';
 
 import {MdMusicNote as IconNote} from 'react-icons/md';
 import {MdPlayArrow as IconPlay} from 'react-icons/md';
@@ -194,7 +194,7 @@ class SmartMedia extends SmartGeneric {
 
             state = this.channelInfo.states.find(state => state.id && state.name === 'NEXT');
             this.ids.buttons.next = state && state.id;
-            
+
             state = this.channelInfo.states.find(state => state.id && state.name === 'PREV');
             this.ids.buttons.prev = state && state.id;
 
@@ -333,23 +333,24 @@ class SmartMedia extends SmartGeneric {
     getControlsDiv() {
         return (<div key={this.key + 'tile-control'} style={style.control.div}>
             <div style={style.control.name} title={this.state.settings.name}>{this.state.settings.name}</div>
-           {this.ids.buttons.prev ? (<Button variant="fab" mini onClick={() => this.onButton(this.ids.buttons.prev)} style={style.control.prev} aria-label="prev"><IconPrev/></Button>) : null}
-            <Button variant="fab" mini
-                    onClick={() => this.onButton(this.state[this.id] ? this.ids.buttons.pause : this.ids.buttons.play)}
-                    style={this.state[this.id] ? style.control.pause : style.control.play} aria-label="play pause">
-                {this.state[this.id] ? (<IconPause/>) : (<IconPlay/>)}
-            </Button>
-            {this.state.settings.showStop && this.ids.buttons.stop ? (<Button variant="fab" mini onClick={() => this.onButton(this.ids.buttons.stop)} style={style.control.stop} aria-label="stop"><IconStop/></Button>) : null}
-            {this.ids.buttons.next ? (<Button variant="fab" mini onClick={() => this.onButton(this.ids.buttons.next)} style={style.control.prev} aria-label="netx"><IconNext/></Button>) : null}
+           {this.ids.buttons.prev ? <Fab size="small" onClick={() => this.onButton(this.ids.buttons.prev)} style={style.control.prev} aria-label="prev"><IconPrev/></Fab> : null}
+            <Fab
+                size="small"
+                onClick={() => this.onButton(this.state[this.id] ? this.ids.buttons.pause : this.ids.buttons.play)}
+                style={this.state[this.id] ? style.control.pause : style.control.play} aria-label="play pause">
+                {this.state[this.id] ? <IconPause/> : <IconPlay/>}
+            </Fab>
+            {this.state.settings.showStop && this.ids.buttons.stop ? <Fab size="small" onClick={() => this.onButton(this.ids.buttons.stop)} style={style.control.stop} aria-label="stop"><IconStop/></Fab> : null}
+            {this.ids.buttons.next ? <Fab size="small" onClick={() => this.onButton(this.ids.buttons.next)} style={style.control.prev} aria-label="next"><IconNext/></Fab> : null}
         </div>);
     }
 
     getInfoDiv() {
-        return (<div key={this.key + 'tile-info'} style={style.info.div}>
-            {this.ids.info.artist && this.state[this.ids.info.artist] ? (<div style={style.info.artist}>{this.state[this.ids.info.artist]}</div>) : null}
-            {this.ids.info.album  && this.state[this.ids.info.album]  ? (<div style={style.info.album}>{this.state[this.ids.info.album]}</div>) : null}
-            {this.ids.info.title  && this.state[this.ids.info.title]  ? (<div style={style.info.title}>{this.state[this.ids.info.title]}</div>) : null}
-        </div>);
+        return <div key={this.key + 'tile-info'} style={style.info.div}>
+            {this.ids.info.artist && this.state[this.ids.info.artist] ? <div style={style.info.artist}>{this.state[this.ids.info.artist]}</div> : null}
+            {this.ids.info.album  && this.state[this.ids.info.album]  ? <div style={style.info.album}>{this.state[this.ids.info.album]}</div>   : null}
+            {this.ids.info.title  && this.state[this.ids.info.title]  ? <div style={style.info.title}>{this.state[this.ids.info.title]}</div>   : null}
+        </div>;
     }
 
     render() {
@@ -367,7 +368,7 @@ class SmartMedia extends SmartGeneric {
                         ids={this.ids}
                         windowWidth={this.props.windowWidth}
                         onControl={this.props.onControl}
-                        onClose={this.onDialogClose.bind(this)}
+                        onClose={this.onDialogClose}
                 /> : null
         ]);
     }

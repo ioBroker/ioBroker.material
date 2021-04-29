@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2020 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2021 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,33 +15,30 @@
  **/
 import React from 'react';
 import PropTypes from 'prop-types';
-import I18n from '../i18n';
-import ThermostatControl from '../basic-controls/react-nest-thermostat/src/react-nest-thermostat';
+import clsx from 'clsx';
+import { withStyles } from '@material-ui/core/styles';
+
 import Button from '@material-ui/core/Button';
+
+import I18n from '@iobroker/adapter-react/i18n';
+
 import SmartDialogGeneric from './SmartDialogGeneric';
+import ThermostatControl from '../basic-controls/react-nest-thermostat/src/react-nest-thermostat';
+
+const styles = themes => ({
+    dialogPaper: {
+        maxHeight: 430,
+    },
+    root: {
+        width: 'calc(100% - 1em)',
+        maxWidth: 400,
+        maxHeight: 400,
+        margin: 'auto',
+        height: '100%'
+    }
+});
 
 class SmartDialogThermostat extends SmartDialogGeneric  {
-    // expected:
-
-    static propTypes = {
-        name:               PropTypes.oneOfType([
-            PropTypes.string,
-            PropTypes.object
-        ]),
-        dialogKey:          PropTypes.string.isRequired,
-        windowWidth:        PropTypes.number,
-        onClose:            PropTypes.func.isRequired,
-        unit:               PropTypes.string,
-        step:               PropTypes.number,
-        commaAsDelimiter:   PropTypes.bool,
-
-        objects:            PropTypes.object,
-        states:             PropTypes.object,
-        onValueChange:      PropTypes.func,
-        startValue:         PropTypes.number.isRequired,
-        actualValue:        PropTypes.number,
-    };
-
     static buttonBoostStyle = {
         position: 'absolute',
         left: 'calc(50% - 2em)',
@@ -65,28 +62,24 @@ class SmartDialogThermostat extends SmartDialogGeneric  {
     // states
     constructor(props) {
         super(props);
-        this.stateRx.value = props.startValue || 0;
+        this.stateRx.value      = props.startValue || 0;
         this.stateRx.boostValue = props.boostValue;
 
         this.step = props.step || 0.5;
         this.min = props.min;
         if (this.min > props.actualValue) {
-            this.min = props.actualValue
+            this.min = props.actualValue;
         }
         if (this.min > props.startValue) {
-            this.min = props.startValue
+            this.min = props.startValue;
         }
         this.max = props.max;
         if (this.max < props.actualValue) {
-            this.max = props.actualValue
+            this.max = props.actualValue;
         }
         if (this.max < props.startValue) {
-            this.max = props.startValue
+            this.max = props.startValue;
         }
-
-        this.onMouseMoveBind = this.onMouseMove.bind(this);
-        this.onMouseUpBind   = this.onMouseUp.bind(this);
-        this.onMouseDownBind = this.onMouseDown.bind(this);
 
         this.refPanel = React.createRef();
         this.svgControl = null;
@@ -94,23 +87,47 @@ class SmartDialogThermostat extends SmartDialogGeneric  {
     }
 
     componentDidMount() {
-        super.componentDidMount();
-        this.svgControl = this.refPanel.current.getElementsByTagName('svg')[0];
-        this.svgWidth   = this.svgControl.clientWidth;
-        this.svgHeight  = this.svgControl.clientHeight;
-        this.svgCenterX = this.svgWidth / 2;
-        this.svgCenterY = this.svgHeight / 2;
-        this.svgRadius  = this.svgCenterX > this.svgCenterY ? this.svgCenterY : this.svgCenterX;
-        this.rect       = this.svgControl.getBoundingClientRect();
+        this.initMouseHandlers();
+    }
 
-        this.svgControl.addEventListener('mousedown', this.onMouseDownBind, {passive: false, capture: true});
-        this.svgControl.addEventListener('touchstart', this.onMouseDownBind, {passive: false, capture: true});
+    initMouseHandlers(second) {
+        let panel = this.refPanel.current;
+
+        if (!panel) {
+            panel = document.getElementsByClassName('paper-thermostat');
+            if (panel && panel.length) {
+                panel = panel[0];
+            } else {
+                panel = null;
+            }
+            if (!panel && !second) {
+                setTimeout(() => this.initMouseHandlers(true), 100);
+            }
+        }
+
+        if (panel) {
+            this.svgControl = panel.getElementsByTagName('svg')[0];
+            this.svgWidth   = this.svgControl.clientWidth;
+            this.svgHeight  = this.svgControl.clientHeight;
+            this.svgCenterX = this.svgWidth / 2;
+            this.svgCenterY = this.svgHeight / 2;
+            this.svgRadius  = this.svgCenterX > this.svgCenterY ? this.svgCenterY : this.svgCenterX;
+            this.rect       = this.svgControl.getBoundingClientRect();
+
+            this.svgControl.addEventListener('mousedown',  this.onMouseDown, {passive: false, capture: true});
+            this.svgControl.addEventListener('touchstart', this.onMouseDown, {passive: false, capture: true});
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        !this.svgControl && this.initMouseHandlers();
     }
 
     static roundValue(value, round) {
         round = round || 0.5;
         return Math.round(value / round) * round;
     }
+
     posToTemp(x, y) {
         let h;
         if (x < 0) {
@@ -161,50 +178,53 @@ class SmartDialogThermostat extends SmartDialogGeneric  {
         return true;
     }
 
-    onMouseMove(e) {
+    onMouseMove = e => {
         e.preventDefault();
         e.stopPropagation();
         this.eventToValue(e);
     }
 
-    onMouseDown(e) {
+    onMouseDown = e => {
         e.preventDefault();
         e.stopPropagation();
 
         if (this.eventToValue(e, true)) {
-            document.addEventListener('mousemove',  this.onMouseMoveBind,   {passive: false, capture: true});
-            document.addEventListener('mouseup',    this.onMouseUpBind,     {passive: false, capture: true});
-            document.addEventListener('touchmove',  this.onMouseMoveBind,   {passive: false, capture: true});
-            document.addEventListener('touchend',   this.onMouseUpBind,     {passive: false, capture: true});
+            document.addEventListener('mousemove',  this.onMouseMove,   {passive: false, capture: true});
+            document.addEventListener('mouseup',    this.onMouseUp,     {passive: false, capture: true});
+            document.addEventListener('touchmove',  this.onMouseMove,   {passive: false, capture: true});
+            document.addEventListener('touchend',   this.onMouseUp,     {passive: false, capture: true});
         } else {
             this.onClose();
         }
     }
 
-    onMouseUp(e) {
+    onMouseUp = e => {
         e.preventDefault();
         e.stopPropagation();
         this.click = Date.now();
-        document.removeEventListener('mousemove',   this.onMouseMoveBind,   {passive: false, capture: true});
-        document.removeEventListener('mouseup',     this.onMouseUpBind,     {passive: false, capture: true});
-        document.removeEventListener('touchmove',   this.onMouseMoveBind,   {passive: false, capture: true});
-        document.removeEventListener('touchend',    this.onMouseUpBind,     {passive: false, capture: true});
+        document.removeEventListener('mousemove',   this.onMouseMove,   {passive: false, capture: true});
+        document.removeEventListener('mouseup',     this.onMouseUp,     {passive: false, capture: true});
+        document.removeEventListener('touchmove',   this.onMouseMove,   {passive: false, capture: true});
+        document.removeEventListener('touchend',    this.onMouseUp,     {passive: false, capture: true});
 
         this.props.onValueChange && this.props.onValueChange(this.state.value);
     }
 
-    onBoostMode() {
+    onBoostMode = () => {
         this.props.onBoostToggle && this.props.onBoostToggle(!this.state.boostValue);
         this.setState({boostValue: !this.state.boostValue});
-    }
+    };
 
     generateContent() {
-        return (<div ref={this.refPanel} style={{width: 'calc(100% - 1em)', height: '100%'}}>
+        return <div ref={this.refPanel} className={clsx('paper-thermostat', this.props.classes.root)}>
             {this.state.boostValue !== null && this.state.boostValue !== undefined ?
-                (<Button variant="contained" color={this.state.boostValue ? 'secondary' : ''} onClick={this.onBoostMode.bind(this)}
-                         style={{top: '1.3em'}}
-                         className="boost-button">{I18n.t('Boost')}
-                </Button>) : null}
+                <Button
+                    variant="contained"
+                    color={this.state.boostValue ? 'secondary' : ''}
+                    onClick={this.onBoostMode}
+                    style={{top: '1.3em'}}
+                    className="boost-button">{I18n.t('Boost')}
+                </Button> : null}
             <ThermostatControl
                 afterComma={1}
                 unit={this.props.unit}
@@ -215,8 +235,27 @@ class SmartDialogThermostat extends SmartDialogGeneric  {
                 ambientTemperature={this.props.actualValue}
                 targetTemperature={this.state.value}
             />
-        </div>);
+        </div>;
     }
 }
 
-export default SmartDialogThermostat;
+SmartDialogThermostat.propTypes = {
+    name:               PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.object
+    ]),
+    dialogKey:          PropTypes.string.isRequired,
+    windowWidth:        PropTypes.number,
+    onClose:            PropTypes.func.isRequired,
+    unit:               PropTypes.string,
+    step:               PropTypes.number,
+    commaAsDelimiter:   PropTypes.bool,
+
+    objects:            PropTypes.object,
+    states:             PropTypes.object,
+    onValueChange:      PropTypes.func,
+    startValue:         PropTypes.number.isRequired,
+    actualValue:        PropTypes.number,
+};
+
+export default withStyles(styles)(SmartDialogThermostat);

@@ -16,7 +16,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Theme from '../theme';
-import I18n from '../i18n';
+import I18n from '@iobroker/adapter-react/i18n';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import Button from '@material-ui/core/Button';
@@ -89,6 +89,10 @@ class SmartDialogInfo extends SmartDialogGeneric  {
             this.setState(newState);
         }
         this.controlValue(id, value);
+    }
+
+    getHeader() {
+        return this.props.name;
     }
 
     generateContent() {
@@ -179,10 +183,8 @@ class SmartDialogInfo extends SmartDialogGeneric  {
                 return item;
             }
         });
-        return [
-            (<h4   key={this.props.points[0].id + '_info_header'} style={Theme.dialog.header}>{this.props.name}</h4>),
-            (<List key={this.props.points[0].id + '_info_list'}   style={Theme.dialog.list}>{result}</List>)
-        ];
+
+        return <List key={this.props.points[0].id + '_info_list'}   style={Theme.dialog.list}>{result}</List>;
     }
 }
 
