@@ -40,7 +40,7 @@ import NoImage from '../../assets/noImage.png';
 import 'react-image-crop/dist/ReactCrop.css'
 
 // Icons
-import IconList from '../../icons/icons';
+//import IconList from '../../icons/icons/index.js';
 import I18n from '@iobroker/adapter-react/i18n';
 
 const style = {
@@ -165,7 +165,7 @@ class ImageSelector extends React.Component {
             cropHeight: 100
         };
         if (this.props.icons) {
-            this.icons = IconList.List;
+            //this.icons = IconList.List;
         }
         this.cropPixels = null;
         this.inputRef = React.createRef();

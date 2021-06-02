@@ -237,7 +237,7 @@ class SmartDialogSettings extends SmartDialogGeneric  {
         return this.props.name;
     }
     getButtons() {
-        return <Button onClick={this.onSave} variant="contained" color="primary"><OkIcon />{I18n.t('Save')}</Button>
+        return <Button onClick={this.onSave} variant="contained" color="primary" startIcon={<OkIcon />}>{I18n.t('Save')}</Button>
     }
 
     generateContent() {
