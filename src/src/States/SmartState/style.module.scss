@@ -1,0 +1,20 @@
+.iconStyle{
+    width: 40px;
+    height: 40px;
+    z-index: 1;
+    color: #bcbdbd;
+}
+.iconWrapper{
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    top: 14px;
+    left: 8px;
+    pointer-events: none;
+}
+.textOn{
+    color: #f85e27;
+}
+.textOff{
+    color: #515151;
+}

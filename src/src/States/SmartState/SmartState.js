@@ -15,28 +15,32 @@
  **/
 import React from 'react';
 import Moment from 'react-moment';
-import SmartGeneric from './SmartGeneric';
-import IconWindowOpened from '../icons/WindowOpened';
-import IconWindowClosed from '../icons/WindowClosed';
-import IconMotionOn from '../icons/MotionOn';
-import IconMotionOff from '../icons/MotionOff';
-import IconFireOn from '../icons/FireOn';
-import IconFireOff from '../icons/FireOff';
-import IconFloodOn from '../icons/FloodOn';
-import IconFloodOff from '../icons/FloodOff';
-import IconDoorOpened from '../icons/DoorOpened';
-import IconDoorClosed from '../icons/DoorClosed';
-import {MdBrightness1 as IconSun1} from 'react-icons/md';
-import {MdBrightness2 as IconSun2} from 'react-icons/md';
-import {MdBrightness3 as IconSun3} from 'react-icons/md';
-import {MdBrightness4 as IconSun4} from 'react-icons/md';
-import {MdBrightness5 as IconSun5} from 'react-icons/md';
-import {MdBrightness6 as IconSun6} from 'react-icons/md';
-import {MdBrightness7 as IconSun7} from 'react-icons/md';
+import SmartGeneric from '../SmartGeneric';
+import IconWindowOpened from '../../icons/WindowOpened';
+import IconWindowClosed from '../../icons/WindowClosed';
+import IconMotionOn from '../../icons/MotionOn';
+import IconMotionOff from '../../icons/MotionOff';
+import IconFireOn from '../../icons/FireOn';
+import IconFireOff from '../../icons/FireOff';
+import IconFloodOn from '../../icons/FloodOn';
+import IconFloodOff from '../../icons/FloodOff';
+import IconDoorOpened from '../../icons/DoorOpened';
+import IconDoorClosed from '../../icons/DoorClosed';
+import { MdBrightness1 as IconSun1 } from 'react-icons/md';
+import { MdBrightness2 as IconSun2 } from 'react-icons/md';
+import { MdBrightness3 as IconSun3 } from 'react-icons/md';
+import { MdBrightness4 as IconSun4 } from 'react-icons/md';
+import { MdBrightness5 as IconSun5 } from 'react-icons/md';
+import { MdBrightness6 as IconSun6 } from 'react-icons/md';
+import { MdBrightness7 as IconSun7 } from 'react-icons/md';
 
-import Theme from '../theme';
+import Theme from '../../theme';
 import I18n from '@iobroker/adapter-react/i18n';
-import Types from '../States/SmartTypes';
+import Types from '../SmartTypes';
+import IconAdapter from '@iobroker/adapter-react/Components/Icon';
+import cls from './style.module.scss';
+import clsx from 'clsx/dist/clsx';
+
 // import IconLockOpened from "react-icons/lib/md/lock-open";
 // import IconLockClosed from "react-icons/lib/md/lock";
 
@@ -55,7 +59,7 @@ class SmartState extends SmartGeneric {
 
             state = this.channelInfo.states.find(state => state.id && state.name === 'SECOND');
             if (state) {
-                this.secondary  = {
+                this.secondary = {
                     id: state.id
                 };
             }
@@ -69,14 +73,14 @@ class SmartState extends SmartGeneric {
                     if (val > this.secondary.max) {
                         return IconSuns[IconSuns.length - 1];
                     } else
-                    if (val < this.secondary.min) {
-                        return IconSuns[0];
-                    } else {
-                        const num = (val - this.secondary.min) / (this.secondary.max - this.secondary.min);
-                        return IconSuns[Math.round((IconSuns.length - 1) * num)];
-                    }
+                        if (val < this.secondary.min) {
+                            return IconSuns[0];
+                        } else {
+                            const num = (val - this.secondary.min) / (this.secondary.max - this.secondary.min);
+                            return IconSuns[Math.round((IconSuns.length - 1) * num)];
+                        }
                 };
-                this.secondary.iconStyle = {color: '#c3c300'};
+                this.secondary.iconStyle = { color: '#c3c300' };
             } else {
                 this.secondary.iconStyle = {};
             }
@@ -191,7 +195,7 @@ class SmartState extends SmartGeneric {
         }
     }
 
-    getDialogSettings () {
+    getDialogSettings() {
         const settings = super.getDialogSettings();
 
         settings.unshift({
@@ -205,24 +209,24 @@ class SmartState extends SmartGeneric {
     getIcon() {
         const isOn = this.state[this.id] === '1' || this.state[this.id] === 1 || this.state[this.id] === true || this.state[this.id] === 'true' || this.state[this.id] === 'on' || this.state[this.id] === 'ON';
         const color = isOn ? this.iconColorOn : this.iconColorOff;
-        let style = color ? {color} : {};
+        let style = color ? { color } : {};
         if (this.style) {
             style = Object.assign(style, this.style);
         }
         let customIcon;
 
         if (this.state.settings.useDefaultIcon) {
-            customIcon = (<img src={this.getDefaultIcon()} alt="icon" style={{height: '100%', zIndex: 1}}/>);
+            customIcon = (<IconAdapter src={this.getDefaultIcon()} alt="icon" style={{ height: '100%', zIndex: 1 }} />);
         } else {
             if (this.state.settings.icon) {
-                customIcon = (<img alt="icon" src={isOn ? this.state.settings.icon : this.state.settings.iconOff || this.state.settings.icon} style={{height: '100%', zIndex: 1}}/>);
+                customIcon = (<IconAdapter alt="icon" src={isOn ? this.state.settings.icon : this.state.settings.iconOff || this.state.settings.icon} style={{ height: '100%', zIndex: 1 }} />);
             } else {
                 const Icon = isOn ? this.iconOn : this.iconOff;
-                customIcon = (<Icon width={Theme.tile.tileIconSvg.size} height={Theme.tile.tileIconSvg.size} style={{zIndex: 1, height: Theme.tile.tileIconSvg.size, width: Theme.tile.tileIconSvg.size}}/>);
+                customIcon = (<Icon className={cls.iconStyle}/>);
             }
         }
         return (
-            <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, style)} className="tile-icon">
+            <div key={this.key + 'icon'} className={cls.iconWrapper}>
                 {customIcon}
             </div>
         );
@@ -232,9 +236,9 @@ class SmartState extends SmartGeneric {
         const state = this.state[this.id];
         if (state === undefined || state === null || !this.lastChange || !this.showTime) {
             const isOn = this.state[this.id] === '1' || this.state[this.id] === 1 || this.state[this.id] === true || this.state[this.id] === 'true' || this.state[this.id] === 'on' || this.state[this.id] === 'ON';
-            return isOn ? I18n.t(this.textOn) : I18n.t(this.textOff);
+            return <div className={clsx(isOn?cls.textOn:cls.textOff)}>{isOn ? I18n.t(this.textOn) : I18n.t(this.textOff)}</div>;
         } else {
-            return (<Moment style={{fontSize: 12}} date={this.lastChange} interval={15} fromNow locale={I18n.getLanguage()}/>);
+            return (<Moment style={{ fontSize: 12 }} date={this.lastChange} interval={15} fromNow locale={I18n.getLanguage()} />);
         }
     }
 

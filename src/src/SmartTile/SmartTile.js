@@ -13,51 +13,53 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Paper from '@material-ui/core/Paper';
 
 import I18n from '@iobroker/adapter-react/i18n';
-import Theme from './theme';
-import Types from './States/SmartTypes';
+import Theme from '../theme';
+import Types from '../States/SmartTypes';
 import Utils from '@iobroker/adapter-react/Components/Utils';
 
-import SmartBlinds from './States/SmartBlinds';
-import SmartButton from './States/SmartButton';
-import SmartDimmer from './States/SmartDimmer';
-import SmartGeneric from './States/SmartGeneric';
-import SmartInfo from './States/SmartInfo';
-import SmartSlider from './States/SmartSlider';
-import SmartState from './States/SmartState';
-import SmartSwitch from './States/SmartSwitch';
-import SmartThermometer from './States/SmartThermometer';
-import SmartThermostat from "./States/SmartThermostat";
-import SmartWindowTilt from './States/SmartWindowTilt';
-import SmartLock from './States/SmartLock';
-import SmartInstance from './States/SmartInstance';
-import SmartMedia from './States/SmartMedia';
-import SmartVolume from './States/SmartVolume';
-import SmartWeatherForecast from './States/SmartWeatherForecast';
-import SmartWarning from './States/SmartWarning';
-import SmartURL from './States/SmartURL';
-import SmartColor from './States/SmartColor';
+import SmartBlinds from '../States/SmartBlinds';
+import SmartButton from '../States/SmartButton';
+import SmartDimmer from '../States/SmartDimmer';
+import SmartGeneric from '../States/SmartGeneric';
+import SmartInfo from '../States/SmartInfo/SmartInfo';
+import SmartSlider from '../States/SmartSlider';
+import SmartState from '../States/SmartState/SmartState';
+import SmartSwitch from '../States/SmartSwitch/SmartSwitch';
+import SmartThermometer from '../States/SmartThermometer';
+import SmartThermostat from "../States/SmartThermostat";
+import SmartWindowTilt from '../States/SmartWindowTilt';
+import SmartLock from '../States/SmartLock';
+import SmartInstance from '../States/SmartInstance';
+import SmartMedia from '../States/SmartMedia';
+import SmartVolume from '../States/SmartVolume';
+import SmartWeatherForecast from '../States/SmartWeatherForecast';
+import SmartWarning from '../States/SmartWarning';
+import SmartURL from '../States/SmartURL';
+import SmartColor from '../States/SmartColor';
+import SmartClock from '../States/SmartClock/SmartClock';
+import cls from './style.module.scss';
 
 class SmartTile extends Component {
     static propTypes = {
-        id:                 PropTypes.string.isRequired,
-        user:               PropTypes.string.isRequired,
-        objects:            PropTypes.object.isRequired,
-        states:             PropTypes.object.isRequired,
-        editMode:           PropTypes.bool.isRequired,
-        windowWidth:        PropTypes.number,
+        id: PropTypes.string.isRequired,
+        user: PropTypes.string.isRequired,
+        objects: PropTypes.object.isRequired,
+        states: PropTypes.object.isRequired,
+        editMode: PropTypes.bool.isRequired,
+        windowWidth: PropTypes.number,
         onVisibilityControl: PropTypes.func,
-        onDelete:           PropTypes.func,
-        onSaveSettings:     PropTypes.func,
-        onCollectIds:       PropTypes.func,
-        onControl:          PropTypes.func,
-        ignoreIndicators:   PropTypes.array,
-        enumNames:          PropTypes.array,
-        channelInfo:        PropTypes.object
+        onDelete: PropTypes.func,
+        onSaveSettings: PropTypes.func,
+        onCollectIds: PropTypes.func,
+        onControl: PropTypes.func,
+        ignoreIndicators: PropTypes.array,
+        enumNames: PropTypes.array,
+        channelInfo: PropTypes.object
     };
 
     constructor(props) {
@@ -101,19 +103,27 @@ class SmartTile extends Component {
         this.handlers.onClick && !this.props.editMode && this.handlers.onClick(e);
 
     getTileStyle() {
-        let style;
-        if (this.props.editMode) {
-            style = Object.assign(
-                {},
-                Theme.tile.tile,
-                Theme.tile.tileOn,
-                typeof this.state.colorOn === 'object' ? this.state.colorOn : {background: this.state.colorOn},
-                Theme.tile.editEnabled);
-        } else {
-            style = this.state.state ?
-                Object.assign({}, Theme.tile.tile, Theme.tile.tileOn, typeof this.state.colorOn === 'object' ? this.state.colorOn : {background: this.state.colorOn}) :
-                Object.assign({}, Theme.tile.tile, Theme.tile.tileOff, typeof this.state.colorOff === 'object' ? this.state.colorOff : {background: this.state.colorOff});
-        }
+        let style = {};
+        // if (this.props.editMode) {
+        //     style = Object.assign(
+        //         {},
+        //         Theme.tile.tile,
+        //         Theme.tile.tileOn,
+        //         typeof this.state.colorOn === 'object' ?
+        //             this.state.colorOn : { background: this.state.colorOn },
+        //         Theme.tile.editEnabled
+        //         );
+        // } else {
+        //     style = this.state.state ?
+        //         Object.assign({},
+        //             // Theme.tile.tile, 
+        //             // Theme.tile.tileOn,
+        //             typeof this.state.colorOn === 'object' ? this.state.colorOn : { background: this.state.colorOn }) :
+        //         Object.assign({},
+        //             // Theme.tile.tile, 
+        //             // Theme.tile.tileOff,
+        //             typeof this.state.colorOff === 'object' ? this.state.colorOff : { background: this.state.colorOff });
+        // }
 
         if (this.state.background) {
             style.backgroundImage = `url(${this.state.background})`;
@@ -124,7 +134,7 @@ class SmartTile extends Component {
             }
             delete style.background;
         }
-
+        style.width = 128;
         style.width = style.width * this.state.width;
         style.color = Utils.isUseBright(style.background) ? 'white' : 'black';
 
@@ -138,13 +148,13 @@ class SmartTile extends Component {
 
     setSize(width) {
         if (width && width !== this.state.width) {
-            this.setState({width});
+            this.setState({ width });
         }
     }
 
     setBackgroundImage(url, bottomBar, seemless) {
         if (this.state.background !== url) {
-            this.setState({background: url, bottomBar: bottomBar || false});
+            this.setState({ background: url, bottomBar: bottomBar || false });
         }
     }
 
@@ -155,25 +165,25 @@ class SmartTile extends Component {
     setVisibility(isVisible, isDelete) {
         if (this.state.visible !== isVisible) {
             this.lastEnabledChange = Date.now();
-            this.setState({visible: isVisible});
+            this.setState({ visible: isVisible });
             this.props.onVisibilityControl(this.stateId, isVisible);
         }
     }
 
     setColorOn(color) {
         if (JSON.stringify(this.state.colorOn) !== JSON.stringify(color)) {
-            this.setState({colorOn: color});
+            this.setState({ colorOn: color });
         }
     }
 
     setColorOff(color) {
         if (JSON.stringify(this.state.colorOff) !== JSON.stringify(color)) {
-            this.setState({colorOff: color});
+            this.setState({ colorOff: color });
         }
     }
 
     wrapContent(content) {
-        let style = {cursor: this.state.isPointer ? 'pointer' : 'inherit'};
+        let style = { cursor: this.state.isPointer ? 'pointer' : 'inherit' };
         if (!this.props.editMode && !this.state.visible && this.channelInfo) {
             style.display = 'none';
         }
@@ -187,18 +197,22 @@ class SmartTile extends Component {
         }
 
         style = Object.assign(this.getTileStyle(), style);
+        // style = {};
 
         return <Paper ref={this.tileRef}
-               style={style}
-               className={this.hasAnimation}
-               onMouseDown={this.onMouseDown}
-               onTouchStart={this.onMouseDown}
-               onMouseUp={this.onMouseUp}
-               onTouchEnd={this.onMouseUp}
-               onClick={this.onClick}
+            style={style}
+            //    className={this.hasAnimation}
+            className={cls.paperSmartTitle}
+            onMouseDown={this.onMouseDown}
+            onTouchStart={this.onMouseDown}
+            onMouseUp={this.onMouseUp}
+            onTouchEnd={this.onMouseUp}
+            onClick={this.onClick}
         >
-            <span style={{display: 'none'}}>{this.channelInfo ? this.channelInfo.states.find(state => state.id).id : 'nothing'}</span>
-            {content}
+            <div className={cls.wrapperContent}>
+                <span style={{ display: 'none' }}>{this.channelInfo ? this.channelInfo.states.find(state => state.id).id : 'nothing'}</span>
+                {content}
+            </div>
         </Paper>;
     }
 
@@ -232,6 +246,7 @@ class SmartTile extends Component {
         let Control;
 
         if (this.channelInfo) {
+            console.log(11223344,this.channelInfo.type)
             switch (this.channelInfo.type) {
                 case Types.light:
                 case Types.socket:
@@ -294,6 +309,9 @@ class SmartTile extends Component {
                     break;
                 case Types.url:
                     Control = SmartURL;
+                    break;
+                case 'clock'://Types.clock:
+                    Control = SmartClock;
                     break;
                 default:
                     break;

@@ -1,0 +1,53 @@
+.clockWrapper {
+    // background: #c0c0c094;
+    // margin: 10px;
+    padding: 10px;
+    border-radius: 7px;
+    width: 200px;
+    flex-direction: column;
+    display: flex;
+    justify-content: center;
+}
+.timeWrapper {
+    color: #bcbcbd;
+    font-size: 40px;
+    font-weight: bold;
+    font-family: inherit;
+}
+.wrapperButtons {
+    margin-top: 10px;
+    display: flex;
+}
+.color {
+    color: #f85e27 !important;
+}
+.defColor {
+    color: #515151 !important;
+}
+.clock {
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+}
+.dayOfWeek {
+    font-size: 16px;
+    color: #bcbcbd;
+}
+.emptyDayOfWeek {
+    height: 19px;
+}
+.hour12 {
+    width: 24px;
+    height: 24px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+@media screen and (max-width: 835px) {
+    .rootWrapper {
+        flex-direction: column;
+        height: auto;
+        overflow: auto;
+    }
+}

@@ -14,17 +14,20 @@
  * limitations under the License.
  **/
 import React from 'react';
-import SmartGeneric from './SmartGeneric';
+import SmartGeneric from '../SmartGeneric';
 
 import {TiLightbulb as IconLight} from 'react-icons/ti';
 import {MdCheck as IconCheck} from 'react-icons/md';
 import {MdCancel as IconCancel} from 'react-icons/md';
-import IconSwitch from '../icons/Socket';
+import IconSwitch from '../../icons/Socket';
 
-import Types from './SmartTypes';
-import Theme from '../theme';
+import Types from '../SmartTypes';
+import Theme from '../../theme';
 import I18n from '@iobroker/adapter-react/i18n';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import IconAdapter from '@iobroker/adapter-react/Components/Icon';
+import cls from './style.module.scss';
+import clsx from 'clsx/dist/clsx';
 
 class SmartSwitch extends SmartGeneric {
     constructor(props) {
@@ -124,17 +127,17 @@ class SmartSwitch extends SmartGeneric {
         let customIcon;
 
         if (this.state.settings.useDefaultIcon) {
-            customIcon = (<img alt="icon" src={this.getDefaultIcon()} style={{height: '100%'}}/>);
+            customIcon = (<IconAdapter alt="icon" src={this.getDefaultIcon()} style={{height: '100%'}}/>);
         } else {
             if (this.state.settings.icon) {
-                customIcon = (<img alt="icon" src={state ? this.state.settings.icon : this.state.settings.iconOff || this.state.settings.icon} style={{height: '100%'}}/>);
+                customIcon = (<IconAdapter alt="icon" src={state ? this.state.settings.icon : this.state.settings.iconOff || this.state.settings.icon} style={{height: '100%'}}/>);
             } else {
                 const Icon = this.state[this.actualId] ? this.iconOn : this.iconOff;
-                customIcon = (<Icon width={Theme.tile.tileIconSvg.size} height={Theme.tile.tileIconSvg.size} style={{height: Theme.tile.tileIconSvg.size, width: Theme.tile.tileIconSvg.size}}/>);
+                customIcon = (<Icon  className={cls.iconStyle}/>);
             }
         }
         return (
-            <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, style)} className="tile-icon">
+            <div key={this.key + 'icon'}  className={cls.iconWrapper}>
                 {customIcon}
                 {this.state.executing ? <CircularProgress style={{zIndex: 3, position: 'absolute', top: 0, left: 0}} size={Theme.tile.tileIcon.width}/> : null}
             </div>
@@ -142,7 +145,7 @@ class SmartSwitch extends SmartGeneric {
     }
 
     getStateText() {
-        return this.state[this.id] ? I18n.t('On') : I18n.t('Off')
+        return <div className={clsx(this.state[this.id]?cls.textOn:cls.textOff)}>{this.state[this.id] ? I18n.t('On') : I18n.t('Off')}</div>
     }
 
     render() {

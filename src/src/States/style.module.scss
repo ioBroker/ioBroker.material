@@ -1,0 +1,27 @@
+.displayFlex {
+    display: flex;
+    width: 100%;
+}
+.corner {
+    position: absolute;
+    top: 1px;
+    right: 0px;
+    border-width: 0px 21px 17px 0px;
+    border-style: solid;
+    border-color: #3e3f40 #3e3f40 #282a2b #282a2b;
+    box-shadow: rgb(0 0 0 / 30%) 9px 4px 5px, rgb(0 0 0 / 20%) 5px 6px 5px;
+
+    // border-width: 0px 16px 16px 0px;
+    // border-style: solid;
+    // border-color: rgb(173, 173, 173) rgb(173, 173, 173) rgb(212, 212, 212) rgb(193, 193, 193);
+
+    background: rgb(173, 173, 173);
+    // box-shadow: rgb(0 0 0 / 30%) 0px 1px 1px, rgb(0 0 0 / 20%) -1px 1px 1px;
+    border-radius: 0px 0px 0px 10px;
+    transition: border-width 0.25s ease-in-out;
+    cursor: pointer;
+    z-index: 2;
+    &:hover {
+        border-width: 0 28px 28px 0;
+    }
+}

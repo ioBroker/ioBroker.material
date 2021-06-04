@@ -16,7 +16,9 @@
 .App {
     text-align: center;
 }
-
+.root{
+    height: 100vh;
+}
 .App-logo {
     animation: App-logo-spin infinite 20s linear;
     height: 80px;

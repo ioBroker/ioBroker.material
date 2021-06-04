@@ -71,7 +71,7 @@ export default {
         width: 24
     },
     mainPanel: {
-        backgroundImage: 'url(' + Background + ')',//'url(homekit.png)',
+        // backgroundImage: 'url(' + Background + ')',//'url(homekit.png)',
         backgroundSize: '100% auto',
         paddingTop: appBarHeight,
         minHeight: 'calc(100% - 14px)', // I have no idea, why this 14px are here
@@ -433,7 +433,7 @@ export default {
         tileIndicatorsIcons: {
             working:   '#808080',
             unreach:   'orange',
-            lowbat:    'red',
+            lowbat:    '#6b0000b5',
             maintain:  'orange',
             error:     'red',
             direction: 'green',

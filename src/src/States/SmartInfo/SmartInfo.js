@@ -14,16 +14,19 @@
  * limitations under the License.
  **/
 import React from 'react';
-import SmartGeneric from './SmartGeneric';
-import IconThermometer from '../icons/ThermometerSimple';
-import IconHydro from '../icons/Humidity';
+import SmartGeneric from '../SmartGeneric';
+import IconThermometer from '../../icons/ThermometerSimple';
+import IconHydro from '../../icons/Humidity';
 import {MdInfo as IconInfo} from 'react-icons/md';
 import Utils from '@iobroker/adapter-react/Components/Utils';
 
-import Theme from '../theme';
+import Theme from '../../theme';
 import I18n from '@iobroker/adapter-react/i18n';
-import Dialog from '../Dialogs/SmartDialogInfo';
+import Dialog from '../../Dialogs/SmartDialogInfo';
 import PropTypes from 'prop-types';
+import IconAdapter from '@iobroker/adapter-react/Components/Icon';
+import cls from './style.module.scss';
+import clsx from 'clsx/dist/clsx';
 
 const invisibleDefaultRoles = [
     /^timer.off$/,
@@ -162,18 +165,18 @@ class SmartInfo extends SmartGeneric {
     getIcon() {
         let customIcon;
         if (this.state.settings.useDefaultIcon) {
-            customIcon = (<img src={this.getDefaultIcon()} alt=" " style={{height: '100%', zIndex: 1}}/>);
+            customIcon = (<IconAdapter src={this.getDefaultIcon()} alt=" " style={{height: '100%', zIndex: 1}}/>);
         } else {
             if (this.state.settings.icon) {
-                customIcon = (<img src={this.state.settings.icon} alt=" " style={{height: '100%', zIndex: 1}}/>);
+                customIcon = (<IconAdapter src={this.state.settings.icon} alt=" " style={{height: '100%', zIndex: 1}}/>);
             } else {
                 const Icon = this.infos[0].icon || IconInfo;
-                customIcon = (<Icon width={Theme.tile.tileIconSvg.size} height={Theme.tile.tileIconSvg.size} style={{zIndex: 1, height: Theme.tile.tileIconSvg.size, width: Theme.tile.tileIconSvg.size}}/>);
+                customIcon = (<Icon className={cls.iconStyle}/>);
             }
         }
 
         return (
-            <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, this.infos[0].iconStyle || {})} className="tile-icon">
+            <div key={this.key + 'icon'} className={cls.iconWrapper}>
                 {customIcon}
             </div>
         );
@@ -181,7 +184,7 @@ class SmartInfo extends SmartGeneric {
 
     getStateText() {
         const state = this.state[this.id];
-        return state === undefined || state === null ? '?' : state + this.infos[0].unit;
+        return <div className={clsx(state === undefined || state === null ?cls.textOff:cls.textOn)}>{state === undefined || state === null ? '?' : state + this.infos[0].unit}</div>;
     }
 
     getSecondaryDiv() {

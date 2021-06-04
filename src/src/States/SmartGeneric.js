@@ -25,6 +25,7 @@ import {MdEdit as IconEdit} from 'react-icons/md';
 import {MdArrowUpward as IconDirectionUp} from 'react-icons/md';
 import {MdArrowDownward as IconDirectionDown} from 'react-icons/md';
 import {MdSwapVert as IconDirection} from 'react-icons/md';
+import cls from './style.module.scss';
 
 import Dialog from '../Dialogs/SmartDialogSettings';
 
@@ -446,6 +447,12 @@ class SmartGeneric extends Component {
                         return false;
                     }
                 });
+                enumSettings.clocks && enumSettings.clocks.forEach((e, i) => {
+                    if (e.id === this.id) {
+                        pos = i;
+                        return false;
+                    }
+                });
             }
 
             if (pos !== -1) {
@@ -737,7 +744,7 @@ class SmartGeneric extends Component {
         if (this.state.editMode) {
             return [
                 <div key={this.key + 'type'} style={{display: 'none'}}>{this.channelInfo.type}</div>,
-                <div key={this.key + 'wrapper'}>
+                <div key={this.key + 'wrapper'} className={cls.displayFlex}>
                     {this.state.settings.enabled ?
                         [<div onClick={this.toggleEnabled} key={this.key + 'icon-check'} style={Theme.tile.editMode.checkIcon} className="edit-buttons">
                             <IconCheck size={'50%'} style={Theme.tile.editMode.buttonIcon}/>
@@ -767,12 +774,13 @@ class SmartGeneric extends Component {
         } else if (this.state.settings.enabled) {
             return [
                 <div key={this.key + 'type'} style={{display: 'none'}}>{this.channelInfo.type}</div>,
-                <div key={this.key + 'wrapper'} >
+                <div key={this.key + 'wrapper'} className={cls.displayFlex}>
                     {this.showCorner ? (<div
                         key={this.key + 'corner'}
                         onMouseDown={this.onLongClick}
-                        className={'corner' + (isTouch ? ' corner-touch' : '')}
-                        style={Object.assign({}, Theme.tile.tileCorner, isTouch ? Theme.tile.tileCornerTouch : {})}
+                        className={cls.corner}
+                        // className={'corner' + (isTouch ? ' corner-touch' : '')}
+                        // style={Object.assign({}, Theme.tile.tileCorner, isTouch ? Theme.tile.tileCornerTouch : {})}
                         />) : null}
                     {this.getIndicators()}
                     {content}

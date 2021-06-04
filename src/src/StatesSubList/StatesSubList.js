@@ -13,26 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import IconButton from '@material-ui/core/IconButton';
 
-import {MdPermScanWifi as IconUnreach} from 'react-icons/md';
-import {MdDragHandle as IconGrip} from 'react-icons/md';
-import {TiLightbulb as IconLight} from 'react-icons/ti';
+import { MdPermScanWifi as IconUnreach } from 'react-icons/md';
+import { MdDragHandle as IconGrip } from 'react-icons/md';
+import { TiLightbulb as IconLight } from 'react-icons/ti';
 //import {TiLightbulb as IconBlind0} from 'react-icons/ti';
 //import {TiLightbulb as IconBlind100} from 'react-icons/ti';
-import IconBlind from './icons/Jalousie'
+import IconBlind from '../icons/Jalousie'
 
 import Utils from '@iobroker/adapter-react/Components/Utils';
-import Theme from './theme';
+import Theme from '../theme';
 import I18n from '@iobroker/adapter-react/i18n';
-import SmartTile from './SmartTile';
-import SmartDetector from './States/SmartDetector';
-import Types from './States/SmartTypes';
-import VisibilityButton from './basic-controls/react-visibility-button/VisibilityButton';
+import SmartTile from '../SmartTile/SmartTile';
+import SmartDetector from '../States/SmartDetector';
+import Types from '../States/SmartTypes';
+import VisibilityButton from '../basic-controls/react-visibility-button/VisibilityButton';
+import cls from './style.module.scss';
 
 const styles = {
     'drag-item': {
@@ -56,29 +57,29 @@ const styles = {
 class StatesSubList extends Component {
 
     static propTypes = {
-        enumID:         PropTypes.string.isRequired,
-        enumSubID:      PropTypes.string.isRequired,
-        user:           PropTypes.string.isRequired,
-        objects:        PropTypes.object.isRequired,
-        editMode:       PropTypes.bool.isRequired,
-        debug:          PropTypes.bool,
+        enumID: PropTypes.string.isRequired,
+        enumSubID: PropTypes.string.isRequired,
+        user: PropTypes.string.isRequired,
+        objects: PropTypes.object.isRequired,
+        editMode: PropTypes.bool.isRequired,
+        debug: PropTypes.bool,
         ignoreIndicators: PropTypes.array,
         onSaveSettings: PropTypes.func,
-        onDelete:       PropTypes.func,
-        windowWidth:    PropTypes.number,
-        align:          PropTypes.string,
-        newLine:        PropTypes.bool,
-        subDragging:    PropTypes.bool,
+        onDelete: PropTypes.func,
+        windowWidth: PropTypes.number,
+        align: PropTypes.string,
+        newLine: PropTypes.bool,
+        subDragging: PropTypes.bool,
         dragHandleProps: PropTypes.object,
-        isUseBright:    PropTypes.bool,
-        states:         PropTypes.object.isRequired,
-        keys:           PropTypes.array.isRequired
+        isUseBright: PropTypes.bool,
+        states: PropTypes.object.isRequired,
+        keys: PropTypes.array.isRequired
     };
 
     constructor(props) {
         super(props);
         this.detector = new SmartDetector();
-        const settings = Utils.getSettings(this.props.objects[this.props.enumSubID], {user: this.props.user});
+        const settings = Utils.getSettings(this.props.objects[this.props.enumSubID], { user: this.props.user });
 
         this.state = {
             visible: false,
@@ -88,14 +89,14 @@ class StatesSubList extends Component {
             subDragging: this.props.subDragging,
             enumSubID: this.props.enumSubID,
             enabled: settings && settings.subEnabled ? (settings.subEnabled[this.props.enumID] === undefined ? true : settings.subEnabled[this.props.enumID]) : true,
-            order: Utils.getSettingsOrder(this.props.objects[this.props.enumSubID], this.props.enumID, {user: this.props.user}),
+            order: Utils.getSettingsOrder(this.props.objects[this.props.enumSubID], this.props.enumID, { user: this.props.user }),
             dragging: false,
             visibleChildren: {}
         };
         if (this.state.enumID === Utils.INSTANCES) {
             this.name = I18n.t('All instances');
         } else {
-            this.name = this.state.enumSubID && this.state.enumSubID !== 'others' ? Utils.getObjectName(this.props.objects, this.state.enumSubID, false, {language: I18n.getLanguage()}) : I18n.t('Others');
+            this.name = this.state.enumSubID && this.state.enumSubID !== 'others' ? Utils.getObjectName(this.props.objects, this.state.enumSubID, false, { language: I18n.getLanguage() }) : I18n.t('Others');
         }
         this.widgetTypes = {};
         this.collectVisibility = null;
@@ -132,7 +133,7 @@ class StatesSubList extends Component {
             changed = true;
         }
         if (nextProps.enumSubID !== this.state.enumSubID) {
-            this.name = nextProps.enumSubID ? Utils.getObjectName(this.props.objects, nextProps.enumSubID, false, {language: I18n.getLanguage()}) : I18n.t('Others');
+            this.name = nextProps.enumSubID ? Utils.getObjectName(this.props.objects, nextProps.enumSubID, false, { language: I18n.getLanguage() }) : I18n.t('Others');
             newState.enumSubID = nextProps.enumSubID;
             newState.visibleChildren = {};
             newState.visible = false;
@@ -144,16 +145,16 @@ class StatesSubList extends Component {
     }
 
     onDragStart() {
-        this.setState({dragging: true});
+        this.setState({ dragging: true });
     }
 
     onDragEnd(result) {
-        const newState = {dragging: false};
+        const newState = { dragging: false };
 
         if (result.destination && result.destination.index !== result.source.index) {
             this.order = Utils.reorder(this.order, result.source.index, result.destination.index);
             newState.order = this.order;
-            const settings = Utils.getSettings(this.props.objects[this.props.enumSubID], {user: this.props.user});
+            const settings = Utils.getSettings(this.props.objects[this.props.enumSubID], { user: this.props.user });
             settings.subOrder = settings.subOrder || {};
             settings.subOrder[this.props.enumID] = this.order.filter(id => this.state.visibleChildren[id]);
             this.props.onSaveSettings && this.props.onSaveSettings(this.props.enumSubID, settings);
@@ -163,20 +164,20 @@ class StatesSubList extends Component {
     }
 
     onToggleSubEnabled() {
-        const settings = Utils.getSettings(this.props.objects[this.props.enumSubID], {user: this.props.user});
+        const settings = Utils.getSettings(this.props.objects[this.props.enumSubID], { user: this.props.user });
         settings.subEnabled = settings.subEnabled || {};
         let enabled = settings.subEnabled[this.props.enumID] === undefined ? true : settings.subEnabled[this.props.enumID];
         enabled = !enabled;
         settings.subEnabled[this.props.enumID] = enabled;
         this.props.onSaveSettings && this.props.onSaveSettings(this.props.enumSubID, settings, () => {
-            this.setState({enabled});
+            this.setState({ enabled });
         });
     }
 
     onVisibilityTimer() {
         this.collectVisibilityTimer = null;
         let commonVisible = false;
-        const newState = {visibleChildren: commonVisible};
+        const newState = { visibleChildren: commonVisible };
         if (this.props.editMode || this.state.enabled) {
             const combinedVisibility = Object.assign({}, this.state.visibleChildren, this.collectVisibility);
             for (const _id in combinedVisibility) {
@@ -223,7 +224,7 @@ class StatesSubList extends Component {
         return (<Component
             key={state.id + '-sublist-' + Component.name + '-' + i}
             id={channelId}
-            enumNames={[this.name, Utils.getObjectName(this.props.objects, this.state.enumID, null, {language: I18n.getLanguage()})]}
+            enumNames={[this.name, Utils.getObjectName(this.props.objects, this.state.enumID, null, { language: I18n.getLanguage() })]}
             enumFunctions={this.props.enumFunctions}
             editMode={this.props.editMode}
             channelInfo={channelInfo}
@@ -248,8 +249,8 @@ class StatesSubList extends Component {
                 return {
                     control: this.createControl(SmartTile, id, {
                         states: [
-                            {id: id + '.alive',     name: 'ALIVE'},
-                            {id: id + '.connected', name: 'UNREACH', type: 'boolean', indicator: true, icon: IconUnreach, color: Theme.tile.tileIndicatorsIcons.unreach}
+                            { id: id + '.alive', name: 'ALIVE' },
+                            { id: id + '.connected', name: 'UNREACH', type: 'boolean', indicator: true, icon: IconUnreach, color: Theme.tile.tileIndicatorsIcons.unreach }
                         ],
                         type: Types.instance
                     }, i),
@@ -273,18 +274,18 @@ class StatesSubList extends Component {
                 // custom URL
                 return {
                     control: {
-                        type: Types.url,
+                        type: id.type || Types.url,
                         states: [id]
                     },
                     id: id.id
                 };
             } else {
                 const options = {
-                    objects:            this.props.objects,
+                    objects: this.props.objects,
                     id,
-                    _keysOptional:      this.props.keys,
-                    _usedIdsOptional:   usedIds,
-                    ignoreIndicators:   this.props.ignoreIndicators,
+                    _keysOptional: this.props.keys,
+                    _usedIdsOptional: usedIds,
+                    ignoreIndicators: this.props.ignoreIndicators,
                     allowedTypes: [
                         'blind',
                         'button',
@@ -329,10 +330,10 @@ class StatesSubList extends Component {
                         const id = control.states.find(state => state.id).id;
                         if (id) {
                             this.widgetTypes[id] = {
-                                type:   control.type,
-                                SET:    control.states.find(state => state.name === 'SET'),
+                                type: control.type,
+                                SET: control.states.find(state => state.name === 'SET'),
                                 ON_SET: control.states.find(state => state.name === 'ON_SET'),
-                                STOP:   control.states.find(state => state.name === 'STOP'),
+                                STOP: control.states.find(state => state.name === 'STOP'),
                             };
                             for (let a in this.widgetTypes[id]) {
                                 if (this.widgetTypes[id].hasOwnProperty(a) && a !== 'type' && this.widgetTypes[id][a]) {
@@ -340,7 +341,7 @@ class StatesSubList extends Component {
                                 }
                             }
 
-                            return {control, id};
+                            return { control, id };
                         }
                     }.bind(this));
                 } else {
@@ -395,7 +396,7 @@ class StatesSubList extends Component {
 
         return this.order.map(function (id, i) {
             const c = result.find(c => c.id === id);
-            return {control: this.createControl(SmartTile, c.id, c.control, i), id: c.id};
+            return { control: this.createControl(SmartTile, c.id, c.control, i), id: c.id };
         }.bind(this));
     }
 
@@ -406,7 +407,7 @@ class StatesSubList extends Component {
                 {(provided, snapshot) => (
                     <div
                         className={this.props.classes['drag-item'] + (snapshot.isDragging ? ' ' + this.props.classes['drag-item-overlay'] : '')}
-                        style={{display: 'inline-block'}}
+                        style={{ display: 'inline-block' }}
                         ref={provided.innerRef}
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
@@ -421,14 +422,14 @@ class StatesSubList extends Component {
     }
 
     wrapAllItems(items, provided, snapshot) {
-        const style = {display: 'flex'};
+        const style = { display: 'flex' };
         if (this.state.dragging) {
             style.background = 'rgba(2,173,2,0.26)';
             style.borderRadius = '1em';
         }
 
         return (
-            <div style={{width: '100%', overflow: 'auto'}}>
+            <div style={{ width: '100%', overflow: 'auto' }}>
                 <div style={style} ref={provided.innerRef} {...provided.droppableProps}>
                     {items.map((item, index) => this.wrapItem(item, index))}
                     {provided.placeholder}
@@ -438,7 +439,7 @@ class StatesSubList extends Component {
 
     wrapContent(items) {
         if (this.state.subDragging && this.props.editMode && this.props.enumID !== Utils.INSTANCES && this.state.enabled) {
-            return(
+            return (
                 <DragDropContext
                     onDragEnd={result => this.onDragEnd(result)}
                     onDragStart={() => this.onDragStart()}>
@@ -449,14 +450,14 @@ class StatesSubList extends Component {
             );
         } else if (this.props.editMode || (!this.state.subDragging || !this.state.enabled)) {
             return (
-                <div  key={(this.state.enumID + '-' + this.state.enumSubID).replace(/[^\w\d]/g, '_') + '-inset'} style={{width: '100%', overflow: 'auto', opacity: this.state.enabled ? 1 : 0.5}}>
-                    <div key="inline-div" style={{display: 'flex'}}>
+                <div key={(this.state.enumID + '-' + this.state.enumSubID).replace(/[^\w\d]/g, '_') + '-inset'} style={{ width: '100%', overflow: 'auto', opacity: this.state.enabled ? 1 : 0.5 }}>
+                    <div key="inline-div" style={{ display: 'flex' }}>
                         {items.map(e => (<div key={'inline-div-' + e.id}>{e.control}</div>))}
                     </div>
                 </div>
             );
         } else {
-            return(<div key="inline-div">{items.map(e => e.control)}</div>);
+            return (<div className={cls.wrapperItems}>{items.map(e => e.control)}</div>);
         }
     }
 
@@ -499,7 +500,7 @@ class StatesSubList extends Component {
                     if (min === undefined) {
                         min = 0;
                     }
-                    const settings = Utils.getSettings(this.props.objects[id], {user: this.props.user, language: I18n.getLanguage()})
+                    const settings = Utils.getSettings(this.props.objects[id], { user: this.props.user, language: I18n.getLanguage() })
                     if (settings.inverted) {
                         const m = max;
                         max = min;
@@ -521,7 +522,7 @@ class StatesSubList extends Component {
             if (this.widgetTypes[id].type === Types.light || this.widgetTypes[id].type === Types.dimmer) {
                 countLights++;
             }
-            if (this.widgetTypes[id].type === Types.blind){
+            if (this.widgetTypes[id].type === Types.blind) {
                 countBlinds++;
             }
         });
@@ -529,12 +530,12 @@ class StatesSubList extends Component {
         const controls = [];
 
         if (countLights > 1) {
-            controls.push(<IconButton key="light-off" size="small" aria-label="Off" onClick={() => this.controlAllLights(false)} style={Object.assign({}, Theme.buttonAllLight, {color: 'black'})}              title={I18n.t('All lights off')}><IconLight style={Theme.buttonAllIcon}/></IconButton>);
-            controls.push(<IconButton key="light-on"  size="small" aria-label="On"  onClick={() => this.controlAllLights(true)}  style={Object.assign({}, Theme.buttonAllLight, {color: Theme.palette.lampOn})} title={I18n.t('All lights on')}><IconLight  style={Theme.buttonAllIcon}/></IconButton>);
+            controls.push(<IconButton key="light-off" size="small" aria-label="Off" onClick={() => this.controlAllLights(false)} style={Object.assign({}, Theme.buttonAllLight, { color: 'black' })} title={I18n.t('All lights off')}><IconLight style={Theme.buttonAllIcon} /></IconButton>);
+            controls.push(<IconButton key="light-on" size="small" aria-label="On" onClick={() => this.controlAllLights(true)} style={Object.assign({}, Theme.buttonAllLight, { color: Theme.palette.lampOn })} title={I18n.t('All lights on')}><IconLight style={Theme.buttonAllIcon} /></IconButton>);
         }
         if (countBlinds > 0) {
-            controls.push(<IconButton key="blind-off" size="small" aria-label="Off" onClick={() => this.controlAllBlinds(false)} style={Object.assign({}, Theme.buttonAllLight, {color: 'black'})}              title={I18n.t('Close all blinds')}><IconBlind style={Object.assign({}, Theme.iconAllBlinds, {color: 'black'})}/></IconButton>);
-            controls.push(<IconButton key="blind-on"  size="small" aria-label="On"  onClick={() => this.controlAllBlinds(true)}  style={Object.assign({}, Theme.buttonAllLight, {color: Theme.palette.lampOn})} title={I18n.t('Open all blinds')}><IconBlind  style={Object.assign({}, Theme.iconAllBlinds, {color: 'black', opacity: 0.3})} /></IconButton>);
+            controls.push(<IconButton key="blind-off" size="small" aria-label="Off" onClick={() => this.controlAllBlinds(false)} style={Object.assign({}, Theme.buttonAllLight, { color: 'black' })} title={I18n.t('Close all blinds')}><IconBlind style={Object.assign({}, Theme.iconAllBlinds, { color: 'black' })} /></IconButton>);
+            controls.push(<IconButton key="blind-on" size="small" aria-label="On" onClick={() => this.controlAllBlinds(true)} style={Object.assign({}, Theme.buttonAllLight, { color: Theme.palette.lampOn })} title={I18n.t('Open all blinds')}><IconBlind style={Object.assign({}, Theme.iconAllBlinds, { color: 'black', opacity: 0.3 })} /></IconButton>);
         }
 
         return controls.length ? controls : null;
@@ -547,7 +548,7 @@ class StatesSubList extends Component {
             if (items.length) {
                 const visible = this.state.visible || this.props.editMode;
 
-                const style = !visible ? {display: 'none'} : (this.state.newLine || this.props.editMode ? {display: 'block', border: 'none'} : {display: 'inline-block'});
+                const style = !visible ? { display: 'none' } : (this.state.newLine || this.props.editMode ? { display: 'block', border: 'none' } : { display: 'inline-block' });
 
                 if (this.state.align) {
                     style.textAlign = this.state.align;
@@ -555,17 +556,18 @@ class StatesSubList extends Component {
 
                 const visibilityButton = this.props.editMode ? <VisibilityButton
                     big={true}
-                    style={{display: 'inline-block', marginLeft: 15}}
+                    style={{ display: 'inline-block', marginLeft: 15 }}
                     visible={this.state.enabled}
                     useBright={this.props.isUseBright}
-                    onChange={() => this.onToggleSubEnabled()}/> : null;
+                    onChange={() => this.onToggleSubEnabled()} /> : null;
 
                 //style={Object.assign({}, Theme.list.row, {display: display})}
                 return (
                     <div key={(this.state.enumID + '-' + this.state.enumSubID).replace(/[^\w\d]/g, '_') + '-title'}
-                             style={Object.assign({}, Theme.list.row, style)}>
-                        <h3 {...this.props.dragHandleProps} style={Object.assign({}, Theme.list.title, {color: this.props.isUseBright ? 'white' : 'black'})}>
-                            {this.props.editMode ? (<IconGrip style={{color: this.props.isUseBright ? 'white' : 'black', width: 24, height: 24, float: 'left', opacity: this.state.subDragging ? 0 : 1}}/>) : null}
+                        className={cls.ListRow}
+                        style={style}>
+                        <h3 {...this.props.dragHandleProps} style={Object.assign({}, Theme.list.title, { color: this.props.isUseBright ? 'white' : 'black' })}>
+                            {this.props.editMode ? (<IconGrip style={{ color: this.props.isUseBright ? 'white' : 'black', width: 24, height: 24, float: 'left', opacity: this.state.subDragging ? 0 : 1 }} />) : null}
                             {this.name}
                             {this.getControlAll()}
                             {visibilityButton}
@@ -574,14 +576,14 @@ class StatesSubList extends Component {
                     </div>);
             } else {
                 if (this.props.editMode) {
-                    return (<div {...this.props.dragHandleProps}/>);
+                    return (<div {...this.props.dragHandleProps} />);
                 } else {
                     return null;
                 }
             }
         } else {
             if (this.props.editMode) {
-                return (<div {...this.props.dragHandleProps}/>);
+                return (<div {...this.props.dragHandleProps} />);
             } else {
                 return null;
             }

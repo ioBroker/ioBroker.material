@@ -19,15 +19,18 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 import './index.css';
-import Theme from './theme';
+// import Theme from './theme';
 import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
-import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
+// import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 // load words for moment.js
 import 'moment/locale/fr';
 import 'moment/locale/de';
 import 'moment/locale/ru';
 import 'moment/locale/es';
 import 'moment/locale/zh-cn';
+
+import theme from '@iobroker/adapter-react/Theme';
+import Utils from '@iobroker/adapter-react/Components/Utils';
 
 /*const muiTheme = getMuiTheme({
     appBar: {
@@ -41,9 +44,14 @@ import 'moment/locale/zh-cn';
 });*/
 
 
+let themeName = Utils.getThemeName();
+
 ReactDOM.render(
-    <MuiThemeProvider theme={createMuiTheme(Theme)}>
-        <App />
+    <MuiThemeProvider theme={ theme(themeName) }>
+        <App onThemeChange={_themeName => {
+            themeName = _themeName;
+            build();
+        }}/>
     </MuiThemeProvider>,
 
     document.getElementById('root')

@@ -1,0 +1,18 @@
+.wrapperApp {
+    background: linear-gradient(45deg, rgba(18, 20, 22, 1) 0%, rgba(49, 49, 51, 1) 35%, rgba(48, 52, 57, 1) 100%);
+    height: 100vh !important;
+    display: flex;
+}
+.wrapperToolBar {
+    height: 45px;
+    min-height: 45px !important;
+    background: #252628;
+    border-bottom: 1px solid #34393e;
+}
+@media screen and (max-width: 835px) {
+    .rootWrapper {
+        flex-direction: column;
+        height: auto;
+        overflow: auto;
+    }
+}
