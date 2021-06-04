@@ -28,11 +28,11 @@ const Clock = ({
     // const [hour12, setHour12] = useState(!!hour12Params);
     const [dayOfWeek, setDayOfWeek] = useState(!!dayOfWeekParams ? new Intl.DateTimeFormat(I18n.getLanguage(), { weekday: 'long' }).format(new Date()) : null);
     const [time, setTime] = useState(new Date().toLocaleTimeString(I18n.getLanguage(),
-        Object.assign(secondsParams ? showSecondsOptions : standardOptions, { hour12Params })));
+        Object.assign(secondsParams ? showSecondsOptions : standardOptions, { hour12: hour12Params })));
 
     const updateTime = () => {
         const newTime = new Date().toLocaleTimeString(I18n.getLanguage(), Object.assign(secondsParams ? showSecondsOptions : standardOptions, {
-            hour12Params
+            hour12: hour12Params
         }));
         setTime(newTime.replace(/[AP]M/gi, " "));
         if (dayOfWeekParams) {
