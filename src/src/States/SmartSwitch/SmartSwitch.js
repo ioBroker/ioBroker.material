@@ -16,9 +16,9 @@
 import React from 'react';
 import SmartGeneric from '../SmartGeneric';
 
-import {TiLightbulb as IconLight} from 'react-icons/ti';
-import {MdCheck as IconCheck} from 'react-icons/md';
-import {MdCancel as IconCancel} from 'react-icons/md';
+import { TiLightbulb as IconLight } from 'react-icons/ti';
+import { MdCheck as IconCheck } from 'react-icons/md';
+import { MdCancel as IconCancel } from 'react-icons/md';
 import IconSwitch from '../../icons/Socket';
 
 import Types from '../SmartTypes';
@@ -27,8 +27,9 @@ import I18n from '@iobroker/adapter-react/i18n';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import IconAdapter from '@iobroker/adapter-react/Components/Icon';
 import cls from './style.module.scss';
+import clsGeneric from '../style.module.scss';
 import clsx from 'clsx/dist/clsx';
-
+import CustomSwitch from '../../Components/CustomSwitch'; 
 class SmartSwitch extends SmartGeneric {
     constructor(props) {
         super(props);
@@ -55,7 +56,7 @@ class SmartSwitch extends SmartGeneric {
 
                 case Types.socket:
                 default:
-                    if (this.props.objects[this.id] && this.props.objects[this.id].common && this.props.objects[this.id].common.role ==='switch.active') {
+                    if (this.props.objects[this.id] && this.props.objects[this.id].common && this.props.objects[this.id].common.role === 'switch.active') {
                         this.iconOn = IconCheck;
                         this.iconOff = IconCancel;
                     } else {
@@ -66,7 +67,7 @@ class SmartSwitch extends SmartGeneric {
                     this.colorOff = 'inherit';
                     this.backOn = Theme.palette.lampOn;
                     this.backOff = 'gray';
-                    this.style = {left: '1rem'};
+                    this.style = { left: '1rem' };
                     break;
             }
         }
@@ -93,7 +94,7 @@ class SmartSwitch extends SmartGeneric {
             this.setState(newState);
 
             if (state.ack && this.state.executing) {
-                this.setState({executing: false});
+                this.setState({ executing: false });
             }
 
             this.props.tile.setState({
@@ -107,9 +108,9 @@ class SmartSwitch extends SmartGeneric {
         }
     }
 
-    toggle() {
+    toggle = () => {
         if (this.actualId !== this.id) {
-            this.setState({executing: this.state.settings.noAck ? false : true});
+            this.setState({ executing: this.state.settings.noAck ? false : true });
         }
         this.props.onControl(this.id, !this.state[this.actualId]);
     }
@@ -120,36 +121,39 @@ class SmartSwitch extends SmartGeneric {
 
     getIcon() {
         const state = !!this.state[this.actualId];
-        let style = state ? {color: this.colorOn} : {color: this.colorOff};
+        let style = state ? { color: this.colorOn } : { color: this.colorOff };
         if (this.style) {
             style = Object.assign(style, this.style);
         }
         let customIcon;
 
         if (this.state.settings.useDefaultIcon) {
-            customIcon = (<IconAdapter alt="icon" src={this.getDefaultIcon()} style={{height: '100%'}}/>);
+            customIcon = (<IconAdapter alt="icon" src={this.getDefaultIcon()} style={{ height: '100%' }} />);
         } else {
             if (this.state.settings.icon) {
-                customIcon = (<IconAdapter alt="icon" src={state ? this.state.settings.icon : this.state.settings.iconOff || this.state.settings.icon} style={{height: '100%'}}/>);
+                customIcon = (<IconAdapter alt="icon" src={state ? this.state.settings.icon : this.state.settings.iconOff || this.state.settings.icon} style={{ height: '100%' }} />);
             } else {
                 const Icon = this.state[this.actualId] ? this.iconOn : this.iconOff;
-                customIcon = (<Icon  className={cls.iconStyle}/>);
+                customIcon = (<Icon className={clsx(clsGeneric.iconStyle, this.state[this.id] && clsGeneric.activeIconStyle)} />);
             }
         }
-        return (
-            <div key={this.key + 'icon'}  className={cls.iconWrapper}>
-                {customIcon}
-                {this.state.executing ? <CircularProgress style={{zIndex: 3, position: 'absolute', top: 0, left: 0}} size={Theme.tile.tileIcon.width}/> : null}
-            </div>
-        );
+        return SmartGeneric.renderIcon(customIcon, this.state.executing, this.state[this.id]);
     }
 
     getStateText() {
-        return <div className={clsx(this.state[this.id]?cls.textOn:cls.textOff)}>{this.state[this.id] ? I18n.t('On') : I18n.t('Off')}</div>
+        return <div className={clsx(clsGeneric.text, this.state[this.id] && clsGeneric.textOn)}>{this.state[this.id] ? I18n.t('On') : I18n.t('Off')}</div>
+    }
+
+    getSecondaryDiv() {
+        return <div className={cls.wrapperSwitch}><CustomSwitch customValue onChange={this.toggle} value={this.state[this.id]}/></div>
     }
 
     render() {
-        return this.wrapContent(this.getStandardContent(this.actualId));
+        return this.wrapContent(
+            [
+                this.getStandardContent(this.actualId),
+                this.getSecondaryDiv()
+            ]);
     }
 }
 

@@ -61,7 +61,7 @@ const Clock = ({
                 {dayOfWeek}
             </div>
         </div>
-        <div className={cls.wrapperButtons}>
+        {/* <div className={cls.wrapperButtons}>
             <Tooltip title={I18n.t('')}>
                 <IconButton
                 // onClick={() => setHour12(!hour12)}
@@ -93,7 +93,7 @@ const Clock = ({
                     <FaRegCalendarTimes />
                 </IconButton>
             </Tooltip>
-        </div>
+        </div> */}
     </div>
 }
 

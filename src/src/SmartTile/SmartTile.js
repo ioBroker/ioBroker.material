@@ -30,7 +30,7 @@ import SmartInfo from '../States/SmartInfo/SmartInfo';
 import SmartSlider from '../States/SmartSlider';
 import SmartState from '../States/SmartState/SmartState';
 import SmartSwitch from '../States/SmartSwitch/SmartSwitch';
-import SmartThermometer from '../States/SmartThermometer';
+import SmartThermometer from '../States/SmartThermometer/SmartThermometer';
 import SmartThermostat from "../States/SmartThermostat";
 import SmartWindowTilt from '../States/SmartWindowTilt';
 import SmartLock from '../States/SmartLock';

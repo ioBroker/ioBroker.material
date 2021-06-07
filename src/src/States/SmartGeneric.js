@@ -13,21 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Utils from '@iobroker/adapter-react/Components/Utils';
 import I18n from '@iobroker/adapter-react/i18n';
 import Theme from '../theme';
 
-import {MdVisibility as IconCheck} from 'react-icons/md';
-import {MdRemove as IconRemoved} from 'react-icons/md';
-import {MdEdit as IconEdit} from 'react-icons/md';
-import {MdArrowUpward as IconDirectionUp} from 'react-icons/md';
-import {MdArrowDownward as IconDirectionDown} from 'react-icons/md';
-import {MdSwapVert as IconDirection} from 'react-icons/md';
+import { MdVisibility as IconCheck } from 'react-icons/md';
+import { MdRemove as IconRemoved } from 'react-icons/md';
+import { MdEdit as IconEdit } from 'react-icons/md';
+import { MdArrowUpward as IconDirectionUp } from 'react-icons/md';
+import { MdArrowDownward as IconDirectionDown } from 'react-icons/md';
+import { MdSwapVert as IconDirection } from 'react-icons/md';
 import cls from './style.module.scss';
 
 import Dialog from '../Dialogs/SmartDialogSettings';
+import clsx from 'clsx';
 
 // taken from here: https://stackoverflow.com/questions/4817029/whats-the-best-way-to-detect-a-touch-screen-device-using-javascript
 function isTouchDevice() {
@@ -47,14 +48,14 @@ const isTouch = isTouchDevice();
 
 class SmartGeneric extends Component {
     static propTypes = {
-        objects:            PropTypes.object.isRequired,
-        states:             PropTypes.object.isRequired,
-        tile:               PropTypes.object.isRequired,
-        channelInfo:        PropTypes.object.isRequired,
-        ignoreIndicators:   PropTypes.array,
-        enumNames:          PropTypes.array,
-        windowWidth:        PropTypes.number,
-        user:               PropTypes.string
+        objects: PropTypes.object.isRequired,
+        states: PropTypes.object.isRequired,
+        tile: PropTypes.object.isRequired,
+        channelInfo: PropTypes.object.isRequired,
+        ignoreIndicators: PropTypes.array,
+        enumNames: PropTypes.array,
+        windowWidth: PropTypes.number,
+        user: PropTypes.string
     };
 
     constructor(props, noSubscribe) {
@@ -93,18 +94,17 @@ class SmartGeneric extends Component {
                     if (state.id.startsWith('system.adapter.')) {
                         ids.push(state.id);
                     } else
-                    if (!state.noSubscribe &&
-                        this.props.objects[state.id] &&
-                        this.props.objects[state.id].type === 'state' &&
-                        ids.indexOf(state.id) === -1)
-                    {
-                        const pos = state.id.lastIndexOf('.');
-                        if (pos !== -1 && this.stateRx.ignoreIndicators.indexOf(state.id.substring(pos + 1)) !== -1) {
-                            return;
-                        }
+                        if (!state.noSubscribe &&
+                            this.props.objects[state.id] &&
+                            this.props.objects[state.id].type === 'state' &&
+                            ids.indexOf(state.id) === -1) {
+                            const pos = state.id.lastIndexOf('.');
+                            if (pos !== -1 && this.stateRx.ignoreIndicators.indexOf(state.id.substring(pos + 1)) !== -1) {
+                                return;
+                            }
 
-                        ids.push(state.id);
-                    }
+                            ids.push(state.id);
+                        }
                 }.bind(this));
 
                 if (ids.length) {
@@ -172,13 +172,13 @@ class SmartGeneric extends Component {
         // this.state = stateRx;
     }
 
-    componentReady () {
+    componentReady() {
         if (this.id && this.props.objects[this.id]) {
             this.settingsId = this.id;
         } else
-        if (this.instanceId !== undefined) {
-            this.settingsId = this.instanceId;
-        }
+            if (this.instanceId !== undefined) {
+                this.settingsId = this.instanceId;
+            }
 
         if (this.stateRx.showDialog !== undefined) {
             this.showCorner = true;
@@ -207,11 +207,11 @@ class SmartGeneric extends Component {
             }
         }
 
-        this.stateRx.nameStyle = {fontSize: SmartGeneric.getNameFontSize(this.stateRx.settings.name)};
+        this.stateRx.nameStyle = { fontSize: SmartGeneric.getNameFontSize(this.stateRx.settings.name) };
 
         this.props.tile.setVisibility(this.stateRx.settings.enabled);
 
-        this.props.tile.setColorOn(this.stateRx.settings.colorOn   || Theme.tile.tileOn.background);
+        this.props.tile.setColorOn(this.stateRx.settings.colorOn || Theme.tile.tileOn.background);
         this.props.tile.setColorOff(this.stateRx.settings.colorOff || Theme.tile.tileOff.background);
 
         if (this.stateRx.settings && this.stateRx.settings.doubleSize) {
@@ -228,7 +228,7 @@ class SmartGeneric extends Component {
         delete this.stateRx;
     }
 
-    componentDidMount () {
+    componentDidMount() {
         if (this.state.settings.enabled && this.subscribes && !this.subscribed) {
             this.subscribed = true;
             this.props.onCollectIds(this, this.subscribes, true);
@@ -240,68 +240,68 @@ class SmartGeneric extends Component {
         if (label) {
             name = label;
         } else
-        if (!id) {
-            name = 'No elements';
-        } else {
-            //if (objects[enumName]) {
-            //    enumName = SmartGeneric.getObjectName(objects, enumName);
-            //}
+            if (!id) {
+                name = 'No elements';
+            } else {
+                //if (objects[enumName]) {
+                //    enumName = SmartGeneric.getObjectName(objects, enumName);
+                //}
 
-            let item = objects[id];
-            if (item && item.common && item.common.name) {
-                name = Utils.getObjectName(objects, id, null, {language: I18n.getLanguage()});
+                let item = objects[id];
+                if (item && item.common && item.common.name) {
+                    name = Utils.getObjectName(objects, id, null, { language: I18n.getLanguage() });
 
-                if (enumNames) {
-                    if (typeof enumNames === 'object') {
-                        enumNames.forEach(e => {
-                            let reg = new RegExp('\\b' + e + '\\b');
+                    if (enumNames) {
+                        if (typeof enumNames === 'object') {
+                            enumNames.forEach(e => {
+                                let reg = new RegExp('\\b' + e + '\\b');
+                                const newName = name.replace(reg, ' ').replace(/\s\s/g, '').trim();
+                                if (newName) {
+                                    name = newName;
+                                }
+                            });
+                        } else {
+                            let reg = new RegExp('\\b' + enumNames + '\\b');
                             const newName = name.replace(reg, ' ').replace(/\s\s/g, '').trim();
                             if (newName) {
                                 name = newName;
                             }
-                        });
-                    } else {
-                        let reg = new RegExp('\\b' + enumNames + '\\b');
-                        const newName = name.replace(reg, ' ').replace(/\s\s/g, '').trim();
+                        }
+                    }
+                    if (channelName) {
+                        let reg = new RegExp(channelName + '[.: ]?');
+                        const newName = name.replace(reg, ' ').trim();
                         if (newName) {
                             name = newName;
                         }
                     }
-                }
-                if (channelName) {
-                    let reg = new RegExp(channelName + '[.: ]?');
-                    const newName = name.replace(reg, ' ').trim();
-                    if (newName) {
-                        name = newName;
+
+                    if (name && name === name.toUpperCase()) {
+                        name = name[0] + name.substring(1).toLowerCase();
                     }
-                }
+                } else {
+                    let pos = id.lastIndexOf('.');
+                    name = id.substring(pos + 1).replace(/_/g, ' ');
+                    name = Utils.CapitalWords(name);
 
-                if (name && name === name.toUpperCase()) {
-                    name = name[0] + name.substring(1).toLowerCase();
-                }
-            } else {
-                let pos = id.lastIndexOf('.');
-                name = id.substring(pos + 1).replace(/_/g, ' ');
-                name = Utils.CapitalWords(name);
-
-                if (enumNames) {
-                    if (typeof enumNames === 'object') {
-                        enumNames.forEach(e => {
-                            let reg = new RegExp('\\b' + e + '\\b');
+                    if (enumNames) {
+                        if (typeof enumNames === 'object') {
+                            enumNames.forEach(e => {
+                                let reg = new RegExp('\\b' + e + '\\b');
+                                name = name.replace(reg, ' ').replace(/\s\s/g, '').trim();
+                            });
+                        } else {
+                            let reg = new RegExp('\\b' + enumNames + '\\b');
                             name = name.replace(reg, ' ').replace(/\s\s/g, '').trim();
-                        });
-                    } else {
-                        let reg = new RegExp('\\b' + enumNames + '\\b');
-                        name = name.replace(reg, ' ').replace(/\s\s/g, '').trim();
+                        }
                     }
-                }
 
-                if (channelName) {
-                    let reg = new RegExp(channelName + '[.: ]?');
-                    name = I18n.t(name.replace(reg, ' ').trim());
+                    if (channelName) {
+                        let reg = new RegExp(channelName + '[.: ]?');
+                        name = I18n.t(name.replace(reg, ' ').trim());
+                    }
                 }
             }
-        }
         return name.trim();
     }
 
@@ -333,7 +333,7 @@ class SmartGeneric extends Component {
         if (this.indicators && id === this.indicators.directionId) {
             val = (state.val !== null && state.val !== undefined) ? state.val.toString() : '';
         } else if (this.indicators && id === this.indicators.errorId) {
-            if (typeof state.val === 'string' ) {
+            if (typeof state.val === 'string') {
                 let i = parseInt(state.val.trim(), 10);
                 if (i.toString() === state.val.trim()) {
                     val = i;
@@ -348,7 +348,7 @@ class SmartGeneric extends Component {
                 if (obj.common.min !== undefined && obj.common.min === val) {
                     val = false;
                     this.errorText = '';
-                } else if (obj.common.states && obj.common.states[val] !== undefined)  {
+                } else if (obj.common.states && obj.common.states[val] !== undefined) {
                     this.errorText = I18n.t(obj.common.states[val]);
                     val = true;
                 }
@@ -376,15 +376,15 @@ class SmartGeneric extends Component {
             clearTimeout(this.timer);
             this.timer = null;
         }
-        this.setState({showDialog: true});
+        this.setState({ showDialog: true });
     }
 
     onDialogClose = () =>
-        this.setState({showDialog: false});
+        this.setState({ showDialog: false });
 
     onMouseUp = () => {
-        document.removeEventListener('mouseup',     this.onMouseUp,     {passive: false, capture: true});
-        document.removeEventListener('touchend',    this.onMouseUp,     {passive: false, capture: true});
+        document.removeEventListener('mouseup', this.onMouseUp, { passive: false, capture: true });
+        document.removeEventListener('touchend', this.onMouseUp, { passive: false, capture: true });
 
         if (this.timer) {
             clearTimeout(this.timer);
@@ -393,7 +393,7 @@ class SmartGeneric extends Component {
         }
     }
 
-    onTileMouseDown = e =>  {
+    onTileMouseDown = e => {
         if (this.state.showDialog) {
             return;
         }
@@ -402,8 +402,8 @@ class SmartGeneric extends Component {
 
         this.timer = setTimeout(this.onLongClick, 500);
 
-        document.addEventListener('mouseup',    this.onMouseUp,     {passive: false, capture: true});
-        document.addEventListener('touchend',   this.onMouseUp,     {passive: false, capture: true});
+        document.addEventListener('mouseup', this.onMouseUp, { passive: false, capture: true });
+        document.addEventListener('touchend', this.onMouseUp, { passive: false, capture: true });
     }
 
     componentWillUnmount() {
@@ -416,19 +416,19 @@ class SmartGeneric extends Component {
     saveSettings(newSettings, cb) {
         const settings = newSettings || this.state.settings;
         if (this.props.onSaveSettings && this.settingsId) {
-            this.props.onSaveSettings(this.settingsId, settings, {enabled: this.defaultEnabling}, () => {
+            this.props.onSaveSettings(this.settingsId, settings, { enabled: this.defaultEnabling }, () => {
                 // subscribe if enabled and was not subscribed
                 if (this.subscribes && settings.enabled && !this.subscribed) {
                     this.subscribed = true;
                     this.props.onCollectIds(this, this.subscribes, true);
                 } else
-                // unsubscribe if disabled and was subscribed
-                if (!settings.enabled && this.subscribed) {
-                    this.subscribed = false;
-                    this.props.onCollectIds(this, this.subscribes, false);
-                }
+                    // unsubscribe if disabled and was subscribed
+                    if (!settings.enabled && this.subscribed) {
+                        this.subscribed = false;
+                        this.props.onCollectIds(this, this.subscribes, false);
+                    }
 
-                this.props.tile.setColorOn(settings.colorOn   || Theme.tile.tileOn);
+                this.props.tile.setColorOn(settings.colorOn || Theme.tile.tileOn);
                 this.props.tile.setColorOff(settings.colorOff || Theme.tile.tileOff);
                 this.props.tile.setVisibility(settings.enabled);
                 this.width = settings.doubleSize ? 2 : 1;
@@ -437,7 +437,7 @@ class SmartGeneric extends Component {
             });
         } else if (this.customSettings) {
             // custom URL
-            const enumSettings = Utils.getSettings(this.props.objects[this.customSettings.settingsId], {user: this.props.user});
+            const enumSettings = Utils.getSettings(this.props.objects[this.customSettings.settingsId], { user: this.props.user });
             let pos = -1;
 
             if (enumSettings) {
@@ -479,7 +479,7 @@ class SmartGeneric extends Component {
         let settings = JSON.parse(JSON.stringify(this.state.settings));
         settings.enabled = !settings.enabled;
 
-        this.saveSettings(settings, () => this.setState({settings}));
+        this.saveSettings(settings, () => this.setState({ settings }));
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -521,7 +521,7 @@ class SmartGeneric extends Component {
         let result = [];
         const that = this;
         let titles = [];
-        this.channelInfo.states.forEach(state =>  {
+        this.channelInfo.states.forEach(state => {
             if (state.indicator && state.id) {
                 const pos = state.id.lastIndexOf('.');
                 if (pos !== -1 && this.state.ignoreIndicators.indexOf(state.id.substring(pos + 1)) !== -1) {
@@ -548,7 +548,7 @@ class SmartGeneric extends Component {
                 result.push((<Icon
                     key={that.key + 'indicator-' + state.name.toLowerCase()}
                     className={'indicator-' + state.name.toLowerCase()}
-                    style={Object.assign({}, Theme.tile.tileIndicator, {color: state.color})}
+                    style={Object.assign({}, Theme.tile.tileIndicator, { color: state.color })}
                 />));
             }
         });
@@ -686,10 +686,10 @@ class SmartGeneric extends Component {
     }
 
     showSettings = () =>
-        this.setState({showSettings: true});
+        this.setState({ showSettings: true });
 
     onSettingsClose = () =>
-        this.setState({showSettings: false});
+        this.setState({ showSettings: false });
 
     getAdditionalName() {
         return null;
@@ -732,7 +732,7 @@ class SmartGeneric extends Component {
         }
 
         return [
-            this.getIcon ? (<div key={this.key + 'tile-icon'} style={noPointerEvents ? {pointerEvents: 'none'} : {}}>{this.getIcon()}</div>): null,
+            this.getIcon ? (<div key={this.key + 'tile-icon'} style={noPointerEvents ? { pointerEvents: 'none' } : {}}>{this.getIcon()}</div>) : null,
             (<div key={this.key + 'tile-text'} style={styleText}>
                 <div style={styleName}>{this.getFirstName ? this.getFirstName() : this.state.settings.name}{this.getAdditionalName()}</div>
                 {this.getStateText ? (<div style={styleState}>{this.getStateText()}</div>) : null}
@@ -740,48 +740,56 @@ class SmartGeneric extends Component {
         ];
     }
 
+    static renderIcon = (icon, loading, active) => {
+        return <div className={clsx(cls.iconWrapper, loading && cls.iconWrapperLoading)}>
+            <div className={clsx(cls.styleIcon, loading && cls.styleIconLoading, active && cls.styleIconActive)}>
+                {icon}
+            </div>
+        </div>
+    }
+
     wrapContent(content) {
         if (this.state.editMode) {
             return [
-                <div key={this.key + 'type'} style={{display: 'none'}}>{this.channelInfo.type}</div>,
+                <div key={this.key + 'type'} style={{ display: 'none' }}>{this.channelInfo.type}</div>,
                 <div key={this.key + 'wrapper'} className={cls.displayFlex}>
                     {this.state.settings.enabled ?
                         [<div onClick={this.toggleEnabled} key={this.key + 'icon-check'} style={Theme.tile.editMode.checkIcon} className="edit-buttons">
-                            <IconCheck size={'50%'} style={Theme.tile.editMode.buttonIcon}/>
+                            <IconCheck size={'50%'} style={Theme.tile.editMode.buttonIcon} />
                         </div>,
                         <div onClick={this.showSettings} key={this.key + 'icon-edit'} style={Theme.tile.editMode.editIcon} className="edit-buttons">
-                            <IconEdit size={'50%'} style={Object.assign({}, Theme.tile.editMode.buttonIcon, {width: '80%', marginLeft: '20%'})}/>
-                            </div>
+                            <IconEdit size={'50%'} style={Object.assign({}, Theme.tile.editMode.buttonIcon, { width: '80%', marginLeft: '20%' })} />
+                        </div>
                         ]
                         :
                         <div onClick={this.toggleEnabled} key={this.key + '.icon-check'} style={Theme.tile.editMode.removeIcon}>
-                            <IconRemoved size={'100%'} style={Theme.tile.editMode.buttonIconRemoved}/>
+                            <IconRemoved size={'100%'} style={Theme.tile.editMode.buttonIconRemoved} />
                         </div>
                     }
                     {content}
                 </div>,
                 this.state.showSettings ?
                     <Dialog key={this.key + 'settings'}
-                         windowWidth={this.props.windowWidth}
-                         name={this.state.settings.name}
-                         dialogKey={this.key + 'settings'}
-                         settings={this.getDialogSettings()}
-                         objects={this.props.objects}
-                         settingsId={this.settingsId}
-                         onSave={this.saveDialogSettings}
-                         onClose={this.onSettingsClose}
-                /> : null];
+                        windowWidth={this.props.windowWidth}
+                        name={this.state.settings.name}
+                        dialogKey={this.key + 'settings'}
+                        settings={this.getDialogSettings()}
+                        objects={this.props.objects}
+                        settingsId={this.settingsId}
+                        onSave={this.saveDialogSettings}
+                        onClose={this.onSettingsClose}
+                    /> : null];
         } else if (this.state.settings.enabled) {
             return [
-                <div key={this.key + 'type'} style={{display: 'none'}}>{this.channelInfo.type}</div>,
+                <div key={this.key + 'type'} style={{ display: 'none' }}>{this.channelInfo.type}</div>,
                 <div key={this.key + 'wrapper'} className={cls.displayFlex}>
                     {this.showCorner ? (<div
                         key={this.key + 'corner'}
                         onMouseDown={this.onLongClick}
                         className={cls.corner}
-                        // className={'corner' + (isTouch ? ' corner-touch' : '')}
-                        // style={Object.assign({}, Theme.tile.tileCorner, isTouch ? Theme.tile.tileCornerTouch : {})}
-                        />) : null}
+                    // className={'corner' + (isTouch ? ' corner-touch' : '')}
+                    // style={Object.assign({}, Theme.tile.tileCorner, isTouch ? Theme.tile.tileCornerTouch : {})}
+                    />) : null}
                     {this.getIndicators()}
                     {content}
                 </div>

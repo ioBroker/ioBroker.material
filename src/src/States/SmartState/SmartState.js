@@ -39,6 +39,7 @@ import I18n from '@iobroker/adapter-react/i18n';
 import Types from '../SmartTypes';
 import IconAdapter from '@iobroker/adapter-react/Components/Icon';
 import cls from './style.module.scss';
+import clsGeneric from '../style.module.scss';
 import clsx from 'clsx/dist/clsx';
 
 // import IconLockOpened from "react-icons/lib/md/lock-open";
@@ -222,14 +223,10 @@ class SmartState extends SmartGeneric {
                 customIcon = (<IconAdapter alt="icon" src={isOn ? this.state.settings.icon : this.state.settings.iconOff || this.state.settings.icon} style={{ height: '100%', zIndex: 1 }} />);
             } else {
                 const Icon = isOn ? this.iconOn : this.iconOff;
-                customIcon = (<Icon className={cls.iconStyle}/>);
+                customIcon = (<Icon className={clsGeneric.iconStyle}/>);
             }
         }
-        return (
-            <div key={this.key + 'icon'} className={cls.iconWrapper}>
-                {customIcon}
-            </div>
-        );
+        return SmartGeneric.renderIcon(customIcon);
     }
 
     getStateText() {

@@ -17,7 +17,7 @@ import React from 'react';
 import SmartGeneric from '../SmartGeneric';
 import IconThermometer from '../../icons/ThermometerSimple';
 import IconHydro from '../../icons/Humidity';
-import {MdInfo as IconInfo} from 'react-icons/md';
+import { MdInfo as IconInfo } from 'react-icons/md';
 import Utils from '@iobroker/adapter-react/Components/Utils';
 
 import Theme from '../../theme';
@@ -26,6 +26,7 @@ import Dialog from '../../Dialogs/SmartDialogInfo';
 import PropTypes from 'prop-types';
 import IconAdapter from '@iobroker/adapter-react/Components/Icon';
 import cls from './style.module.scss';
+import clsGeneric from '../style.module.scss';
 import clsx from 'clsx/dist/clsx';
 
 const invisibleDefaultRoles = [
@@ -36,11 +37,11 @@ const invisibleDefaultRoles = [
 class SmartInfo extends SmartGeneric {
     // expected:
     static propTypes = {
-        tile:               PropTypes.object.isRequired,
-        objects:            PropTypes.object.isRequired,
-        states:             PropTypes.object.isRequired,
-        onCollectIds:       PropTypes.func,
-        onControl:          PropTypes.func
+        tile: PropTypes.object.isRequired,
+        objects: PropTypes.object.isRequired,
+        states: PropTypes.object.isRequired,
+        onCollectIds: PropTypes.func,
+        onControl: PropTypes.func
     };
 
     constructor(props) {
@@ -69,7 +70,7 @@ class SmartInfo extends SmartGeneric {
             }
 
             if (infoIDs[1]) {
-                this.secondary  = {
+                this.secondary = {
                     id: infoIDs[1]
                 };
             }
@@ -102,7 +103,7 @@ class SmartInfo extends SmartGeneric {
         if (!id || !objects[id] || !objects[id].common) return null;
         const role = objects[id].common.role || '';
         const unit = objects[id].common.unit || '';
-        let  title = objects[id].common.name || id.split('.').pop();
+        let title = objects[id].common.name || id.split('.').pop();
         if (!title) {
             title = id.split('.').pop();
         }
@@ -121,7 +122,7 @@ class SmartInfo extends SmartGeneric {
             return {
                 id: id,
                 icon: IconHydro,
-                iconStyle: {color: '#0056c3'},
+                iconStyle: { color: '#0056c3' },
                 unit: unit ? ' ' + unit : ' %',
                 role: role,
                 name: title,
@@ -131,7 +132,7 @@ class SmartInfo extends SmartGeneric {
             return {
                 id: id,
                 icon: IconThermometer,
-                iconStyle: {color: '#e54100'},
+                iconStyle: { color: '#e54100' },
                 unit: unit ? ' ' + unit : '°',
                 name: title,
                 role: role,
@@ -165,26 +166,22 @@ class SmartInfo extends SmartGeneric {
     getIcon() {
         let customIcon;
         if (this.state.settings.useDefaultIcon) {
-            customIcon = (<IconAdapter src={this.getDefaultIcon()} alt=" " style={{height: '100%', zIndex: 1}}/>);
+            customIcon = (<IconAdapter src={this.getDefaultIcon()} alt=" " style={{ height: '100%', zIndex: 1 }} />);
         } else {
             if (this.state.settings.icon) {
-                customIcon = (<IconAdapter src={this.state.settings.icon} alt=" " style={{height: '100%', zIndex: 1}}/>);
+                customIcon = (<IconAdapter src={this.state.settings.icon} alt=" " style={{ height: '100%', zIndex: 1 }} />);
             } else {
                 const Icon = this.infos[0].icon || IconInfo;
-                customIcon = (<Icon className={cls.iconStyle}/>);
+                customIcon = (<Icon className={clsGeneric.iconStyle} />);
             }
         }
 
-        return (
-            <div key={this.key + 'icon'} className={cls.iconWrapper}>
-                {customIcon}
-            </div>
-        );
+        return SmartGeneric.renderIcon(customIcon);
     }
 
     getStateText() {
         const state = this.state[this.id];
-        return <div className={clsx(state === undefined || state === null ?cls.textOff:cls.textOn)}>{state === undefined || state === null ? '?' : state + this.infos[0].unit}</div>;
+        return <div className={clsx(state === undefined || state === null ? cls.textOff : cls.textOn)}>{state === undefined || state === null ? '?' : state + this.infos[0].unit}</div>;
     }
 
     getSecondaryDiv() {
@@ -199,7 +196,7 @@ class SmartInfo extends SmartGeneric {
                 Icon = icon;
                 Icon = (<Icon style={Object.assign({}, Theme.tile.secondary.icon, this.infos[1].iconStyle || {})} />);
             } else {
-                Icon = (<img alt={' '} src={icon} style={Object.assign({}, Theme.tile.secondary.icon, this.infos[1].iconStyle || {})}/>)
+                Icon = (<img alt={' '} src={icon} style={Object.assign({}, Theme.tile.secondary.icon, this.infos[1].iconStyle || {})} />)
             }
         }
 
@@ -217,7 +214,7 @@ class SmartInfo extends SmartGeneric {
     getFirstName() {
         this.firstName = this.firstName || I18n.t(Utils.CapitalWords(this.id.split('.').pop()));
 
-        return [(<span key={this.key + 'tile-name'}>{this.state.settings.name} </span>),(<span key={this.key + 'tile-first-name'} style={Theme.tile.tileNameSmall}>{this.firstName}</span>)];
+        return [(<span key={this.key + 'tile-name'}>{this.state.settings.name} </span>), (<span key={this.key + 'tile-first-name'} style={Theme.tile.tileNameSmall}>{this.firstName}</span>)];
     }
 
     setValue = (id, value) => {
@@ -232,15 +229,15 @@ class SmartInfo extends SmartGeneric {
             this.getNumberOfValuesIndicator(),
             this.state.showDialog ?
                 <Dialog key={this.key + 'dialog'}
-                        dialogKey={this.key + 'dialog'}
-                        windowWidth={this.props.windowWidth}
-                        points={this.infos}
-                        onCollectIds={this.props.onCollectIds}
-                        name={this.state.settings.name}
-                        onValueChange={this.setValue}
-                        onClose={this.onDialogClose}
-                        objects={this.props.objects}
-                        states={this.props.states}
+                    dialogKey={this.key + 'dialog'}
+                    windowWidth={this.props.windowWidth}
+                    points={this.infos}
+                    onCollectIds={this.props.onCollectIds}
+                    name={this.state.settings.name}
+                    onValueChange={this.setValue}
+                    onClose={this.onDialogClose}
+                    objects={this.props.objects}
+                    states={this.props.states}
                 /> : null
         ]);
     }

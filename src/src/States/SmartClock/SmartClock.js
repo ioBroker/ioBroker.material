@@ -92,10 +92,10 @@ class SmartClock extends SmartGeneric {
 
         this.width = 2; // if widget has double width or single
         this.props.tile.setState({ isPointer: false });
-        this.props.tile.setState({ state: true });
+        // this.props.tile.setState({ state: true });
         this.key = 'smart-clock-';
         this.props.tile.setVisibility(!!this.stateRx.settings);
-        this.stateRx.showDialog = false; // support dialog in this tile used in generic class)
+        // this.stateRx.showDialog = false; // support dialog in this tile used in generic class)
 
         this.interval = null;
 
