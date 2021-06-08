@@ -9,6 +9,58 @@
     background: #252628;
     border-bottom: 1px solid #34393e;
 }
+.drawerBackground {
+    background-color: #303439eb !important;
+    color: white;
+}
+.drawerStyle {
+    color: white;
+}
+.buttonMenu {
+    color: white !important;
+}
+.headMenu {
+    // background-color: #f85e271f !important;
+    padding: 5px;
+    margin: 2px;
+    border-radius: 5px;
+    border-bottom: 1px solid #f85e27;
+    border-top: 1px solid #f85e27;
+}
+.buttonStyle {
+    color: #b8c2ce !important;
+    transition: all 0.5s;
+}
+.buttonActive {
+    color: #f85e27 !important;
+}
+.contentItem {
+    display: flex;
+    align-items: center;
+    color: #b8c2ce;
+}
+.itemIcon {
+    min-width: 40px !important;
+    align-items: center;
+}
+.itemIconColor {
+    color: #f85e27 !important;
+}
+.menuSelectedBright {
+    color: #f85e27 !important;
+}
+.listItem{
+    background: #f85e27;
+
+}
+.listItemActive{
+    background: #f85e2717 !important;
+}
+.toolBar{
+    // border-bottom:1px solid #f85e27;
+    height: 46px;
+    min-height: 46px !important;
+}
 @media screen and (max-width: 835px) {
     .rootWrapper {
         flex-direction: column;

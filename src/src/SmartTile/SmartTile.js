@@ -23,7 +23,7 @@ import Types from '../States/SmartTypes';
 import Utils from '@iobroker/adapter-react/Components/Utils';
 
 import SmartBlinds from '../States/SmartBlinds';
-import SmartButton from '../States/SmartButton';
+import SmartButton from '../States/SmartButton/SmartButton';
 import SmartDimmer from '../States/SmartDimmer';
 import SmartGeneric from '../States/SmartGeneric';
 import SmartInfo from '../States/SmartInfo/SmartInfo';
@@ -40,7 +40,7 @@ import SmartVolume from '../States/SmartVolume';
 import SmartWeatherForecast from '../States/SmartWeatherForecast';
 import SmartWarning from '../States/SmartWarning';
 import SmartURL from '../States/SmartURL';
-import SmartColor from '../States/SmartColor';
+import SmartColor from '../States/SmartColor/SmartColor';
 import SmartClock from '../States/SmartClock/SmartClock';
 import cls from './style.module.scss';
 
@@ -135,7 +135,9 @@ class SmartTile extends Component {
             delete style.background;
         }
         style.width = 128;
-        style.width = style.width * this.state.width;
+        if(this.state.width > 1){
+            style.width = style.width * this.state.width + (8 * this.state.width);
+        }
         style.color = Utils.isUseBright(style.background) ? 'white' : 'black';
 
         if (!this.channelInfo) {
@@ -230,6 +232,7 @@ class SmartTile extends Component {
             enumNames={this.props.enumNames}
             channelInfo={channelInfo}
             tile={tile}
+            socket={this.props.socket}
             ignoreIndicators={this.props.ignoreIndicators}
             editMode={this.props.editMode}
             states={this.props.states}
@@ -246,7 +249,6 @@ class SmartTile extends Component {
         let Control;
 
         if (this.channelInfo) {
-            console.log(11223344,this.channelInfo.type)
             switch (this.channelInfo.type) {
                 case Types.light:
                 case Types.socket:
@@ -281,7 +283,7 @@ class SmartTile extends Component {
                     Control = SmartVolume;
                     break;
                 case Types.lock:
-                    Control = SmartLock;
+                    Control = SmartLock;ы
                     break;
                 case Types.instance:
                     Control = SmartInstance;

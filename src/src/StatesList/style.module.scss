@@ -9,3 +9,13 @@
     top: 70px;
     right: 170px;
 }
+.dragStyle{
+    background: #43b71dcb;
+    opacity: 0.3;
+    border-radius: 14px;
+    margin: 0 10px;
+    width: calc(100% - 20px);
+}
+.drag{
+    transition: margin 0.5s, border-radius 0.5s, background 0.5s, opacity 0.5s;
+}

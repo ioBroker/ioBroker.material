@@ -17,32 +17,36 @@ import React from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { TinyColor } from '@ctrl/tinycolor';
 
-import {TiLightbulb as Icon} from 'react-icons/ti'
+import { TiLightbulb as Icon } from 'react-icons/ti'
 
-import SmartGeneric from './SmartGeneric';
-import Theme from '../theme';
-import Dialog from '../Dialogs/SmartDialogColor';
+import SmartGeneric from '../SmartGeneric';
+import Theme from '../../theme';
+import Dialog from '../../Dialogs/SmartDialogColor';
 import I18n from '@iobroker/adapter-react/i18n';
-import UtilsColors from '../UtilsColors';
+import UtilsColors from '../../UtilsColors';
+import IconAdapter from '@iobroker/adapter-react/Components/Icon';
+import cls from './style.module.scss';
+import clsGeneric from '../style.module.scss';
+import clsx from 'clsx/dist/clsx';
 
 class SmartColor extends SmartGeneric {
 
     constructor(props) {
         super(props);
         const ids = {
-            red:            null,
-            green:          null,
-            blue:           null,
+            red: null,
+            green: null,
+            blue: null,
 
-            rgb:            null,
+            rgb: null,
 
-            hue:            null,
-            saturation:     null,
-            brightness:     null,
+            hue: null,
+            saturation: null,
+            brightness: null,
 
-            temperature:    null,
-            dimmer:         null,
-            on:             null
+            temperature: null,
+            dimmer: null,
+            on: null
         };
         let colorMode;
         if (this.channelInfo.states) {
@@ -50,7 +54,7 @@ class SmartColor extends SmartGeneric {
 
             if (state && this.props.objects[state.id] && this.props.objects[state.id].common) {
                 this.id = state.id;
-                ids.red = {id: state.id};
+                ids.red = { id: state.id };
                 colorMode = Dialog.COLOR_MODES.R_G_B;
                 if (this.props.objects[state.id].common.min !== undefined) {
                     ids.red.min = parseFloat(this.props.objects[state.id].common.min);
@@ -65,7 +69,7 @@ class SmartColor extends SmartGeneric {
 
                 state = this.channelInfo.states.find(state => state.id && state.name === 'GREEN');
                 if (state && this.props.objects[state.id] && this.props.objects[state.id].common) {
-                    ids.green = {id: state.id};
+                    ids.green = { id: state.id };
                     if (this.props.objects[state.id].common.min !== undefined) {
                         ids.green.min = parseFloat(this.props.objects[state.id].common.min);
                     } else {
@@ -80,7 +84,7 @@ class SmartColor extends SmartGeneric {
 
                 state = this.channelInfo.states.find(state => state.id && state.name === 'BLUE');
                 if (state && this.props.objects[state.id] && this.props.objects[state.id].common) {
-                    ids.blue = {id: state.id};
+                    ids.blue = { id: state.id };
                     if (this.props.objects[state.id].common.min !== undefined) {
                         ids.blue.min = parseFloat(this.props.objects[state.id].common.min);
                     } else {
@@ -96,13 +100,13 @@ class SmartColor extends SmartGeneric {
                 state = this.channelInfo.states.find(state => state.id && state.name === 'RGB');
                 if (state && this.props.objects[state.id] && this.props.objects[state.id].common) {
                     colorMode = Dialog.COLOR_MODES.RGB;
-                    ids.rgb = {id: state.id};
+                    ids.rgb = { id: state.id };
                     this.id = this.id || state.id;
                 } else {
                     state = this.channelInfo.states.find(state => state.id && state.name === 'HUE');
                     if (state && this.props.objects[state.id] && this.props.objects[state.id].common) {
                         colorMode = Dialog.COLOR_MODES.HUE;
-                        ids.hue = {id: state.id};
+                        ids.hue = { id: state.id };
                         this.id = this.id || state.id;
                         if (this.props.objects[state.id].common.min !== undefined) {
                             ids.hue.min = parseFloat(this.props.objects[state.id].common.min);
@@ -124,7 +128,7 @@ class SmartColor extends SmartGeneric {
             }
 
             state = this.channelInfo.states.find(state => state.id && state.name === 'TEMPERATURE');
-            ids.temperature = state && state.id ? {id: state.id} : null;
+            ids.temperature = state && state.id ? { id: state.id } : null;
             if (ids.temperature) {
                 this.id = this.id || state.id;
                 colorMode = colorMode || Dialog.COLOR_MODES.TEMPERATURE;
@@ -146,7 +150,7 @@ class SmartColor extends SmartGeneric {
             }
 
             state = this.channelInfo.states.find(state => state.id && state.name === 'DIMMER');
-            ids.dimmer = state && state.id ? {id: state.id} : null;
+            ids.dimmer = state && state.id ? { id: state.id } : null;
             if (ids.dimmer) {
                 if (this.props.objects[state.id].common.min !== undefined) {
                     ids.dimmer.min = parseFloat(this.props.objects[state.id].common.min);
@@ -166,7 +170,7 @@ class SmartColor extends SmartGeneric {
             }
 
             state = this.channelInfo.states.find(state => state.id && state.name === 'BRIGHTNESS');
-            ids.brightness = state && state.id ? {id: state.id} : null;
+            ids.brightness = state && state.id ? { id: state.id } : null;
             if (ids.brightness) {
                 if (this.props.objects[state.id].common.min !== undefined) {
                     ids.brightness.min = parseFloat(this.props.objects[state.id].common.min);
@@ -187,7 +191,7 @@ class SmartColor extends SmartGeneric {
 
 
             state = this.channelInfo.states.find(state => state.id && state.name === 'SATURATION');
-            ids.saturation = state && state.id ? {id: state.id} : null;
+            ids.saturation = state && state.id ? { id: state.id } : null;
             if (ids.saturation) {
                 if (this.props.objects[state.id].common.min !== undefined) {
                     ids.saturation.min = parseFloat(this.props.objects[state.id].common.min);
@@ -205,9 +209,9 @@ class SmartColor extends SmartGeneric {
                 state = this.channelInfo.states.find(state => state.id && state.name === 'ON');
             }
 
-            ids.on = state && state.id ? {id: state.id} : null;
+            ids.on = state && state.id ? { id: state.id } : null;
             if (ids.on) {
-                this.props.tile.setState({isPointer: true});
+                this.props.tile.setState({ isPointer: true });
                 this.props.tile.registerHandler('onClick', this.onToggle.bind(this));
             }
         }
@@ -300,15 +304,15 @@ class SmartColor extends SmartGeneric {
 
             this.setState(newState);
 
-            this.props.tile.setState({state: val});
+            this.props.tile.setState({ state: val });
         } else
-        if (this.ids.rgb && this.ids.rgb.id === id) {
-            newState[id] = state.val;
-            this.setState(newState);
-            this.updateBackgroundColor(Object.assign({}, this.state, newState));
-        } else {
-            super.updateState(id, state);
-        }
+            if (this.ids.rgb && this.ids.rgb.id === id) {
+                newState[id] = state.val;
+                this.setState(newState);
+                this.updateBackgroundColor(Object.assign({}, this.state, newState));
+            } else {
+                super.updateState(id, state);
+            }
     }
 
     onRgbChange = (rgb, temperature, colorMode) => {
@@ -321,55 +325,55 @@ class SmartColor extends SmartGeneric {
             newValue[this.ids.temperature.id] = this.realValueToPercent(this.ids.temperature, temperature);
             this.props.onControl(this.ids.temperature.id, this.percentToRealValue(this.ids.temperature, newValue[this.ids.temperature.id]));
         } else
-        if (this.ids.rgb) {
-            newValue[this.ids.rgb.id] = rgb;
-            this.props.onControl(this.ids.rgb.id, rgb);
-        } else
-        if (this.ids.red) {
-            let [r, g, b] = UtilsColors.hex2array(rgb);
+            if (this.ids.rgb) {
+                newValue[this.ids.rgb.id] = rgb;
+                this.props.onControl(this.ids.rgb.id, rgb);
+            } else
+                if (this.ids.red) {
+                    let [r, g, b] = UtilsColors.hex2array(rgb);
 
-            r = this.realValueToPercent({min: 0, max: 255}, r);
-            g = this.realValueToPercent({min: 0, max: 255}, g);
-            b = this.realValueToPercent({min: 0, max: 255}, b);
+                    r = this.realValueToPercent({ min: 0, max: 255 }, r);
+                    g = this.realValueToPercent({ min: 0, max: 255 }, g);
+                    b = this.realValueToPercent({ min: 0, max: 255 }, b);
 
-            newValue[this.ids.red.id]   = r;
-            newValue[this.ids.green.id] = g;
-            newValue[this.ids.blue.id]  = b;
+                    newValue[this.ids.red.id] = r;
+                    newValue[this.ids.green.id] = g;
+                    newValue[this.ids.blue.id] = b;
 
-            r = this.percentToRealValue(this.ids.red, r);
-            g = this.percentToRealValue(this.ids.green, g);
-            b = this.percentToRealValue(this.ids.blue, b);
+                    r = this.percentToRealValue(this.ids.red, r);
+                    g = this.percentToRealValue(this.ids.green, g);
+                    b = this.percentToRealValue(this.ids.blue, b);
 
-            this.props.onControl(this.ids.red.id, r);
-            this.props.onControl(this.ids.green.id, g);
-            this.props.onControl(this.ids.blue.id, b);
-        } else
-        if (this.ids.hue) {
-            let [r, g, b] = UtilsColors.hex2array(rgb);
-            let [h, s, l] = UtilsColors.rgbToHsl(r, g, b);
-            h = this.realValueToPercent({min: 0, max: 1}, h);
-            s = this.realValueToPercent({min: 0, max: 1}, s);
-            l = this.realValueToPercent({min: 0, max: 1}, l);
-            newValue[this.ids.hue.id] = h;
-            if (this.ids.saturation) {
-                newValue[this.ids.saturation.id] = s;
-            }
-            if (this.ids.brightness) {
-                newValue[this.ids.brightness.id] = l;
-            }
-            h = this.percentToRealValue(this.ids.hue, h);
-            s = this.percentToRealValue(this.ids.saturation, s);
-            l = this.percentToRealValue(this.ids.brightness, l);
+                    this.props.onControl(this.ids.red.id, r);
+                    this.props.onControl(this.ids.green.id, g);
+                    this.props.onControl(this.ids.blue.id, b);
+                } else
+                    if (this.ids.hue) {
+                        let [r, g, b] = UtilsColors.hex2array(rgb);
+                        let [h, s, l] = UtilsColors.rgbToHsl(r, g, b);
+                        h = this.realValueToPercent({ min: 0, max: 1 }, h);
+                        s = this.realValueToPercent({ min: 0, max: 1 }, s);
+                        l = this.realValueToPercent({ min: 0, max: 1 }, l);
+                        newValue[this.ids.hue.id] = h;
+                        if (this.ids.saturation) {
+                            newValue[this.ids.saturation.id] = s;
+                        }
+                        if (this.ids.brightness) {
+                            newValue[this.ids.brightness.id] = l;
+                        }
+                        h = this.percentToRealValue(this.ids.hue, h);
+                        s = this.percentToRealValue(this.ids.saturation, s);
+                        l = this.percentToRealValue(this.ids.brightness, l);
 
-            this.props.onControl(this.ids.hue.id, h);
-            this.ids.saturation && this.props.onControl(this.ids.saturation.id, s);
-            this.ids.brightness && this.props.onControl(this.ids.brightness.id, l);
-        } else
-        if (this.ids.temperature) {
-            newValue[this.ids.rgb.id] = rgb;
-            const _rgb = UtilsColors.hex2array(rgb);
-            this.props.onControl(this.ids.temperature.id, UtilsColors.rgb2temperature(_rgb[0], _rgb[1], _rgb[2]));
-        }
+                        this.props.onControl(this.ids.hue.id, h);
+                        this.ids.saturation && this.props.onControl(this.ids.saturation.id, s);
+                        this.ids.brightness && this.props.onControl(this.ids.brightness.id, l);
+                    } else
+                        if (this.ids.temperature) {
+                            newValue[this.ids.rgb.id] = rgb;
+                            const _rgb = UtilsColors.hex2array(rgb);
+                            this.props.onControl(this.ids.temperature.id, UtilsColors.rgb2temperature(_rgb[0], _rgb[1], _rgb[2]));
+                        }
 
         if (this.ids.on && !this.state[this.ids.on.id]) {
             newValue[this.ids.on.id] = true;
@@ -389,7 +393,7 @@ class SmartColor extends SmartGeneric {
     }
 
     onDimmerChange = dimmer => {
-        this.setState({dimmer});
+        this.setState({ dimmer });
         this.props.onControl(this.ids.dimmer.id, this.percentToRealValue(this.ids.dimmer, dimmer));
     }
 
@@ -400,10 +404,10 @@ class SmartColor extends SmartGeneric {
             name: 'colorMode',
             value: this.state.settings.colorMode || 'RGB/Kelvin',
             options: [
-                {value: 'RGB/Kelvin',   label: I18n.t('RGB/Kelvin')},
-                {value: 'RGB',          label: I18n.t('RGB')},
-                {value: 'Kelvin',       label: I18n.t('Kelvin')}
-                ],
+                { value: 'RGB/Kelvin', label: I18n.t('RGB/Kelvin') },
+                { value: 'RGB', label: I18n.t('RGB') },
+                { value: 'Kelvin', label: I18n.t('Kelvin') }
+            ],
             type: 'select'
         });
 
@@ -413,7 +417,7 @@ class SmartColor extends SmartGeneric {
     onToggle = value => {
         if (this.ids.on) {
             const newValue = value === undefined || typeof value === 'object' ? !this.state[this.ids.on.id] : value;
-            this.setState({[this.ids.on.id]: newValue});
+            this.setState({ [this.ids.on.id]: newValue });
             this.props.onControl(this.ids.on.id, newValue);
         }
     }
@@ -421,20 +425,17 @@ class SmartColor extends SmartGeneric {
     getIcon() {
         let customIcon;
         if (this.state.settings.useDefaultIcon) {
-            customIcon = (<img src={this.getDefaultIcon()} alt="icon" style={{height: '100%'}}/>);
+            customIcon = (<IconAdapter src={this.getDefaultIcon()} alt="icon" style={{ height: '100%' }} />);
         } else {
             if (this.state.settings.icon) {
-                customIcon = (<img src={this.state.settings.icon} alt="icon" style={{height: '100%'}}/>);
+                customIcon = (<IconAdapter src={this.state.settings.icon} alt="icon" style={{ height: '100%' }} />);
             } else {
-                customIcon = (<Icon width={Theme.tile.tileIconSvg.size} height={Theme.tile.tileIconSvg.size} style={{height: Theme.tile.tileIconSvg.size, width: Theme.tile.tileIconSvg.size}}/>);
+                customIcon = (<Icon className={clsGeneric.iconStyle} />);
             }
         }
-        return (
-            <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, this.state[this.actualId] !== this.min ? {color: Theme.palette.lampOn} : {})} className="tile-icon">
-                {customIcon}
-                {this.state.executing ? <CircularProgress style={{position: 'absolute', top: 0, left: 0}} size={Theme.tile.tileIcon.width}/> : null}
-            </div>
-        );
+
+        return SmartGeneric.renderIcon(customIcon, this.state.executing, this.state[this.actualId] !== this.min)
+
     }
 
     getColor(states) {
@@ -444,69 +445,69 @@ class SmartColor extends SmartGeneric {
         if (this.ids.rgb && this.state.colorMode === Dialog.COLOR_MODES.RGB) {
             color = states[this.ids.rgb.id];
         } else
-        if (this.ids.red && this.state.colorMode === Dialog.COLOR_MODES.R_G_B) {
-            let r = states[this.ids.red.id];
-            let g = states[this.ids.green.id];
-            let b = states[this.ids.blue.id];
-            if (r !== null      && g !== null      && b !== null &&
-                r !== undefined && g !== undefined && b !== undefined) {
-                r = this.percentToRealValue({min: 0, max: 255}, r);
-                g = this.percentToRealValue({min: 0, max: 255}, g);
-                b = this.percentToRealValue({min: 0, max: 255}, b);
-                color = UtilsColors.rgb2string([r, g, b]);
-            }
-        } else
-        if (this.ids.hue && this.state.colorMode === Dialog.COLOR_MODES.HUE) {
-            let hue = states[this.ids.hue.id];
-            let saturation = this.ids.saturation ? states[this.ids.saturation.id] : 100;
-            let brightness = this.ids.brightness ? states[this.ids.brightness.id] : 50;
-            if (hue !== null      && saturation !== null      && brightness !== null &&
-                hue !== undefined && saturation !== undefined && brightness !== undefined) {
-                hue = this.percentToRealValue({min: 0, max: 1}, hue);
-                saturation = this.percentToRealValue({min: 0, max: 1}, saturation);
-                brightness = this.percentToRealValue({min: 0, max: 1}, brightness);
-                color = UtilsColors.rgb2string(UtilsColors.hslToRgb(hue, saturation, brightness));
-            }
-        } else
-        if (this.ids.temperature && this.state.colorMode === Dialog.COLOR_MODES.TEMPERATURE) {
-            let temperature = this.percentToRealValue(this.ids.temperature, states[this.ids.temperature.id]);
-            color = UtilsColors.rgb2string(UtilsColors.temperatureToRGB(temperature));
-            if (this.state.dimmer !== undefined) {
-                color = new TinyColor(color).darken(100 - this.state.dimmer).toString();
-            }
-        } else
-        if (this.ids.rgb) {
-            color = states[this.ids.rgb.id];
-        } else
-        if (this.ids.red) {
-            let r = states[this.ids.red.id];
-            let g = states[this.ids.green.id];
-            let b = states[this.ids.blue.id];
-            if (r !== null      && g !== null      && b !== null &&
-                r !== undefined && g !== undefined && b !== undefined) {
-                r = this.percentToRealValue({min: 0, max: 255}, r);
-                g = this.percentToRealValue({min: 0, max: 255}, g);
-                b = this.percentToRealValue({min: 0, max: 255}, b);
-                color = UtilsColors.rgb2string([r, g, b]);
-            }
-        } else
-        if (this.ids.hue) {
-            let hue = states[this.ids.hue.id];
-            let saturation = this.ids.saturation ? states[this.ids.saturation.id] : 100;
-            let brightness = this.ids.brightness ? states[this.ids.brightness.id] : 50;
-            if (hue !== null      && saturation !== null      && brightness !== null &&
-                hue !== undefined && saturation !== undefined && brightness !== undefined) {
-                hue = this.percentToRealValue({min: 0, max: 1}, hue);
-                saturation = this.percentToRealValue({min: 0, max: 1}, saturation);
-                brightness = this.percentToRealValue({min: 0, max: 1}, brightness);
-                color = UtilsColors.rgb2string(UtilsColors.hslToRgb(hue, saturation, brightness));
-            }
-        } else if (this.ids.temperature) {
-            let temperature = states[this.ids.temperature.id];
-            temperature = this.percentToRealValue(this.ids.temperature, temperature);
-            color = UtilsColors.rgb2string(UtilsColors.temperatureToRGB(temperature));
-            color = new TinyColor(color).darken(100 - this.state.dimmer).toString();
-        }
+            if (this.ids.red && this.state.colorMode === Dialog.COLOR_MODES.R_G_B) {
+                let r = states[this.ids.red.id];
+                let g = states[this.ids.green.id];
+                let b = states[this.ids.blue.id];
+                if (r !== null && g !== null && b !== null &&
+                    r !== undefined && g !== undefined && b !== undefined) {
+                    r = this.percentToRealValue({ min: 0, max: 255 }, r);
+                    g = this.percentToRealValue({ min: 0, max: 255 }, g);
+                    b = this.percentToRealValue({ min: 0, max: 255 }, b);
+                    color = UtilsColors.rgb2string([r, g, b]);
+                }
+            } else
+                if (this.ids.hue && this.state.colorMode === Dialog.COLOR_MODES.HUE) {
+                    let hue = states[this.ids.hue.id];
+                    let saturation = this.ids.saturation ? states[this.ids.saturation.id] : 100;
+                    let brightness = this.ids.brightness ? states[this.ids.brightness.id] : 50;
+                    if (hue !== null && saturation !== null && brightness !== null &&
+                        hue !== undefined && saturation !== undefined && brightness !== undefined) {
+                        hue = this.percentToRealValue({ min: 0, max: 1 }, hue);
+                        saturation = this.percentToRealValue({ min: 0, max: 1 }, saturation);
+                        brightness = this.percentToRealValue({ min: 0, max: 1 }, brightness);
+                        color = UtilsColors.rgb2string(UtilsColors.hslToRgb(hue, saturation, brightness));
+                    }
+                } else
+                    if (this.ids.temperature && this.state.colorMode === Dialog.COLOR_MODES.TEMPERATURE) {
+                        let temperature = this.percentToRealValue(this.ids.temperature, states[this.ids.temperature.id]);
+                        color = UtilsColors.rgb2string(UtilsColors.temperatureToRGB(temperature));
+                        if (this.state.dimmer !== undefined) {
+                            color = new TinyColor(color).darken(100 - this.state.dimmer).toString();
+                        }
+                    } else
+                        if (this.ids.rgb) {
+                            color = states[this.ids.rgb.id];
+                        } else
+                            if (this.ids.red) {
+                                let r = states[this.ids.red.id];
+                                let g = states[this.ids.green.id];
+                                let b = states[this.ids.blue.id];
+                                if (r !== null && g !== null && b !== null &&
+                                    r !== undefined && g !== undefined && b !== undefined) {
+                                    r = this.percentToRealValue({ min: 0, max: 255 }, r);
+                                    g = this.percentToRealValue({ min: 0, max: 255 }, g);
+                                    b = this.percentToRealValue({ min: 0, max: 255 }, b);
+                                    color = UtilsColors.rgb2string([r, g, b]);
+                                }
+                            } else
+                                if (this.ids.hue) {
+                                    let hue = states[this.ids.hue.id];
+                                    let saturation = this.ids.saturation ? states[this.ids.saturation.id] : 100;
+                                    let brightness = this.ids.brightness ? states[this.ids.brightness.id] : 50;
+                                    if (hue !== null && saturation !== null && brightness !== null &&
+                                        hue !== undefined && saturation !== undefined && brightness !== undefined) {
+                                        hue = this.percentToRealValue({ min: 0, max: 1 }, hue);
+                                        saturation = this.percentToRealValue({ min: 0, max: 1 }, saturation);
+                                        brightness = this.percentToRealValue({ min: 0, max: 1 }, brightness);
+                                        color = UtilsColors.rgb2string(UtilsColors.hslToRgb(hue, saturation, brightness));
+                                    }
+                                } else if (this.ids.temperature) {
+                                    let temperature = states[this.ids.temperature.id];
+                                    temperature = this.percentToRealValue(this.ids.temperature, temperature);
+                                    color = UtilsColors.rgb2string(UtilsColors.temperatureToRGB(temperature));
+                                    color = new TinyColor(color).darken(100 - this.state.dimmer).toString();
+                                }
 
         if (color && color[0] !== '#' && color.match(/^rgb/)) {
             color = '#' + color;
@@ -540,10 +541,10 @@ class SmartColor extends SmartGeneric {
             modeRGB = true;
             modeTemperature = false;
         } else
-        if (this.state.settings.colorMode === 'Kelvin') {
-            modeRGB = false;
-            modeTemperature = true;
-        }
+            if (this.state.settings.colorMode === 'Kelvin') {
+                modeRGB = false;
+                modeTemperature = true;
+            }
         const color = this.getColor() || '#000000';
 
         return this.wrapContent([

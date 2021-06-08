@@ -14,6 +14,8 @@
     "chart.js": "^3.3.2",
     "classnames": "^2.3.1",
     "clsx": "^1.1.1",
+    "echarts": "^5.1.1",
+    "echarts-for-react": "^3.0.1",
     "iobroker.type-detector": "^1.0.8",
     "keycode": "^2.2.0",
     "moment": "2.29.1",

@@ -29,12 +29,12 @@
     display: flex;
     position: absolute;
     right: 7px;
-    top: 14px;
+    top: 18px;
     font-size: 17.5px;
 }
 .tileTextSecond{
     display: flex;
-    top: 36px;
+    top: 38px;
     right: 7px;
     position: absolute;
     font-size: 20px;
@@ -48,4 +48,13 @@
 .textSecondary{
     font-size: 13px;
     margin-left: 4px;
+}
+.styleCharts{
+    height: 50px !important;
+}
+.wrapperCharts{
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
 }

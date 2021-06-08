@@ -1228,22 +1228,28 @@ class App extends GenericApp {
             variant={this.state.menuFixed ? 'permanent' : 'temporary'}
             open={this.state.open}
             onClose={() => this.onMenuClose()}
-            classes={{ paper: this.props.classes.menuBackground }}
+            classes={{ paper: cls.drawerBackground }}
+            className={cls.drawerStyle}
             style={{
                 width: Theme.menu.width,
-                background: (this.state.appSettings && this.state.appSettings.menuBackground) || 'white'
             }}>
-            <Toolbar style={this.state.appSettings && this.state.appSettings.menuBackground ? { background: this.state.appSettings.menuBackground } : {}}>
-                <IconButton onClick={this.onToggleMenu} style={{ color: useBright ? Theme.palette.textColorBright : Theme.palette.textColorDark }}>
+            <Toolbar className={cls.toolBar}>
+                <IconButton onClick={this.onToggleMenu}
+                    className={cls.buttonMenu}
+                >
                     <IconClose width={Theme.iconSize} height={Theme.iconSize} />
                 </IconButton>
-
-                {this.state.connected && this.state.editMode ? (<IconButton onClick={this.editAppSettingsOpen} style={{ color: this.state.editEnumSettings ? Theme.palette.editActive : (useBright ? Theme.palette.textColorBright : Theme.palette.textColorDark) }}><IconSettings width={Theme.iconSize} height={Theme.iconSize} /></IconButton>) : null}
-
+                {this.state.connected && this.state.editMode ?
+                    (<IconButton onClick={this.editAppSettingsOpen}
+                        className={cls.buttonMenu}
+                    >
+                        <IconSettings width={Theme.iconSize} height={Theme.iconSize} />
+                    </IconButton>) : null}
                 <div style={{ flexGrow: 1 }} />
-
                 {this.state.width > 500 && !this.state.menuFixed ?
-                    (<IconButton onClick={this.onToggleLock} style={{ float: 'right', color: useBright ? Theme.palette.textColorBright : Theme.palette.textColorDark }}>
+                    (<IconButton onClick={this.onToggleLock}
+                        className={cls.buttonMenu}
+                    >
                         <IconLock width={Theme.iconSize} height={Theme.iconSize} />
                     </IconButton>)
                     : null
@@ -1255,7 +1261,7 @@ class App extends GenericApp {
                 debug={this.state.appSettings ? (this.state.appSettings.debug === undefined ? true : this.state.appSettings.debug) : true}
                 user={this.user}
                 instances={this.state.appSettings && this.state.appSettings.instances}
-                background={this.state.appSettings && this.state.appSettings.menuBackground}
+                // background={this.state.appSettings && this.state.appSettings.menuBackground}
                 language={I18n.getLanguage()}
                 viewEnum={this.state.viewEnum}
                 editMode={this.state.editMode}
@@ -1411,6 +1417,7 @@ class App extends GenericApp {
             objects={this.state.viewEnum === Utils.INSTANCES ? this.instances : this.objects}
             user={this.user}
             states={this.states}
+            socket={this.socket}
             align={this.state.settings && this.state.settings.align}
             debug={this.state.appSettings ? (this.state.appSettings.debug === undefined ? true : this.state.appSettings.debug) : true}
             connected={this.state.connected}

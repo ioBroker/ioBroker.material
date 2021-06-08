@@ -13,3 +13,23 @@
 .wrapperItems{
     display: flex;
 }
+.h3Style{
+    font-size: 20px;
+    color: black !important;    
+    margin: 0;
+    padding: 8px 8px 8px 16px;
+    display: flex;
+    border-radius: 5px;
+}
+.h3Active{
+    background: #f85e2714;    
+    animation: moveWrapperIcon 1s linear ;
+}
+@keyframes moveWrapperIcon {
+    0% {
+        background: transparent;
+    }
+    100% {
+        background: #f85e2714;
+    }
+}

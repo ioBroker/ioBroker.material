@@ -392,11 +392,16 @@ class SmartDialogColor extends SmartDialogGeneric  {
     eventToValue(e) {
         let pageY = e.touches ? e.touches[e.touches.length - 1].clientY : e.pageY;
         let pageX = e.touches ? e.touches[e.touches.length - 1].clientX : e.pageX;
+        if(!this.rect){
+        this.rect = this.refColorImage.current.getBoundingClientRect();
+        }
         const halfSize = this.colorWidth / 2;
         if (this.state.tempMode) {
+            // debugger
             const temperature = this.posToTemp(pageX  - this.rect.left - halfSize, pageY - this.rect.top - halfSize);
             this.setState({temperature});
         } else {
+            // debugger
             const color = SmartDialogColor.posToColor(pageX - this.rect.left - halfSize, pageY - this.rect.top - halfSize);
             this.setState({color});
         }
@@ -445,7 +450,7 @@ class SmartDialogColor extends SmartDialogGeneric  {
         document.removeEventListener('touchmove',   this.onMouseMove,   {passive: false, capture: true});
         document.removeEventListener('touchend',    this.onMouseUp,     {passive: false, capture: true});
 
-        this.sendRGB();
+        typeof this.sendRGB === 'function' && this.sendRGB();
     }
 
     onClick() {

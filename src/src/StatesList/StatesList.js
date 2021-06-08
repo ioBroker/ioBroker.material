@@ -29,6 +29,7 @@ import I18n from '@iobroker/adapter-react/i18n';
 import StatesSubList from '../StatesSubList/StatesSubList';
 import Clock from '../basic-controls/react-clock/Clock';
 import cls from './style.module.scss';
+import clsx from 'clsx';
 
 
 const styles = {
@@ -268,17 +269,19 @@ class StatesList extends Component {
                 {(provided, snapshot) => (
                     <div
                         key={this.state.enumID + '_' + id + '-list2'}
-                        className={this.props.classes['drag-item'] + (snapshot.isDragging ? ' ' + this.props.classes['drag-item-overlay'] : '')}
-                        style={{ display: 'inline-block' }}
+                        className={clsx(cls.drag, snapshot.isDragging && cls.dragStyle)}
+                        // className={this.props.classes['drag-item'] + (snapshot.isDragging ? ' ' + this.props.classes['drag-item-overlay'] : '')}
+                        // style={{ display: 'inline-block' }}
                         ref={provided.innerRef}
                         {...provided.draggableProps}
-                    // {...provided.dragHandleProps}
+                        {...provided.dragHandleProps}
                     ><StatesSubList
                             key={this.state.enumID + '_' + id + '-list'}
                             objects={this.props.objects}
                             user={this.props.user}
                             states={this.props.states}
                             newLine={this.props.newLine}
+                            socket={this.props.socket}
                             items={items}
                             isUseBright={isUseBright}
                             ignoreIndicators={this.props.ignoreIndicators}
@@ -308,6 +311,7 @@ class StatesList extends Component {
                 user={this.props.user}
                 states={this.props.states}
                 newLine={this.props.newLine}
+                socket={this.props.socket}
                 items={items}
                 isUseBright={isUseBright}
                 ignoreIndicators={this.props.ignoreIndicators}
@@ -465,12 +469,13 @@ class StatesList extends Component {
         }
 
         if (!this.state.subDragging && this.props.editMode && this.props.enumID !== Utils.INSTANCES && !isNothing) {
-            return (
+            return (<div className={cls.wrapperBlock}>
                 <DragDropContext onDragEnd={result => this.onDragEnd(result)} onDragStart={() => this.setState({ dragging: true })}>
                     <Droppable droppableId="mainList" direction="vertical">
                         {(provided, snapshot) => this.wrapAllItems(columns, provided, snapshot, style)}
                     </Droppable>
                 </DragDropContext>
+            </div>
             );
         } else {
             return (<div className={cls.wrapperBlock} style={Object.assign({ marginLeft: this.props.marginLeft }, style)}>
@@ -594,6 +599,7 @@ class StatesList extends Component {
                         key="nothing"
                         editMode={this.props.editMode}
                         user={this.props.user}
+                        socket={this.props.socket}
                         states={this.props.states}
                         objects={this.props.objects}
                         id="" />);

@@ -34,6 +34,7 @@ import SmartDetector from '../States/SmartDetector';
 import Types from '../States/SmartTypes';
 import VisibilityButton from '../basic-controls/react-visibility-button/VisibilityButton';
 import cls from './style.module.scss';
+import clsx from 'clsx';
 
 const styles = {
     'drag-item': {
@@ -224,6 +225,7 @@ class StatesSubList extends Component {
         return (<Component
             key={state.id + '-sublist-' + Component.name + '-' + i}
             id={channelId}
+            socket={this.props.socket}
             enumNames={[this.name, Utils.getObjectName(this.props.objects, this.state.enumID, null, { language: I18n.getLanguage() })]}
             enumFunctions={this.props.enumFunctions}
             editMode={this.props.editMode}
@@ -452,7 +454,10 @@ class StatesSubList extends Component {
             return (
                 <div key={(this.state.enumID + '-' + this.state.enumSubID).replace(/[^\w\d]/g, '_') + '-inset'} style={{ width: '100%', overflow: 'auto', opacity: this.state.enabled ? 1 : 0.5 }}>
                     <div key="inline-div" style={{ display: 'flex' }}>
-                        {items.map(e => (<div key={'inline-div-' + e.id}>{e.control}</div>))}
+                        {items.map(e =>
+                            <div key={'inline-div-' + e.id}>
+                                {e.control}
+                            </div>)}
                     </div>
                 </div>
             );
@@ -566,8 +571,12 @@ class StatesSubList extends Component {
                     <div key={(this.state.enumID + '-' + this.state.enumSubID).replace(/[^\w\d]/g, '_') + '-title'}
                         className={cls.ListRow}
                         style={style}>
-                        <h3 {...this.props.dragHandleProps} style={Object.assign({}, Theme.list.title, { color: this.props.isUseBright ? 'white' : 'black' })}>
-                            {this.props.editMode ? (<IconGrip style={{ color: this.props.isUseBright ? 'white' : 'black', width: 24, height: 24, float: 'left', opacity: this.state.subDragging ? 0 : 1 }} />) : null}
+                        <h3 {...this.props.dragHandleProps}
+                            className={clsx(cls.h3Style, !this.props.subDragging && cls.h3Active)}
+                        >
+                            {this.props.editMode ? (
+                                <IconGrip style={{ color: this.props.isUseBright ? 'white' : 'black', width: 24, height: 24, float: 'left', opacity: this.state.subDragging ? 0 : 1 }} />)
+                                : null}
                             {this.name}
                             {this.getControlAll()}
                             {visibilityButton}

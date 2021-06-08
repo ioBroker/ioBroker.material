@@ -73,16 +73,74 @@
         //   background-position:110% 20%;
     }
 }
-.activeIconStyle{
-    color:#f85e27;
+.activeIconStyle {
+    color: #f85e27;
 }
-.text{
+.text {
     color: #515151;
     transition: color 0.5s;
 }
-.textOn{
+.textOn {
     color: #f85e27;
 }
-.styleIconActive{
+.styleIconActive {
     background: linear-gradient(208deg, #121416 0%, #313133 42%, #303439 100%);
+}
+.wrapperEdit {
+    display: flex;
+    background: #5a3a3466;
+    width: calc(100% - 2px);
+    border: 1px solid #543a32;
+    border-radius: 16px;
+    z-index: 222;
+    height: calc(100% - 2px);
+    position: absolute;
+    left: 0;
+    top: 0;
+    transition: all 0.5s;
+    &:hover {
+        background: #141618db;
+    }
+}
+.wrapperEditNone {
+    display: flex;
+    background: #141618db;
+    width: calc(100% - 2px);
+    border: 1px solid #543a32;
+    z-index: 222;
+    border-radius: 16px;
+    height: calc(100% - 2px);
+    position: absolute;
+    left: 0;
+    top: 0;
+    transition: all 0.5s;
+    &:hover {
+        background: #141618db;
+    }
+}
+.iconEditStyle {
+    width: 40px;
+    height: 40px;
+    color: #f85e27b0;
+    stroke: #151819;
+    stroke-width: 0.5px;
+    transition: all 0.5s;
+}
+.wrapperIcon {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    &:hover {
+        .iconEditStyle {
+            width: 50px;
+            height: 50px;
+        }
+    }
+}
+.blurEdit {
+    filter: blur(1px) grayscale(100%);
+    width: 100%;
+    height: 100%;
 }

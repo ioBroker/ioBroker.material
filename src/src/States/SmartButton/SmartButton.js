@@ -14,7 +14,7 @@
  * limitations under the License.
  **/
 import React from 'react';
-import SmartGeneric from './SmartGeneric';
+import SmartGeneric from '../SmartGeneric';
 
 import {GoDiffModified as IconButton} from 'react-icons/go';
 import {MdStop as IconStop} from 'react-icons/md';
@@ -27,8 +27,12 @@ import {MdVolumeUp as IconUnmute} from 'react-icons/md';
 import {MdFastForward as IconForward} from 'react-icons/md';
 import {MdFastRewind as IconPrev} from 'react-icons/md';
 
-import Theme from '../theme';
+import Theme from '../../theme';
 import I18n from '@iobroker/adapter-react/i18n';
+import IconAdapter from '@iobroker/adapter-react/Components/Icon';
+import cls from './style.module.scss';
+import clsGeneric from '../style.module.scss';
+import clsx from 'clsx/dist/clsx';
 
 class SmartButton extends SmartGeneric {
     constructor(props) {
@@ -94,20 +98,16 @@ class SmartButton extends SmartGeneric {
     getIcon() {
         let customIcon;
         if (this.state.settings.useDefaultIcon) {
-            customIcon = (<img src={this.getDefaultIcon()} alt="icon" style={{height: '100%'}}/>);
+            customIcon = (<IconAdapter src={this.getDefaultIcon()} alt="icon" style={{height: '100%'}}/>);
         } else {
             if (this.state.settings.icon) {
-                customIcon = (<img src={this.state.settings.icon} alt="icon" style={{height: '100%'}}/>);
+                customIcon = (<IconAdapter src={this.state.settings.icon} alt="icon" style={{height: '100%'}}/>);
             } else {
                 const Icon = this.icon;
-                customIcon = (<Icon width={Theme.tile.tileIconSvg.size} height={Theme.tile.tileIconSvg.size} style={{height: Theme.tile.tileIconSvg.size, width: Theme.tile.tileIconSvg.size}}/>);
+                customIcon = (<Icon className={clsGeneric.iconStyle} />);
             }
         }
-        return (
-            <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, this.style)} className="tile-icon">
-                {customIcon}
-            </div>
-        );
+        return SmartGeneric.renderIcon(customIcon);
     }
 
     getStateText() {

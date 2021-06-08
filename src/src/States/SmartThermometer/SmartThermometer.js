@@ -24,7 +24,7 @@ import IconAdapter from '@iobroker/adapter-react/Components/Icon';
 import cls from './style.module.scss';
 import clsGeneric from '../style.module.scss';
 import clsx from 'clsx/dist/clsx';
-import { Line } from 'react-chartjs-2';
+import ReactECharts from 'echarts-for-react';
 
 class SmartThermometer extends SmartGeneric {
     constructor(props) {
@@ -47,7 +47,7 @@ class SmartThermometer extends SmartGeneric {
         }
 
         this.props.tile.state.state = true;
-
+        this.stateRx.showDialog = false
         // if only humidity
         if (!this.secondary &&
             this.props.objects[this.id] &&
@@ -120,41 +120,171 @@ class SmartThermometer extends SmartGeneric {
 
         return SmartGeneric.renderIcon(customIcon);
     }
-
-    getStateText() {
-
-        const data = {
-            labels: ['1', '2', '3', '4', '5', '6'],
-            datasets: [
-                {
-                    label: '# of Votes',
-                    data: [12, 19, 3, 5, 2, 3],
-                    fill: false,
-                    backgroundColor: 'rgb(255, 99, 132)',
-                    borderColor: 'rgba(255, 99, 132, 0.2)',
-                },
-            ],
-        };
+    readHistory = () => {
+        /*interface GetHistoryOptions {
+            instance?: string;
+            start?: number;
+            end?: number;
+            step?: number;
+            count?: number;
+            from?: boolean;
+            ack?: boolean;
+            q?: boolean;
+            addID?: boolean;
+            limit?: number;
+            ignoreNull?: boolean;
+            sessionId?: any;
+            aggregate?: 'minmax' | 'min' | 'max' | 'average' | 'total' | 'count' | 'none';
+        }*/
+        const now = new Date();
+            now.setHours(now.getHours() - 24);
+            now.setMinutes(0);
+            now.setSeconds(0);
+            now.setMilliseconds(0);
+            let start = now.getTime();
+            let end = Date.now();
 
         const options = {
-            legend: {
-                display: false
-            },
-            maintainAspectRatio: false,
-            responsive: true,
-            aspectRatio: 3,
-            scales: {
-                tension: 0.4,
-                yAxes: [
-                    {
-                        ticks: {
-                            display: false,
-                        },
-                    },
-                ],
-            },
+            instance:  'history.0',
+            start,
+            end,
+            step:      3600000,
+            from:      false,
+            ack:       false,
+            q:         false,
+            addID:     false,
+            aggregate: 'minmax'
         };
-        // return <Line data={data} options={options} />
+
+        // if (end - start > 60000 * 24) {
+        //     options.aggregate = 'minmax';
+        //     //options.step = 60000;
+        // }
+        this.props.socket.getObjects().then(e=>{
+            // debugger
+        }).catch(e=>{
+            // debugger
+        })
+        return this.props.socket.getHistory(this.id, options)
+            .then(values => {
+                // debugger
+                // merge range and chart
+                let chart = [];
+                let r     = 0;
+                let range = this.rangeValues;
+                let minY  = null;
+                let maxY  = null;
+
+                for (let t = 0; t < values.length; t++) {
+                    if (range) {
+                        while (r < range.length && range[r].ts < values[t].ts) {
+                            chart.push(range[r]);
+                            console.log(`add ${new Date(range[r].ts).toISOString()}: ${range[r].val}`);
+                            r++;
+                        }
+                    }
+                    // if range and details are not equal
+                    if (!chart.length || chart[chart.length - 1].ts < values[t].ts) {
+                        chart.push(values[t]);
+                        console.log(`add value ${new Date(values[t].ts).toISOString()}: ${values[t].val}`)
+                    } else if (chart[chart.length - 1].ts === values[t].ts && chart[chart.length - 1].val !== values[t].ts) {
+                        console.error('Strange data!');
+                    }
+                    if (minY === null || values[t].val < minY) {
+                        minY = values[t].val;
+                    }
+                    if (maxY === null || values[t].val > maxY) {
+                        maxY = values[t].val;
+                    }
+                }
+
+                if (range) {
+                    while (r < range.length) {
+                        chart.push(range[r]);
+                        console.log(`add range ${new Date(range[r].ts).toISOString()}: ${range[r].val}`);
+                        r++;
+                    }
+                }
+
+                // sort
+                chart.sort((a, b) => a.ts > b.ts ? 1 : (a.ts < b.ts ? -1 : 0));
+
+                this.chartValues = chart;
+                this.minY = minY;
+                this.maxY = maxY;
+
+                if (this.minY < 10) {
+                    this.minY = Math.round(this.minY * 10) / 10;
+                } else {
+                    this.minY = Math.ceil(this.minY);
+                }
+                if (this.maxY < 10) {
+                    this.maxY = Math.round(this.maxY * 10) / 10;
+                } else {
+                    this.maxY = Math.ceil(this.maxY);
+                }
+                return chart;
+            })
+            .catch(e=>{
+                // debugger
+            })
+    }
+
+    getCharts=()=>{
+        console.log(11223344,this)
+        this.readHistory(0,1000);
+        const option = {
+            legend: {
+                padding: 0,
+                itemGap: 0
+            },
+            grid: {
+                left: 0,
+                top: 0,
+                right: 0,
+                bottom: 0,
+                splitLine: {
+                    show: false
+                }
+            },
+            xAxis: [
+                {
+                    axisLine: {
+                        show: false // Hide full Line
+                    },
+                    xisTick: {
+                        show: false // Hide Ticks,
+                    },
+                    splitLine: {
+                        show: false
+                    },
+                    boundaryGap: false,
+                    data: [" ", " ", " ", " ", " ", " ", " ",]
+                }
+            ],
+            yAxis: [
+                {
+                    axisLine: {
+                        show: false // Hide full Line
+                    },
+                    splitLine: {
+                        show: false
+                    },
+                    type: "value"
+                }
+            ],
+            series: [
+                {
+                    type: "line",
+                    smooth: true,
+                    showSymbol: false,
+                    color:'#f85e27',
+                    areaStyle: { color:'#f85e276b' },
+                    data: [150, 232, 201, 154, 190, 330, 410]
+                }
+            ]
+        };
+        return <div className={cls.wrapperCharts}><ReactECharts className={cls.styleCharts} option={option} /></div>
     }
 
     getSecondaryDiv() {
@@ -192,7 +322,8 @@ class SmartThermometer extends SmartGeneric {
         return this.wrapContent([
             this.getStandardContent(this.actualId),
             this.getSecondaryDiv(),
-            this.getSecondaryDivTop()
+            this.getSecondaryDivTop(),
+            this.getCharts()
         ]);
     }
 }

@@ -754,19 +754,32 @@ class SmartGeneric extends Component {
                 <div key={this.key + 'type'} style={{ display: 'none' }}>{this.channelInfo.type}</div>,
                 <div key={this.key + 'wrapper'} className={cls.displayFlex}>
                     {this.state.settings.enabled ?
-                        [<div onClick={this.toggleEnabled} key={this.key + 'icon-check'} style={Theme.tile.editMode.checkIcon} className="edit-buttons">
-                            <IconCheck size={'50%'} style={Theme.tile.editMode.buttonIcon} />
-                        </div>,
-                        <div onClick={this.showSettings} key={this.key + 'icon-edit'} style={Theme.tile.editMode.editIcon} className="edit-buttons">
-                            <IconEdit size={'50%'} style={Object.assign({}, Theme.tile.editMode.buttonIcon, { width: '80%', marginLeft: '20%' })} />
+                        <div className={cls.wrapperEdit}>
+                            <div onClick={this.toggleEnabled} key={this.key + 'icon-check'}
+                                // style={Theme.tile.editMode.checkIcon} className="edit-buttons"
+                                className={cls.wrapperIcon}
+                            >
+                                <IconCheck className={cls.iconEditStyle} />
+                            </div>
+                            <div onClick={this.showSettings} key={this.key + 'icon-edit'}
+                                // style={Theme.tile.editMode.editIcon} className="edit-buttons"
+                                className={cls.wrapperIcon}
+                            >
+                                <IconEdit className={cls.iconEditStyle} />
+                            </div>
                         </div>
-                        ]
                         :
-                        <div onClick={this.toggleEnabled} key={this.key + '.icon-check'} style={Theme.tile.editMode.removeIcon}>
-                            <IconRemoved size={'100%'} style={Theme.tile.editMode.buttonIconRemoved} />
+                        <div className={cls.wrapperEditNone}>
+                            <div onClick={this.toggleEnabled}
+                                className={cls.wrapperIcon}
+                            >
+                                <IconRemoved className={cls.iconEditStyle} />
+                            </div>
                         </div>
                     }
+                    <div className={cls.blurEdit}>
                     {content}
+                    </div>
                 </div>,
                 this.state.showSettings ?
                     <Dialog key={this.key + 'settings'}
