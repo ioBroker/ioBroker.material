@@ -283,7 +283,7 @@ class SmartTile extends Component {
                     Control = SmartVolume;
                     break;
                 case Types.lock:
-                    Control = SmartLock;ы
+                    Control = SmartLock;
                     break;
                 case Types.instance:
                     Control = SmartInstance;
