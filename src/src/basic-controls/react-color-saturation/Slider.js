@@ -2,7 +2,7 @@ import React from 'react';
 import { findDOMNode } from 'react-dom';
 import PropTypes from 'prop-types';
 import keycode from 'keycode';
-import classNames from 'classnames';
+import clsx from 'clsx';
 import withStyles from '@material-ui/core/styles/withStyles';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import { fade } from '@material-ui/core/styles/colorManipulator';
@@ -407,29 +407,21 @@ class Slider extends React.Component {
             [classes.activated]: !disabled && currentState === 'activated',
         };
 
-        const className = classNames(
+        const className = clsx(
             classes.root,
-            {
-                [classes.vertical]: vertical,
-                [classes.reverse]: reverse,
-                [classes.disabled]: disabled,
-            },
+            vertical && classes.vertical,
+            reverse && classes.reverse,
+            disabled && classes.disabled,
             classNameProp,
         );
 
-        const containerClasses = classNames(classes.container, {
-            [classes.vertical]: vertical,
-        });
+        const containerClasses = clsx(classes.container, vertical && classes.vertical);
 
-        const trackBeforeClasses = classNames(classes.track, classes.trackBefore, commonClasses, {
-            [classes.vertical]: vertical,
-        });
+        const trackBeforeClasses = clsx(classes.track, classes.trackBefore, commonClasses, vertical && classes.vertical);
 
-        const trackAfterClasses = classNames(classes.track, classes.trackAfter, commonClasses, {
-            [classes.vertical]: vertical,
-        });
+        const trackAfterClasses = clsx(classes.track, classes.trackAfter, commonClasses, vertical && classes.vertical);
 
-        const thumbClasses = classNames(classes.thumb, commonClasses);
+        const thumbClasses = clsx(classes.thumb, commonClasses);
 
         const trackProperty = vertical ? 'height' : 'width';
         const thumbProperty = vertical ? 'top' : 'left';
