@@ -505,7 +505,19 @@ class MenuList extends Component {
                 items = this.getElementsToShow(items);
             }
 
-        const icons = items.map(e => Utils.getIcon(e.settings, Theme.menuIcon));
+        const icons = items.map(e => {
+            if (!e.settings.icon) {
+                return null;
+            }
+            if (e.settings.icon.length <= 2) {
+                return e.settings.icon;
+            } else
+            if (e.settings.icon.startsWith('data:image')) {
+                return e.settings.icon;
+            } else { // may be later some changes for second type
+                return (e.settings.prefix || '') + e.settings.icon;
+            }
+        });
         const anyIcons = !!icons.find(icon => icon);
 
         const useBright = Utils.isUseBright(this.state.background, false);

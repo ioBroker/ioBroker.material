@@ -24,7 +24,18 @@ import IconAdapter from '@iobroker/adapter-react/Components/Icon';
 import cls from './style.module.scss';
 import clsGeneric from '../style.module.scss';
 import clsx from 'clsx/dist/clsx';
-import ReactECharts from 'echarts-for-react';
+import ReactEcharts from 'echarts-for-react';
+import ReactEchartsCore from 'echarts-for-react/lib/core';
+//import echarts from 'echarts/lib/echarts';
+//import 'echarts/lib/chart/line';
+//mport 'echarts/lib/component/tooltip';
+//import 'echarts/lib/component/grid';
+//import 'echarts/lib/component/toolbox';
+//import 'echarts/lib/component/title';
+//import 'echarts/lib/component/dataZoom';
+//import 'echarts/lib/component/timeline';
+//import 'zrender/lib/svg/svg';
+import { Flag } from '@material-ui/icons';
 
 class SmartThermometer extends SmartGeneric {
     constructor(props) {
@@ -164,7 +175,10 @@ class SmartThermometer extends SmartGeneric {
             // debugger
         }).catch(e=>{
             // debugger
-        })
+        });
+
+        this.props.socket.connected = true;
+
         return this.props.socket.getHistory(this.id, options)
             .then(values => {
                 // debugger
@@ -226,7 +240,7 @@ class SmartThermometer extends SmartGeneric {
                 return chart;
             })
             .catch(e=>{
-                // debugger
+                console.error('Cannot read history: ' + e);
             })
     }
 
@@ -234,47 +248,31 @@ class SmartThermometer extends SmartGeneric {
         console.log(11223344,this)
         this.readHistory(0,1000);
         const option = {
+            animation: true,
             legend: {
-                padding: 0,
-                itemGap: 0
+                show: false,
             },
             grid: {
+                show: false,
                 left: 0,
                 top: 0,
                 right: 0,
                 bottom: 0,
-                splitLine: {
-                    show: false
-                }
             },
-            xAxis: [
+            xAxis: 
                 {
-                    axisLine: {
-                        show: false // Hide full Line
-                    },
-                    xisTick: {
-                        show: false // Hide Ticks,
-                    },
-                    splitLine: {
-                        show: false
-                    },
+                    show: false,
                     boundaryGap: false,
                     data: [" ", " ", " ", " ", " ", " ", " ",]
                 }
-            ],
-            yAxis: [
-                {
-                    axisLine: {
-                        show: false // Hide full Line
-                    },
-                    splitLine: {
-                        show: false
-                    },
+            ,
+            yAxis: {
+                    show: false,
                     type: "value"
-                }
-            ],
+            },
             series: [
                 {
+                    silent: true,
                     type: "line",
                     smooth: true,
                     showSymbol: false,
@@ -284,7 +282,17 @@ class SmartThermometer extends SmartGeneric {
                 }
             ]
         };
-        return <div className={cls.wrapperCharts}><ReactECharts className={cls.styleCharts} option={option} /></div>
+    
+        return <div className={cls.wrapperCharts}>
+            <ReactEcharts 
+                className={cls.styleCharts} 
+                //echarts={ echarts }
+                option={option} 
+                opts={{ renderer: 'svg' }}
+                notMerge={ true }
+                lazyUpdate={ true }
+            />
+        </div>;
     }
 
     getSecondaryDiv() {
