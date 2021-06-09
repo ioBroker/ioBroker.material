@@ -51,7 +51,7 @@ import StatesList from './StatesList/StatesList';
 import SpeechDialog from './SpeechDialog';
 import DialogSettings from './Dialogs/SmartDialogSettings';
 import LoadingIndicator from './basic-controls/react-loading-screen/LoadingIndicator';
-import ServerConnection from './Connection';
+//import ServerConnection from './Connection';
 import GenericApp from '@iobroker/adapter-react/GenericApp';
 import ToggleThemeMenu from './Components/ToggleThemeMenu';
 import cls from './style.module.scss';
@@ -85,39 +85,9 @@ class App extends GenericApp {
         };
         super(props, extendedProps);
 
-        const theme = this.createTheme();
+        //const theme = this.createTheme();
 
-        let path = decodeURIComponent(window.location.hash).replace(/^#/, '');
 
-        this.state = {
-            theme,
-            themeName: this.getThemeName(theme),
-            themeType: this.getThemeType(theme),
-            menuFixed: (typeof Storage !== 'undefined') ? window.localStorage.getItem('menuFixed') === '1' : false,
-            open: false,
-            isListening: false,
-            loading: true,
-            loadingProgress: 0,
-            loadingStep: 'loading...',
-            connected: false,
-            refresh: false,
-            errorShow: false,
-            fullScreen: false,
-            editMode: false,
-            errorText: '',
-            masterPath: path === Utils.INSTANCES ? 'instances' : (path ? 'enum.' + path.split('.').shift() : 'enum.rooms'),
-            viewEnum: path === Utils.INSTANCES ? 'instances' : (path ? 'enum.' + path : ''),
-            width: '0',
-            height: '0',
-            backgroundId: 0,
-            editEnumSettings: false,
-            editAppSettings: false,
-            settings: null,
-            appSettings: {},
-            actualVersion: '',
-            bigMessage: '',
-        };
-        this.state.open = this.state.menuFixed;
 
         this.translations = {
             'en': require('./i18n/en'),
@@ -140,7 +110,6 @@ class App extends GenericApp {
         this.subscribeInstances = false;
         this.subscribes = {};
         this.requestStates = [];
-        this.conn = null;
         this.initialFullScreenMode = window.document.fullScreen || window.document.mozFullScreen || window.document.webkitIsFullScreen;
         this.isCloud = !!window.document.location.hostname.match(/^iobroker\./);
 
@@ -151,6 +120,86 @@ class App extends GenericApp {
         }, false);
 
         this.urlVersion = App.getUrlVersion();
+        this.socket.registerConnectionHandler(this.connectionHandler);
+    }
+
+    setStateAsync(state) {
+        return new Promise(resolve => this.setState(state, () => resolve()));
+    }
+
+    componentDidMount() {
+        super.componentDidMount();
+        let path = decodeURIComponent(window.location.hash).replace(/^#/, '');
+        const menuFixed = (typeof Storage !== 'undefined') ? window.localStorage.getItem('menuFixed') === '1' : false;
+
+        const state = {
+            menuFixed,
+            open: menuFixed,
+            isListening: false,
+            loading: true,
+            loadingProgress: 0,
+            loadingStep: 'loading...',
+            connected: false,
+            refresh: false,
+            errorShow: false,
+            fullScreen: false,
+            editMode: false,
+            errorText: '',
+            masterPath: path === Utils.INSTANCES ? 'instances' : (path ? 'enum.' + path.split('.').shift() : 'enum.rooms'),
+            viewEnum: path === Utils.INSTANCES ? 'instances' : (path ? 'enum.' + path : ''),
+            width: '0',
+            height: '0',
+            backgroundId: 0,
+            editEnumSettings: false,
+            editAppSettings: false,
+            settings: null,
+            appSettings: {},
+            actualVersion: '',
+            bigMessage: '',
+        };
+
+        this.setState(state);
+
+        this.updateWindowDimensions();
+        window.addEventListener('resize', this.updateWindowDimensions);
+
+        this.loadLocalData(() =>
+            this.tryToConnect());
+    }
+
+    connectionHandler = connected => {
+        if (connected) {
+            this.setState({ connected: true, loading: true });
+            if (this.gotObjects) {
+                this.resubscribe();
+            } else {
+                this.readAllData()
+                    .catch(e => window.alert('Cannot read data: ' + e));
+            }
+        } else {
+            this.subscribeInstances = false;
+            this.setState({
+                connected: false,
+                loadingProgress: 1,
+                loading: true,
+                loadingStep: 'connecting'
+            });
+        }
+    }
+
+    componentWillUnmount() {
+        super.componentWillUnmount();
+        window.removeEventListener('resize', this.updateWindowDimensions);
+    }
+
+    updateWindowDimensions = () => {
+        if (this.resizeTimer) {
+            clearTimeout(this.resizeTimer);
+        }
+        this.resizeTimer = setTimeout(() => {
+            this.resizeTimer = null;
+            this.setState({ width: window.innerWidth, height: window.innerHeight });
+        }, 200);
     }
 
     static getUrlVersion() {
@@ -162,7 +211,7 @@ class App extends GenericApp {
     /**
      * Changes the current theme
      */
-    toggleTheme = currentThemeName => {
+    /*toggleTheme = currentThemeName => {
         const themeName = this.state.themeName;
 
         // dark => blue => colored => light => dark
@@ -187,7 +236,7 @@ class App extends GenericApp {
 
     showError(err) {
         this.setState({ errorText: err, errorShow: true });
-    }
+    }*/
 
     componentDidUpdate(prevProps, prevState) {
         //console.log(prevProps);
@@ -196,29 +245,26 @@ class App extends GenericApp {
     loadingStep(description) {
         this.setState({ loadingProgress: this.state.loadingProgress + 1, loadingStep: description });
     }
+    loadingStepAsync(description) {
+        return this.setStateAsync({ loadingProgress: this.state.loadingProgress + 1, loadingStep: description });
+    }
 
-    readInstancesData(readInstances, cb) {
+    readInstancesData(readInstances) {
         if (readInstances) {
-            this.conn._socket.emit('getObjectView', 'system', 'instance', {
-                startkey: 'system.adapter.',
-                endkey: 'system.group.\u9999'
-            },
-                function (err, res) {
-                    this.instances = {};
+            return this.socket.getObjectView('system.adapter.', 'system.group.\u9999', 'instance')
+                .then(instances => {
                     if (window.debugInstances) {
-                        res.rows = window.debugInstances;
-                    }
-                    if (res && res.rows && res.rows.length) {
-                        for (let i = 0; i < res.rows.length; i++) {
-                            const obj = res.rows[i].value;
+                        const rows = window.debugInstances;
+                        for (let i = 0; i < rows.length; i++) {
+                            const obj = rows[i].value;
                             this.instances[obj._id] = obj;
                         }
+                    } else {
+                        this.instances = instances;
                     }
-
-                    cb();
-                }.bind(this));
+                });
         } else {
-            cb();
+           return Promise.resolve();
         }
     }
 
@@ -231,7 +277,74 @@ class App extends GenericApp {
         }
     }
 
-    readRemoteData(callback) {
+    // callback(err, data)
+    getObjects(useCache) {
+        // If cache used
+        if (this._useStorage && useCache) {
+            if (this.storage) {
+                const objects = this._objects || this.storage.get('objects');
+                if (objects) {
+                    return Promise.resolve(objects);
+                }
+            } else if (this._objects) {
+                return Promise.resolve(this._objects);
+            }
+        }
+
+        let enums;
+        let data;
+
+        return new Promise((resolve, reject) =>
+            this.socket.getRawSocket().emit('getObjects', (err, data) => err ? reject(err) : resolve(data)))
+            // Read all enums
+            .then(_data => {
+                data = _data;
+                return this.socket.getEnums();
+            })
+            .then(_enums => {
+                Object.keys(_enums).forEach(id => data[id] = _enums[id]);
+                enums = _enums;
+
+                // Read all adapters for images
+                return this.socket.getObjectView('system.adapter.', 'system.adapter.\u9999', 'instance');
+            })
+            .then(instances => {
+                Object.keys(instances).forEach(id => data[id] = instances[id]);
+
+                // find out default file mode
+                if (data['system.adapter.' + this.namespace] &&
+                    data['system.adapter.' + this.namespace].native &&
+                    data['system.adapter.' + this.namespace].native.defaultFileMode) {
+                    this._defaultMode = data['system.adapter.' + this.namespace].native.defaultFileMode;
+                }
+                // Read all channels for images
+                return this.socket.getObjectView('', '\u9999', 'channel');
+            })
+            .then(channels => {
+                Object.keys(channels).forEach(id => data[id] = channels[id]);
+                // Read all devices for images
+                return this.socket.getObjectView('', '\u9999', 'device');
+            })
+            .then(devices => {
+                Object.keys(devices).forEach(id => data[id] = devices[id]);
+
+                if (this._useStorage) {
+                    this._fillChildren(data);
+                    this._objects = data;
+                    this._enums = enums;
+
+                    if (this.storage) {
+                        this.storage.set('objects', data);
+                        this.storage.set('enums', enums);
+                        this.storage.set('timeSync', Date.now());
+                    }
+                }
+
+                return data;
+            });
+    }
+
+    readRemoteData() {
         if (!this.state.refresh && this.localData) {
             this.localData.keys = Object.keys(this.localData.objects);
             this.localData.config = this.localData.objects['system.config'];
@@ -246,59 +359,102 @@ class App extends GenericApp {
             this.localData.config = this.localData.config || {};
             this.localData.keys = this.localData.keys || [];
 
-            callback(null, this.localData);
+            const localData = this.localData;
             this.localData = null;
+            return Promise.resolve(localData);
         } else {
-            this.loadingStep('read objects');
-            this.conn.getObjects(false, function (err, objects) {
-                this.loadingStep('read config');
-                objects = objects || {};
-                let keys = Object.keys(objects);
-                keys.sort();
-                let result = {};
-                for (let k = 0; k < keys.length; k++) {
-                    if (keys[k].match(/^system\./) && keys[k] !== 'system.config') continue;
-                    result[keys[k]] = {
-                        common: objects[keys[k]].common,
-                        type: objects[keys[k]].type
-                    };
-                }
-                this.conn.getObject(appConfigID, function (err, appConfig) {
-                    this.loadingStep('read app config');
-                    this.conn.getObject('system.config', function (err, config) {
-                        config = config || {};
-                        result['system.config'] = config;
-                        let appSettings = Utils.getSettings(appConfig || { _id: appConfigID }, {
-                            user: this.user,
-                            language: I18n.getLanguage()
-                        }) || {};
-                        if (!appSettings.noCache) {
-                            try {
-                                const myStorage = window.localStorage;
-                                myStorage.setItem('data', JSON.stringify({ objects: result, appConfig }));
-                            } catch (e) {
-                                console.error('cannot store information to localstorage: ' + e);
-                            }
-                        }
-                        appConfig = appConfig || {};
+            let result = {};
+            let appConfig;
+            let keys;
+            return this.loadingStepAsync('read objects')
+                .then(() => this.getObjects(false))
+                .then(objects => {
+                    this.loadingStep('read config');
+                    objects = objects || {};
+                    keys = Object.keys(objects);
+                    keys.sort();
 
-                        callback(err, { objects: result, appConfig, config, keys, appSettings });
-                    }.bind(this));
-                }.bind(this));
-            }.bind(this));
+                    for (let k = 0; k < keys.length; k++) {
+                        if (keys[k].match(/^system\./) && keys[k] !== 'system.config') {
+                            continue;
+                        }
+                        result[keys[k]] = {
+                            common: objects[keys[k]].common,
+                            type: objects[keys[k]].type
+                        };
+                    }
+                    return this.socket.getObject(appConfigID);
+                })
+                .then(_appConfig => {
+                    appConfig = _appConfig;
+                    this.loadingStep('read app config');
+                    return this.socket.getSystemConfig();
+                })
+                .then(config => {
+                    config = config || {};
+                    result['system.config'] = config;
+                    let appSettings = Utils.getSettings(appConfig || {_id: appConfigID}, {
+                        user: this.user,
+                        language: I18n.getLanguage()
+                    }) || {};
+                    if (!appSettings.noCache) {
+                        try {
+                            const myStorage = window.localStorage;
+                            myStorage.setItem('data', JSON.stringify({objects: result, appConfig}));
+                        } catch (e) {
+                            console.error('cannot store information to localstorage: ' + e);
+                        }
+                    }
+                    appConfig = appConfig || {};
+
+                    return {objects: result, appConfig, config, keys, appSettings};
+                });
         }
     }
 
-    readAllData() {
-        this.loadingStep('read objects');
-        this.user = this.conn.getUser().replace(/^system\.user\./, '');
-        this.auth = this.conn.getIsLoginRequired();
+    onCommand = (id, state) => {
+        if (this.state.appSettings && (this.state.appSettings.text2command || this.state.appSettings.text2command === 0)) {
+            if (state && !state.ack && state.val && id === 'text2command.' + this.state.appSettings.text2command + '.response') {
+                this.speak(state.val);
+            }
+        }
+    };
 
-        this.conn.getObject('system.adapter.material', (err, obj) => {
-            obj && obj.common && obj.common.version && this.setState({ actualVersion: obj.common.version });
-        });
+    onStateChanged = (id, state) => {
+        if (id) {
+            this.states[id] = state;
+        } else {
+            delete this.states[id];
+        }
 
-        this.readRemoteData((err, data) => {
+        if (this.subscribes[id]) {
+            this.subscribes[id].forEach(elem => elem.updateState(id, this.states[id]));
+        }
+    }
+
+    onObjectChanged = (id, obj) => {
+        if (this.instances) {
+            if (obj) {
+                this.instances[id] = obj;
+            } else if (this.instances[id]) {
+                delete this.instances[id];
+            }
+            this.forceUpdate();
+        }
+    }
+
+    async readAllData() {
+        try {
+            await this.loadingStepAsync('read objects');
+            this.user = (await this.socket.getCurrentUser()).replace(/^system\.user\./, '');
+            this.auth = this.socket.isSecure;
+
+            const obj = await this.socket.getObject('system.adapter.material');
+            if (obj?.common?.version) {
+                await this.setStateAsync({actualVersion: obj.common.version});
+            }
+
+            const data = await this.readRemoteData();
             let objects = data.objects || {};
             if (typeof window.debugObjects !== 'undefined') {
                 objects = window.debugObjects;
@@ -306,81 +462,83 @@ class App extends GenericApp {
                 window.debugChannels && window.debugChannels.rows.forEach(e => objects[e.id] = e.value);
             }
 
-            if (err) {
-                this.showError(err);
-            } else {
-                let viewEnum = this.state.viewEnum;
+            let viewEnum = this.state.viewEnum;
 
-                I18n.setLanguage((data.config && data.config.common && data.config.common.language) || window.sysLang);
-                let appSettings = data.appSettings;
-                // add loadingBackground & co
-                if (data.appConfig && data.appConfig.native) {
-                    appSettings = Object.assign(appSettings || {}, data.appConfig.native);
-                }
-
-                if (!viewEnum) {
-                    viewEnum = appSettings.startEnum;
-                }
-                if (objects && !viewEnum) {
-                    let reg = new RegExp('^' + this.state.masterPath + '\\.');
-                    // get first room
-                    viewEnum = Object.keys(objects).find(id => reg.test(id));
-                    if (!viewEnum) {
-                        // show message please create at least one room in admin
-                        return this.setState({ bigMessage: I18n.t('Please create some rooms in admin'), loading: false, settings: {} });
-                    }
-                }
-
-                this.objects = objects || {};
-                Utils.setDataFormat(this.getDateFormat());
-
-                this.readInstancesData(appSettings.instances, () => {
-                    this.loadingStep('done');
-                    if (viewEnum) {
-                        const settings = viewEnum === Utils.INSTANCES ?
-                            appSettings.instancesSettings || {}
-                            : Utils.getSettings((objects || {})[viewEnum], {
-                                user: this.user,
-                                language: I18n.getLanguage()
-                            });
-
-                        this.setState({
-                            viewEnum,
-                            loading: false,
-                            settings,
-                            appSettings
-                        });
-                        this.setBarColor(settings);
-                    } else {
-                        this.setState({ loading: false, settings: {} });
-                    }
-
-                    // sometimes text2command = {label: disabled}
-                    if (typeof appSettings.text2command === 'object') {
-                        appSettings.text2command = '';
-                    }
-
-                    if (appSettings && (appSettings.text2command || appSettings.text2command === 0)) {
-                        this.conn.subscribe(['text2command.' + appSettings.text2command + '.response']);
-                    }
-
-                    if (appSettings.instances) {
-                        this.conn._socket.emit('subscribeObjects', 'system.adapter.*');
-                        this.subscribeInstances = true;
-                    } else if (this.subscribeInstances) {
-                        this.conn._socket.emit('unsubscribeObjects', 'system.adapter.*');
-                        this.subscribeInstances = false;
-                    }
-                    this.gotObjects = true;
-                });
+            I18n.setLanguage((data.config && data.config.common && data.config.common.language) || window.sysLang);
+            let appSettings = data.appSettings;
+            // add loadingBackground & co
+            if (data.appConfig && data.appConfig.native) {
+                appSettings = Object.assign(appSettings || {}, data.appConfig.native);
             }
-        });
+
+            if (!viewEnum) {
+                viewEnum = appSettings.startEnum;
+            }
+            if (objects && !viewEnum) {
+                let reg = new RegExp('^' + this.state.masterPath + '\\.');
+                // get first room
+                viewEnum = Object.keys(objects).find(id => reg.test(id));
+                if (!viewEnum) {
+                    // show message please create at least one room in admin
+                    return this.setState({
+                        bigMessage: I18n.t('Please create some rooms in admin'),
+                        loading: false,
+                        settings: {}
+                    });
+                }
+            }
+
+            this.objects = objects || {};
+            Utils.setDataFormat(this.getDateFormat());
+
+            await this.readInstancesData(appSettings.instances);
+            await this.loadingStepAsync('done');
+            if (viewEnum) {
+                const settings = viewEnum === Utils.INSTANCES ?
+                    appSettings.instancesSettings || {}
+                    : Utils.getSettings((objects || {})[viewEnum], {
+                        user: this.user,
+                        language: I18n.getLanguage()
+                    });
+
+                this.setState({
+                    viewEnum,
+                    loading: false,
+                    settings,
+                    appSettings
+                });
+                this.setBarColor(settings);
+            } else {
+                this.setState({loading: false, settings: {}});
+            }
+
+            // sometimes text2command = {label: disabled}
+            if (typeof appSettings.text2command === 'object') {
+                appSettings.text2command = '';
+            }
+
+            if (appSettings && (appSettings.text2command || appSettings.text2command === 0)) {
+                this.socket.subscribeState('text2command.' + appSettings.text2command + '.response', this.onCommand);
+            }
+
+            if (appSettings.instances) {
+                this.socket.subscribeObject('system.adapter.*', this.onObjectChanged);
+                this.subscribeInstances = true;
+            } else if (this.subscribeInstances) {
+                this.socket.unsubscribeObject('system.adapter.*', this.onObjectChanged);
+                this.subscribeInstances = false;
+            }
+            this.gotObjects = true;
+        } catch (err) {
+            this.showError(err);
+        }
     }
 
     tryToConnect() {
         this.loadingStep('connecting');
 
-        this.conn = new ServerConnection({
+        return;
+        /*this.conn = new ServerConnection({
             namespace: 'material.0',  // optional - default 'vis.0'
             connOptions: {
                 // optional URL of the socket.io adapter
@@ -445,7 +603,7 @@ class App extends GenericApp {
             },
             objectsRequired: false,
             autoSubscribe: false
-        });
+        });*/
     }
 
     loadLocalData(callback) {
@@ -462,25 +620,7 @@ class App extends GenericApp {
         callback && callback();
     }
 
-    componentDidMount() {
-        this.updateWindowDimensions();
-        window.addEventListener('resize', this.updateWindowDimensions);
-        this.loadLocalData(() => this.tryToConnect());
-    }
 
-    componentWillUnmount() {
-        window.removeEventListener('resize', this.updateWindowDimensions);
-    }
-
-    updateWindowDimensions = () => {
-        if (this.resizeTimer) {
-            clearTimeout(this.resizeTimer);
-        }
-        this.resizeTimer = setTimeout(() => {
-            this.resizeTimer = null;
-            this.setState({ width: window.innerWidth, height: window.innerHeight });
-        }, 200);
-    }
 
     onToggleMenu = () => {
         if (this.state.menuFixed && typeof Storage !== 'undefined') {
@@ -553,7 +693,7 @@ class App extends GenericApp {
         if (enumId !== Utils.INSTANCES) {
             states.settings = Utils.getSettings(this.objects[enumId], { user: this.user, language: I18n.getLanguage() });
             if (this.subscribeInstances) {
-                this.conn._socket.emit('unsubscribeObjects', 'system.adapter.*');
+                this.socket.unsubscribeObject('system.adapter.*', this.onObjectChanged);
                 this.subscribeInstances = false;
             }
             this.setBarColor(states.settings);
@@ -561,14 +701,15 @@ class App extends GenericApp {
             this.setState(states);
         } else {
             states.settings = (this.state.appSettings && this.state.appSettings.instancesSettings) || {};
-            this.readInstancesData(true, () => {
-                if (!this.subscribeInstances) {
-                    this.conn._socket.emit('subscribeObjects', 'system.adapter.*');
-                    this.subscribeInstances = true;
-                }
-                // load settings for this enum
-                this.setState(states);
-            });
+            this.readInstancesData(true)
+                .then(() => {
+                    if (!this.subscribeInstances) {
+                        this.socket.subscribeObject('system.adapter.*', this.onObjectChanged);
+                        this.subscribeInstances = true;
+                    }
+                    // load settings for this enum
+                    this.setState(states);
+                });
         }
     }
 
@@ -585,26 +726,30 @@ class App extends GenericApp {
         ids = ids || this.requestStates;
         this.requestStates = [];
 
-        this.conn.getStates(ids, (err, states) => {
-            Object.keys(states).forEach(id => {
-                this.states[id] = states[id];
-                if (!this.states[id]) delete this.states[id];
+        this.socket.getForeignStates(ids)
+            .then(states => {
+                Object.keys(states).forEach(id => {
+                    this.states[id] = states[id];
+                    if (!this.states[id]) delete this.states[id];
 
-                if (this.subscribes[id]) {
-                    this.subscribes[id].forEach(elem => elem.updateState(id, states[id]));
-                }
+                    if (this.subscribes[id]) {
+                        this.subscribes[id].forEach(elem => elem.updateState(id, states[id]));
+                    }
+                });
+            })
+            .catch(e => {
+                window.alert('Cannot read states: ' + e);
             });
-        });
     }
 
     resubscribe() {
         const ids = (this.subscribes && Object.keys(this.subscribes));
         if (this.state.appSettings.instances) {
-            this.conn._socket.emit('subscribeObjects', 'system.adapter.*');
+            this.socket.subscribeObject('system.adapter.*', this.onObjectChanged);
             this.subscribeInstances = true;
         }
         if (ids && ids.length) {
-            this.conn.subscribe(ids);
+            ids.forEach(id => this.socket.subscribeState(id, this.onStateChanged));
             if (this.requestTimer) {
                 clearTimeout(this.requestTimer);
             }
@@ -644,9 +789,10 @@ class App extends GenericApp {
                 this.subscribes[id].push(elem);
             });
             if (newIDs.length) {
-                this.conn.subscribe(newIDs);
+                newIDs.forEach(id => this.socket.subscribeState(id, this.onStateChanged));
+
                 newIDs.forEach(id => {
-                    if (this.requestStates.indexOf(id) === -1) {
+                    if (!this.requestStates.includes(id)) {
                         this.requestStates.push(id);
                     }
                 });
@@ -683,7 +829,7 @@ class App extends GenericApp {
                 }
             });
             if (nonIDs.length) {
-                this.conn.unsubscribe(nonIDs);
+                nonIDs.forEach(id => this.socket.unsubscribeState(id, this.onStateChanged));
             }
         }
     }
@@ -693,17 +839,18 @@ class App extends GenericApp {
             this.showError(I18n.t('Control ID is empty'));
         } else
             if (objectAttribute) {
-                this.conn.getObject(id, (err, oldObj) => {
-                    // todo
-                    oldObj.common.enabled = val;
-                    this.conn._socket.emit('setObject', oldObj._id, oldObj, err => {
-                        if (err) {
-                            this.showError(`Cannot control ${id}: ${err}`);
-                        }
-                    });
-                });
+                this.socket.getObject(id)
+                    .then(oldObj => {
+                        // todo
+                        oldObj.common.enabled = val;
+                        this.socket.setObject(oldObj._id, oldObj)
+                            .catch(err =>
+                                this.showError(`Cannot control ${id}: ${err}`))
+                    })
+                    .catch(e => window.alert('Cannot get object: ' + e))
             } else {
-                this.conn.setState(id, val);
+                this.socket.setState(id, val)
+                    .catch(e => window.alert('Cannot get object: ' + e))
             }
     }
 
@@ -723,70 +870,79 @@ class App extends GenericApp {
         const task = this.tasks[0];
 
         if (task.name === 'saveSettings') {
-            this.conn.getObject(task.id, (err, obj) => {
-                let settings = Utils.getSettings(obj, { user: this.user, language: I18n.getLanguage() }, task.defaultSettings && task.defaultSettings.enabled);
-                if (JSON.stringify(settings) !== JSON.stringify(task.settings)) {
-                    if (Utils.setSettings(obj, task.settings, { user: this.user, language: I18n.getLanguage() })) {
-                        this.conn._socket.emit('setObject', obj._id, obj, err => {
-                            if (!err) {
-                                this.objects[obj._id] = obj;
-                            }
+            this.socket.getObject(task.id)
+                .then(obj => {
+                    let settings = Utils.getSettings(obj, { user: this.user, language: I18n.getLanguage() }, task.defaultSettings && task.defaultSettings.enabled);
+                    if (JSON.stringify(settings) !== JSON.stringify(task.settings)) {
+                        if (Utils.setSettings(obj, task.settings, { user: this.user, language: I18n.getLanguage() })) {
+                            this.socket.setObject(obj._id, obj)
+                                .then(() => {
+                                    this.objects[obj._id] = obj;
+                                    return true;
+                                })
+                                .catch(err => {
+                                    console.error('Cannot save: ' + obj._id);
+                                    this.showError(`Cannot save ${obj._id}: ${err}`);
+                                    return false;
+                                })
+                                .then(result => {
+                                    if (typeof this.tasks[0].cb === 'function') {
+                                        this.tasks[0].cb();
+                                    }
+                                    this.tasks.shift();
+                                    result && this.clearCachedObjects();
+                                    setTimeout(this.processTasks, 0);
+                                })
+                        } else {
+                            console.log('Invalid object: ' + task.id);
                             if (typeof this.tasks[0].cb === 'function') {
                                 this.tasks[0].cb();
                             }
                             this.tasks.shift();
-                            if (err) {
+                            setTimeout(this.processTasks, 0);
+                        }
+                    } else {
+                        if (typeof this.tasks[0].cb === 'function') {
+                            this.tasks[0].cb();
+                        }
+                        this.tasks.shift();
+                        setTimeout(this.processTasks, 0);
+                    }
+                })
+                .catch(e => window.alert('Cannot get object: ' + e))
+
+        } else if (task.name === 'saveNativeSettings') {
+            this.socket.getObject(task.id)
+                .then(obj => {
+                    if (JSON.stringify(obj.native) !== JSON.stringify(task.settings)) {
+                        Object.assign(obj.native, task.settings);
+                        return this.socket.setObject(obj._id, obj)
+                            .then(() => true)
+                            .catch(err => {
                                 console.error('Cannot save: ' + obj._id);
                                 this.showError(`Cannot save ${obj._id}: ${err}`);
-                            } else {
-                                this.clearCachedObjects();
-                            }
-                            setTimeout(this.processTasks, 0);
-                        });
+                                return false;
+                            })
+                            .then(result => {
+                                if (result) {
+                                    this.objects[obj._id] = obj;
+                                }
+                                if (typeof this.tasks[0].cb === 'function') {
+                                    this.tasks[0].cb();
+                                }
+                                this.tasks.shift();
+                                result && this.clearCachedObjects();
+                                setTimeout(this.processTasks, 0);
+                            });
                     } else {
-                        console.log('Invalid object: ' + task.id);
                         if (typeof this.tasks[0].cb === 'function') {
                             this.tasks[0].cb();
                         }
                         this.tasks.shift();
                         setTimeout(this.processTasks, 0);
                     }
-                } else {
-                    if (typeof this.tasks[0].cb === 'function') {
-                        this.tasks[0].cb();
-                    }
-                    this.tasks.shift();
-                    setTimeout(this.processTasks, 0);
-                }
-            });
-        } else if (task.name === 'saveNativeSettings') {
-            this.conn.getObject(task.id, (err, obj) => {
-                if (JSON.stringify(obj.native) !== JSON.stringify(task.settings)) {
-                    Object.assign(obj.native, task.settings);
-                    this.conn._socket.emit('setObject', obj._id, obj, err => {
-                        if (!err) {
-                            this.objects[obj._id] = obj;
-                        }
-                        if (typeof this.tasks[0].cb === 'function') {
-                            this.tasks[0].cb();
-                        }
-                        this.tasks.shift();
-                        if (err) {
-                            console.error('Cannot save: ' + obj._id);
-                            this.showError(`Cannot save ${obj._id}: ${err}`);
-                        } else {
-                            this.clearCachedObjects();
-                        }
-                        setTimeout(this.processTasks, 0);
-                    });
-                } else {
-                    if (typeof this.tasks[0].cb === 'function') {
-                        this.tasks[0].cb();
-                    }
-                    this.tasks.shift();
-                    setTimeout(this.processTasks, 0);
-                }
-            });
+                })
+                .catch(e => window.alert('Cannot get object: ' + e))
         } else {
             if (typeof this.tasks[0].cb === 'function') {
                 this.tasks[0].cb();
@@ -809,18 +965,16 @@ class App extends GenericApp {
                 settings.background.data = settings.background.data.split(',')[1];
             }
             // upload image
-            this.conn.writeFile64(fileName, settings.background.data, err => {
-                if (err) {
-                    window.alert(err);
-                } else {
+            this.socket.writeFile64(Utils.namespace + '.0', `/${this.user}/${settings.background.name}`, settings.background.data)
+                .then(() => {
                     settings.background = fileName;
                     this.tasks.push({ name: 'saveSettings', id, settings, defaultSettings, cb });
 
                     if (this.tasks.length === 1) {
                         this.processTasks();
                     }
-                }
-            });
+                })
+                .catch(err => window.alert('Cannot upload file: ' + err));
         } else {
             //Utils.setSettings(objects[id], settings, {user: this.user, language: I18n.getLanguage()});
             this.tasks.push({ name: 'saveSettings', id, settings, defaultSettings, cb });
@@ -853,7 +1007,8 @@ class App extends GenericApp {
         this.setState({ isListening: isStart });
 
     onSpeechRec = text =>
-        this.conn.setState('text2command.' + ((this.state.appSettings && this.state.appSettings.text2command) || 0) + '.text', text);
+        this.socket.setState('text2command.' + ((this.state.appSettings && this.state.appSettings.text2command) || 0) + '.text', text)
+            .catch(e => window.alert('Cannot send command: ' + e));
 
     speak(text) {
         if (!window.SpeechSynthesisUtterance) {
@@ -914,9 +1069,8 @@ class App extends GenericApp {
 
     editAppSettingsOpen = () => {
         if (!this.state.appSettings || !this.state.appSettings.instances) {
-            this.readInstancesData(true, () => {
-                this.setState({ editAppSettings: true });
-            });
+            this.readInstancesData(true)
+                .then(() => this.setState({ editAppSettings: true }));
         } else {
             this.setState({ editAppSettings: true });
         }
@@ -1090,26 +1244,25 @@ class App extends GenericApp {
     }
 
     readImageNames = cb => {
-        const dir = `/${Utils.namespace}.0/${this.user}/`;
-        this.conn.readDir(dir, (err, files) => {
-            cb(files.map(file => dir + file.file));
-        });
+        this.socket.readDir(Utils.namespace + '.0', this.user)
+            .then(files => cb(files.map(file => `/${Utils.namespace}.0/${this.user}/${file.file}`)))
+            .catch(e => window.alert('Cannot read directory: ' + e));
     }
 
     saveDialogSettings = settings => {
         settings = settings || this.state.settings;
         if (settings.background && typeof settings.background === 'object') {
-            let fileName = `/${Utils.namespace}.0/${this.user}/${this.state.viewEnum}.${settings.background.name.toLowerCase().split('.').pop()}`;
+            let fileName = `${this.user}/${this.state.viewEnum}.${settings.background.name.toLowerCase().split('.').pop()}`;
 
             if (settings.background.data.startsWith('data:')) {
                 settings.background.data = settings.background.data.split(',')[1];
             }
             // upload image
-            this.conn.writeFile64(fileName, settings.background.data, err => {
+            this.socket.writeFile64(Utils.namespace + '.0', fileName, settings.background.data, err => {
                 if (err) {
                     window.alert(err);
                 } else {
-                    settings.background = fileName;
+                    settings.background = `/${Utils.namespace}.0/${fileName}`;
                     if (this.state.viewEnum === Utils.INSTANCES) {
                         const appSettings = JSON.parse(JSON.stringify(this.state.appSettings || {}));
                         appSettings.instancesSettings = settings;
@@ -1194,6 +1347,7 @@ class App extends GenericApp {
         if (this.isCloud) {
             window.location.href = '/logout';
         } else {
+            window.alert('todo');
             this.conn.logout(() => window.location.reload());
         }
     }

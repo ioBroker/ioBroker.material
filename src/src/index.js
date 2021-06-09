@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2020 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2021 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,49 +16,44 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
-import registerServiceWorker from './registerServiceWorker';
-import './index.css';
-// import Theme from './theme';
-import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
-// import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
-// load words for moment.js
-import 'moment/locale/fr';
-import 'moment/locale/de';
-import 'moment/locale/ru';
-import 'moment/locale/es';
-import 'moment/locale/zh-cn';
+import {version} from '../package.json';
+import { MuiThemeProvider} from '@material-ui/core/styles';
+import * as Sentry from '@sentry/browser';
+import * as SentryIntegrations from '@sentry/integrations';
 
 import theme from '@iobroker/adapter-react/Theme';
 import Utils from '@iobroker/adapter-react/Components/Utils';
+import App from './App';
 
-/*const muiTheme = getMuiTheme({
-    appBar: {
-        //color: 'rgba(128, 128, 128, 0.8)',//''#337ab7',
-        height: 48
-    },
-    refreshIndicator: {
-        strokeColor: '#337ab7',
-        loadingStrokeColor: '#337ab7'
-    }
-});*/
+import * as serviceWorker from './serviceWorker';
+import '@iobroker/adapter-react/index.css';
 
+window.adapterName = 'material';
 
+console.log('iobroker.' + window.adapterName + '@' + version);
 let themeName = Utils.getThemeName();
 
-ReactDOM.render(
-    <MuiThemeProvider theme={ theme(themeName) }>
+function build() {
+    return ReactDOM.render(<MuiThemeProvider theme={ theme(themeName) }>
         <App onThemeChange={_themeName => {
             themeName = _themeName;
             build();
         }}/>
-    </MuiThemeProvider>,
-
-    document.getElementById('root')
-);
-
-try {
-    registerServiceWorker();
-} catch (e) {
-    window.noServiceWorker = true;
+    </MuiThemeProvider>, document.getElementById('root'));
 }
+
+if (false && window.location.host !== 'localhost:3000') {
+    Sentry.init({
+        dsn: 'https://3cedc5ceb5544e2e8248053c817fc98b@sentry.iobroker.net/131',
+        integrations: [
+            new SentryIntegrations.Dedupe()
+        ]
+    });
+}
+
+build();
+
+// If you want your app to work offline and load faster, you can change
+// unregister() to register() below. Note this comes with some pitfalls.
+// Learn more about service workers: https://bit.ly/CRA-PWA
+serviceWorker.unregister();

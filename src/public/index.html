@@ -36,26 +36,18 @@
     <link href="favicon.ico" rel="shortcut icon">
     <script type="text/javascript" src="_socket/info.js"></script>
     <script>
-        const script = document.createElement('script');
-
+        var script = document.createElement('script');
         window.registerSocketOnLoad = function (cb) {
             window.socketLoadedHandler = cb;
         };
-
-        script.onload = function () {
-            typeof window.socketLoadedHandler === 'function' && window.socketLoadedHandler();
-        };
-
-        script.onerror = function () {
-            console.error('Cannot load socket.io. Retry in 5 seconds');
-            setTimeout(function () {
-                window.location.reload();
-            }, 5000);
-        };
-
-        setTimeout(() => {
-            script.src = window.location.port === '3000' ? window.location.protocol + '//' + window.location.hostname + ':8082/lib/js/socket.io.js' : '%PUBLIC_URL%/lib/js/socket.io.js';
-        }, 1000);
+        const parts = (window.location.search || '').replace(/^\?/, '').split('&');
+        const query = {};
+        parts.forEach(item => {
+            const [name, val] = item.split('=');
+            query[decodeURIComponent(name)] = val !== undefined ? decodeURIComponent(val) : true;
+        });
+        script.onload = function () { typeof window.socketLoadedHandler === 'function' && window.socketLoadedHandler(); };
+        script.src = window.location.port === '3000' ? window.location.protocol + '//' + (query.host || window.location.hostname) + ':' + (query.port || 8081) + '/lib/js/socket.io.js' : '%PUBLIC_URL%/../../lib/js/socket.io.js';
 
         document.head.appendChild(script);
     </script>

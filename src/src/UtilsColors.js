@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2020 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2021 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -177,6 +177,9 @@ class UtilsColors {
     }
 
     static hexToRgbA(hex, a) {
+        if (!hex) {
+            return '';
+        }
         let r = parseInt(hex.substring(1, 3), 16);
         let g = parseInt(hex.substring(3, 5), 16);
         let b = parseInt(hex.substring(5, 7), 16);

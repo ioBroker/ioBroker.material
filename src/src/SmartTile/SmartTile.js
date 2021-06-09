@@ -99,8 +99,10 @@ class SmartTile extends Component {
     onMouseUp = e =>
         this.handlers.onMouseUp && !this.props.editMode && this.handlers.onMouseUp(e);
 
-    onClick = e =>
+    onClick = e => {
         this.handlers.onClick && !this.props.editMode && this.handlers.onClick(e);
+    };
+
 
     getTileStyle() {
         let style = {};
@@ -116,11 +118,11 @@ class SmartTile extends Component {
         // } else {
         //     style = this.state.state ?
         //         Object.assign({},
-        //             // Theme.tile.tile, 
+        //             // Theme.tile.tile,
         //             // Theme.tile.tileOn,
         //             typeof this.state.colorOn === 'object' ? this.state.colorOn : { background: this.state.colorOn }) :
         //         Object.assign({},
-        //             // Theme.tile.tile, 
+        //             // Theme.tile.tile,
         //             // Theme.tile.tileOff,
         //             typeof this.state.colorOff === 'object' ? this.state.colorOff : { background: this.state.colorOff });
         // }

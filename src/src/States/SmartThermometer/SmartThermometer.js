@@ -177,7 +177,6 @@ class SmartThermometer extends SmartGeneric {
             // debugger
         });
 
-        this.props.socket.connected = true;
 
         return this.props.socket.getHistory(this.id, options)
             .then(values => {
@@ -259,7 +258,7 @@ class SmartThermometer extends SmartGeneric {
                 right: 0,
                 bottom: 0,
             },
-            xAxis: 
+            xAxis:
                 {
                     show: false,
                     boundaryGap: false,
@@ -282,12 +281,12 @@ class SmartThermometer extends SmartGeneric {
                 }
             ]
         };
-    
+
         return <div className={cls.wrapperCharts}>
-            <ReactEcharts 
-                className={cls.styleCharts} 
+            <ReactEcharts
+                className={cls.styleCharts}
                 //echarts={ echarts }
-                option={option} 
+                option={option}
                 opts={{ renderer: 'svg' }}
                 notMerge={ true }
                 lazyUpdate={ true }
