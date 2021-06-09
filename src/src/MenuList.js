@@ -49,7 +49,7 @@ import cls from './style.module.scss';
 import clsx from 'clsx';
 import IconAdapter from '@iobroker/adapter-react/Components/Icon';
 
-const DragHandle = sortableHandle(() => <IconDrag />);
+const DragHandle = sortableHandle(() => <IconDrag style={{marginRight:5}}/>);
 
 const styles = {
     iconsSelected: {
@@ -244,7 +244,7 @@ class MenuList extends Component {
                             return;
                         }
                         const name = settings.name;
-                        const visibilityButton = this.props.editMode ? <VisibilityButton useBright={useBright} visible={this.state.visibility[item.id]} onChange={() => this.onToggleEnabled(null, item.id)} /> : null;
+                        const visibilityButton = this.props.editMode ? <VisibilityButton className={cls.expendIcon} useBright={useBright} visible={this.state.visibility[item.id]} onChange={() => this.onToggleEnabled(null, item.id)} /> : null;
                         let style = {};
                         if (this.props.editMode && !this.state.visibility[item.id]) {
                             style = Object.assign({}, style, { opacity: 0.5 });
@@ -537,6 +537,7 @@ class MenuList extends Component {
             const visibilityButton = this.props.editMode ? <VisibilityButton
                 key="button"
                 big={true}
+                className={cls.expendIcon}
                 visible={this.state.visibility[item.id]}
                 useBright={useBright}
                 onChange={() => this.onToggleEnabled(null, item.id)} /> : null;
@@ -550,7 +551,7 @@ class MenuList extends Component {
 
             const content = <div className={cls.contentItem}>
                 <ListItemIcon className={cls.itemIcon} key="icon">
-                    <IconAdapter color="red" className={cls.itemIconColor} src={icon} />
+                    <IconAdapter className={cls.itemIconColor} src={icon} />
                 </ListItemIcon>
                 {/* <ListItemIcon className={cls.itemIcon} key="icon">
                     {icon}
@@ -563,8 +564,8 @@ class MenuList extends Component {
                 />
                 {visibilityButton}
                 {children && children.length ? (expanded ?
-                    <ExpandLess key="ExpandLess" style={styleButton} onClick={e => this.onExpandMenu(e, item.id)} /> :
-                    <ExpandMore key="ExpandMore" style={styleButton} onClick={e => this.onExpandMenu(e, item.id)} />) : ''}
+                    <ExpandLess key="ExpandLess" className={cls.expendIcon} onClick={e => this.onExpandMenu(e, item.id)} /> :
+                    <ExpandMore key="ExpandMore" className={cls.expendIcon} onClick={e => this.onExpandMenu(e, item.id)} />) : ''}
             </div>
 
             return [

@@ -245,7 +245,7 @@ class SmartThermometer extends SmartGeneric {
     }
 
     getCharts=()=>{
-        console.log(11223344,this)
+        // console.log(11223344,this)
         this.readHistory(0,1000);
         const option = {
             animation: true,

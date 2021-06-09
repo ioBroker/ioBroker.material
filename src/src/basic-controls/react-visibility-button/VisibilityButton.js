@@ -18,6 +18,7 @@ import PropTypes from 'prop-types';
 
 import {MdVisibility as IconCheck} from 'react-icons/md';
 import {MdVisibilityOff as IconUncheck} from 'react-icons/md';
+import cls from './style.module.scss';
 // import IconButton from '@material-ui/core/IconButton';
 
 const styles = {
@@ -64,12 +65,12 @@ class SmallVisibilityButton extends React.Component {
 
     render() {
         if (this.props.big) {
-            return <div onClick={e => this.toggleState(e)} style={Object.assign({}, styles.button, styles.buttonBig, this.props.useBright ? {color: 'white'} : {color: 'black'}, this.props.style || {})}>
+            return <div className={cls.iconColor} onClick={e => this.toggleState(e)} style={Object.assign({}, styles.button, styles.buttonBig, this.props.useBright ? {color: 'white'} : {color: 'black'}, this.props.style || {})}>
                 {this.state.visible ? <IconCheck style={styles.buttonBig} size={'100%'}/> : <IconUncheck size={'100%'}/>}
             </div>;
         } else {
             const iconStyle = {marginTop: 1, verticalAlign: 'top'};
-            return <div style={Object.assign({}, styles.button, styles.buttonSmall, this.props.useBright ? {color: 'white'} : {color: 'black'}, this.props.style || {})} onClick={e => this.toggleState(e)} className="small-visibility-button">
+            return <div className={cls.iconColor} style={Object.assign({}, styles.button, styles.buttonSmall, this.props.useBright ? {color: 'white'} : {color: 'black'}, this.props.style || {})} onClick={e => this.toggleState(e)}>
                 {this.state.visible ? <IconCheck size={16} style={iconStyle}/> : <IconUncheck size={16} style={iconStyle}/>}
             </div>;
         }

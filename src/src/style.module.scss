@@ -38,6 +38,7 @@
     display: flex;
     align-items: center;
     color: #b8c2ce;
+    width: 100%;
 }
 .itemIcon {
     min-width: 40px !important;
@@ -51,6 +52,7 @@
 }
 .listItem{
     background: #f85e27;
+    z-index: 11111;
 
 }
 .listItemActive{
@@ -60,6 +62,9 @@
     // border-bottom:1px solid #f85e27;
     height: 46px;
     min-height: 46px !important;
+}
+.expendIcon{
+    color: #b8c2ce;
 }
 @media screen and (max-width: 835px) {
     .rootWrapper {
