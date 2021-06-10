@@ -49,7 +49,7 @@ import cls from './style.module.scss';
 import clsx from 'clsx';
 import IconAdapter from '@iobroker/adapter-react/Components/Icon';
 
-const DragHandle = sortableHandle(() => <IconDrag style={{marginRight:5}}/>);
+const DragHandle = sortableHandle(() => <IconDrag className={cls.iconDrag} />);
 
 const styles = {
     iconsSelected: {
@@ -428,7 +428,7 @@ class MenuList extends Component {
                 <ListItem
                     // style={Object.assign({}, style, { zIndex: 10000 })}
                     button
-                    classes={{ root: clsx(cls.listItem, this.props.viewEnum === id && cls.listItemActive) }}
+                    classes={{ root: clsx(cls.listItem, cls.zIndexList, this.props.viewEnum === id && cls.listItemActive) }}
                     key={`item-${id}`}
                     onClick={el => this.onSelected(id, el)}
                 >
@@ -512,11 +512,11 @@ class MenuList extends Component {
             if (e.settings.icon.length <= 2) {
                 return e.settings.icon;
             } else
-            if (e.settings.icon.startsWith('data:image')) {
-                return e.settings.icon;
-            } else { // may be later some changes for second type
-                return (e.settings.prefix || '') + e.settings.icon;
-            }
+                if (e.settings.icon.startsWith('data:image')) {
+                    return e.settings.icon;
+                } else { // may be later some changes for second type
+                    return (e.settings.prefix || '') + e.settings.icon;
+                }
         });
         const anyIcons = !!icons.find(icon => icon);
 
@@ -635,7 +635,7 @@ class MenuList extends Component {
                     onClick={el => this.onSelected(Utils.INSTANCES, el)}
                 >
                     <ListItemIcon className={cls.itemIcon}>
-                        <DragHandle />
+                        {/* <DragHandle /> */}
                         <IconInstances style={Object.assign({}, Theme.menuIcon, { color: '#008000' })} />
                     </ListItemIcon>
                     <ListItemText

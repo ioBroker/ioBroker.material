@@ -15,10 +15,14 @@
  **/
 import React from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import SmartGeneric from './SmartGeneric';
-import {TiLightbulb as Icon} from 'react-icons/ti';
-import Theme from '../theme';
-import Dialog from '../Dialogs/SmartDialogSlider';
+import SmartGeneric from '../SmartGeneric';
+import { TiLightbulb as Icon } from 'react-icons/ti';
+import Theme from '../../theme';
+import Dialog from '../../Dialogs/SmartDialogSlider';
+import IconAdapter from '@iobroker/adapter-react/Components/Icon';
+import cls from './style.module.scss';
+import clsGeneric from '../style.module.scss';
+import clsx from 'clsx';
 
 class SmartSlider extends SmartGeneric {
     constructor(props) {
@@ -60,7 +64,7 @@ class SmartSlider extends SmartGeneric {
 
     updateState(id, state) {
         let newState = {};
-        const val = typeof state.val === 'number' ? state.val : parseFloat(state.val);
+        const val = typeof state?.val === 'number' ? state?.val : parseFloat(state?.val);
         if (!state) {
             return;
         }
@@ -70,20 +74,20 @@ class SmartSlider extends SmartGeneric {
                 this.setState(newState);
 
                 const tileState = val !== this.min;
-                this.props.tile.setState({state: tileState});
+                this.props.tile.setState({ state: tileState });
             } else {
                 newState[id] = null;
                 this.setState(newState);
-                this.props.tile.setState({state: false});
+                this.props.tile.setState({ state: false });
             }
 
             // hide desired value
             if (this.state.setValue === newState[id] && state.ack) {
-                this.setState({setValue: null});
+                this.setState({ setValue: null });
             }
 
             if (state.ack && this.state.executing) {
-                this.setState({executing: false});
+                this.setState({ executing: false });
             }
         } else if (id === this.id) {
             newState[id] = val;
@@ -96,7 +100,7 @@ class SmartSlider extends SmartGeneric {
     setValue = value => {
         console.log('Control ' + this.id + ' = ' + value);
         if (this.actualId !== this.id) {
-            this.setState({executing: !this.state.settings.noAck, setValue: value});
+            this.setState({ executing: !this.state.settings.noAck, setValue: value });
         }
         this.props.onControl(this.id, value);
     }
@@ -105,28 +109,33 @@ class SmartSlider extends SmartGeneric {
         let customIcon;
 
         if (this.state.settings.useDefaultIcon) {
-            customIcon = <img src={this.getDefaultIcon()} alt="icon" style={{height: '100%'}}/>;
+            customIcon = <IconAdapter src={this.getDefaultIcon()} alt="icon" style={{ height: '100%' }} />;
         } else {
             if (this.state.settings.icon) {
-                customIcon = <img src={this.state.settings.icon} alt="icon" style={{height: '100%'}}/>;
+                customIcon = <IconAdapter src={this.state.settings.icon} alt="icon" style={{ height: '100%' }} />;
             } else {
                 let IconCustom = this.icon;
                 if (IconCustom) {
-                    customIcon = <IconCustom width={Theme.tile.tileIconSvg.size} height={Theme.tile.tileIconSvg.size} style={{height: Theme.tile.tileIconSvg.size, width: Theme.tile.tileIconSvg.size}}/>;
+                    customIcon = <IconCustom className={clsx(clsGeneric.iconStyle,this.state[this.actualId] !== this.min && clsGeneric.activeIconStyle)} />;
                 }
             }
         }
+        // if (customIcon) {
+        //     return <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, this.state[this.actualId] !== this.min ? {color: Theme.palette.lampOn} : {})} className="tile-icon">
+        //         {customIcon}
+        //         {this.state.executing ? <CircularProgress style={{position: 'absolute', top: 0, left: 0}} size={Theme.tile.tileIcon.width}/> : null}
+        //     </div>;
+        // } else {
+        //     return null;
+        // }
         if (customIcon) {
-            return <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, this.state[this.actualId] !== this.min ? {color: Theme.palette.lampOn} : {})} className="tile-icon">
-                {customIcon}
-                {this.state.executing ? <CircularProgress style={{position: 'absolute', top: 0, left: 0}} size={Theme.tile.tileIcon.width}/> : null}
-            </div>;
+            return SmartGeneric.renderIcon(customIcon, this.state.executing, this.state[this.actualId] !== this.min);
         } else {
             return null;
         }
     }
 
-    getDialogSettings () {
+    getDialogSettings() {
         const settings = super.getDialogSettings();
         settings.push({
             name: 'decimals',
@@ -156,15 +165,15 @@ class SmartSlider extends SmartGeneric {
             this.getStandardContent(null, true),
             this.state.showDialog ?
                 <Dialog dialogKey={this.key + 'dialog'}
-                        key={this.key + 'dialog'}
-                        startValue={this.state[this.id]}
-                        windowWidth={this.props.windowWidth}
-                        min={this.min}
-                        max={this.max}
-                        unit={this.unit}
-                        onValueChange={this.setValue}
-                        onClose={this.onDialogClose}
-                        type={Dialog.types.value}
+                    key={this.key + 'dialog'}
+                    startValue={this.state[this.id]}
+                    windowWidth={this.props.windowWidth}
+                    min={this.min}
+                    max={this.max}
+                    unit={this.unit}
+                    onValueChange={this.setValue}
+                    onClose={this.onDialogClose}
+                    type={Dialog.types.value}
                 /> : null
         ]);
     }

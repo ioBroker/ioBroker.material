@@ -17,17 +17,20 @@ import React from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import IconButton from '@material-ui/core/IconButton';
 
-import {MdVolumeMute as IconVolume0} from 'react-icons/md';
-import {MdVolumeDown as IconVolume50} from 'react-icons/md';
-import {MdVolumeUp as IconVolume100} from 'react-icons/md';
+import { MdVolumeMute as IconVolume0 } from 'react-icons/md';
+import { MdVolumeDown as IconVolume50 } from 'react-icons/md';
+import { MdVolumeUp as IconVolume100 } from 'react-icons/md';
 
-import Theme from '../theme';
-import SmartGeneric from './SmartGeneric';
-import Types from './SmartTypes';
+import Theme from '../../theme';
+import SmartGeneric from '../SmartGeneric';
+import Types from '../SmartTypes';
 //import Dialog from './SmartDialogSlider';
-import Dialog from '../Dialogs/SmartDialogKnob';
-
+import Dialog from '../../Dialogs/SmartDialogKnob';
+import IconAdapter from '@iobroker/adapter-react/Components/Icon';
+import cls from './style.module.scss';
+import clsGeneric from '../style.module.scss';
 import I18n from '@iobroker/adapter-react/i18n';
+import clsx from 'clsx';
 
 const style = {
     mute: {
@@ -109,11 +112,11 @@ class SmartVolume extends SmartGeneric {
 
             // hide desired value
             if (this.state.setValue === newState[id] && state.ack) {
-                this.setState({setValue: null});
+                this.setState({ setValue: null });
             }
 
             if (state.ack && this.state.executing) {
-                this.setState({executing: false});
+                this.setState({ executing: false });
             }
         } else if (id === this.id) {
             newState[id] = typeof state.val === 'number' ? state.val : parseFloat(state.val);
@@ -126,7 +129,7 @@ class SmartVolume extends SmartGeneric {
     setValue = value => {
         console.log('Control ' + this.id + ' = ' + value);
         if (this.actualId !== this.id) {
-            this.setState({executing: !this.state.settings.noAck, setValue: value});
+            this.setState({ executing: !this.state.settings.noAck, setValue: value });
         }
         if (this.max - this.min > 9) {
             value = Math.round(value);
@@ -155,14 +158,14 @@ class SmartVolume extends SmartGeneric {
         let customIcon;
 
         if (this.state.settings.useDefaultIcon) {
-            customIcon = <img alt="icon" src={this.getDefaultIcon()} style={{height: '100%', zIndex: 1}}/>;
+            customIcon = <img alt="icon" src={this.getDefaultIcon()} style={{ height: '100%', zIndex: 1 }} />;
         } else {
-            customIcon = <Icon width={Theme.tile.tileIconSvg.size} height={Theme.tile.tileIconSvg.size} style={{zIndex: 1, height: Theme.tile.tileIconSvg.size, width: Theme.tile.tileIconSvg.size}}/>;
+            customIcon = <Icon width={Theme.tile.tileIconSvg.size} height={Theme.tile.tileIconSvg.size} style={{ zIndex: 1, height: Theme.tile.tileIconSvg.size, width: Theme.tile.tileIconSvg.size }} />;
         }
 
         return <div key={this.key + 'tile-secondary'} className="tile-text-second"
-                     style={Theme.tile.secondary.button} title={text}>
-            <IconButton size="small" onClick={this.toggle} style={{backgroundColor: color, width: 24, height: 24}} aria-label={text}>
+            style={Theme.tile.secondary.button} title={text}>
+            <IconButton size="small" onClick={this.toggle} style={{ backgroundColor: color, width: 24, height: 24 }} aria-label={text}>
                 {customIcon}
             </IconButton>
         </div>;
@@ -172,10 +175,10 @@ class SmartVolume extends SmartGeneric {
         let customIcon;
 
         if (this.state.settings.useDefaultIcon) {
-            customIcon = (<img alt="icon" src={this.getDefaultIcon()} style={{height: '100%'}}/>);
+            customIcon = (<IconAdapter alt="icon" src={this.getDefaultIcon()} style={{ height: '100%' }} />);
         } else {
             if (this.state.settings.icon) {
-                customIcon = (<img alt="icon" src={this.state.settings.icon} style={{height: '100%'}}/>);
+                customIcon = (<IconAdapter alt="icon" src={this.state.settings.icon} style={{ height: '100%' }} />);
             } else {
                 let IconCustom;
                 const val = Math.round((this.state[this.actualId] - this.min) / (this.max - this.min) * 100);
@@ -186,15 +189,16 @@ class SmartVolume extends SmartGeneric {
                 } else {
                     IconCustom = IconVolume100;
                 }
-                customIcon = (<IconCustom width={Theme.tile.tileIconSvg.size} height={Theme.tile.tileIconSvg.size} style={{zIndex: 1, height: Theme.tile.tileIconSvg.size, width: Theme.tile.tileIconSvg.size}}/>);
+                customIcon = (<IconCustom className={clsx(clsGeneric.iconStyle,this.state[this.actualId] !== this.min && clsGeneric.activeIconStyle)} />);
             }
         }
-        return (
-            <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, this.state[this.actualId] !== this.min ? {color: Theme.palette.lampOn} : {})} className="tile-icon">
-                {customIcon}
-                {this.state.executing ? <CircularProgress style={{position: 'absolute', top: 0, left: 0}} size={Theme.tile.tileIcon.width}/> : null}
-            </div>
-        );
+        // return (
+        //     <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, this.state[this.actualId] !== this.min ? {color: Theme.palette.lampOn} : {})} className="tile-icon">
+        //         {customIcon}
+        //         {this.state.executing ? <CircularProgress style={{position: 'absolute', top: 0, left: 0}} size={Theme.tile.tileIcon.width}/> : null}
+        //     </div>
+        // );
+        return SmartGeneric.renderIcon(customIcon, this.state.executing, this.state[this.actualId] !== this.min);
     }
 
     getStateText() {
@@ -239,7 +243,7 @@ class SmartVolume extends SmartGeneric {
                     unit={this.unit}
                     onValueChange={this.setValue}
                     onClose={this.onDialogClose}
-//                       type={Dialog.types.value}
+                //                       type={Dialog.types.value}
                 /> : null
         ]);
     }

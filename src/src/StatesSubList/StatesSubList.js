@@ -234,6 +234,7 @@ class StatesSubList extends Component {
             windowWidth={this.props.windowWidth}
             states={this.props.states}
             objects={this.props.objects}
+            themeType={this.props.themeType}
             user={this.props.user}
             onVisibilityControl={this.onVisibilityControl}
             onDelete={this.props.onDelete}
@@ -371,10 +372,10 @@ class StatesSubList extends Component {
 
         // place visible first
         result.sort(function (a, b) {
-            const av = this.state.visibleChildren[a.id];
-            const bv = this.state.visibleChildren[b.id];
-            if (av < bv) return 1;
-            if (av > bv) return -1;
+            // const av = this.state.visibleChildren[a.id];
+            // const bv = this.state.visibleChildren[b.id];
+            // if (av < bv) return 1;
+            // if (av > bv) return -1;
             return 0;
         }.bind(this));
 
@@ -432,7 +433,7 @@ class StatesSubList extends Component {
 
         return (
             <div style={{ width: '100%', overflow: 'auto' }}>
-                <div style={style} ref={provided.innerRef} {...provided.droppableProps}>
+                <div className={cls.wrapperItems} style={style} ref={provided.innerRef} {...provided.droppableProps}>
                     {items.map((item, index) => this.wrapItem(item, index))}
                     {provided.placeholder}
                 </div>
@@ -453,7 +454,7 @@ class StatesSubList extends Component {
         } else if (this.props.editMode || (!this.state.subDragging || !this.state.enabled)) {
             return (
                 <div key={(this.state.enumID + '-' + this.state.enumSubID).replace(/[^\w\d]/g, '_') + '-inset'} style={{ width: '100%', overflow: 'auto', opacity: this.state.enabled ? 1 : 0.5 }}>
-                    <div key="inline-div" style={{ display: 'flex' }}>
+                    <div key="inline-div" className={cls.wrapperItems}>
                         {items.map(e =>
                             <div key={'inline-div-' + e.id}>
                                 {e.control}
@@ -462,7 +463,9 @@ class StatesSubList extends Component {
                 </div>
             );
         } else {
-            return (<div className={cls.wrapperItems}>{items.map(e => e.control)}</div>);
+            return (<div className={cls.wrapperItems}>{items.map(e => <div key={'inline-div-' + e.id}>
+            {e.control}
+        </div>)}</div>);
         }
     }
 
@@ -535,12 +538,22 @@ class StatesSubList extends Component {
         const controls = [];
 
         if (countLights > 1) {
-            controls.push(<IconButton key="light-off" size="small" aria-label="Off" onClick={() => this.controlAllLights(false)} style={Object.assign({}, Theme.buttonAllLight, { color: 'black' })} title={I18n.t('All lights off')}><IconLight style={Theme.buttonAllIcon} /></IconButton>);
-            controls.push(<IconButton key="light-on" size="small" aria-label="On" onClick={() => this.controlAllLights(true)} style={Object.assign({}, Theme.buttonAllLight, { color: Theme.palette.lampOn })} title={I18n.t('All lights on')}><IconLight style={Theme.buttonAllIcon} /></IconButton>);
+            controls.push(<IconButton key="light-off" size="small" aria-label="Off" onClick={() => this.controlAllLights(false)}
+                className={clsx(cls.styleIconH3,cls.styleIconH3off)}
+                title={I18n.t('All lights off')}>
+                <IconLight  />
+            </IconButton>);
+            controls.push(<IconButton key="light-on" size="small" aria-label="On"
+                onClick={() => this.controlAllLights(true)}
+                className={clsx(cls.styleIconH3,cls.styleIconH3on)}
+                title={I18n.t('All lights on')}>
+                <IconLight  />
+            </IconButton>);
         }
         if (countBlinds > 0) {
-            controls.push(<IconButton key="blind-off" size="small" aria-label="Off" onClick={() => this.controlAllBlinds(false)} style={Object.assign({}, Theme.buttonAllLight, { color: 'black' })} title={I18n.t('Close all blinds')}><IconBlind style={Object.assign({}, Theme.iconAllBlinds, { color: 'black' })} /></IconButton>);
-            controls.push(<IconButton key="blind-on" size="small" aria-label="On" onClick={() => this.controlAllBlinds(true)} style={Object.assign({}, Theme.buttonAllLight, { color: Theme.palette.lampOn })} title={I18n.t('Open all blinds')}><IconBlind style={Object.assign({}, Theme.iconAllBlinds, { color: 'black', opacity: 0.3 })} /></IconButton>);
+            controls.push(<IconButton key="blind-off" size="small" aria-label="Off" onClick={() => this.controlAllBlinds(false)} className={clsx(cls.styleIconH3,cls.styleIconH3off)} title={I18n.t('Close all blinds')}><IconBlind style={{width:14,height:14,margin:2}}  /></IconButton>);
+            controls.push(<IconButton key="blind-on" size="small" aria-label="On" onClick={() => this.controlAllBlinds(true)} 
+            className={clsx(cls.styleIconH3,cls.styleIconH3on)} title={I18n.t('Open all blinds')}><IconBlind style={{width:14,height:14,margin:2}} /></IconButton>);
         }
 
         return controls.length ? controls : null;

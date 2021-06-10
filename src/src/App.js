@@ -55,6 +55,7 @@ import LoadingIndicator from './basic-controls/react-loading-screen/LoadingIndic
 import GenericApp from '@iobroker/adapter-react/GenericApp';
 import ToggleThemeMenu from './Components/ToggleThemeMenu';
 import cls from './style.module.scss';
+import { withSnackbar } from 'notistack';
 
 const isKeyboardAvailableOnFullScreen = (typeof Element !== 'undefined' && 'ALLOW_KEYBOARD_INPUT' in Element) && Element.ALLOW_KEYBOARD_INPUT;
 
@@ -121,6 +122,19 @@ class App extends GenericApp {
 
         this.urlVersion = App.getUrlVersion();
         this.socket.registerConnectionHandler(this.connectionHandler);
+        window.alert = message => {
+            if (message && message.toString().toLowerCase().includes('error')) {
+                console.error(message);
+                this.showAlert(message.toString(), 'error');
+            } else {
+                console.log(message);
+                this.showAlert(message.toString(), 'info');
+            }
+        };
+    }
+
+    showAlert = (message, status) => {
+        this.props.enqueueSnackbar(message, { variant: status });
     }
 
     setStateAsync(state) {
@@ -264,7 +278,7 @@ class App extends GenericApp {
                     }
                 });
         } else {
-           return Promise.resolve();
+            return Promise.resolve();
         }
     }
 
@@ -393,21 +407,21 @@ class App extends GenericApp {
                 .then(config => {
                     config = config || {};
                     result['system.config'] = config;
-                    let appSettings = Utils.getSettings(appConfig || {_id: appConfigID}, {
+                    let appSettings = Utils.getSettings(appConfig || { _id: appConfigID }, {
                         user: this.user,
                         language: I18n.getLanguage()
                     }) || {};
                     if (!appSettings.noCache) {
                         try {
                             const myStorage = window.localStorage;
-                            myStorage.setItem('data', JSON.stringify({objects: result, appConfig}));
+                            myStorage.setItem('data', JSON.stringify({ objects: result, appConfig }));
                         } catch (e) {
                             console.error('cannot store information to localstorage: ' + e);
                         }
                     }
                     appConfig = appConfig || {};
 
-                    return {objects: result, appConfig, config, keys, appSettings};
+                    return { objects: result, appConfig, config, keys, appSettings };
                 });
         }
     }
@@ -451,7 +465,7 @@ class App extends GenericApp {
 
             const obj = await this.socket.getObject('system.adapter.material');
             if (obj?.common?.version) {
-                await this.setStateAsync({actualVersion: obj.common.version});
+                await this.setStateAsync({ actualVersion: obj.common.version });
             }
 
             const data = await this.readRemoteData();
@@ -509,7 +523,7 @@ class App extends GenericApp {
                 });
                 this.setBarColor(settings);
             } else {
-                this.setState({loading: false, settings: {}});
+                this.setState({ loading: false, settings: {} });
             }
 
             // sometimes text2command = {label: disabled}
@@ -1567,7 +1581,7 @@ class App extends GenericApp {
     }
 
     getStateList() {
-        return (<StatesList
+        return <StatesList
             objects={this.state.viewEnum === Utils.INSTANCES ? this.instances : this.objects}
             user={this.user}
             states={this.states}
@@ -1581,14 +1595,15 @@ class App extends GenericApp {
             backgroundId={this.state.backgroundId}
             newLine={this.state.settings && this.state.settings.newLine}
             editMode={this.state.editMode}
+            themeType={this.state.themeType}
             windowWidth={parseFloat(this.state.width)}
             windowHeight={parseFloat(this.state.height)}
             // marginLeft={this.state.menuFixed ? Theme.menu.width : 0}
             enumID={this.state.viewEnum}
             onSaveSettings={this.onSaveSettings}
             onControl={this.onControl}
-            onCollectIds={this.onCollectIds} />
-        );
+            onCollectIds={this.onCollectIds} 
+        />;
     }
 
     getErrorDialog() {
@@ -1667,4 +1682,4 @@ class App extends GenericApp {
     }
 }
 
-export default withStyles(styles)(App);
+export default withSnackbar(withStyles(styles)(App));

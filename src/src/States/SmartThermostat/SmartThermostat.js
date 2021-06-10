@@ -14,13 +14,17 @@
  * limitations under the License.
  **/
 import React from 'react';
-import SmartGeneric from './SmartGeneric';
-import Icon from '../icons/Thermometer'
-import IconThermometer from '../icons/ThermometerSimple';
-import IconHydro from '../icons/Humidity';
-import Theme from '../theme';
-import Dialog from '../Dialogs/SmartDialogThermostat';
+import SmartGeneric from '../SmartGeneric';
+import Icon from '../../icons/Thermometer'
+import IconThermometer from '../../icons/ThermometerSimple';
+import IconHydro from '../../icons/Humidity';
+import Theme from '../../theme';
+import Dialog from '../../Dialogs/SmartDialogThermostat';
 import I18n from '@iobroker/adapter-react/i18n';
+import IconAdapter from '@iobroker/adapter-react/Components/Icon';
+import cls from './style.module.scss';
+import clsGeneric from '../style.module.scss';
+import { dialogChartCallBack } from '../../Dialogs/DialogChart';
 
 class SmartThermostat extends SmartGeneric {
     // props = {
@@ -126,19 +130,15 @@ class SmartThermostat extends SmartGeneric {
         let customIcon;
 
         if (this.state.settings.useDefaultIcon) {
-            customIcon = (<img alt="icon" src={this.getDefaultIcon()} style={{height: '100%', zIndex: 1}}/>);
+            customIcon = (<IconAdapter alt="icon" src={this.getDefaultIcon()} style={{height: '100%', zIndex: 1}}/>);
         } else {
             if (this.state.settings.icon) {
-                customIcon = (<img alt="icon" src={this.state.settings.icon} style={{height: '100%', zIndex: 1}}/>);
+                customIcon = (<IconAdapter alt="icon" src={this.state.settings.icon} style={{height: '100%', zIndex: 1}}/>);
             } else {
-                customIcon = (<Icon width={Theme.tile.tileIconSvg.size} height={Theme.tile.tileIconSvg.size} style={{zIndex: 1, height: Theme.tile.tileIconSvg.size, width: Theme.tile.tileIconSvg.size}}/>);
+                customIcon = (<Icon className={clsGeneric.iconStyle}/>);
             }
         }
-        return (
-            <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, {}, {left: '0.5rem'})} className="tile-icon">
-                {customIcon}
-            </div>
-        );
+        return SmartGeneric.renderIcon(customIcon);
     }
 
     formatValue(num, unit) {
@@ -193,6 +193,7 @@ class SmartThermostat extends SmartGeneric {
         return this.wrapContent([
             this.getStandardContent(this.id, true),
             this.getSecondaryDiv(),
+            this.getCharts(),
             this.state.showDialog ?
                 <Dialog
                     key={this.key + 'dialog'}

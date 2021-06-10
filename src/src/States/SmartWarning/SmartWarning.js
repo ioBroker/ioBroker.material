@@ -17,8 +17,11 @@ import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 
-import SmartGeneric from './SmartGeneric';
-import Dialog from '../Dialogs/SmartDialogWarning';
+import SmartGeneric from '../SmartGeneric';
+import Dialog from '../../Dialogs/SmartDialogWarning';
+import IconAdapter from '@iobroker/adapter-react/Components/Icon';
+import cls from './style.module.scss';
+import clsGeneric from '../style.module.scss';
 
 const styles = {
     'icon-div': {

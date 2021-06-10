@@ -18,24 +18,13 @@ import SmartGeneric from '../SmartGeneric';
 import IconThermometer from '../../icons/Thermometer';
 import IconHydro from '../../icons/Humidity';
 
-import Theme from '../../theme';
+// import Theme from '../../theme';
 import I18n from '@iobroker/adapter-react/i18n';
 import IconAdapter from '@iobroker/adapter-react/Components/Icon';
 import cls from './style.module.scss';
 import clsGeneric from '../style.module.scss';
-import clsx from 'clsx/dist/clsx';
-import ReactEcharts from 'echarts-for-react';
-import ReactEchartsCore from 'echarts-for-react/lib/core';
-//import echarts from 'echarts/lib/echarts';
-//import 'echarts/lib/chart/line';
-//mport 'echarts/lib/component/tooltip';
-//import 'echarts/lib/component/grid';
-//import 'echarts/lib/component/toolbox';
-//import 'echarts/lib/component/title';
-//import 'echarts/lib/component/dataZoom';
-//import 'echarts/lib/component/timeline';
-//import 'zrender/lib/svg/svg';
-import { Flag } from '@material-ui/icons';
+// import { Flag } from '@material-ui/icons';
+import { dialogChartCallBack } from '../../Dialogs/DialogChart';
 
 class SmartThermometer extends SmartGeneric {
     constructor(props) {
@@ -131,168 +120,6 @@ class SmartThermometer extends SmartGeneric {
 
         return SmartGeneric.renderIcon(customIcon);
     }
-    readHistory = () => {
-        /*interface GetHistoryOptions {
-            instance?: string;
-            start?: number;
-            end?: number;
-            step?: number;
-            count?: number;
-            from?: boolean;
-            ack?: boolean;
-            q?: boolean;
-            addID?: boolean;
-            limit?: number;
-            ignoreNull?: boolean;
-            sessionId?: any;
-            aggregate?: 'minmax' | 'min' | 'max' | 'average' | 'total' | 'count' | 'none';
-        }*/
-        const now = new Date();
-            now.setHours(now.getHours() - 24);
-            now.setMinutes(0);
-            now.setSeconds(0);
-            now.setMilliseconds(0);
-            let start = now.getTime();
-            let end = Date.now();
-
-        const options = {
-            instance:  'history.0',
-            start,
-            end,
-            step:      3600000,
-            from:      false,
-            ack:       false,
-            q:         false,
-            addID:     false,
-            aggregate: 'minmax'
-        };
-
-        // if (end - start > 60000 * 24) {
-        //     options.aggregate = 'minmax';
-        //     //options.step = 60000;
-        // }
-        this.props.socket.getObjects().then(e=>{
-            // debugger
-        }).catch(e=>{
-            // debugger
-        });
-
-
-        return this.props.socket.getHistory(this.id, options)
-            .then(values => {
-                // debugger
-                // merge range and chart
-                let chart = [];
-                let r     = 0;
-                let range = this.rangeValues;
-                let minY  = null;
-                let maxY  = null;
-
-                for (let t = 0; t < values.length; t++) {
-                    if (range) {
-                        while (r < range.length && range[r].ts < values[t].ts) {
-                            chart.push(range[r]);
-                            console.log(`add ${new Date(range[r].ts).toISOString()}: ${range[r].val}`);
-                            r++;
-                        }
-                    }
-                    // if range and details are not equal
-                    if (!chart.length || chart[chart.length - 1].ts < values[t].ts) {
-                        chart.push(values[t]);
-                        console.log(`add value ${new Date(values[t].ts).toISOString()}: ${values[t].val}`)
-                    } else if (chart[chart.length - 1].ts === values[t].ts && chart[chart.length - 1].val !== values[t].ts) {
-                        console.error('Strange data!');
-                    }
-                    if (minY === null || values[t].val < minY) {
-                        minY = values[t].val;
-                    }
-                    if (maxY === null || values[t].val > maxY) {
-                        maxY = values[t].val;
-                    }
-                }
-
-                if (range) {
-                    while (r < range.length) {
-                        chart.push(range[r]);
-                        console.log(`add range ${new Date(range[r].ts).toISOString()}: ${range[r].val}`);
-                        r++;
-                    }
-                }
-
-                // sort
-                chart.sort((a, b) => a.ts > b.ts ? 1 : (a.ts < b.ts ? -1 : 0));
-
-                this.chartValues = chart;
-                this.minY = minY;
-                this.maxY = maxY;
-
-                if (this.minY < 10) {
-                    this.minY = Math.round(this.minY * 10) / 10;
-                } else {
-                    this.minY = Math.ceil(this.minY);
-                }
-                if (this.maxY < 10) {
-                    this.maxY = Math.round(this.maxY * 10) / 10;
-                } else {
-                    this.maxY = Math.ceil(this.maxY);
-                }
-                return chart;
-            })
-            .catch(e=>{
-                console.error('Cannot read history: ' + e);
-            })
-    }
-
-    getCharts=()=>{
-        // console.log(11223344,this)
-        this.readHistory(0,1000);
-        const option = {
-            animation: true,
-            legend: {
-                show: false,
-            },
-            grid: {
-                show: false,
-                left: 0,
-                top: 0,
-                right: 0,
-                bottom: 0,
-            },
-            xAxis:
-                {
-                    show: false,
-                    boundaryGap: false,
-                    data: [" ", " ", " ", " ", " ", " ", " ",]
-                }
-            ,
-            yAxis: {
-                    show: false,
-                    type: "value"
-            },
-            series: [
-                {
-                    silent: true,
-                    type: "line",
-                    smooth: true,
-                    showSymbol: false,
-                    color:'#f85e27',
-                    areaStyle: { color:'#f85e276b' },
-                    data: [150, 232, 201, 154, 190, 330, 410]
-                }
-            ]
-        };
-
-        return <div className={cls.wrapperCharts}>
-            <ReactEcharts
-                className={cls.styleCharts}
-                //echarts={ echarts }
-                option={option}
-                opts={{ renderer: 'svg' }}
-                notMerge={ true }
-                lazyUpdate={ true }
-            />
-        </div>;
-    }
 
     getSecondaryDiv() {
         if (!this.secondary || !this.secondary.id || this.state[this.secondary.id] === undefined || this.state[this.secondary.id] === null) {
@@ -330,7 +157,9 @@ class SmartThermometer extends SmartGeneric {
             this.getStandardContent(this.actualId),
             this.getSecondaryDiv(),
             this.getSecondaryDivTop(),
-            this.getCharts()
+            this.getCharts(),
+            this.state.showDialog ?
+                dialogChartCallBack(this.onDialogClose, this.settingsId, this.props.socket,this.props.themeType) : null
         ]);
     }
 }

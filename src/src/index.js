@@ -16,8 +16,8 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {version} from '../package.json';
-import { MuiThemeProvider} from '@material-ui/core/styles';
+import { version } from '../package.json';
+import { MuiThemeProvider } from '@material-ui/core/styles';
 import * as Sentry from '@sentry/browser';
 import * as SentryIntegrations from '@sentry/integrations';
 
@@ -27,6 +27,8 @@ import App from './App';
 
 import * as serviceWorker from './serviceWorker';
 import '@iobroker/adapter-react/index.css';
+import { SnackbarProvider } from 'notistack';
+import { Button } from '@material-ui/core';
 
 window.adapterName = 'material';
 
@@ -34,11 +36,23 @@ console.log('iobroker.' + window.adapterName + '@' + version);
 let themeName = Utils.getThemeName();
 
 function build() {
-    return ReactDOM.render(<MuiThemeProvider theme={ theme(themeName) }>
-        <App onThemeChange={_themeName => {
-            themeName = _themeName;
-            build();
-        }}/>
+    const notistackRef = React.createRef();
+    const onClickDismiss = key => () => {
+        notistackRef.current.closeSnackbar(key);
+    }
+    return ReactDOM.render(<MuiThemeProvider theme={theme(themeName)}>
+        <SnackbarProvider
+            ref={notistackRef}
+            action={(key) => (
+                <Button onClick={onClickDismiss(key)}>
+                    x
+                </Button>
+            )} maxSnack={6}>
+            <App onThemeChange={_themeName => {
+                themeName = _themeName;
+                build();
+            }} />
+        </SnackbarProvider>
     </MuiThemeProvider>, document.getElementById('root'));
 }
 

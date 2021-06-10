@@ -18,10 +18,13 @@ import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 
 import {FaVideo as IconCam} from 'react-icons/fa';
-import SmartGeneric from './SmartGeneric';
-import Dialog from '../Dialogs/SmartDialogURL';
-import Theme from '../theme';
+import SmartGeneric from '../SmartGeneric';
+import Dialog from '../../Dialogs/SmartDialogURL';
+import Theme from '../../theme';
 import Utils from '@iobroker/adapter-react/Components/Utils';
+import IconAdapter from '@iobroker/adapter-react/Components/Icon';
+import cls from './style.module.scss';
+import clsGeneric from '../style.module.scss';
 
 const styles = {
     'title-div': {
@@ -259,15 +262,11 @@ class SmartURL extends SmartGeneric {
         if (this.state.settings.hideIcon) return null;
 
         if (this.state.settings.icon) {
-            customIcon = (<img src={this.state.settings.icon} alt="icon" style={{height: '100%', zIndex: 1, color: 'white'}}/>);
+            customIcon = (<IconAdapter src={this.state.settings.icon} alt="icon" style={{height: '100%', zIndex: 1, color: 'white'}}/>);
         } else {
-            customIcon = (<IconCam width={Theme.tile.tileIconSvg.size} height={Theme.tile.tileIconSvg.size} style={{zIndex: 1, height: Theme.tile.tileIconSvg.size, width: Theme.tile.tileIconSvg.size, color: 'white'}}/>);
+            customIcon = (<IconCam className={clsGeneric.iconStyle}/>);
         }
-        return (
-            <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, {opacity: 0.7})} className="tile-icon">
-                {customIcon}
-            </div>
-        );
+        return SmartGeneric.renderIcon(customIcon);
     }
 
     getIFrameDiv() {

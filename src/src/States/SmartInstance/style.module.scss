@@ -14,10 +14,13 @@
     pointer-events: none;
 }
 .textOn {
-    color: #f85e27;
+    color: #f85e27 !important;
 }
 .textOff {
-    color: #515151;
+    color: #515151 !important;
+}
+.buttonOff {
+    color: #63b52682 !important;
 }
 .wrapperSwitch {
     position: absolute;
@@ -57,4 +60,7 @@
     position: absolute;
     bottom: 0;
     left: 0;
+}
+.styleText{
+    color:#f85e27
 }

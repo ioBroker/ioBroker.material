@@ -26,6 +26,8 @@
     border-radius: 5px;
     border-bottom: 1px solid #f85e27;
     border-top: 1px solid #f85e27;
+    background-color: #303439eb !important;
+    z-index: 10001 !important;
 }
 .buttonStyle {
     color: #b8c2ce !important;
@@ -50,21 +52,26 @@
 .menuSelectedBright {
     color: #f85e27 !important;
 }
-.listItem{
+.listItem {
     background: #f85e27;
-    z-index: 11111;
-
 }
-.listItemActive{
+.zIndexList {
+    z-index: 10000;
+}
+.listItemActive {
     background: #f85e2717 !important;
 }
-.toolBar{
+.toolBar {
     // border-bottom:1px solid #f85e27;
     height: 46px;
     min-height: 46px !important;
 }
-.expendIcon{
+.expendIcon {
     color: #b8c2ce;
+}
+.iconDrag {
+    color: #b8c2ce;
+    margin-right: 5px;
 }
 @media screen and (max-width: 835px) {
     .rootWrapper {

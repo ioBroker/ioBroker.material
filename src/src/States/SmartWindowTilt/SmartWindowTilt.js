@@ -14,12 +14,15 @@
  * limitations under the License.
  **/
 import React from 'react';
-import SmartGeneric from './SmartGeneric';
-import IconWindowOpened from '../icons/WindowOpened';
-import IconWindowClosed from '../icons/WindowClosed';
-import IconWindowTilted from '../icons/WindowTilted';
-import Theme from '../theme';
+import SmartGeneric from '../SmartGeneric';
+import IconWindowOpened from '../../icons/WindowOpened';
+import IconWindowClosed from '../../icons/WindowClosed';
+import IconWindowTilted from '../../icons/WindowTilted';
+import Theme from '../../theme';
 import I18n from '@iobroker/adapter-react/i18n';
+import IconAdapter from '@iobroker/adapter-react/Components/Icon';
+import cls from './style.module.scss';
+import clsGeneric from '../style.module.scss';
 
 const VALUES = {
     closed: [/close/i],
@@ -160,19 +163,20 @@ class SmartWindowTilt extends SmartGeneric {
         let customIcon;
 
         if (this.state.settings.useDefaultIcon) {
-            customIcon = (<img alt="icon" src={this.getDefaultIcon()} style={{width: '100%', zIndex: 1}}/>);
+            customIcon = (<IconAdapter alt="icon" src={this.getDefaultIcon()} style={{width: '100%', zIndex: 1}}/>);
         } else {
             if (this.state.settings.icon) {
-                customIcon = (<img alt="icon" src={this.state.settings.icon} style={{height: '100%', zIndex: 1}}/>);
+                customIcon = (<IconAdapter alt="icon" src={this.state.settings.icon} style={{height: '100%', zIndex: 1}}/>);
             } else {
-                customIcon = (<Icon width={'100%'} style={{zIndex: 1}}/>);
+                customIcon = (<Icon className={clsGeneric.iconStyle}/>);
             }
         }
-        return (
-            <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, iconStyle)} className="tile-icon">
-                {customIcon}
-            </div>
-        );
+        // return (
+        //     <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, iconStyle)} className="tile-icon">
+        //         {customIcon}
+        //     </div>
+        // );
+        return SmartGeneric.renderIcon(customIcon);
     }
 
     getStateText() {

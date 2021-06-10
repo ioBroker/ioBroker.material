@@ -17,10 +17,13 @@ import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 
-import SmartGeneric from './SmartGeneric';
+import SmartGeneric from '../SmartGeneric';
 import Utils from '@iobroker/adapter-react/Components/Utils';
-import Dialog from '../Dialogs/SmartDialogWeatherForecast';
+import Dialog from '../../Dialogs/SmartDialogWeatherForecast';
 import I18n from '@iobroker/adapter-react/i18n';
+import IconAdapter from '@iobroker/adapter-react/Components/Icon';
+import cls from './style.module.scss';
+import clsGeneric from '../style.module.scss';
 
 const styles = {
     'currentIcon-div': {

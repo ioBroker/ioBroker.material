@@ -12,6 +12,7 @@
 }
 .wrapperItems{
     display: flex;
+    flex-flow: wrap;
 }
 .h3Style{
     font-size: 20px;
@@ -24,6 +25,16 @@
 .h3Active{
     background: #f85e2714;    
     animation: moveWrapperIcon 1s linear ;
+}
+.styleIconH3{
+    margin-left: 10px !important;
+    border: 1px solid !important;
+}
+.styleIconH3on{
+    color: #f85e27 !important;
+}
+.styleIconH3off{
+    color: #b7c1cc !important;
 }
 @keyframes moveWrapperIcon {
     0% {

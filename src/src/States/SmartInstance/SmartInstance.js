@@ -16,14 +16,19 @@
 import React from 'react';
 import Fab from '@material-ui/core/Fab';
 
-import SmartGeneric from './SmartGeneric';
-import Theme from '../theme';
+import SmartGeneric from '../SmartGeneric';
+import Theme from '../../theme';
 import I18n from '@iobroker/adapter-react/i18n';
 
-import {MdPlayArrow as IconPlay} from 'react-icons/md';
-import {MdPause as IconPause} from 'react-icons/md';
+import { MdPlayArrow as IconPlay } from 'react-icons/md';
+import { MdPause as IconPause } from 'react-icons/md';
 //import IconChecked from 'react-icons/lib/md/check-circle';
 //import IconUnchecked from 'react-icons/lib/md/cancel';
+import IconAdapter from '@iobroker/adapter-react/Components/Icon';
+import cls from './style.module.scss';
+import clsGeneric from '../style.module.scss';
+import clsx from 'clsx';
+import { IconButton } from '@material-ui/core';
 
 class SmartInstance extends SmartGeneric {
     constructor(props) {
@@ -78,7 +83,7 @@ class SmartInstance extends SmartGeneric {
 
             this.setState(newState);
 
-            this.props.tile.setState({state: val});
+            this.props.tile.setState({ state: val });
         } else if (id === this.connectedId) {
             this.connectedState = state.val;
             if (this.state[this.id]) {
@@ -100,11 +105,12 @@ class SmartInstance extends SmartGeneric {
 
     getIcon() {
         const img = '/' + this.props.objects[this.instanceId].common.name + '.admin/' + this.props.objects[this.instanceId].common.icon;
-        return (
-            <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon)} className="tile-icon">
-                <img height={'100%'} src={img} alt={'i' || this.state.settings.name}/>
-            </div>
-        );
+        // return (
+        //     <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon)} className="tile-icon">
+        //         <img height={'100%'} src={img} alt={'i' || this.state.settings.name}/>
+        //     </div>
+        // );
+        return SmartGeneric.renderIcon(<IconAdapter className={clsGeneric.iconStyle} src={img} alt={'i' || this.state.settings.name} />);
     }
 
     getStateText() {
@@ -132,10 +138,10 @@ class SmartInstance extends SmartGeneric {
         }
 
         return (<div key={this.key + 'tile-secondary'} className="tile-text-second"
-                     style={Theme.tile.secondary.button} title={text}>
-            <Fab variant="round" size="small" onClick={this.toggle} style={{background: color, boxShadow: 'none'}} aria-label={text}>
+            style={Theme.tile.secondary.button} title={text}>
+            <IconButton className={clsx(this.props.objects[this.instanceId].common.enabled ? cls.textOn : cls.buttonOff)} variant="round" size="small" onClick={this.toggle} aria-label={text}>
                 <Icon />
-            </Fab>
+            </IconButton>
         </div>);
     }
 
@@ -155,12 +161,12 @@ class SmartInstance extends SmartGeneric {
 
         return this.wrapContent([
             (<div key={this.key + 'tile-icon'} className="tile-icon">{this.getIcon()}</div>),
-                this.getSecondaryDiv(),
+            this.getSecondaryDiv(),
             (<div key={this.key + 'tile-text'}
-                  className="tile-text"
-                  style={Object.assign({}, Theme.tile.tileText, {minHeight: 56})}>
+                className="tile-text"
+                style={Object.assign({}, Theme.tile.tileText, { minHeight: 56 })}>
                 <div className="tile-channel-name" style={Object.assign({}, Theme.tile.tileName, this.state.nameStyle)}>{this.state.settings.name}</div>
-                <div className="tile-state-text"   style={Object.assign({}, Theme.tile.tileState, style)}>{this.getStateText()}</div>
+                <div className="tile-state-text" className={clsx(this.state[this.id] ? cls.textOn : cls.textOff)} >{this.getStateText()}</div>
             </div>)
         ]
         );

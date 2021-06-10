@@ -18,10 +18,14 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 import {TiLightbulb as Icon} from 'react-icons/ti'
 
-import SmartGeneric from './SmartGeneric';
-import Theme from '../theme';
-import Dialog from '../Dialogs/SmartDialogSlider';
+import SmartGeneric from '../SmartGeneric';
+import Theme from '../../theme';
+import Dialog from '../../Dialogs/SmartDialogSlider';
 import I18n from '@iobroker/adapter-react/i18n';
+import IconAdapter from '@iobroker/adapter-react/Components/Icon';
+import cls from './style.module.scss';
+import clsGeneric from '../style.module.scss';
+import clsx from 'clsx';
 
 class SmartDimmer extends SmartGeneric {
     constructor(props) {
@@ -183,20 +187,21 @@ class SmartDimmer extends SmartGeneric {
     getIcon() {
         let customIcon;
         if (this.state.settings.useDefaultIcon) {
-            customIcon = (<img src={this.getDefaultIcon()} alt="icon" style={{height: '100%'}}/>);
+            customIcon = (<IconAdapter src={this.getDefaultIcon()} alt="icon" style={{height: '100%'}}/>);
         } else {
             if (this.state.settings.icon) {
-                customIcon = (<img src={this.state.settings.icon} alt="icon" style={{height: '100%'}}/>);
+                customIcon = (<IconAdapter src={this.state.settings.icon} alt="icon" style={{height: '100%'}}/>);
             } else {
-                customIcon = (<Icon width={Theme.tile.tileIconSvg.size} height={Theme.tile.tileIconSvg.size} style={{height: Theme.tile.tileIconSvg.size, width: Theme.tile.tileIconSvg.size}}/>);
+                customIcon = (<Icon className={clsx(clsGeneric.iconStyle,this.state[this.actualId] !== this.min && clsGeneric.activeIconStyle)}/>);
             }
         }
-        return (
-            <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, this.state[this.actualId] !== this.min ? {color: Theme.palette.lampOn} : {})} className="tile-icon">
-                {customIcon}
-                {this.state.executing ? <CircularProgress style={{position: 'absolute', top: 0, left: 0}} size={Theme.tile.tileIcon.width}/> : null}
-            </div>
-        );
+        // return (
+        //     <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, this.state[this.actualId] !== this.min ? {color: Theme.palette.lampOn} : {})} className="tile-icon">
+        //         {customIcon}
+        //         {this.state.executing ? <CircularProgress style={{position: 'absolute', top: 0, left: 0}} size={Theme.tile.tileIcon.width}/> : null}
+        //     </div>
+        // );
+        return SmartGeneric.renderIcon(customIcon,this.state.executing,this.state[this.actualId] !== this.min);
     }
 
     getStateText() {

@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 import PropTypes from 'prop-types';
 import Utils from '@iobroker/adapter-react/Components/Utils';
 import I18n from '@iobroker/adapter-react/i18n';
 import Theme from '../theme';
 
 import { MdVisibility as IconCheck } from 'react-icons/md';
+import {MdVisibilityOff as IconUncheck} from 'react-icons/md';
 import { MdRemove as IconRemoved } from 'react-icons/md';
 import { MdEdit as IconEdit } from 'react-icons/md';
 import { MdArrowUpward as IconDirectionUp } from 'react-icons/md';
@@ -29,6 +30,28 @@ import cls from './style.module.scss';
 
 import Dialog from '../Dialogs/SmartDialogSettings';
 import clsx from 'clsx';
+//import ReactEcharts from 'echarts-for-react';
+import ReactEchartsCore from 'echarts-for-react/lib/core';
+
+import * as echarts from 'echarts/core';
+
+import {LineChart} from 'echarts/charts';
+import {
+    GridComponent,
+    ToolboxComponent,
+    TooltipComponent,
+    TitleComponent,
+    TimelineComponent,
+    DataZoomComponent,
+    DataZoomInsideComponent,
+  } from 'echarts/components';
+import {
+    SVGRenderer,
+  } from 'echarts/renderers';
+
+echarts.use([DataZoomInsideComponent, DataZoomComponent, TimelineComponent, ToolboxComponent, TitleComponent, TooltipComponent, GridComponent, LineChart, SVGRenderer]);
+
+
 
 // taken from here: https://stackoverflow.com/questions/4817029/whats-the-best-way-to-detect-a-touch-screen-device-using-javascript
 function isTouchDevice() {
@@ -170,6 +193,7 @@ class SmartGeneric extends Component {
 
         // will be done in componentReady
         // this.state = stateRx;
+        this.echartsReact = createRef();
     }
 
     componentReady() {
@@ -773,12 +797,12 @@ class SmartGeneric extends Component {
                             <div onClick={this.toggleEnabled}
                                 className={cls.wrapperIcon}
                             >
-                                <IconRemoved className={cls.iconEditStyle} />
+                                <IconUncheck className={cls.iconEditStyle} />
                             </div>
                         </div>
                     }
                     <div className={cls.blurEdit}>
-                    {content}
+                        {content}
                     </div>
                 </div>,
                 this.state.showSettings ?
@@ -814,6 +838,183 @@ class SmartGeneric extends Component {
 
     static getNameFontSize(name) {
         return name && name.length >= 15 ? 12 : (name && name.length > 10 ? 14 : 16);
+    }
+
+    readHistory = () => {
+        const now = new Date();
+        now.setHours(now.getHours() - 24);
+        now.setMinutes(0);
+        now.setSeconds(0);
+        now.setMilliseconds(0);
+        let start = now.getTime();
+        let end = Date.now();
+
+        const options = {
+            instance: 'history.0',
+            start,
+            end,
+            step: 1800000,
+            from: false,
+            ack: false,
+            q: false,
+            addID: false,
+            aggregate: 'minmax'
+        };
+
+        return this.props.socket.getHistory(this.id, options)
+            .then(values => {
+                // merge range and chart
+                let chart = [];
+                let r = 0;
+                let range = this.rangeValues;
+                // let minY = null;
+                // let maxY = null;
+
+                for (let t = 0; t < values.length; t++) {
+                    if (range) {
+                        while (r < range.length && range[r].ts < values[t].ts) {
+                            chart.push(range[r]);
+                            // console.log(`add ${new Date(range[r].ts).toISOString()}: ${range[r].val}`);
+                            r++;
+                        }
+                    }
+                    // if range and details are not equal
+                    if (!chart.length || chart[chart.length - 1].ts < values[t].ts) {
+                        chart.push(values[t]);
+                        // console.log(`add value ${new Date(values[t].ts).toISOString()}: ${values[t].val}`)
+                    } 
+                    // else if (chart[chart.length - 1].ts === values[t].ts && chart[chart.length - 1].val !== values[t].ts) {
+                    //     console.error('Strange data!');
+                    // }
+                    // if (minY === null || values[t].val < minY) {
+                    //     minY = values[t].val;
+                    // }
+                    // if (maxY === null || values[t].val > maxY) {
+                    //     maxY = values[t].val;
+                    // }
+                }
+
+                if (range) {
+                    while (r < range.length) {
+                        chart.push(range[r]);
+                        console.log(`add range ${new Date(range[r].ts).toISOString()}: ${range[r].val}`);
+                        r++;
+                    }
+                }
+
+                // sort
+                chart.sort((a, b) => a.ts > b.ts ? 1 : (a.ts < b.ts ? -1 : 0));
+
+                // this.chartValues = chart;
+                // if (!this.chart) {
+                //     this.chart = {};
+
+                // }
+                // this.minY = minY;
+                // this.maxY = maxY;
+
+                // if (this.minY < 10) {
+                //     this.minY = Math.round(this.minY * 10) / 10;
+                // } else {
+                //     this.minY = Math.ceil(this.minY);
+                // }
+                // if (this.maxY < 10) {
+                //     this.maxY = Math.round(this.maxY * 10) / 10;
+                // } else {
+                //     this.maxY = Math.ceil(this.maxY);
+                // }
+                this.echartsReact.current?.getEchartsInstance().setOption({
+                    series: [{
+                        data: this.convertData(chart)
+                    }],
+                    xAxis: {
+                        data: this.convertData(chart)
+                    }
+                });
+            })
+            .catch(e => {
+                console.error('Cannot read history: ' + e);
+            })
+    }
+
+    convertData = (values) => {
+        // values = values || this.chartValues;
+        // const data = [];
+        // if (!values.length) {
+        //     return data;
+        // }
+        // for (let i = 0; i < values.length; i++) {
+        //     data.push({ value: [values[i].ts, values[i].val] });
+        // }
+        // if (!this.chart.min) {
+        //     this.chart.min = values[0].ts;
+        //     this.chart.max = values[values.length - 1].ts;
+        // }
+
+        return values.map(e => e.val !== null?e.val:0);
+    }
+
+
+    getCharts = () => {
+        if(!this.firstGetCharts){
+            this.firstGetCharts = true;
+            this.readHistory();
+        }
+        if (!this.expireInSecInterval) {
+            this.expireInSecInterval = setInterval(() => {
+                this.readHistory();
+                this.expireInSecInterval = null;
+            }, 60000);
+        }
+        const option = {
+            animation: true,
+            legend: {
+                show: false,
+            },
+            grid: {
+                show: false,
+                left: 0,
+                top: 0,
+                right: 0,
+                bottom: 0,
+            },
+            xAxis:
+            {
+                show: false,
+                boundaryGap: false,
+                data: []
+            }
+            ,
+            yAxis: {
+                show: false,
+                type: 'value'
+            },
+            series: [
+                {
+                    silent: true,
+                    type: 'line',
+                    smooth: true,
+                    showSymbol: false,
+                    color: '#f85e27',
+                    areaStyle: { color: '#f85e276b' },
+                    data: []
+                }
+            ]
+        };
+
+        return <div className={cls.wrapperCharts}>
+            <ReactEchartsCore
+                className={cls.styleCharts}
+                ref={this.echartsReact}
+                echarts={ echarts }
+                option={ option }
+                notMerge={ true }
+                lazyUpdate={ true }
+                //theme={ this.props.themeType === 'dark' ? 'dark' : '' }
+                //style={{ height: this.state.chartHeight + 'px', width: '100%' }}
+                opts={{ renderer: 'svg' }}                
+            />
+        </div>;
     }
 
     render() {

@@ -14,7 +14,7 @@
  * limitations under the License.
  **/
 import React from 'react';
-import SmartGeneric from './SmartGeneric';
+import SmartGeneric from '../SmartGeneric';
 import Fab from '@material-ui/core/Fab';
 
 import {MdMusicNote as IconNote} from 'react-icons/md';
@@ -23,10 +23,12 @@ import {MdPause as IconPause} from 'react-icons/md';
 import {MdStop as IconStop} from 'react-icons/md';
 import {MdSkipNext as IconNext} from 'react-icons/md';
 import {MdSkipPrevious as IconPrev} from 'react-icons/md';
-
-import Theme from '../theme';
+import IconAdapter from '@iobroker/adapter-react/Components/Icon';
+import cls from './style.module.scss';
+import clsGeneric from '../style.module.scss';
+import Theme from '../../theme';
 // import cover from '../assets/cover.png';
-import Dialog from '../Dialogs/SmartDialogMedia';
+import Dialog from '../../Dialogs/SmartDialogMedia';
 
 const style = {
     info: {
@@ -293,15 +295,11 @@ class SmartMedia extends SmartGeneric {
             let customIcon;
 
             if (this.state.settings.useDefaultIcon) {
-                customIcon = (<img alt="icon" src={this.getDefaultIcon()} style={{height: '100%'}}/>);
+                customIcon = (<IconAdapter alt="icon" src={this.getDefaultIcon()} style={{height: '100%'}}/>);
             } else {
-                customIcon = (<IconNote width={Theme.tile.tileIconSvg.size} height={Theme.tile.tileIconSvg.size} style={{height: Theme.tile.tileIconSvg.size, width: Theme.tile.tileIconSvg.size}}/>);
+                customIcon = (<IconNote className={clsGeneric.iconStyle}/>);
             }
-            return (
-                <div key={this.key + 'icon'} style={Theme.tile.tileIcon} className="tile-icon">
-                    {customIcon}
-                </div>
-            );
+            return SmartGeneric.renderIcon(customIcon);
         }
     }
 

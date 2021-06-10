@@ -22,27 +22,28 @@ import Theme from '../theme';
 import Types from '../States/SmartTypes';
 import Utils from '@iobroker/adapter-react/Components/Utils';
 
-import SmartBlinds from '../States/SmartBlinds';
+import SmartBlinds from '../States/SmartBlinds/SmartBlinds';
 import SmartButton from '../States/SmartButton/SmartButton';
-import SmartDimmer from '../States/SmartDimmer';
+// import SmartDimmer from '../States/SmartDimmer/SmartDimmer';
 import SmartGeneric from '../States/SmartGeneric';
 import SmartInfo from '../States/SmartInfo/SmartInfo';
-import SmartSlider from '../States/SmartSlider';
+import SmartSlider from '../States/SmartSlider/SmartSlider';
 import SmartState from '../States/SmartState/SmartState';
 import SmartSwitch from '../States/SmartSwitch/SmartSwitch';
 import SmartThermometer from '../States/SmartThermometer/SmartThermometer';
-import SmartThermostat from "../States/SmartThermostat";
-import SmartWindowTilt from '../States/SmartWindowTilt';
-import SmartLock from '../States/SmartLock';
-import SmartInstance from '../States/SmartInstance';
-import SmartMedia from '../States/SmartMedia';
-import SmartVolume from '../States/SmartVolume';
-import SmartWeatherForecast from '../States/SmartWeatherForecast';
-import SmartWarning from '../States/SmartWarning';
-import SmartURL from '../States/SmartURL';
+import SmartThermostat from "../States/SmartThermostat/SmartThermostat";
+import SmartWindowTilt from '../States/SmartWindowTilt/SmartWindowTilt';
+import SmartLock from '../States/SmartLock/SmartLock';
+import SmartInstance from '../States/SmartInstance/SmartInstance';
+import SmartMedia from '../States/SmartMedia/SmartMedia';
+import SmartVolume from '../States/SmartVolume/SmartVolume';
+import SmartWeatherForecast from '../States/SmartWeatherForecast/SmartWeatherForecast';
+import SmartWarning from '../States/SmartWarning/SmartWarning';
+import SmartURL from '../States/SmartURL/SmartURL';
 import SmartColor from '../States/SmartColor/SmartColor';
 import SmartClock from '../States/SmartClock/SmartClock';
 import cls from './style.module.scss';
+import SmartDimmer from '../States/SmartDimmer/SmartDimmer';
 
 class SmartTile extends Component {
     static propTypes = {
@@ -241,6 +242,7 @@ class SmartTile extends Component {
             windowWidth={this.props.windowWidth}
             objects={this.props.objects}
             registerHandler={this.registerHandler}
+            themeType={this.props.themeType}
             onSaveSettings={this.props.onSaveSettings}
             onCollectIds={this.props.onCollectIds}
             onControl={this.props.onControl}

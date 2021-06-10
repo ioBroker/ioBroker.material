@@ -15,18 +15,21 @@
  **/
 import React from 'react';
 import Moment from 'react-moment';
-import SmartGeneric from './SmartGeneric';
+import SmartGeneric from '../SmartGeneric';
 import {MdLock as IconLockClosed} from 'react-icons/md';
 import {MdLockOpen as IconLockOpened} from 'react-icons/md';
 import {MdClose as IconClose} from 'react-icons/md'
-import IconDoorOpened from '../icons/DoorOpened';
+import IconDoorOpened from '../../icons/DoorOpened';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
+import IconAdapter from '@iobroker/adapter-react/Components/Icon';
+import cls from './style.module.scss';
+import clsGeneric from '../style.module.scss';
 
-import Theme from '../theme';
+import Theme from '../../theme';
 import I18n from '@iobroker/adapter-react/i18n';
 
 const style = {
@@ -101,21 +104,17 @@ class SmartLock extends SmartGeneric {
         let customIcon;
 
         if (this.state.settings.useDefaultIcon) {
-            customIcon = (<img src={this.getDefaultIcon()} alt="icon" style={{height: '100%', zIndex: 1}}/>);
+            customIcon = (<IconAdapter src={this.getDefaultIcon()} alt="icon" style={{height: '100%', zIndex: 1}}/>);
         } else {
             if (this.state.settings.icon) {
-                customIcon = (<img alt="icon" src={isOn ? this.state.settings.icon : this.state.settings.iconOff || this.state.settings.icon} style={{height: '100%', zIndex: 1}}/>);
+                customIcon = (<IconAdapter alt="icon" src={isOn ? this.state.settings.icon : this.state.settings.iconOff || this.state.settings.icon} style={{height: '100%', zIndex: 1}}/>);
             } else {
                 const Icon = isOn ? IconLockOpened : IconLockClosed;
-                customIcon = (<Icon width={Theme.tile.tileIconSvg.size} height={Theme.tile.tileIconSvg.size} style={{zIndex:1, height: Theme.tile.tileIconSvg.size, width: Theme.tile.tileIconSvg.size}}/>);
+                customIcon = (<Icon className={clsGeneric.iconStyle}/>);
             }
         }
 
-        return (
-            <div key={this.key + 'icon'} style={Object.assign({}, Theme.tile.tileIcon, style)} className="tile-icon">
-                {customIcon}
-            </div>
-        );
+        return SmartGeneric.renderIcon(customIcon);
     }
 
     getStateText() {
