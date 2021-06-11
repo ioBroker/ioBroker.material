@@ -1,45 +1,48 @@
 .wrapperApp {
-    background: linear-gradient(45deg, rgba(18, 20, 22, 1) 0%, rgba(49, 49, 51, 1) 35%, rgba(48, 52, 57, 1) 100%);
+    background: var(--backgroundApp);
     height: 100vh !important;
     display: flex;
 }
 .wrapperToolBar {
     height: 45px;
     min-height: 45px !important;
-    background: #252628;
-    border-bottom: 1px solid #34393e;
+    background: var(--backgroundHeader);
+    border-bottom: 1px solid var(--borderBottomHeader);
 }
 .drawerBackground {
-    background-color: #303439eb !important;
-    color: white;
+    background-color: var(--backgroundDraver) !important;
+    color: var(--white);
+    display: flex !important;
+    height: 100% !important;
+    overflow: hidden !important;
 }
 .drawerStyle {
-    color: white;
+    color: var(--white);
 }
 .buttonMenu {
-    color: white !important;
+    color: var(--white) !important;
 }
 .headMenu {
-    // background-color: #f85e271f !important;
+    // background-color: var(--generalColor)1f !important;
     padding: 5px;
     margin: 2px;
     border-radius: 5px;
-    border-bottom: 1px solid #f85e27;
-    border-top: 1px solid #f85e27;
-    background-color: #303439eb !important;
+    border-bottom: 1px solid var(--generalColor);
+    border-top: 1px solid var(--generalColor);
+    background-color: var(--backgroundDraver) !important;
     z-index: 10001 !important;
 }
 .buttonStyle {
-    color: #b8c2ce !important;
+    color:  var(--silverColor) !important;
     transition: all 0.5s;
 }
 .buttonActive {
-    color: #f85e27 !important;
+    color: var(--generalColor) !important;
 }
 .contentItem {
     display: flex;
     align-items: center;
-    color: #b8c2ce;
+    color:  var(--silverColor);
     width: 100%;
 }
 .itemIcon {
@@ -47,31 +50,46 @@
     align-items: center;
 }
 .itemIconColor {
-    color: #f85e27 !important;
+    color: var(--generalColor) !important;
 }
 .menuSelectedBright {
-    color: #f85e27 !important;
+    color: var(--generalColor) !important;
 }
 .listItem {
-    background: #f85e27;
+    // background: var(--generalColor);
 }
 .zIndexList {
     z-index: 10000;
 }
 .listItemActive {
-    background: #f85e2717 !important;
+    background: var(--generalColorOpacity) !important;
 }
 .toolBar {
-    // border-bottom:1px solid #f85e27;
+    // border-bottom:1px solid var(--generalColor);
     height: 46px;
     min-height: 46px !important;
 }
 .expendIcon {
-    color: #b8c2ce;
+    color: var(--silverColor);
 }
 .iconDrag {
-    color: #b8c2ce;
+    color: var(--silverColor);
     margin-right: 5px;
+}
+.wrapperListMenu {
+    width: 250px;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 46px);
+}
+.overFlow {
+    overflow-y: auto;
+}
+.iconSettingts{
+    color: var(--white) !important;
+}
+.iconSettingtsActive{
+    color: var(--generalColor) !important;
 }
 @media screen and (max-width: 835px) {
     .rootWrapper {

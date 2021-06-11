@@ -20,7 +20,7 @@ import I18n from '@iobroker/adapter-react/i18n';
 import Theme from '../theme';
 
 import { MdVisibility as IconCheck } from 'react-icons/md';
-import {MdVisibilityOff as IconUncheck} from 'react-icons/md';
+import { MdVisibilityOff as IconUncheck } from 'react-icons/md';
 import { MdRemove as IconRemoved } from 'react-icons/md';
 import { MdEdit as IconEdit } from 'react-icons/md';
 import { MdArrowUpward as IconDirectionUp } from 'react-icons/md';
@@ -35,7 +35,7 @@ import ReactEchartsCore from 'echarts-for-react/lib/core';
 
 import * as echarts from 'echarts/core';
 
-import {LineChart} from 'echarts/charts';
+import { LineChart } from 'echarts/charts';
 import {
     GridComponent,
     ToolboxComponent,
@@ -44,10 +44,10 @@ import {
     TimelineComponent,
     DataZoomComponent,
     DataZoomInsideComponent,
-  } from 'echarts/components';
+} from 'echarts/components';
 import {
     SVGRenderer,
-  } from 'echarts/renderers';
+} from 'echarts/renderers';
 
 echarts.use([DataZoomInsideComponent, DataZoomComponent, TimelineComponent, ToolboxComponent, TitleComponent, TooltipComponent, GridComponent, LineChart, SVGRenderer]);
 
@@ -840,7 +840,7 @@ class SmartGeneric extends Component {
         return name && name.length >= 15 ? 12 : (name && name.length > 10 ? 14 : 16);
     }
 
-    readHistory = () => {
+    readHistory = async () => {
         const now = new Date();
         now.setHours(now.getHours() - 24);
         now.setMinutes(0);
@@ -882,16 +882,7 @@ class SmartGeneric extends Component {
                     if (!chart.length || chart[chart.length - 1].ts < values[t].ts) {
                         chart.push(values[t]);
                         // console.log(`add value ${new Date(values[t].ts).toISOString()}: ${values[t].val}`)
-                    } 
-                    // else if (chart[chart.length - 1].ts === values[t].ts && chart[chart.length - 1].val !== values[t].ts) {
-                    //     console.error('Strange data!');
-                    // }
-                    // if (minY === null || values[t].val < minY) {
-                    //     minY = values[t].val;
-                    // }
-                    // if (maxY === null || values[t].val > maxY) {
-                    //     maxY = values[t].val;
-                    // }
+                    }
                 }
 
                 if (range) {
@@ -904,25 +895,6 @@ class SmartGeneric extends Component {
 
                 // sort
                 chart.sort((a, b) => a.ts > b.ts ? 1 : (a.ts < b.ts ? -1 : 0));
-
-                // this.chartValues = chart;
-                // if (!this.chart) {
-                //     this.chart = {};
-
-                // }
-                // this.minY = minY;
-                // this.maxY = maxY;
-
-                // if (this.minY < 10) {
-                //     this.minY = Math.round(this.minY * 10) / 10;
-                // } else {
-                //     this.minY = Math.ceil(this.minY);
-                // }
-                // if (this.maxY < 10) {
-                //     this.maxY = Math.round(this.maxY * 10) / 10;
-                // } else {
-                //     this.maxY = Math.ceil(this.maxY);
-                // }
                 this.echartsReact.current?.getEchartsInstance().setOption({
                     series: [{
                         data: this.convertData(chart)
@@ -938,25 +910,12 @@ class SmartGeneric extends Component {
     }
 
     convertData = (values) => {
-        // values = values || this.chartValues;
-        // const data = [];
-        // if (!values.length) {
-        //     return data;
-        // }
-        // for (let i = 0; i < values.length; i++) {
-        //     data.push({ value: [values[i].ts, values[i].val] });
-        // }
-        // if (!this.chart.min) {
-        //     this.chart.min = values[0].ts;
-        //     this.chart.max = values[values.length - 1].ts;
-        // }
-
-        return values.map(e => e.val !== null?e.val:0);
+        return values.map(e => e.val !== null ? e.val : 0);
     }
 
 
     getCharts = () => {
-        if(!this.firstGetCharts){
+        if (!this.firstGetCharts) {
             this.firstGetCharts = true;
             this.readHistory();
         }
@@ -966,6 +925,25 @@ class SmartGeneric extends Component {
                 this.expireInSecInterval = null;
             }, 60000);
         }
+
+        const style = {
+            color: '#f85e27',
+            areaStyle: '#f85e276b',
+        }
+        if (this.props.themeName === 'dark') {
+            style.color = '#f85e27';
+            style.areaStyle = '#f85e276b';
+        } else if (this.props.themeName === 'blue') {
+            style.color = '#EDDF73';
+            style.areaStyle = '#EDDF736b';
+        } else if (this.props.themeName === 'colored') {
+            style.color = '#194040';
+            style.areaStyle = '#1940406b';
+        } else if (this.props.themeName === 'light') {
+            style.color = '#020202';
+            style.areaStyle = '#0202026b';
+        }
+
         const option = {
             animation: true,
             legend: {
@@ -995,8 +973,8 @@ class SmartGeneric extends Component {
                     type: 'line',
                     smooth: true,
                     showSymbol: false,
-                    color: '#f85e27',
-                    areaStyle: { color: '#f85e276b' },
+                    color: style.color,
+                    areaStyle: { color: style.areaStyle },
                     data: []
                 }
             ]
@@ -1006,13 +984,13 @@ class SmartGeneric extends Component {
             <ReactEchartsCore
                 className={cls.styleCharts}
                 ref={this.echartsReact}
-                echarts={ echarts }
-                option={ option }
-                notMerge={ true }
-                lazyUpdate={ true }
+                echarts={echarts}
+                option={option}
+                notMerge={true}
+                lazyUpdate={true}
                 //theme={ this.props.themeType === 'dark' ? 'dark' : '' }
                 //style={{ height: this.state.chartHeight + 'px', width: '100%' }}
-                opts={{ renderer: 'svg' }}                
+                opts={{ renderer: 'svg' }}
             />
         </div>;
     }

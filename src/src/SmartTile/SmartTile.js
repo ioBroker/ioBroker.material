@@ -243,6 +243,7 @@ class SmartTile extends Component {
             objects={this.props.objects}
             registerHandler={this.registerHandler}
             themeType={this.props.themeType}
+            themeName={this.props.themeName}
             onSaveSettings={this.props.onSaveSettings}
             onCollectIds={this.props.onCollectIds}
             onControl={this.props.onControl}

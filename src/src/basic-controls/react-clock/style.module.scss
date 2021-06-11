@@ -9,7 +9,7 @@
     justify-content: center;
 }
 .timeWrapper {
-    color: #bcbcbd;
+    color: var(--silverColor);
     font-size: 40px;
     font-weight: bold;
     font-family: inherit;
@@ -19,10 +19,10 @@
     display: flex;
 }
 .color {
-    color: #f85e27 !important;
+    color: var(--generalColor) !important;
 }
 .defColor {
-    color: #515151 !important;
+    color: var(--colorTextOff) !important;
 }
 .clock {
     display: flex;
@@ -31,7 +31,7 @@
 }
 .dayOfWeek {
     font-size: 16px;
-    color: #f85e27;
+    color: var(--generalColor);
 }
 .emptyDayOfWeek {
     height: 19px;

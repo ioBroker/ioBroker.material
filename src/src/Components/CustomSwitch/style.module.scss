@@ -1,12 +1,12 @@
 .root {
     * {
-        // color: #f85e27 !important;
+        // color: var(--generalColor) !important;
     }
     [class*="Mui-checked"] {
-        color: linear-gradient(45deg, #12141600 54%, #f85e27 80%, #f85e27 105%) !important;
+        color: linear-gradient(45deg, #12141600 54%, var(--generalColor) 80%, var(--generalColor) 105%) !important;
     }
     [class*="Mui-checked"] + [class*="MuiSwitch-track"] {
-        background-color: #f85e27 !important;
+        background-color: var(--generalColor) !important;
     }
 }
 
@@ -30,7 +30,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(358deg, #121416 0%, #262629 45%, #2a2d32 100%);
+    background: var(--gradientAddBackground);
     transition: all 0.4s, opacity 1s;
 }
 
@@ -41,7 +41,7 @@
     width: 12px;
     left: 2px;
     bottom: 2px;
-    background: linear-gradient(231deg, #121416 17%, #313133 74%, #5e666f 100%);
+    background: var(--gradientAddDefault);
     transition: 0.4s;
 }
 .slider:after {
@@ -52,7 +52,7 @@
     border-radius: 12px;
     left: 2px;
     bottom: 2px;
-    background: linear-gradient(231deg, #121416 17%, #313133 74%, #5e666f 100%);
+    background: var(--gradientAddDefault);
     transition: all 0.4s, opacity 1s;
     opacity: 0;
 }
@@ -62,7 +62,7 @@ input:checked + .slider {
 }
 
 input:checked + .slider:after {
-    background: linear-gradient(180deg, #df4325 0%, #f77b4f 90%, #de8b72 100%);
+    background: var(--gradientAddActive);
     opacity: 1;
 }
 
@@ -92,5 +92,5 @@ input:checked + .slider:after {
     width: 34px;
     height: 18px;
     border-radius: 21px;
-    background: linear-gradient(197deg, rgba(18, 20, 22, 1) 0%, rgba(67, 72, 78, 1) 90%, rgba(67, 72, 78, 1) 100%);
+    background: var(--gradientAddBorder);
 }

@@ -3,7 +3,7 @@
     height: 25px;
     border-radius: 30px;
     z-index: 1;
-    color: #bcbdbd;
+    color: var(--silverColor);
 }
 .iconWrapper {
     width: 40px;
@@ -14,10 +14,10 @@
     pointer-events: none;
 }
 .textOn {
-    color: #f85e27 !important;
+    color: var(--generalColor) !important;
 }
 .textOff {
-    color: #515151 !important;
+    color: var(--colorTextOff) !important;
 }
 .buttonOff {
     color: #63b52682 !important;
@@ -62,5 +62,5 @@
     left: 0;
 }
 .styleText{
-    color:#f85e27
+    color:var(--generalColor)
 }

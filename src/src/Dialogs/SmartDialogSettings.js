@@ -346,7 +346,7 @@ class SmartDialogSettings extends SmartDialogGeneric  {
 
         result.push(this.generateObjectInfo());
 
-        return <List key={this.props.dialogKey + '-list'} style={Theme.dialog.list}>{result}</List>;
+        return <List key={this.props.dialogKey + '-list'}>{result}</List>;
         /*return [
             <Toolbar key={this.props.dialogKey + '-toolbar'} >
                 <h4 key={this.props.dialogKey + '-header'} style={Theme.dialog.header}>{this.props.name}</h4>

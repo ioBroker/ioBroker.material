@@ -288,6 +288,7 @@ class StatesList extends Component {
                             onVisibilityControl={this.onVisibilityControl}
                             onDelete={this.onDelete}
                             themeType={this.props.themeType}
+                            themeName={this.props.themeName}
                             debug={this.props.debug}
                             align={this.state.align}
                             editMode={this.props.editMode}
@@ -322,6 +323,7 @@ class StatesList extends Component {
                 align={this.state.align}
                 editMode={this.props.editMode}
                 themeType={this.props.themeType}
+                themeName={this.props.themeName}
                 windowWidth={this.props.windowWidth}
                 enumFunctions={this.enumFunctions}
                 enumID={id === Utils.INSTANCES ? Utils.INSTANCES : this.state.enumID}
@@ -605,6 +607,7 @@ class StatesList extends Component {
                         states={this.props.states}
                         objects={this.props.objects}
                         themeType={this.props.themeType}
+                        themeName={this.props.themeName}
                         id="" />);
                 } else {
                     return this.wrapItem(elem.id, elem.items, isUseBright, i);

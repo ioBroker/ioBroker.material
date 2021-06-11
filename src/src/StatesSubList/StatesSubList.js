@@ -235,6 +235,7 @@ class StatesSubList extends Component {
             states={this.props.states}
             objects={this.props.objects}
             themeType={this.props.themeType}
+            themeName={this.props.themeName}
             user={this.props.user}
             onVisibilityControl={this.onVisibilityControl}
             onDelete={this.props.onDelete}

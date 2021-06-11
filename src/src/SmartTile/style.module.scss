@@ -12,16 +12,16 @@
     overflow: hidden;
     box-shadow: none !important;
     // box-shadow: rgb(0 0 0 / 20%) 0px 3px 5px -1px, rgb(0 0 0 / 14%) 0px 6px 10px 0px, rgb(0 0 0 / 12%) 0px 1px 18px 0px;
-    background: linear-gradient(45deg, #0d0e0f 0%, #2d3136 59%, #444444 110%);
+    background: var(--itemBlockBorder);
     border-radius: 16px !important;
 }
 .wrapperContent {
-    color: #b8c2ce;
+    color: var(--silverColor);
     margin: 2px;
     border-radius: 16px !important;
     display: flex;
     width: 100%;
     // background: rgb(18,20,22);
     // background: linear-gradient(45deg, rgba(18,20,22,1) 0%, rgba(0,0,0,1) 60%, rgba(48,52,57,1) 100%);
-    background: linear-gradient(45deg, rgba(18, 20, 22, 1) 0%, rgba(49, 49, 51, 1) 60%, rgba(48, 52, 57, 1) 100%);
+    background: var(--itemBlockBackground);
 }

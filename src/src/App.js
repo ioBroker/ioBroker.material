@@ -56,6 +56,8 @@ import GenericApp from '@iobroker/adapter-react/GenericApp';
 import ToggleThemeMenu from './Components/ToggleThemeMenu';
 import cls from './style.module.scss';
 import { withSnackbar } from 'notistack';
+import './helpers/stylesVariables.scss';
+import clsx from 'clsx';
 
 const isKeyboardAvailableOnFullScreen = (typeof Element !== 'undefined' && 'ALLOW_KEYBOARD_INPUT' in Element) && Element.ALLOW_KEYBOARD_INPUT;
 
@@ -173,6 +175,7 @@ class App extends GenericApp {
         };
 
         this.setState(state);
+        document.getElementsByTagName('HTML')[0].className = this.state.themeName;
 
         this.updateWindowDimensions();
         window.addEventListener('resize', this.updateWindowDimensions);
@@ -1369,19 +1372,21 @@ class App extends GenericApp {
     getEditButton(useBright) {
         if (!this.state.connected) return null;
 
-        let style;
-        if (this.state.editMode) {
-            style = { color: Theme.palette.editActive };
-        } else if (this.state.actualVersion && (this.state.actualVersion !== VERSION || (this.urlVersion && this.state.actualVersion !== this.urlVersion))) {
-            style = { color: Theme.palette.updateAvailable };
-        } else {
-            style = { color: useBright ? Theme.palette.textColorBright : Theme.palette.textColorDark };
-        }
+        // let style;
+        // if (this.state.editMode) {
+        //     style = { color: Theme.palette.editActive };
+        // } else if (this.state.actualVersion && (this.state.actualVersion !== VERSION || (this.urlVersion && this.state.actualVersion !== this.urlVersion))) {
+        //     style = { color: Theme.palette.updateAvailable };
+        // } else {
+        //     style = { color: useBright ? Theme.palette.textColorBright : Theme.palette.textColorDark };
+        // }
 
         return (
             <IconButton
                 onClick={this.toggleEditMode}
-                style={style}>
+                // style={style}
+                className={clsx(cls.iconSettingts,this.state.editMode && cls.iconSettingtsActive)}
+                >
                 <IconEdit width={Theme.iconSize} height={Theme.iconSize} />
             </IconButton>
         );
@@ -1551,6 +1556,7 @@ class App extends GenericApp {
                     {this.state.editMode && <ToggleThemeMenu
                         toggleTheme={() => this.toggleTheme()}
                         themeName={this.state.themeName}
+                        className={cls.iconSettingts}
                         t={I18n.t} />}
                     {this.getEditButton(useBright)}
                     {this.getButtonSpeech(useBright)}
@@ -1596,13 +1602,14 @@ class App extends GenericApp {
             newLine={this.state.settings && this.state.settings.newLine}
             editMode={this.state.editMode}
             themeType={this.state.themeType}
+            themeName={this.state.themeName}
             windowWidth={parseFloat(this.state.width)}
             windowHeight={parseFloat(this.state.height)}
             // marginLeft={this.state.menuFixed ? Theme.menu.width : 0}
             enumID={this.state.viewEnum}
             onSaveSettings={this.onSaveSettings}
             onControl={this.onControl}
-            onCollectIds={this.onCollectIds} 
+            onCollectIds={this.onCollectIds}
         />;
     }
 

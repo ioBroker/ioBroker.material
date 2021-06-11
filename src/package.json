@@ -46,7 +46,6 @@
     "react-scripts": "^4.0.3",
     "react-sortable-hoc": "^2.0.0",
     "sass": "^1.34.1",
-    "standardx": "7.0.0",
     "typeface-roboto": "^1.1.13"
   },
   "homepage": "./",

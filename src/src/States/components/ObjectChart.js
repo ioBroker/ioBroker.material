@@ -93,6 +93,7 @@ const styles = theme => ({
         maxHeight: '100%',
         maxWidth: '100%',
         overflow: 'hidden',
+        width: '100%'
     },
     chart: {
         width: '100%',
@@ -964,7 +965,7 @@ class ObjectChart extends Component {
 
     renderChart() {
         if (this.chartValues) {
-            return <ReactEChartsCore
+            return <ReactEchartsCore
                 ref={e => this.echartsReact = e}
                 echarts={echarts}
                 option={this.getOption()}

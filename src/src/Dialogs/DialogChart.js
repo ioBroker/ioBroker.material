@@ -5,11 +5,10 @@ import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import { Checkbox, DialogTitle, FormControl, FormControlLabel, InputLabel, makeStyles, MenuItem, Paper, Select, TextField, ThemeProvider } from '@material-ui/core';
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import {  DialogTitle, makeStyles, ThemeProvider } from '@material-ui/core';
+
 
 import IconClose from '@material-ui/icons/Close';
-import IconCheck from '@material-ui/icons/Check';
 
 import I18n from '@iobroker/adapter-react/i18n';
 import theme from '@iobroker/adapter-react/Theme';
@@ -27,7 +26,8 @@ const useStyles = makeStyles((theme) => ({
     },
     paper: {
         // maxWidth: 960,
-        width: 'calc(100% - 64px)'
+        width: 'calc(100% - 64px)',
+        height: '100%'
     },
     overflowHidden: {
         display: 'flex',
@@ -41,7 +41,11 @@ const useStyles = makeStyles((theme) => ({
         margin: 0
     },
     showDialog: {
-        marginTop: 10
+        marginTop: 10,
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        marginTop: 0
     },
     nameField: {
         marginTop: 10
@@ -72,33 +76,13 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const typeArray = [
-    'string',
-    'boolean',
-    'number',
-    'file',
-];
-
-const DialogChart = ({ cb, id, socket, channelId, arrayStateDefault, themeType }) => {
-    console.log(11223344, 'test', id)
+const DialogChart = ({ cb, id, socket, themeType }) => {
     const classes = useStyles();
     const [open, setOpen] = useState(true);
     const [object, setObject] = useState(null);
 
-    // const [role, setRole] = useState(null);
-    // const [roleInput, setRoleInput] = useState(null);
-    // const [roles, setRoles] = useState([]);
-    // const [name, setName] = useState('NEW_STATE');
-    // const [unit, setUnit] = useState('');
-    // const [type, setType] = useState('string');
-    // const [checkedRead, setCheckedRead] = useState(true);
-    // const [checkedWrite, setCheckedWrite] = useState(true);
-    // const [min, setMin] = useState(0);
-    // const [max, setMax] = useState(100);
-
     useEffect(async () => {
         const obj = await socket.getObject(id);
-        console.log(11223344, obj)
         setObject(obj);
     }, [])
 
@@ -119,9 +103,9 @@ const DialogChart = ({ cb, id, socket, channelId, arrayStateDefault, themeType }
             open={open}
             classes={{ paper: classes.paper }}
         >
-            <DialogTitle>{I18n.t('Add state %s', `sssss`)}</DialogTitle>
+            {/* <DialogTitle>{I18n.t('Add state %s', `sssss`)}</DialogTitle> */}
             <DialogContent className={classes.overflowHidden} dividers>
-                <Paper className={classes.showDialog} style={{ padding: `10px 20px`, width: '100%', height: 600 }} p={3}>
+                <div className={classes.showDialog}>
                     {object && <ObjectChart
                         t={I18n.t}
                         lang={I18n.getLanguage()}
@@ -135,47 +119,15 @@ const DialogChart = ({ cb, id, socket, channelId, arrayStateDefault, themeType }
                         defaultHistory="history.0"
                         historyInstance="history.0"
                     />}
-                </Paper>
+                </div>
             </DialogContent>
             <DialogActions>
-                <Button
-                    variant="contained"
-                    autoFocus
-                    // disabled={!name || objects[`${channelId}.${name}`] || arrayStateDefault.find(item => item.name === name)}
-                    onClick={async () => {
-                        onClose();
-                        // let obj = {
-                        //     _id: `${channelId}.${name}`,
-                        //     common: {
-                        //         name,
-                        //         role: roleInput,
-                        //         type,
-                        //     },
-                        //     type: 'state'
-                        // };
-                        // if (type === 'number') {
-                        //     obj.common.min = min;
-                        //     obj.common.max = max;
-                        //     obj.common.unit = unit;
-
-                        // }
-                        // if (type !== 'file') {
-                        //     obj.common.read = checkedRead;
-                        //     obj.common.write = checkedWrite;
-                        // }
-                        // await socket.setObject(`${channelId}.${name}`, obj);
-                        // cb(obj);
-                    }}
-                    startIcon={<IconCheck />}
-                    color="primary">
-                    {I18n.t('Add')}
-                </Button>
                 <Button
                     variant="contained"
                     onClick={() => onClose()}
                     startIcon={<IconClose />}
                     color="default">
-                    {I18n.t('Cancel')}
+                    {I18n.t('Close')}
                 </Button>
             </DialogActions>
         </Dialog>

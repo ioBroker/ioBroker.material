@@ -3,13 +3,13 @@
     height: 25px;
     border-radius: 30px;
     z-index: 1;
-    color: #bcbdbd;
+    color: var(--silverColor);
 }
 .textOn {
-    color: #f85e27;
+    color: var(--generalColor);
 }
 .textOff {
-    color: #515151;
+    color: var(--colorTextOff);
 }
 .iconWrapper {
     position: absolute;

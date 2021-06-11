@@ -648,21 +648,25 @@ class MenuList extends Component {
                 </div>);
             }
 
-            return <div style={style}>
+            return <div className={cls.wrapperListMenu}>
                 {/* <Divider className='divider' style={dividerStyle} /> */}
                 {this.getListHeader(useBright)}
-                {this.getSortableContainer(list, this.state.background ? { background: this.state.background } : {}, 'sub_root')}
+                <div className={cls.overFlow}>
+                    {this.getSortableContainer(list, this.state.background ? { background: this.state.background } : {}, 'sub_root')}
+                </div>
             </div>;
         } else {
-            return <div style={style} >
+            return <div className={cls.wrapperListMenu} >
                 {/* <Divider className='divider' style={dividerStyle} /> */}
                 {this.getListHeader(useBright)}
-                <Divider className='divider' style={dividerStyle} />
-                <List>
-                    <ListItem key="0" value="0">
-                        <ListItemText>{I18n.t('No elements')}</ListItemText>
-                    </ListItem>
-                </List>
+                {/* <Divider className='divider' style={dividerStyle} /> */}
+                <div className={cls.overFlow}>
+                    <List>
+                        <ListItem key="0" value="0">
+                            <ListItemText>{I18n.t('No elements')}</ListItemText>
+                        </ListItem>
+                    </List>
+                </div>
             </div>;
         }
     }

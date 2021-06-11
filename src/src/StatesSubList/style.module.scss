@@ -7,7 +7,7 @@
     // box-shadow: -39px ​0px 15px -1px rgb(0 0 0 / 19%);
     box-shadow: -10px 0px 20px -7px rgb(0 0 0 / 19%);
     h3{
-        color: #f85e27 !important;
+        color: var(--generalColor) !important;
     }
 }
 .wrapperItems{
@@ -23,7 +23,7 @@
     border-radius: 5px;
 }
 .h3Active{
-    background: #f85e2714;    
+    background: var(--generalColorOpacity);    
     animation: moveWrapperIcon 1s linear ;
 }
 .styleIconH3{
@@ -31,16 +31,16 @@
     border: 1px solid !important;
 }
 .styleIconH3on{
-    color: #f85e27 !important;
+    color: var(--generalColor) !important;
 }
 .styleIconH3off{
-    color: #b7c1cc !important;
+    color: var(--silverColor) !important;
 }
 @keyframes moveWrapperIcon {
     0% {
         background: transparent;
     }
     100% {
-        background: #f85e2714;
+        background: var(--generalColorOpacity);
     }
 }
