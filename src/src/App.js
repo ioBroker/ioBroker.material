@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2020 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2021 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import React, { Component } from 'react';
-import { MuiThemeProvider, ThemeProvider, withStyles } from '@material-ui/core/styles';
+import React from 'react';
+import { MuiThemeProvider, withStyles } from '@material-ui/core/styles';
 import 'typeface-roboto'
 
 import './App.css';
@@ -88,10 +88,6 @@ class App extends GenericApp {
         };
         super(props, extendedProps);
 
-        //const theme = this.createTheme();
-
-
-
         this.translations = {
             'en': require('./i18n/en'),
             'ru': require('./i18n/ru'),
@@ -118,7 +114,7 @@ class App extends GenericApp {
 
         window.addEventListener('pageshow', () => {
             if (this.gotObjects) {
-                this.tryToConnect();
+                this.loadingStep('connecting');
             }
         }, false);
 
@@ -181,7 +177,7 @@ class App extends GenericApp {
         window.addEventListener('resize', this.updateWindowDimensions);
 
         this.loadLocalData(() =>
-            this.tryToConnect());
+            this.loadingStep('connecting'));
     }
 
     connectionHandler = connected => {
@@ -225,43 +221,10 @@ class App extends GenericApp {
         return m && m[1];
     }
 
-    /**
-     * Changes the current theme
-     */
-    /*toggleTheme = currentThemeName => {
-        const themeName = this.state.themeName;
-
-        // dark => blue => colored => light => dark
-        let newThemeName = themeName === 'dark' ? 'blue' :
-            (themeName === 'blue' ? 'colored' :
-                (themeName === 'colored' ? 'light' : 'dark'));
-
-        if (currentThemeName) {
-            newThemeName = currentThemeName;
-        }
-
-        Utils.setThemeName(newThemeName);
-
-        const theme = this.createTheme(newThemeName);
-
-        this.setState({
-            theme: theme,
-            themeName: this.getThemeName(theme),
-            themeType: this.getThemeType(theme)
-        });
-    }
-
-    showError(err) {
-        this.setState({ errorText: err, errorShow: true });
-    }*/
-
-    componentDidUpdate(prevProps, prevState) {
-        //console.log(prevProps);
-    }
-
     loadingStep(description) {
         this.setState({ loadingProgress: this.state.loadingProgress + 1, loadingStep: description });
     }
+
     loadingStepAsync(description) {
         return this.setStateAsync({ loadingProgress: this.state.loadingProgress + 1, loadingStep: description });
     }
@@ -294,7 +257,6 @@ class App extends GenericApp {
         }
     }
 
-    // callback(err, data)
     getObjects(useCache) {
         // If cache used
         if (this._useStorage && useCache) {
@@ -551,83 +513,11 @@ class App extends GenericApp {
         }
     }
 
-    tryToConnect() {
-        this.loadingStep('connecting');
-
-        return;
-        /*this.conn = new ServerConnection({
-            namespace: 'material.0',  // optional - default 'vis.0'
-            connOptions: {
-                // optional URL of the socket.io adapter
-                connLink: typeof window.socketUrl === 'undefined' ? '/' : undefined
-                //            socketSession: ''           // optional - used by authentication
-            },
-            useStorage: false,
-            connCallbacks: {
-                onConnChange: isConnected => { // no lambda here
-                    if (isConnected) {
-                        this.setState({ connected: true, loading: true });
-                        if (this.gotObjects) {
-                            this.resubscribe();
-                        } else {
-                            this.readAllData();
-                        }
-                    } else {
-                        this.subscribeInstances = false;
-                        this.setState({
-                            connected: false,
-                            loadingProgress: 1,
-                            loading: true,
-                            loadingStep: 'connecting'
-                        });
-                    }
-                },
-                onRefresh: () => {
-                    window.location.reload();
-                },
-                onUpdate: (id, state) => { // no lambda here
-                    setTimeout(() => {
-                        if (id) {
-                            this.states[id] = state;
-                        } else {
-                            delete this.states[id];
-                        }
-
-                        if (this.subscribes[id]) {
-                            this.subscribes[id].forEach(elem => elem.updateState(id, this.states[id]));
-                        }
-
-                        if (this.state.appSettings && (this.state.appSettings.text2command || this.state.appSettings.text2command === 0)) {
-                            if (state && !state.ack && state.val && id === 'text2command.' + this.state.appSettings.text2command + '.response') {
-                                this.speak(state.val);
-                            }
-                        }
-                    }, 0);
-                },
-                onError: err => { // no lambda here
-                    this.showError(err);
-                },
-                onObjectChange: (id, obj) => {
-                    if (this.instances) {
-                        if (obj) {
-                            this.instances[id] = obj;
-                        } else if (this.instances[id]) {
-                            delete this.instances[id];
-                        }
-                        this.forceUpdate();
-                    }
-                }
-            },
-            objectsRequired: false,
-            autoSubscribe: false
-        });*/
-    }
-
     loadLocalData(callback) {
         let data = window.localStorage.getItem('data');
         if (data) {
             try {
-                console.log('Size of stored data: ' + Math.floor(data.length / 1024) + 'k. Max possible: 5000k');
+                console.log(`Size of stored data: ${Math.floor(data.length / 1024)}k. Max possible: 5000k`);
                 this.localData = JSON.parse(data);
             } catch (e) {
                 console.error('cannot restore information from localstorage: ' + e);
@@ -636,8 +526,6 @@ class App extends GenericApp {
 
         callback && callback();
     }
-
-
 
     onToggleMenu = () => {
         if (this.state.menuFixed && typeof Storage !== 'undefined') {

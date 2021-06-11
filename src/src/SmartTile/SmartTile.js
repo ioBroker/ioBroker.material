@@ -104,7 +104,6 @@ class SmartTile extends Component {
         this.handlers.onClick && !this.props.editMode && this.handlers.onClick(e);
     };
 
-
     getTileStyle() {
         let style = {};
         // if (this.props.editMode) {
