@@ -146,6 +146,7 @@ export const dialogChartCallBack = (cb, id, socket, themeType) => {
         <DialogChart
             cb={cb}
             themeType={themeType}
-            id={id} socket={socket}
+            id={id} 
+            socket={socket}
         />, node);
 }

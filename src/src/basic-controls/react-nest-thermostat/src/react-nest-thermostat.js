@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import cls from './style.module.scss';
 
 class Thermostat extends Component {
     getStyles() {
@@ -201,7 +202,7 @@ class Thermostat extends Component {
         return <svg width={this.props.width} height={this.props.height} style={styles.dial}
              viewBox={['0 0 ', diameter, ' ', diameter].join('')}
         >
-            <circle cx={radius} cy={radius} r={radius} style={styles.circle}/>
+            <circle cx={radius} cy={radius} r={radius} className={cls.circle}/>
             <g>{tickArray}</g>
             <text x={radius} y={radius} style={styles.target}>
                 {this.formatNumber(this.props.targetTemperature, true)}

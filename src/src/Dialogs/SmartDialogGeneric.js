@@ -27,6 +27,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import Button from '@material-ui/core/Button';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import cls from './style.module.scss';
 
 class SmartDialogGeneric extends Component  {
 
@@ -197,7 +198,7 @@ class SmartDialogGeneric extends Component  {
         return <Dialog
             fullWidth
             scroll="paper"
-            classes={{paper: clsx('dialog-paper', this.props.classes?.dialogPaper)}}
+            classes={{paper: clsx('dialog-paper', this.props.classes?.dialogPaper, this.props.transparent && cls.paper)}}
             open={true}
             disableBackdropClick={!!this.getButtons}
             onClose={() => this.onClose()}

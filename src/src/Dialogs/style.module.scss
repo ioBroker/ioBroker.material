@@ -1,0 +1,14 @@
+.paper {
+    background-color: transparent !important;
+    box-shadow: none !important;
+    width: 100% !important;
+    height: 100%;
+    max-height: calc(100% - 60px) !important;
+    margin: 0 !important;
+}
+
+@media screen and (max-width: 600px) {
+    .paper {
+        max-height: 100% !important;
+    }
+}

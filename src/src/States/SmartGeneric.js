@@ -206,7 +206,12 @@ class SmartGeneric extends Component {
 
         if (this.stateRx.showDialog !== undefined) {
             this.showCorner = true;
-            this.props.tile.registerHandler('onMouseDown', this.onTileMouseDown.bind(this));
+            this.props.tile.registerHandler('onMouseDown', this.onTileMouseDown);
+        }
+
+        if (this.stateRx.showDialogBottom !== undefined) {
+            this.showCornerBottom = true;
+            this.props.tile.registerHandler('onMouseDown', this.onTileMouseDownBottom);
         }
 
         if (this.settingsId) {
@@ -406,6 +411,21 @@ class SmartGeneric extends Component {
     onDialogClose = () =>
         this.setState({ showDialog: false });
 
+    onLongClickBottom = e => {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        if (this.timer) {
+            clearTimeout(this.timer);
+            this.timer = null;
+        }
+        this.setState({ showDialogBottom: true });
+    }
+
+    onDialogCloseBottom = () =>
+        this.setState({ showDialogBottom: false });
+
     onMouseUp = () => {
         document.removeEventListener('mouseup', this.onMouseUp, { passive: false, capture: true });
         document.removeEventListener('touchend', this.onMouseUp, { passive: false, capture: true });
@@ -425,6 +445,19 @@ class SmartGeneric extends Component {
         e.stopPropagation();
 
         this.timer = setTimeout(this.onLongClick, 500);
+
+        document.addEventListener('mouseup', this.onMouseUp, { passive: false, capture: true });
+        document.addEventListener('touchend', this.onMouseUp, { passive: false, capture: true });
+    }
+
+    onTileMouseDownBottom = e => {
+        if (this.state.showDialogBottom) {
+            return;
+        }
+        //e.preventDefault();
+        e.stopPropagation();
+
+        this.timer = setTimeout(this.onLongClickBottom, 500);
 
         document.addEventListener('mouseup', this.onMouseUp, { passive: false, capture: true });
         document.addEventListener('touchend', this.onMouseUp, { passive: false, capture: true });
@@ -824,11 +857,14 @@ class SmartGeneric extends Component {
                         key={this.key + 'corner'}
                         onMouseDown={this.onLongClick}
                         className={cls.corner}
-                    // className={'corner' + (isTouch ? ' corner-touch' : '')}
-                    // style={Object.assign({}, Theme.tile.tileCorner, isTouch ? Theme.tile.tileCornerTouch : {})}
+                    />) : null}
+                    {this.showCornerBottom ? (<div
+                        key={this.key + 'corner'}
+                        onMouseDown={this.onLongClickBottom}
+                        className={cls.cornerBottom}
                     />) : null}
                     {this.getIndicators()}
-                    {content}
+                        {content}
                 </div>
             ];
         } else {

@@ -38,7 +38,7 @@ class SmartThermostat extends SmartGeneric {
         super(props);
         if (this.channelInfo.states) {
             let state = this.channelInfo.states.find(state => state.id && state.name === 'SET');
-            if (state && this.props.objects[state.id]&& this.props.objects[state.id].common) {
+            if (state && this.props.objects[state.id] && this.props.objects[state.id].common) {
                 this.id = state.id;
             } else {
                 this.id = '';
@@ -51,6 +51,10 @@ class SmartThermostat extends SmartGeneric {
 
             state = this.channelInfo.states.find(state => state.id && state.name === 'HUMIDITY');
             this.humidityId = state && state.id;
+
+            state = this.channelInfo.states.find(state => state.id && state.name === 'POWER');
+            // debugger
+            this.powerId = state && state.id;
         }
 
         if (this.humidityId) {
@@ -77,25 +81,26 @@ class SmartThermostat extends SmartGeneric {
             if (this.unit === 'C') {
                 this.unit = '°C';
             } else
-            if (this.unit === 'C°') {
-                this.unit = '°C';
-            }
+                if (this.unit === 'C°') {
+                    this.unit = '°C';
+                }
             if (this.unit === 'F') {
                 this.unit = '°F';
             } else
-            if (this.unit === 'F°') {
-                this.unit = '°F';
-            }
+                if (this.unit === 'F°') {
+                    this.unit = '°F';
+                }
 
             this.step = common.step || 0.5;
 
-            this.props.tile.setState({isPointer: true});
+            this.props.tile.setState({ isPointer: true });
         }
 
         this.unit = this.unit || '°C';
 
         this.stateRx.showDialog = false;
-        this.props.tile.setState({state: true});
+        this.stateRx.showDialogBottom = false;
+        this.props.tile.setState({ state: true });
         this.key = `smart-thermostat-${this.id}-`;
         this.step = this.step || 0.5;
 
@@ -130,15 +135,15 @@ class SmartThermostat extends SmartGeneric {
         let customIcon;
 
         if (this.state.settings.useDefaultIcon) {
-            customIcon = (<IconAdapter alt="icon" src={this.getDefaultIcon()} style={{height: '100%', zIndex: 1}}/>);
+            customIcon = (<IconAdapter alt="icon" src={this.getDefaultIcon()} style={{ height: '100%', zIndex: 1 }} />);
         } else {
             if (this.state.settings.icon) {
-                customIcon = (<IconAdapter alt="icon" src={this.state.settings.icon} style={{height: '100%', zIndex: 1}}/>);
+                customIcon = (<IconAdapter alt="icon" src={this.state.settings.icon} style={{ height: '100%', zIndex: 1 }} />);
             } else {
-                customIcon = (<Icon className={clsGeneric.iconStyle}/>);
+                customIcon = (<Icon className={clsGeneric.iconStyle} />);
             }
         }
-        return SmartGeneric.renderIcon(customIcon);
+        return SmartGeneric.renderIcon(customIcon, null, this.state[this.boostId]);
     }
 
     formatValue(num, unit) {
@@ -154,8 +159,13 @@ class SmartThermostat extends SmartGeneric {
         }
     }
 
-    getStateText() {
-        return this.formatValue(this.state[this.id]);
+    // getStateText() {
+    //     return this.formatValue(this.state[this.id]);
+    // }
+
+
+    getSecondaryDivTop() {
+        return <div className={cls.temperature}>{this.formatValue(this.state[this.id])}</div>
     }
 
     getSecondaryDiv() {
@@ -163,8 +173,9 @@ class SmartThermostat extends SmartGeneric {
             return null;
         }
         return (
-            <div key={this.key + 'tile-secondary'} className="tile-text-second"
-                 style={Object.assign({}, Theme.tile.secondary.div, {top: '1rem'})} title={I18n.t('Environment values')}>
+            <div key={this.key + 'tile-secondary'}
+                className={cls.wrapperTextSecond}
+                title={I18n.t('Environment values')}>
                 {this.actualId !== this.id ?
                     [
                         (<IconThermometer key={this.key + 'tile-secondary-icon-0'} style={Object.assign({}, Theme.tile.secondary.icon)} />),
@@ -189,15 +200,30 @@ class SmartThermostat extends SmartGeneric {
         this.props.onControl(this.boostId, boostOn);
     }
 
+    onToggleValue = powerOn => {
+        debugger
+        if (powerOn === undefined) {
+            powerOn = !this.state[this.powerId];
+        }
+        const newValue = {};
+        newValue[this.powerId] = powerOn;
+        this.setState(newValue);
+        this.props.onControl(this.powerId, powerOn);
+    }
+    
     render() {
         return this.wrapContent([
             this.getStandardContent(this.id, true),
             this.getSecondaryDiv(),
+            this.getSecondaryDivTop(),
             this.getCharts(),
+            this.state.showDialogBottom ?
+                dialogChartCallBack(this.onDialogCloseBottom, this.settingsId, this.props.socket, this.props.themeType) : null,
             this.state.showDialog ?
                 <Dialog
                     key={this.key + 'dialog'}
                     unit={this.unit}
+                    transparent
                     commaAsDelimiter={this.commaAsDelimiter}
                     step={this.step}
                     dialogKey={this.key + 'dialog'}
@@ -206,6 +232,7 @@ class SmartThermostat extends SmartGeneric {
                     actualValue={this.state[this.actualId] === null || this.state[this.actualId] === undefined ? this.min : this.state[this.actualId]}
                     boostValue={this.boostId ? this.state[this.boostId] : null}
                     onBoostToggle={this.onBoostToggle}
+                    onPowerToggle={this.onToggleValue}
                     min={this.min}
                     max={this.max}
                     onValueChange={this.setValue}
