@@ -47,7 +47,7 @@ class SmartThermometer extends SmartGeneric {
         }
 
         this.props.tile.state.state = true;
-        this.stateRx.showDialog = false
+        this.stateRx.showDialogBottom = false
         // if only humidity
         if (!this.secondary &&
             this.props.objects[this.id] &&
@@ -159,7 +159,7 @@ class SmartThermometer extends SmartGeneric {
             this.getSecondaryDivTop(),
             this.getCharts(),
             this.state.showDialog ?
-                dialogChartCallBack(this.onDialogClose, this.settingsId, this.props.socket,this.props.themeType) : null
+                dialogChartCallBack(this.onDialogCloseBottom, this.settingsId, this.props.socket,this.props.themeType) : null
         ]);
     }
 }
