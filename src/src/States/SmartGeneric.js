@@ -111,8 +111,15 @@ class SmartGeneric extends Component {
         if (typeof noSubscribe !== 'boolean' || !noSubscribe) {
             if (this.channelInfo.states) {
                 let ids = [];
+                let idActual = this.channelInfo.states.find(el => el.id);
+                idActual = idActual.id.split('.');
+                idActual.pop();
                 this.channelInfo.states.forEach(function (state) {
-                    if (!state.id) return;
+                    if (!state.id) {
+                        let newId = `${idActual.join('.')}.${state.name}`;
+                        ids.push(newId);
+                        return
+                    };
 
                     if (state.id.startsWith('system.adapter.')) {
                         ids.push(state.id);
@@ -408,8 +415,9 @@ class SmartGeneric extends Component {
         this.setState({ showDialog: true });
     }
 
-    onDialogClose = () =>
-        this.setState({ showDialog: false });
+    onDialogClose = (e) => {
+        this.setState({ showDialog: false })
+    };
 
     onLongClickBottom = e => {
         if (e) {
@@ -797,8 +805,9 @@ class SmartGeneric extends Component {
         ];
     }
 
-    static renderIcon = (icon, loading, active) => {
-        return <div className={clsx(cls.iconWrapper, loading && cls.iconWrapperLoading)}>
+    static renderIcon = (icon, loading, active, onClick = () => { 
+    }) => {
+        return <div onClick={onClick} className={clsx(cls.iconWrapper, loading && cls.iconWrapperLoading)}>
             <div className={clsx(cls.styleIcon, loading && cls.styleIconLoading, active && cls.styleIconActive)}>
                 {icon}
             </div>
@@ -864,7 +873,7 @@ class SmartGeneric extends Component {
                         className={cls.cornerBottom}
                     />) : null}
                     {this.getIndicators()}
-                        {content}
+                    {content}
                 </div>
             ];
         } else {

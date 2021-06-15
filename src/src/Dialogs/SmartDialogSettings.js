@@ -31,8 +31,8 @@ import Paper from '@material-ui/core/Paper';
 import Fab from '@material-ui/core/Fab';
 import IconButton from '@material-ui/core/IconButton';
 
-import {MdSave as OkIcon} from 'react-icons/md';
-import {MdContentCopy as CopyIcon} from 'react-icons/md';
+import { MdSave as OkIcon } from 'react-icons/md';
+import { MdContentCopy as CopyIcon } from 'react-icons/md';
 
 import ColorPicker from '../basic-controls/react-color-picker/ColorPicker';
 import ImageSelector from '../basic-controls/react-image-selector/ImageSelector';
@@ -44,6 +44,7 @@ import SmartDialogGeneric from './SmartDialogGeneric';
 import Utils from '@iobroker/adapter-react/Components/Utils';
 import Theme from '../theme';
 import I18n from '@iobroker/adapter-react/i18n';
+import UploadImage from '../basic-controls/UploadImage';
 
 const styles = {
     descCopyIcon: {
@@ -66,22 +67,22 @@ const styles = {
     }
 };
 
-class SmartDialogSettings extends SmartDialogGeneric  {
+class SmartDialogSettings extends SmartDialogGeneric {
 
     // expected:
     //      settings - array of [{id, icon, color, ...}]
     static propTypes = {
-        name:               PropTypes.oneOfType([
+        name: PropTypes.oneOfType([
             PropTypes.string,
             PropTypes.object
         ]),
-        getImages:          PropTypes.func,
-        dialogKey:          PropTypes.string,
-        windowWidth:        PropTypes.number,
-        settings:           PropTypes.array.isRequired,
-        objectInfo:         PropTypes.object,
-        onSave:             PropTypes.func.isRequired,
-        onClose:            PropTypes.func
+        getImages: PropTypes.func,
+        dialogKey: PropTypes.string,
+        windowWidth: PropTypes.number,
+        settings: PropTypes.array.isRequired,
+        objectInfo: PropTypes.object,
+        onSave: PropTypes.func.isRequired,
+        onClose: PropTypes.func
     };
 
     constructor(props) {
@@ -99,8 +100,8 @@ class SmartDialogSettings extends SmartDialogGeneric  {
         });
 
         // This is asynchronous
-        this.props.getImages && this.props.getImages(function(images) {
-            this.setState({images});
+        this.props.getImages && this.props.getImages(function (images) {
+            this.setState({ images });
         }.bind(this));
 
         this.dialogStyle = Theme.dialog.settingsBack;
@@ -112,7 +113,7 @@ class SmartDialogSettings extends SmartDialogGeneric  {
         if (!super.mayClose()) return;
 
         if (!this.ignoreUnsaved && this.isChanged()) {
-            this.setState({unsavedDialog: true});
+            this.setState({ unsavedDialog: true });
         } else {
             super.onClose(true);
         }
@@ -131,18 +132,18 @@ class SmartDialogSettings extends SmartDialogGeneric  {
     handleWarningCancel = () => {
         this.ignoreUnsaved = false;
         this.click = Date.now();
-        this.setState({unsavedDialog: false});
+        this.setState({ unsavedDialog: false });
     };
 
     handleWarningIgnore = () => {
         this.ignoreUnsaved = true;
-        this.setState({unsavedDialog: false});
+        this.setState({ unsavedDialog: false });
         this.click = 0;
         this.onClose();
     };
 
     handleText(name, ev) {
-        const newValue = {values: JSON.parse(JSON.stringify(this.state.values))};
+        const newValue = { values: JSON.parse(JSON.stringify(this.state.values)) };
         this.click = Date.now();
         newValue.values[name] = ev.target.value;
         newValue.changed = this.isChanged(name, newValue.values[name]);
@@ -150,7 +151,7 @@ class SmartDialogSettings extends SmartDialogGeneric  {
     }
 
     handleToggle(name, ev) {
-        const newValue = {values: JSON.parse(JSON.stringify(this.state.values))};
+        const newValue = { values: JSON.parse(JSON.stringify(this.state.values)) };
         this.click = Date.now();
         newValue.values[name] = ev ? ev.target.checked : !this.state.values[name];
         newValue.changed = this.isChanged(name, newValue.values[name]);
@@ -158,7 +159,7 @@ class SmartDialogSettings extends SmartDialogGeneric  {
     }
 
     handleValue(name, value) {
-        const newValue = {values: JSON.parse(JSON.stringify(this.state.values))};
+        const newValue = { values: JSON.parse(JSON.stringify(this.state.values)) };
         this.click = Date.now();
         newValue.values[name] = value;
         newValue.changed = this.isChanged(name, newValue.values[name]);
@@ -166,14 +167,14 @@ class SmartDialogSettings extends SmartDialogGeneric  {
     }
 
     handleUploadImage(name, files, pictures) {
-        const newValue = {values: JSON.parse(JSON.stringify(this.state.values))};
+        const newValue = { values: JSON.parse(JSON.stringify(this.state.values)) };
         this.click = Date.now();
         newValue.values[name] = pictures[pictures.length - 1];
         newValue.changed = this.isChanged(name, newValue.values[name]);
         this.setState(newValue);
     }
     handleDropImage(name, file) {
-        const newValue = {values: JSON.parse(JSON.stringify(this.state.values))};
+        const newValue = { values: JSON.parse(JSON.stringify(this.state.values)) };
         this.click = Date.now();
         newValue.values[name] = file;
         newValue.changed = this.isChanged(name, newValue.values[name]);
@@ -181,7 +182,7 @@ class SmartDialogSettings extends SmartDialogGeneric  {
     }
 
     handleIcon(name, file) {
-        const newValue = {values: JSON.parse(JSON.stringify(this.state.values))};
+        const newValue = { values: JSON.parse(JSON.stringify(this.state.values)) };
         this.click = Date.now();
         newValue.values[name] = typeof file === 'object' ? file.data : file;
         newValue.changed = this.isChanged(name, newValue.values[name]);
@@ -205,22 +206,22 @@ class SmartDialogSettings extends SmartDialogGeneric  {
     }
 
     copyId = event => {
-        this.setState({anchorEl: event.currentTarget});
+        this.setState({ anchorEl: event.currentTarget });
         setTimeout(() => {
-            this.setState({anchorEl: null});
+            this.setState({ anchorEl: null });
         }, 2000);
     }
 
     generateObjectInfo() {
         if (this.props.settingsId) {
-            return (<Paper key={'object-info'} style={{margin: 5, padding: 5, position: 'relative'}} elevation={1}>
+            return (<Paper key={'object-info'} style={{ margin: 5, padding: 5, position: 'relative' }} elevation={1}>
                 <CopyToClipboard
                     text={this.props.settingsId}>
                     <IconButton
                         title={I18n.t('Copy ID to clipboard')}
                         onClick={this.copyId}
                         style={styles.descCopyIcon}>
-                        <CopyIcon width={Theme.iconSize} height={Theme.iconSize}/>
+                        <CopyIcon width={Theme.iconSize} height={Theme.iconSize} />
                     </IconButton>
                 </CopyToClipboard>
                 {this.state.anchorEl ? (<Button variant="outlined" disabled style={styles.descCopied}>{I18n.t('Copied')}</Button>) : null}
@@ -242,7 +243,7 @@ class SmartDialogSettings extends SmartDialogGeneric  {
 
     generateContent() {
         const result = this.props.settings.map((e, i) => {
-            const divider = i !== this.props.settings.length - 1 ? <ListItem key={e.id + '_div'} style={Theme.dialog.divider}/> : null;
+            const divider = i !== this.props.settings.length - 1 ? <ListItem key={e.id + '_div'} style={Theme.dialog.divider} /> : null;
 
             let item;
             if (e.type === 'delete') {
@@ -252,7 +253,7 @@ class SmartDialogSettings extends SmartDialogGeneric  {
                     key={this.props.dialogKey + '-delete'}
                     onClick={() => this.onDelete()}
                 >{I18n.t('Delete')}</Button>;
-            } else  if (e.type === 'boolean') {
+            } else if (e.type === 'boolean') {
                 item = <BoolControl
                     key={this.props.dialogKey + '-' + e.name + '-bool'}
                     label={I18n.t(e.name)}
@@ -283,70 +284,79 @@ class SmartDialogSettings extends SmartDialogGeneric  {
                     options={e.options}
                 />;
             } else if (e.type === 'icon') {
-                item = <ImageSelector
-                    maxSize={15000}
-                    icons={true}
-                    height={64}
-                    accept={'image/jpeg, image/png, image/gif, image/svg+xml'}
-                    key={this.props.dialogKey + '-' + e.name + '-icon'}
-                    label={e.label ? I18n.t(e.label) : I18n.t(e.name)}
-                    image={this.state.values[e.name]}
-                    maxHeight={200}
-                    onUpload={file => this.handleIcon(e.name, file)}
-                    textAccepted={I18n.t('All files will be accepted')}
-                    textRejected={I18n.t('Some files will be rejected')}
-                    textWaiting={I18n.t('Drop some files here or click...')}
-                />;
-            } else if (e.type === 'image') {
-                item = <ImageSelector
-                    maxSize={6000000}
-                    images={this.state.images}
-                    key={this.props.dialogKey + '-' + e.name + '-image'}
-                    label={e.label ? I18n.t(e.label) : I18n.t(e.name)}
-                    aspect={this.state.values.hasOwnProperty('doubleSize') ? (this.state.values.doubleSize ? 2 : 1) : e.aspect}
-                    maxHeight={200}
-                    image={this.state.values[e.name]}
-                    onUpload={file => this.handleDropImage(e.name, file)}
-                    textAccepted={I18n.t('All files will be accepted')}
-                    textRejected={I18n.t('Some files will be rejected')}
-                    textWaiting={I18n.t('Drop some files here or click...')}
-                />;
-            } else if (e.type === 'number') {
-                // input field
-                item = <TextField
-                    key={this.props.dialogKey + '-' + e.name + '-text'}
-                    id={e.name}
-                    label={I18n.t(e.name)}
-                    style={{width: '100%'}}
-                    type="number"
-                    inputProps={{min: e.min, max: e.max}}
-                    value={this.state.values[e.name] || ''}
-                    onChange={ev => this.handleText(e.name, ev)}
-                    margin="normal"
-                />;
-            } else {
-                // input field
-                item = <TextField
-                    key={this.props.dialogKey + '-' + e.name + '-text'}
-                    id={e.name}
-                    label={I18n.t(e.name)}
-                    style={{width: '100%'}}
-                    value={this.state.values[e.name] || ''}
-                    onChange={ev => this.handleText(e.name, ev)}
-                    margin="normal"
-                />;
-            }
+                // item = <ImageSelector
+                //     maxSize={15000}
+                //     icons={true}
+                //     height={64}
+                //     accept={'image/jpeg, image/png, image/gif, image/svg+xml'}
+                //     key={this.props.dialogKey + '-' + e.name + '-icon'}
+                //     label={e.label ? I18n.t(e.label) : I18n.t(e.name)}
+                //     image={this.state.values[e.name]}
+                //     maxHeight={200}
+                // onUpload = { file => this.handleIcon(e.name, file)
+            // }
+            //     textAccepted={I18n.t('All files will be accepted')}
+            //     textRejected={I18n.t('Some files will be rejected')}
+            //     textWaiting={I18n.t('Drop some files here or click...')}
+            // />;
+            item = <UploadImage
+                crop={false}
+                // className={classes.dropZone}
+                maxSize={15000}
+                icon={this.state.values[e.name]}
+                onChange={base64 => this.handleIcon(e.name, base64)}
+                t={I18n.t}
+            />;
+        } else if (e.type === 'image') {
+            item = <ImageSelector
+                maxSize={6000000}
+                images={this.state.images}
+                key={this.props.dialogKey + '-' + e.name + '-image'}
+                label={e.label ? I18n.t(e.label) : I18n.t(e.name)}
+                aspect={this.state.values.hasOwnProperty('doubleSize') ? (this.state.values.doubleSize ? 2 : 1) : e.aspect}
+                maxHeight={200}
+                image={this.state.values[e.name]}
+                onUpload={file => this.handleDropImage(e.name, file)}
+                textAccepted={I18n.t('All files will be accepted')}
+                textRejected={I18n.t('Some files will be rejected')}
+                textWaiting={I18n.t('Drop some files here or click...')}
+            />;
+        } else if (e.type === 'number') {
+            // input field
+            item = <TextField
+                key={this.props.dialogKey + '-' + e.name + '-text'}
+                id={e.name}
+                label={I18n.t(e.name)}
+                style={{ width: '100%' }}
+                type="number"
+                inputProps={{ min: e.min, max: e.max }}
+                value={this.state.values[e.name] || ''}
+                onChange={ev => this.handleText(e.name, ev)}
+                margin="normal"
+            />;
+        } else {
+            // input field
+            item = <TextField
+                key={this.props.dialogKey + '-' + e.name + '-text'}
+                id={e.name}
+                label={I18n.t(e.name)}
+                style={{ width: '100%' }}
+                value={this.state.values[e.name] || ''}
+                onChange={ev => this.handleText(e.name, ev)}
+                margin="normal"
+            />;
+        }
 
-            if (0 && divider) {
-                return [item, divider];
-            } else {
-                return <Paper key={this.props.dialogKey + '-' + e.name + '-paper'} style={{margin: 5, padding: 5}} elevation={1}>{item}</Paper>;
-            }
-        });
+        if (0 && divider) {
+            return [item, divider];
+        } else {
+            return <div key={this.props.dialogKey + '-' + e.name + '-paper'} style={{ margin: 5, padding: 5 }} >{item}</div>;
+        }
+    });
 
-        result.push(this.generateObjectInfo());
+    result.push(this.generateObjectInfo());
 
-        return <List key={this.props.dialogKey + '-list'}>{result}</List>;
+return <List key={this.props.dialogKey + '-list'}><Paper elevation={1}>{result}</Paper></List>;
         /*return [
             <Toolbar key={this.props.dialogKey + '-toolbar'} >
                 <h4 key={this.props.dialogKey + '-header'} style={Theme.dialog.header}>{this.props.name}</h4>
@@ -356,22 +366,22 @@ class SmartDialogSettings extends SmartDialogGeneric  {
         ];*/
     }
 
-    getAdditionalElements() {
-        return <Dialog
-            open={this.state.unsavedDialog}
-            aria-labelledby={I18n.t('Not saved!')}
-            aria-describedby={I18n.t('Changes not saved!')}
-        >
-            <DialogTitle>{I18n.t('Ignore changes?')}</DialogTitle>
-            <DialogContent>
-                <DialogContentText>{I18n.t('Changes are not saved.')}</DialogContentText>
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={this.handleWarningCancel} color="primary" autoFocus>{I18n.t('Stay edit')}</Button>
-                <Button onClick={this.handleWarningIgnore}>{I18n.t('Discard changes')}</Button>
-            </DialogActions>
-        </Dialog>;
-    }
+getAdditionalElements() {
+    return <Dialog
+        open={this.state.unsavedDialog}
+        aria-labelledby={I18n.t('Not saved!')}
+        aria-describedby={I18n.t('Changes not saved!')}
+    >
+        <DialogTitle>{I18n.t('Ignore changes?')}</DialogTitle>
+        <DialogContent>
+            <DialogContentText>{I18n.t('Changes are not saved.')}</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+            <Button onClick={this.handleWarningCancel} color="primary" autoFocus>{I18n.t('Stay edit')}</Button>
+            <Button onClick={this.handleWarningIgnore}>{I18n.t('Discard changes')}</Button>
+        </DialogActions>
+    </Dialog>;
+}
 }
 
 export default SmartDialogSettings;

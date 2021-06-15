@@ -739,7 +739,7 @@ class App extends GenericApp {
         }
     }
 
-    onControl = (id, val, objectAttribute) => {
+    onControl = (id, val, objectAttribute, callback = () => { }) => {
         if (!id) {
             this.showError(I18n.t('Control ID is empty'));
         } else
@@ -755,7 +755,11 @@ class App extends GenericApp {
                     .catch(e => window.alert('Cannot get object: ' + e))
             } else {
                 this.socket.setState(id, val)
-                    .catch(e => window.alert('Cannot get object: ' + e))
+                    .then(_ => callback())
+                    .catch(e => {
+                        callback();
+                        window.alert('Cannot get object: ' + e);
+                    })
             }
     }
 
@@ -1273,8 +1277,8 @@ class App extends GenericApp {
             <IconButton
                 onClick={this.toggleEditMode}
                 // style={style}
-                className={clsx(cls.iconSettingts,this.state.editMode && cls.iconSettingtsActive)}
-                >
+                className={clsx(cls.iconSettingts, this.state.editMode && cls.iconSettingtsActive)}
+            >
                 <IconEdit width={Theme.iconSize} height={Theme.iconSize} />
             </IconButton>
         );

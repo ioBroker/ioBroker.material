@@ -109,10 +109,10 @@ class SmartThermometer extends SmartGeneric {
         let customIcon;
 
         if (this.state.settings.useDefaultIcon) {
-            customIcon = (<IconAdapter alt="icon" src={this.getDefaultIcon()} style={{ height: '100%', zIndex: 1 }} />);
+            customIcon = (<IconAdapter className={clsGeneric.iconStyle} alt="icon" src={this.getDefaultIcon()} style={{ height: '100%', zIndex: 1 }} />);
         } else {
             if (this.state.settings.icon) {
-                customIcon = (<IconAdapter alt="icon" src={this.state.settings.icon} style={{ height: '100%', zIndex: 1 }} />);
+                customIcon = (<IconAdapter className={clsGeneric.iconStyle} alt="icon" src={this.state.settings.icon} style={{ height: '100%', zIndex: 1 }} />);
             } else {
                 customIcon = (<IconThermometer className={clsGeneric.iconStyle} />);
             }
@@ -158,7 +158,7 @@ class SmartThermometer extends SmartGeneric {
             this.getSecondaryDiv(),
             this.getSecondaryDivTop(),
             this.getCharts(),
-            this.state.showDialog ?
+            this.state.showDialogBottom ?
                 dialogChartCallBack(this.onDialogCloseBottom, this.settingsId, this.props.socket,this.props.themeType) : null
         ]);
     }

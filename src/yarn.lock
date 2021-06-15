@@ -3830,6 +3830,11 @@ create-hmac@^1.1.0, create-hmac@^1.1.4, create-hmac@^1.1.7:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
+cropperjs@^1.5.11:
+  version "1.5.12"
+  resolved "https://registry.yarnpkg.com/cropperjs/-/cropperjs-1.5.12.tgz#d9c0db2bfb8c0d769d51739e8f916bbc44e10f50"
+  integrity sha512-re7UdjE5UnwdrovyhNzZ6gathI4Rs3KGCBSc8HCIjUo5hO42CtzyblmWLj6QWVw7huHyDMfpKxhiO2II77nhDw==
+
 cross-spawn@7.0.3, cross-spawn@^7.0.0, cross-spawn@^7.0.2:
   version "7.0.3"
   resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-7.0.3.tgz"
@@ -6055,10 +6060,10 @@ invariant@^2.2.4:
   dependencies:
     loose-envify "^1.0.0"
 
-iobroker.type-detector@^1.0.10:
-  version "1.0.10"
-  resolved "https://registry.npmjs.org/iobroker.type-detector/-/iobroker.type-detector-1.0.10.tgz"
-  integrity sha512-NEB1X2pehvEMohgaVWttVVM8mWyY7vdEfqXf/FJOeB2Xaq7J+TerI/6uBGSEtaZHTc+B8r3LRO3recDX6rxvmQ==
+iobroker.type-detector@^1.0.11:
+  version "1.0.11"
+  resolved "https://registry.yarnpkg.com/iobroker.type-detector/-/iobroker.type-detector-1.0.11.tgz#3e3fd55df44a2db7306e18d39f1a25374b04d3df"
+  integrity sha512-jVOKGjbsRZMW6Q5cf89pSnL8zKtSt7TyeRqezBrmckgOuvgEW9B3M0wxa0GVH3N6ulQ9Ilc85mUwpx14Lt4S2g==
 
 ip-regex@^2.1.0:
   version "2.1.0"
@@ -9419,6 +9424,13 @@ react-copy-to-clipboard@5.0.3:
   dependencies:
     copy-to-clipboard "^3"
     prop-types "^15.5.8"
+
+react-cropper@^2.1.7:
+  version "2.1.7"
+  resolved "https://registry.yarnpkg.com/react-cropper/-/react-cropper-2.1.7.tgz#f9f8127b9516fecc44f918dd331107bfc32adfaf"
+  integrity sha512-dGp2l2wSh4KubWx3PQZIP27fV4shPYjIvm972IqJZdzi/fpDsB6s3GKEH54mk0gy18+80d3WnlgAP2xJ/o8+yw==
+  dependencies:
+    cropperjs "^1.5.11"
 
 react-dev-utils@^11.0.3:
   version "11.0.4"

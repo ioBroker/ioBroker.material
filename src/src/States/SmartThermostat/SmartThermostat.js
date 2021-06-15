@@ -25,6 +25,7 @@ import IconAdapter from '@iobroker/adapter-react/Components/Icon';
 import cls from './style.module.scss';
 import clsGeneric from '../style.module.scss';
 import { dialogChartCallBack } from '../../Dialogs/DialogChart';
+import clsx from 'clsx';
 
 class SmartThermostat extends SmartGeneric {
     // props = {
@@ -43,8 +44,13 @@ class SmartThermostat extends SmartGeneric {
             } else {
                 this.id = '';
             }
+
             state = this.channelInfo.states.find(state => state.id && state.name === 'ACTUAL');
             this.actualId = state ? state.id : this.id;
+
+            let parts = this.actualId.split('.');
+            parts.pop();
+            parts = parts.join('.');
 
             state = this.channelInfo.states.find(state => state.id && state.name === 'BOOST');
             this.boostId = state && state.id;
@@ -53,8 +59,11 @@ class SmartThermostat extends SmartGeneric {
             this.humidityId = state && state.id;
 
             state = this.channelInfo.states.find(state => state.id && state.name === 'POWER');
-            // debugger
-            this.powerId = state && state.id;
+            this.powerId = state?.id || `${parts}.POWER`;
+
+            state = this.channelInfo.states.find(state => state.id && state.name === 'MODE');
+            this.modeId = state?.id || `${parts}.MODE`;
+            // this.props.tile.setState({ [this.modeId]: this.props.states[this.modeId] });
         }
 
         if (this.humidityId) {
@@ -112,7 +121,7 @@ class SmartThermostat extends SmartGeneric {
         if (!state) {
             return;
         }
-        if (this.actualId === id || id === this.id || id === this.humidityId) {
+        if (this.actualId === id || id === this.id || id === this.humidityId || id === this.modeId) {
             newState[id] = typeof state.val === 'number' ? state.val : parseFloat(state.val);
             if (isNaN(newState[id])) {
                 newState[id] = null;
@@ -133,17 +142,16 @@ class SmartThermostat extends SmartGeneric {
 
     getIcon() {
         let customIcon;
-
         if (this.state.settings.useDefaultIcon) {
-            customIcon = (<IconAdapter alt="icon" src={this.getDefaultIcon()} style={{ height: '100%', zIndex: 1 }} />);
+            customIcon = (<IconAdapter className={clsx(clsGeneric.iconStyle, this.state[this.powerId] && clsGeneric.activeIconStyle)} alt="icon" src={this.getDefaultIcon()} style={{ height: '100%', zIndex: 1 }} />);
         } else {
             if (this.state.settings.icon) {
-                customIcon = (<IconAdapter alt="icon" src={this.state.settings.icon} style={{ height: '100%', zIndex: 1 }} />);
+                customIcon = (<IconAdapter className={clsx(clsGeneric.iconStyle, this.state[this.powerId] && clsGeneric.activeIconStyle)} alt="icon" src={this.state.settings.icon} style={{ height: '100%', zIndex: 1 }} />);
             } else {
-                customIcon = (<Icon className={clsGeneric.iconStyle} />);
+                customIcon = (<Icon className={clsx(clsGeneric.iconStyle, this.state[this.powerId] && clsGeneric.activeIconStyle)} />);
             }
         }
-        return SmartGeneric.renderIcon(customIcon, null, this.state[this.boostId]);
+        return SmartGeneric.renderIcon(customIcon, this.state.executing, this.state[this.powerId], this.onPowerToggle.bind(this));
     }
 
     formatValue(num, unit) {
@@ -200,20 +208,18 @@ class SmartThermostat extends SmartGeneric {
         this.props.onControl(this.boostId, boostOn);
     }
 
-    onToggleValue = powerOn => {
-        debugger
-        if (powerOn === undefined) {
-            powerOn = !this.state[this.powerId];
-        }
-        const newValue = {};
-        newValue[this.powerId] = powerOn;
-        this.setState(newValue);
-        this.props.onControl(this.powerId, powerOn);
+    onPowerToggle = () => {
+        this.setState({ executing: true });
+        this.props.onControl(this.powerId, !this.state[this.powerId], null, () => this.setState({ executing: false }));
     }
-    
+
+    onMode = (value) => {
+        this.props.onControl(this.modeId, Number(value));
+    }
+
     render() {
         return this.wrapContent([
-            this.getStandardContent(this.id, true),
+            this.getStandardContent(this.id, false),
             this.getSecondaryDiv(),
             this.getSecondaryDivTop(),
             this.getCharts(),
@@ -231,8 +237,12 @@ class SmartThermostat extends SmartGeneric {
                     windowWidth={this.props.windowWidth}
                     actualValue={this.state[this.actualId] === null || this.state[this.actualId] === undefined ? this.min : this.state[this.actualId]}
                     boostValue={this.boostId ? this.state[this.boostId] : null}
+                    powerValue={this.powerId ? this.state[this.powerId] : null}
+                    modeValue={this.modeId ? this.state[this.modeId] : null}
+                    modeArray={this.modeId ? this.props.objects[this.modeId].common.states : null}
                     onBoostToggle={this.onBoostToggle}
-                    onPowerToggle={this.onToggleValue}
+                    onPowerToggle={this.onPowerToggle.bind(this)}
+                    onMode={this.onMode.bind(this)}
                     min={this.min}
                     max={this.max}
                     onValueChange={this.setValue}

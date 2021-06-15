@@ -21,18 +21,17 @@
 .cornerBottom {
     position: absolute;
     bottom: 0;
-    right: 0;
-
-    border-width: 18px 21px 0px 0px;
+    left: 0;
+    border-width: 21px 0px 0px 18px;
     border-style: solid;
     border-color: var(--cornerColorBottom);
-    box-shadow: rgb(0 0 0 / 30%) -6px 4px 5px, rgb(0 0 0 / 20%) -4px 6px 5px;
-    border-radius: 10px 0px 0px 0px;
+    box-shadow: rgb(0 0 0 / 30%) 8px 4px 5px, rgb(0 0 0 / 20%) 6px 6px 5px;
+    border-radius: 0px 10px 0px 0px;
     transition: border-width 0.25s ease-in-out;
     cursor: pointer;
     z-index: 2;
     &:hover {
-        border-width: 28px 28px 0 0;
+        border-width: 28px 0 0 28px;
     }
 }
 .iconWrapper {

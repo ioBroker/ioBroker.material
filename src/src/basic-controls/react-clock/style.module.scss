@@ -10,13 +10,32 @@
 }
 .timeWrapper {
     color: var(--silverColor);
-    font-size: 40px;
+    font-size: 55px;
     font-weight: bold;
     font-family: inherit;
+    // margin-bottom: 6px;
+    position: relative;
+    span {
+        font-size: 13px;
+        position: absolute;
+        top: -4px;
+        right: -19px;
+    }
+}
+.timeWrapperSmall {
+    font-size: 22px;
+    span {
+        right: -11px;
+        top: -8px;
+        font-size: 9px;
+    }
 }
 .wrapperButtons {
     margin-top: 10px;
     display: flex;
+}
+.noWidth {
+    width: auto !important;
 }
 .color {
     color: var(--generalColor) !important;
@@ -28,13 +47,28 @@
     display: flex;
     flex-direction: column;
     align-self: center;
+    width: 222px;
+}
+.clockSmall {
+    width: 96px;
 }
 .dayOfWeek {
     font-size: 16px;
     color: var(--generalColor);
+    display: flex;
+    justify-content: space-between;
+}
+.dayOfWeekSmall{
+    flex-direction: column;
+    font-size: 12px;
+    position: absolute;
+    bottom: 10px;
 }
 .emptyDayOfWeek {
-    height: 19px;
+    // height: 19px;
+}
+.clockBigSmall{
+    font-size: 33px;
 }
 .hour12 {
     width: 24px;

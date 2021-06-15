@@ -6,7 +6,20 @@
     max-height: calc(100% - 60px) !important;
     margin: 0 !important;
 }
-
+.boostButton{
+    position:absolute !important;
+    top: 1.3em;
+}
+.powerButton{
+    position:absolute !important;
+    top: 5.3em;
+    left: 3em;
+}
+.modeButton{
+    position:absolute !important;
+    bottom: 0;
+    left: 12em;
+}
 @media screen and (max-width: 600px) {
     .paper {
         max-height: 100% !important;

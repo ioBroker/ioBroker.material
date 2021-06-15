@@ -17,10 +17,29 @@ const showSecondsOptions = {
     second: '2-digit',
 }
 
+const format = (x, y) => {
+    let z = {
+        M: x.getMonth() + 1,
+        d: x.getDate(),
+        h: x.getHours(),
+        m: x.getMinutes(),
+        s: x.getSeconds()
+    };
+    y = y.replace(/(M+|d+|h+|m+|s+)/g, (v) => {
+        return ((v.length > 1 ? "0" : "") + z[v.slice(-1)]).slice(-2)
+    });
+
+    return y.replace(/(y+)/g, (v) => {
+        return x.getFullYear().toString().slice(-v.length)
+    });
+}
+
 const Clock = ({
     secondsParams,
     hour12Params,
     dayOfWeekParams,
+    date,
+    doubleSize
 }) => {
     let subscribeTime = null;
 
@@ -53,47 +72,14 @@ const Clock = ({
     }, [hour12Params, secondsParams]);
 
     return <div className={cls.clockWrapper}>
-        <div className={cls.clock}>
-            <div className={cls.timeWrapper}>
-                {time}
-            </div>
-            <div className={clsx(cls.dayOfWeek, !dayOfWeek && cls.emptyDayOfWeek)}>
-                {dayOfWeek}
+        <div className={clsx(cls.clock, !secondsParams && cls.noWidth, !doubleSize && cls.clockSmall )}>
+            <div className={clsx(cls.timeWrapper, !doubleSize && cls.timeWrapperSmall, !secondsParams && !doubleSize && cls.clockBigSmall)}>
+                {time}{hour12Params && <span>pm</span>}
             </div>
         </div>
-        {/* <div className={cls.wrapperButtons}>
-            <Tooltip title={I18n.t('')}>
-                <IconButton
-                // onClick={() => setHour12(!hour12)}
-                >
-                    <div className={clsx(cls.hour12, cls.defColor)}>
-                        {I18n.t(hour12Params ? '12h' : '24h')}
-                    </div>
-                </IconButton>
-            </Tooltip>
-            <Tooltip title={I18n.t('Seconds')}>
-                <IconButton
-                    className={clsx(secondsParams ? cls.color : cls.defColor)}
-                // onClick={() => setShowSeconds(!showSeconds)}
-                >
-                    <MdAvTimer />
-                </IconButton>
-            </Tooltip>
-            <Tooltip title={I18n.t('Day of week')}>
-                <IconButton
-                    className={clsx(dayOfWeek ? cls.color : cls.defColor)}
-                // onClick={() => {
-                //     if (dayOfWeek) {
-                //         setDayOfWeek(null)
-                //     } else {
-                //         setDayOfWeek(new Intl.DateTimeFormat(I18n.getLanguage(), { weekday: 'long' }).format(new Date()))
-                //     }
-                // }}
-                >
-                    <FaRegCalendarTimes />
-                </IconButton>
-            </Tooltip>
-        </div> */}
+        <div className={clsx(cls.dayOfWeek, !dayOfWeek && cls.emptyDayOfWeek, !doubleSize && cls.dayOfWeekSmall)}>
+            {dayOfWeek}{date && <span>{format(new Date(), 'dd.MM.yyyy')}</span>}
+        </div>
     </div>
 }
 
@@ -101,6 +87,8 @@ Clock.defaultProps = {
     secondsParams: false,
     hour12Params: false,
     dayOfWeekParams: false,
+    date: false,
+    doubleSize: false
 };
 
 export default Clock;

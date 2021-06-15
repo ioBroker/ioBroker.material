@@ -567,7 +567,7 @@ class StatesSubList extends Component {
             if (items.length) {
                 const visible = this.state.visible || this.props.editMode;
 
-                const style = !visible ? { display: 'none' } : (this.state.newLine || this.props.editMode ? { display: 'block', border: 'none' } : { display: 'inline-block' });
+                const style = !visible ? { display: 'none' } : (this.state.newLine || this.props.editMode ? { display: 'block', border: 'none' } : null);
 
                 if (this.state.align) {
                     style.textAlign = this.state.align;

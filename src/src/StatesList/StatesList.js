@@ -473,7 +473,7 @@ class StatesList extends Component {
         }
 
         if (!this.state.subDragging && this.props.editMode && this.props.enumID !== Utils.INSTANCES && !isNothing) {
-            return (<div className={cls.wrapperBlock}>
+            return (<div className={cls.droppableList}>
                 <DragDropContext onDragEnd={result => this.onDragEnd(result)} onDragStart={() => this.setState({ dragging: true })}>
                     <Droppable droppableId="mainList" direction="vertical">
                         {(provided, snapshot) => this.wrapAllItems(columns, provided, snapshot, style)}

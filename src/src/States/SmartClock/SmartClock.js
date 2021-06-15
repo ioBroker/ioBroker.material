@@ -90,7 +90,6 @@ class SmartClock extends SmartGeneric {
         this.collectState = null;
         this.collectTimer = null;
 
-        this.width = 2; // if widget has double width or single
         this.props.tile.setState({ isPointer: false });
         // this.props.tile.setState({ state: true });
         this.key = 'smart-clock-';
@@ -138,6 +137,17 @@ class SmartClock extends SmartGeneric {
             type: 'boolean'
         });
 
+        settings.unshift({
+            name: 'date',
+            value: this.state.settings.date || false,
+            type: 'boolean'
+        });
+
+        settings.unshift({
+            name: 'doubleSize',
+            value: this.state.settings.doubleSize || false,
+            type: 'boolean'
+        });
         // remove name from list
         settings = settings.filter((e, i) => {
             if (e && (e.name === 'name'
@@ -177,6 +187,8 @@ class SmartClock extends SmartGeneric {
                     secondsParams={this.state?.settings?.seconds}
                     dayOfWeekParams={this.state?.settings?.dayOfWeek}
                     hour12Params={this.state?.settings['12/24']}
+                    date={this.state?.settings?.date}
+                    doubleSize={this.state?.settings?.doubleSize}
                 />
             </div>
         );

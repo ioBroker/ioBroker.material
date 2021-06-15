@@ -3,6 +3,15 @@
     width: 100%;
     flex-wrap: wrap;
     overflow-y: auto;
+    display: flex;
+    height: fit-content;
+}
+.droppableList{
+    padding-top: 55px;
+    width: 100%;
+    flex-wrap: wrap;
+    overflow-y: auto;
+    display: block;
 }
 .buttonClock{
     position: absolute !important;
