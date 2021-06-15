@@ -1293,10 +1293,10 @@
   resolved "https://registry.yarnpkg.com/@icons/material/-/material-0.2.4.tgz"
   integrity sha512-QPcGmICAPbGLGb6F/yNf/KzKqvFx8z5qx3D1yFqVAjoFmXK35EgyW+cJ57Te3CNsmzblwtzakLGFqHPqrfb4Tw==
 
-"@iobroker/adapter-react@^1.6.27":
-  version "1.6.27"
-  resolved "https://registry.npmjs.org/@iobroker/adapter-react/-/adapter-react-1.6.27.tgz"
-  integrity sha512-MDF/mryPLWnj55G0fEuKC63uqUxIFvMpJmZLIf1cy3tXte6Ao8vWz5FeMGWnUYkfl3XfKfLMKJxVVEelzOaObQ==
+"@iobroker/adapter-react@^1.6.28":
+  version "1.6.28"
+  resolved "https://registry.yarnpkg.com/@iobroker/adapter-react/-/adapter-react-1.6.28.tgz#33410dee68e0a9409086e553b79ad18a8d765e3a"
+  integrity sha512-suFgrt7iMNXHZAwjg6zDFTV3IpjuiDZFbihKCguEEBPfds6ztb1PEDlLiGRx6UEWmbBHQZkaInvk6RWr9gfX9Q==
   dependencies:
     "@material-ui/core" "^4.11.4"
     "@material-ui/icons" "^4.11.2"

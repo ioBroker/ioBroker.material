@@ -222,14 +222,14 @@ class SmartDialogThermostat extends SmartDialogGeneric {
             {this.state.boostValue !== null && this.state.boostValue !== undefined ?
                 <Button
                     variant="contained"
-                    color={this.state.boostValue ? 'secondary' : ''}
+                    color={this.state.boostValue ? 'primary' : ''}
                     onClick={this.onBoostMode}
                     className={cls.boostButton}>{I18n.t('Boost')}
                 </Button> : null}
             {this.props.powerValue !== null && this.props.powerValue !== undefined ?
                 <Button
                     variant="contained"
-                    color={this.props.powerValue ? 'secondary' : ''}
+                    color={this.props.powerValue ? 'primary' : ''}
                     onClick={this.props.onPowerToggle}
                     className={cls.powerButton}>
                     {I18n.t('Power')}
