@@ -425,16 +425,16 @@ class SmartColor extends SmartGeneric {
     getIcon() {
         let customIcon;
         if (this.state.settings.useDefaultIcon) {
-            customIcon = (<IconAdapter className={clsx(clsGeneric.iconStyle, this.state[this.ids.on.id] && clsGeneric.activeIconStyle)} src={this.getDefaultIcon()} alt="icon" style={{ height: '100%' }} />);
+            customIcon = (<IconAdapter className={clsx(clsGeneric.iconStyle, this.state[this.ids.on?.id] && clsGeneric.activeIconStyle)} src={this.getDefaultIcon()} alt="icon" style={{ height: '100%' }} />);
         } else {
             if (this.state.settings.icon) {
-                customIcon = (<IconAdapter className={clsx(clsGeneric.iconStyle, this.state[this.ids.on.id] && clsGeneric.activeIconStyle)} src={this.state.settings.icon} alt="icon" style={{ height: '100%' }} />);
+                customIcon = (<IconAdapter className={clsx(clsGeneric.iconStyle, this.state[this.ids.on?.id] && clsGeneric.activeIconStyle)} src={this.state.settings.icon} alt="icon" style={{ height: '100%' }} />);
             } else {
-                customIcon = (<Icon className={clsx(clsGeneric.iconStyle, this.state[this.ids.on.id] && clsGeneric.activeIconStyle)} />);
+                customIcon = (<Icon className={clsx(clsGeneric.iconStyle, this.state[this.ids.on?.id] && clsGeneric.activeIconStyle)} />);
             }
         }
 
-        return SmartGeneric.renderIcon(customIcon, this.state.executing, this.state[this.ids.on.id], this.onToggle.bind(this), this.state[this.ids.rgb.id])
+        return SmartGeneric.renderIcon(customIcon, this.state.executing, this.state[this.ids.on?.id], this.onToggle.bind(this), this.state[this.ids.rgb?.id])
 
     }
 

@@ -31,23 +31,11 @@ import cls from './style.module.scss';
 import ReactEchartsCore from 'echarts-for-react/lib/core';
 
 import * as echarts from 'echarts/core';
-
 import { LineChart } from 'echarts/charts';
-import {
-    GridComponent,
-    ToolboxComponent,
-    TooltipComponent,
-    TitleComponent,
-    TimelineComponent,
-    DataZoomComponent,
-    DataZoomInsideComponent,
-} from 'echarts/components';
-import {
-    SVGRenderer,
-} from 'echarts/renderers';
+import {GridComponent} from 'echarts/components';
+import {SVGRenderer} from 'echarts/renderers';
 
-echarts.use([DataZoomInsideComponent, DataZoomComponent, TimelineComponent, ToolboxComponent, TitleComponent, TooltipComponent, GridComponent, LineChart, SVGRenderer]);
-
+echarts.use([GridComponent, LineChart, SVGRenderer]);
 class SmartDialogGeneric extends Component {
 
     static COLOR_MODES = {
