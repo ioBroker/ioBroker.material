@@ -97,7 +97,7 @@ class Thermostat extends Component {
     formatNumber(num, withUnit) {
         const unit = this.props.unit || '';
         num = num.toFixed(this.props.afterComma || 0);
-        if (this.props.afterComma) {
+        if (this.props.commaAsDelimiter) {
             num = num.replace('.', ',');
         }
         if (unit && withUnit) {
@@ -204,7 +204,7 @@ class Thermostat extends Component {
         >
             <circle cx={radius} cy={radius} r={radius} className={cls.circle}/>
             <g>{tickArray}</g>
-            <text x={radius} y={radius} style={styles.target}>
+            <text x={radius} y={radius} className={cls.colorCenter} style={styles.target}>
                 {this.formatNumber(this.props.targetTemperature, true)}
             </text>
             <text x={ambientPosition[0]} y={ambientPosition[1]} style={styles.ambient}>

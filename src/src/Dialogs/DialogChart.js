@@ -99,7 +99,7 @@ const DialogChart = ({ cb, id, socket, themeType }) => {
         <Dialog
             maxWidth="lg"
             fullWidth
-            fullScreen
+            // fullScreen
             onClose={onClose}
             open={open}
             classes={{ paper: classes.paper }}

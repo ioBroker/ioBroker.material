@@ -212,7 +212,7 @@ class SmartColor extends SmartGeneric {
             ids.on = state && state.id ? { id: state.id } : null;
             if (ids.on) {
                 this.props.tile.setState({ isPointer: true });
-                this.props.tile.registerHandler('onClick', this.onToggle.bind(this));
+                // this.props.tile.registerHandler('onClick', this.onToggle.bind(this));
             }
         }
         this.ids = ids;
@@ -417,24 +417,24 @@ class SmartColor extends SmartGeneric {
     onToggle = value => {
         if (this.ids.on) {
             const newValue = value === undefined || typeof value === 'object' ? !this.state[this.ids.on.id] : value;
-            this.setState({ [this.ids.on.id]: newValue });
-            this.props.onControl(this.ids.on.id, newValue);
+            this.setState({ [this.ids.on.id]: newValue, executing: true });
+            this.props.onControl(this.ids.on.id, newValue, null, () => this.setState({ executing: false }));
         }
     }
 
     getIcon() {
         let customIcon;
         if (this.state.settings.useDefaultIcon) {
-            customIcon = (<IconAdapter src={this.getDefaultIcon()} alt="icon" style={{ height: '100%' }} />);
+            customIcon = (<IconAdapter className={clsx(clsGeneric.iconStyle, this.state[this.ids.on.id] && clsGeneric.activeIconStyle)} src={this.getDefaultIcon()} alt="icon" style={{ height: '100%' }} />);
         } else {
             if (this.state.settings.icon) {
-                customIcon = (<IconAdapter src={this.state.settings.icon} alt="icon" style={{ height: '100%' }} />);
+                customIcon = (<IconAdapter className={clsx(clsGeneric.iconStyle, this.state[this.ids.on.id] && clsGeneric.activeIconStyle)} src={this.state.settings.icon} alt="icon" style={{ height: '100%' }} />);
             } else {
-                customIcon = (<Icon className={clsGeneric.iconStyle} />);
+                customIcon = (<Icon className={clsx(clsGeneric.iconStyle, this.state[this.ids.on.id] && clsGeneric.activeIconStyle)} />);
             }
         }
 
-        return SmartGeneric.renderIcon(customIcon, this.state.executing, this.state[this.actualId] !== this.min)
+        return SmartGeneric.renderIcon(customIcon, this.state.executing, this.state[this.ids.on.id], this.onToggle.bind(this), this.state[this.ids.rgb.id])
 
     }
 
@@ -529,11 +529,11 @@ class SmartColor extends SmartGeneric {
     }
 
     render() {
-        if (this.state.showDialog) {
-            this.props.tile.unregisterHandler('onClick');
-        } else {
-            this.props.tile.registerHandler('onClick', this.onToggle.bind(this));
-        }
+        // if (this.state.showDialog) {
+        //     this.props.tile.unregisterHandler('onClick');
+        // } else {
+        //     // this.props.tile.registerHandler('onClick', this.onToggle.bind(this));
+        // }
 
         let modeRGB = !this.ids.temperature || !!(this.ids.rgb || this.ids.red || this.ids.hue);
         let modeTemperature = !!this.ids.temperature;
@@ -548,11 +548,12 @@ class SmartColor extends SmartGeneric {
         const color = this.getColor() || '#000000';
 
         return this.wrapContent([
-            this.getStandardContent(this.id, true),
+            this.getStandardContent(this.id, false),
             this.state.showDialog ?
                 <Dialog key={this.key + 'dialog'}
                     windowWidth={this.props.windowWidth}
                     ids={this.ids}
+                    transparent
 
                     modeRGB={modeRGB}
                     modeTemperature={modeTemperature}
@@ -567,7 +568,7 @@ class SmartColor extends SmartGeneric {
 
                     startOn={this.ids.on && this.state[this.ids.on.id]}
                     useOn={!!this.ids.on}
-                    onToggle={this.ids.on && this.onToggle}
+                    onToggle={this.ids.on && this.onToggle.bind(this)}
 
                     startDimmer={this.ids.dimmer && this.state[this.ids.dimmer.id]}
                     useDimmer={!!this.ids.dimmer}

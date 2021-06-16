@@ -284,79 +284,63 @@ class SmartDialogSettings extends SmartDialogGeneric {
                     options={e.options}
                 />;
             } else if (e.type === 'icon') {
-                // item = <ImageSelector
-                //     maxSize={15000}
-                //     icons={true}
-                //     height={64}
-                //     accept={'image/jpeg, image/png, image/gif, image/svg+xml'}
-                //     key={this.props.dialogKey + '-' + e.name + '-icon'}
-                //     label={e.label ? I18n.t(e.label) : I18n.t(e.name)}
-                //     image={this.state.values[e.name]}
-                //     maxHeight={200}
-                // onUpload = { file => this.handleIcon(e.name, file)
-            // }
-            //     textAccepted={I18n.t('All files will be accepted')}
-            //     textRejected={I18n.t('Some files will be rejected')}
-            //     textWaiting={I18n.t('Drop some files here or click...')}
-            // />;
-            item = <UploadImage
-                crop={false}
-                // className={classes.dropZone}
-                maxSize={15000}
-                icon={this.state.values[e.name]}
-                onChange={base64 => this.handleIcon(e.name, base64)}
-                t={I18n.t}
-            />;
-        } else if (e.type === 'image') {
-            item = <ImageSelector
-                maxSize={6000000}
-                images={this.state.images}
-                key={this.props.dialogKey + '-' + e.name + '-image'}
-                label={e.label ? I18n.t(e.label) : I18n.t(e.name)}
-                aspect={this.state.values.hasOwnProperty('doubleSize') ? (this.state.values.doubleSize ? 2 : 1) : e.aspect}
-                maxHeight={200}
-                image={this.state.values[e.name]}
-                onUpload={file => this.handleDropImage(e.name, file)}
-                textAccepted={I18n.t('All files will be accepted')}
-                textRejected={I18n.t('Some files will be rejected')}
-                textWaiting={I18n.t('Drop some files here or click...')}
-            />;
-        } else if (e.type === 'number') {
-            // input field
-            item = <TextField
-                key={this.props.dialogKey + '-' + e.name + '-text'}
-                id={e.name}
-                label={I18n.t(e.name)}
-                style={{ width: '100%' }}
-                type="number"
-                inputProps={{ min: e.min, max: e.max }}
-                value={this.state.values[e.name] || ''}
-                onChange={ev => this.handleText(e.name, ev)}
-                margin="normal"
-            />;
-        } else {
-            // input field
-            item = <TextField
-                key={this.props.dialogKey + '-' + e.name + '-text'}
-                id={e.name}
-                label={I18n.t(e.name)}
-                style={{ width: '100%' }}
-                value={this.state.values[e.name] || ''}
-                onChange={ev => this.handleText(e.name, ev)}
-                margin="normal"
-            />;
-        }
+                item = <UploadImage
+                    crop={false}
+                    maxSize={15000}
+                    icon={this.state.values[e.name]}
+                    onChange={base64 => this.handleIcon(e.name, base64)}
+                    t={I18n.t}
+                />;
+            } else if (e.type === 'image') {
+                item = <ImageSelector
+                    maxSize={6000000}
+                    images={this.state.images}
+                    key={this.props.dialogKey + '-' + e.name + '-image'}
+                    label={e.label ? I18n.t(e.label) : I18n.t(e.name)}
+                    aspect={this.state.values.hasOwnProperty('doubleSize') ? (this.state.values.doubleSize ? 2 : 1) : e.aspect}
+                    maxHeight={200}
+                    image={this.state.values[e.name]}
+                    onUpload={file => this.handleDropImage(e.name, file)}
+                    textAccepted={I18n.t('All files will be accepted')}
+                    textRejected={I18n.t('Some files will be rejected')}
+                    textWaiting={I18n.t('Drop some files here or click...')}
+                />;
+            } else if (e.type === 'number') {
+                // input field
+                item = <TextField
+                    key={this.props.dialogKey + '-' + e.name + '-text'}
+                    id={e.name}
+                    label={I18n.t(e.name)}
+                    style={{ width: '100%' }}
+                    type="number"
+                    inputProps={{ min: e.min, max: e.max }}
+                    value={this.state.values[e.name] || ''}
+                    onChange={ev => this.handleText(e.name, ev)}
+                    margin="normal"
+                />;
+            } else {
+                // input field
+                item = <TextField
+                    key={this.props.dialogKey + '-' + e.name + '-text'}
+                    id={e.name}
+                    label={I18n.t(e.name)}
+                    style={{ width: '100%' }}
+                    value={this.state.values[e.name] || ''}
+                    onChange={ev => this.handleText(e.name, ev)}
+                    margin="normal"
+                />;
+            }
 
-        if (0 && divider) {
-            return [item, divider];
-        } else {
-            return <div key={this.props.dialogKey + '-' + e.name + '-paper'} style={{ margin: 5, padding: 5 }} >{item}</div>;
-        }
-    });
+            if (0 && divider) {
+                return [item, divider];
+            } else {
+                return <div key={this.props.dialogKey + '-' + e.name + '-paper'} style={{ margin: 5, padding: 5 }} >{item}</div>;
+            }
+        });
 
-    result.push(this.generateObjectInfo());
+        result.push(this.generateObjectInfo());
 
-return <List key={this.props.dialogKey + '-list'}><Paper elevation={1}>{result}</Paper></List>;
+        return <List key={this.props.dialogKey + '-list'}><Paper elevation={1}>{result}</Paper></List>;
         /*return [
             <Toolbar key={this.props.dialogKey + '-toolbar'} >
                 <h4 key={this.props.dialogKey + '-header'} style={Theme.dialog.header}>{this.props.name}</h4>
@@ -366,22 +350,22 @@ return <List key={this.props.dialogKey + '-list'}><Paper elevation={1}>{result}<
         ];*/
     }
 
-getAdditionalElements() {
-    return <Dialog
-        open={this.state.unsavedDialog}
-        aria-labelledby={I18n.t('Not saved!')}
-        aria-describedby={I18n.t('Changes not saved!')}
-    >
-        <DialogTitle>{I18n.t('Ignore changes?')}</DialogTitle>
-        <DialogContent>
-            <DialogContentText>{I18n.t('Changes are not saved.')}</DialogContentText>
-        </DialogContent>
-        <DialogActions>
-            <Button onClick={this.handleWarningCancel} color="primary" autoFocus>{I18n.t('Stay edit')}</Button>
-            <Button onClick={this.handleWarningIgnore}>{I18n.t('Discard changes')}</Button>
-        </DialogActions>
-    </Dialog>;
-}
+    getAdditionalElements() {
+        return <Dialog
+            open={this.state.unsavedDialog}
+            aria-labelledby={I18n.t('Not saved!')}
+            aria-describedby={I18n.t('Changes not saved!')}
+        >
+            <DialogTitle>{I18n.t('Ignore changes?')}</DialogTitle>
+            <DialogContent>
+                <DialogContentText>{I18n.t('Changes are not saved.')}</DialogContentText>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={this.handleWarningCancel} color="primary" autoFocus>{I18n.t('Stay edit')}</Button>
+                <Button onClick={this.handleWarningIgnore}>{I18n.t('Discard changes')}</Button>
+            </DialogActions>
+        </Dialog>;
+    }
 }
 
 export default SmartDialogSettings;

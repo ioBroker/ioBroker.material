@@ -35,6 +35,9 @@ import Types from '../States/SmartTypes';
 import VisibilityButton from '../basic-controls/react-visibility-button/VisibilityButton';
 import cls from './style.module.scss';
 import clsx from 'clsx';
+import { ListItemIcon } from '@material-ui/core';
+import IconAdapter from '@iobroker/adapter-react/Components/Icon';
+
 
 const styles = {
     'drag-item': {
@@ -465,8 +468,8 @@ class StatesSubList extends Component {
             );
         } else {
             return (<div className={cls.wrapperItems}>{items.map(e => <div key={'inline-div-' + e.id}>
-            {e.control}
-        </div>)}</div>);
+                {e.control}
+            </div>)}</div>);
         }
     }
 
@@ -540,21 +543,21 @@ class StatesSubList extends Component {
 
         if (countLights > 1) {
             controls.push(<IconButton key="light-off" size="small" aria-label="Off" onClick={() => this.controlAllLights(false)}
-                className={clsx(cls.styleIconH3,cls.styleIconH3off)}
+                className={clsx(cls.styleIconH3, cls.styleIconH3off)}
                 title={I18n.t('All lights off')}>
-                <IconLight  />
+                <IconLight />
             </IconButton>);
             controls.push(<IconButton key="light-on" size="small" aria-label="On"
                 onClick={() => this.controlAllLights(true)}
-                className={clsx(cls.styleIconH3,cls.styleIconH3on)}
+                className={clsx(cls.styleIconH3, cls.styleIconH3on)}
                 title={I18n.t('All lights on')}>
-                <IconLight  />
+                <IconLight />
             </IconButton>);
         }
         if (countBlinds > 0) {
-            controls.push(<IconButton key="blind-off" size="small" aria-label="Off" onClick={() => this.controlAllBlinds(false)} className={clsx(cls.styleIconH3,cls.styleIconH3off)} title={I18n.t('Close all blinds')}><IconBlind style={{width:14,height:14,margin:2}}  /></IconButton>);
-            controls.push(<IconButton key="blind-on" size="small" aria-label="On" onClick={() => this.controlAllBlinds(true)} 
-            className={clsx(cls.styleIconH3,cls.styleIconH3on)} title={I18n.t('Open all blinds')}><IconBlind style={{width:14,height:14,margin:2}} /></IconButton>);
+            controls.push(<IconButton key="blind-off" size="small" aria-label="Off" onClick={() => this.controlAllBlinds(false)} className={clsx(cls.styleIconH3, cls.styleIconH3off)} title={I18n.t('Close all blinds')}><IconBlind style={{ width: 14, height: 14, margin: 2 }} /></IconButton>);
+            controls.push(<IconButton key="blind-on" size="small" aria-label="On" onClick={() => this.controlAllBlinds(true)}
+                className={clsx(cls.styleIconH3, cls.styleIconH3on)} title={I18n.t('Open all blinds')}><IconBlind style={{ width: 14, height: 14, margin: 2 }} /></IconButton>);
         }
 
         return controls.length ? controls : null;
@@ -581,6 +584,7 @@ class StatesSubList extends Component {
                     onChange={() => this.onToggleSubEnabled()} /> : null;
 
                 //style={Object.assign({}, Theme.list.row, {display: display})}
+                const enumIcon = this.props.objects[this.state.enumSubID]?.common?.icon;
                 return (
                     <div key={(this.state.enumID + '-' + this.state.enumSubID).replace(/[^\w\d]/g, '_') + '-title'}
                         className={cls.ListRow}
@@ -591,6 +595,9 @@ class StatesSubList extends Component {
                             {this.props.editMode ? (
                                 <IconGrip style={{ color: this.props.isUseBright ? 'white' : 'black', width: 24, height: 24, float: 'left', opacity: this.state.subDragging ? 0 : 1 }} />)
                                 : null}
+                            {enumIcon && <ListItemIcon className={cls.itemIcon} key="icon">
+                                <IconAdapter className={cls.itemIconColor} src={enumIcon} />
+                            </ListItemIcon>}
                             {this.name}
                             {this.getControlAll()}
                             {visibilityButton}

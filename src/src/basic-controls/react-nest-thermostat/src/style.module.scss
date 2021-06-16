@@ -1,4 +1,9 @@
 .circle{
     fill: var(--editBackground);
     transition: fill 0.5s ease 0s;
+    stroke: var(--generalColor);
+    stroke-width: 1px;
+}
+.colorCenter{
+    // fill: var(--generalColor);
 }

@@ -63,7 +63,10 @@ class SmartThermostat extends SmartGeneric {
 
             state = this.channelInfo.states.find(state => state.id && state.name === 'MODE');
             this.modeId = state?.id || `${parts}.MODE`;
-            // this.props.tile.setState({ [this.modeId]: this.props.states[this.modeId] });
+
+            state = this.channelInfo.states.find(state => state.id && state.name === 'PARTY');
+            this.partyId = state?.id || `${parts}.PARTY`;
+
         }
 
         if (this.humidityId) {
@@ -213,6 +216,11 @@ class SmartThermostat extends SmartGeneric {
         this.props.onControl(this.powerId, !this.state[this.powerId], null, () => this.setState({ executing: false }));
     }
 
+    onPartyToggle = () => {
+        this.setState({ executing: true });
+        this.props.onControl(this.partyId, !this.state[this.partyId], null, () => this.setState({ executing: false }));
+    }
+
     onMode = (value) => {
         this.props.onControl(this.modeId, Number(value));
     }
@@ -238,15 +246,25 @@ class SmartThermostat extends SmartGeneric {
                     actualValue={this.state[this.actualId] === null || this.state[this.actualId] === undefined ? this.min : this.state[this.actualId]}
                     boostValue={this.boostId ? this.state[this.boostId] : null}
                     powerValue={this.powerId ? this.state[this.powerId] : null}
+                    partyValue={this.partyId ? this.state[this.partyId] : null}
                     modeValue={this.modeId ? this.state[this.modeId] : null}
-                    modeArray={this.modeId ? this.props.objects[this.modeId].common.states : null}
+                    modeArray={this.modeId ? this.props.objects[this.modeId]?.common?.states : null}
                     onBoostToggle={this.onBoostToggle}
                     onPowerToggle={this.onPowerToggle.bind(this)}
+                    onPartyToggle={this.onPartyToggle.bind(this)}
                     onMode={this.onMode.bind(this)}
                     min={this.min}
                     max={this.max}
+                    themeName={this.props.themeName}
+                    socket={this.props.socket}
                     onValueChange={this.setValue}
                     onClose={this.onDialogClose}
+                    ///Charts ids
+                    humidityId={this.props.objects[this.humidityId] ? this.humidityId : null}
+                    actualId={this.props.objects[this.actualId] && this.actualId.indexOf('ACTUAL') !== -1 ? this.actualId : null}
+                    setId={this.props.objects[this.id] ? this.id : null}
+                    ///Modal Charts
+                    openModal={id => dialogChartCallBack(() => { }, id, this.props.socket, this.props.themeType)}
                 /> : null
         ]);
     }

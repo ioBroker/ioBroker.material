@@ -483,10 +483,12 @@ class StatesList extends Component {
             );
         } else {
             return (<div className={cls.wrapperBlock} style={Object.assign({ marginLeft: this.props.marginLeft }, style)}>
-                {columns}
-                {this.getToggleDragButton()}
-                {this.getAddButton()}
-                {this.getAddButtonClock()}
+                <div className={cls.block}>
+                    {columns}
+                    {this.getToggleDragButton()}
+                    {this.getAddButton()}
+                    {this.getAddButtonClock()}
+                </div>
             </div>);
         }
     }

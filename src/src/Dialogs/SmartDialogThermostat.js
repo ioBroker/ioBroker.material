@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import React from 'react';
+import React, { createRef } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { withStyles } from '@material-ui/core/styles';
@@ -218,46 +218,62 @@ class SmartDialogThermostat extends SmartDialogGeneric {
     };
 
     generateContent() {
-        return <div ref={this.refPanel} className={clsx('paper-thermostat', this.props.classes.root)}>
-            {this.state.boostValue !== null && this.state.boostValue !== undefined ?
-                <Button
-                    variant="contained"
-                    color={this.state.boostValue ? 'primary' : ''}
-                    onClick={this.onBoostMode}
-                    className={cls.boostButton}>{I18n.t('Boost')}
-                </Button> : null}
-            {this.props.powerValue !== null && this.props.powerValue !== undefined ?
-                <Button
-                    variant="contained"
-                    color={this.props.powerValue ? 'primary' : ''}
-                    onClick={this.props.onPowerToggle}
-                    className={cls.powerButton}>
-                    {I18n.t('Power')}
-                </Button> : null}
-            {this.props.modeValue !== null && this.props.modeValue !== undefined ?
-                <FormControl className={cls.modeButton} component="fieldset">
-                    <FormLabel component="legend">{I18n.t('Mode')}</FormLabel>
-                    <ButtonGroup color="primary">
-                        {this.props.modeArray && Object.keys(this.props.modeArray).map(name => <Button
-                            onClick={() => this.props.onMode(name)}
-                            variant={String(this.props.modeValue) === name ? 'contained' : null}
-                            key={name}>
-                            {this.props.modeArray[name]}
-                        </Button>)}
-                    </ButtonGroup>
-                </FormControl>
-                : null}
-
-            <ThermostatControl
-                afterComma={1}
-                unit={this.props.unit}
-                commaAsDelimiter={this.props.commaAsDelimiter === undefined ? true : this.props.commaAsDelimiter}
-                minValue={this.min}
-                maxValue={this.max}
-                hvacMode={'heating'}
-                ambientTemperature={this.props.actualValue}
-                targetTemperature={this.state.value}
-            />
+        return <div className={cls.wrapperModalContent}>
+            <div className={cls.wrapperThermostat}>
+                {this.state.boostValue !== null && this.state.boostValue !== undefined ?
+                    <Button
+                        variant="contained"
+                        color={this.state.boostValue ? 'primary' : ''}
+                        onClick={this.onBoostMode}
+                        className={cls.boostButton}>{I18n.t('Boost')}
+                    </Button> : null}
+                {this.props.powerValue !== null && this.props.powerValue !== undefined ?
+                    <Button
+                        variant="contained"
+                        color={this.props.powerValue ? 'primary' : ''}
+                        onClick={this.props.onPowerToggle}
+                        className={cls.powerButton}>
+                        {I18n.t('Power')}
+                    </Button> : null}
+                {this.props.partyValue !== null && this.props.partyValue !== undefined ?
+                    <Button
+                        variant="contained"
+                        color={this.props.partyValue ? 'primary' : ''}
+                        onClick={this.props.onPartyToggle}
+                        className={cls.partyButton}>
+                        {I18n.t('Party')}
+                    </Button> : null}
+                {this.props.modeValue !== null && this.props.modeValue !== undefined ?
+                    <FormControl className={cls.modeButton} component="fieldset">
+                        <FormLabel component="legend">{I18n.t('Mode')}</FormLabel>
+                        <ButtonGroup color="primary">
+                            {this.props.modeArray && Object.keys(this.props.modeArray).map(name => <Button
+                                onClick={() => this.props.onMode(name)}
+                                variant={String(this.props.modeValue) === name ? 'contained' : null}
+                                key={name}>
+                                {this.props.modeArray[name]}
+                            </Button>)}
+                        </ButtonGroup>
+                    </FormControl>
+                    : null}
+                <div className={cls.charts}>
+                    {this.props.humidityId && this.getCharts(this.props.humidityId, React.createRef())}
+                    {this.props.actualId && this.getCharts(this.props.actualId, React.createRef())}
+                    {this.props.setId && this.getCharts(this.props.setId, React.createRef())}
+                </div>
+                <div ref={this.refPanel} className={cls.wrapperControl}>
+                    <ThermostatControl
+                        afterComma={1}
+                        unit={this.props.unit}
+                        commaAsDelimiter={this.props.commaAsDelimiter === undefined ? true : this.props.commaAsDelimiter}
+                        minValue={this.min}
+                        maxValue={this.max}
+                        hvacMode={'heating'}
+                        ambientTemperature={this.props.actualValue}
+                        targetTemperature={this.state.value}
+                    />
+                </div>
+            </div>
         </div>;
     }
 }

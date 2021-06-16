@@ -1,10 +1,14 @@
 .wrapperBlock{
     padding-top: 55px;
     width: 100%;
-    flex-wrap: wrap;
     overflow-y: auto;
     display: flex;
+    // height: fit-content;
+}
+.block{
     height: fit-content;
+    display: flex;
+    flex-wrap: wrap;
 }
 .droppableList{
     padding-top: 55px;

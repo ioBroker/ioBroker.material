@@ -21,11 +21,11 @@
 ## Thermostat
 - Try to place in a corner the second handler for charts
 - On mobile devices hide contorls in chart-dialog and make it maximal big
-- Support Party
-- Support humidity in control dialog (with possibility to open the chart)
+<!-- - Support Party -->
+<!-- - Support humidity in control dialog (with possibility to open the chart) -->
 - Tooltips for values: actual temperature / target temerature
-- Show valid comma/point by control of thermosat
-- Show all charts that only possible 
+<!-- - Show valid comma/point by control of thermosat -->
+- Show all charts that only possible //
 
 ## Temperature
 - Tooltips: Temperature / Humidity

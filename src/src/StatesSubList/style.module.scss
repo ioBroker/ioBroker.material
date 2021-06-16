@@ -17,6 +17,12 @@
     display: flex;
     flex-flow: wrap;
 }
+.itemIcon{
+    min-width: 36px !important;
+}
+.itemIconColor{
+    color: var(--generalColor) !important;
+}
 .h3Style{
     font-size: 20px;
     color: black !important;    

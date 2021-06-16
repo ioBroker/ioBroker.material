@@ -14,7 +14,7 @@
  * limitations under the License.
  **/
 import React from 'react';
-import {decomposeColor} from '@material-ui/core/styles/colorManipulator';
+import { decomposeColor } from '@material-ui/core/styles/colorManipulator';
 import PropTypes from 'prop-types';
 import Fab from '@material-ui/core/Fab';
 
@@ -23,13 +23,14 @@ import ColorsImg from '../assets/rgb.png';
 import SmartDialogGeneric from './SmartDialogGeneric';
 import UtilsColors from '../UtilsColors';
 import ColorSaturation from '../basic-controls/react-color-saturation/ColorSaturation';
-import {TiLightbulb as IconLight} from 'react-icons/ti';
-import {TiThermometer as IconTemp} from 'react-icons/ti';
-import {MdColorLens as IconRGB} from 'react-icons/md';
+import { TiLightbulb as IconLight } from 'react-icons/ti';
+import { TiThermometer as IconTemp } from 'react-icons/ti';
+import { MdColorLens as IconRGB } from 'react-icons/md';
 import I18n from '@iobroker/adapter-react/i18n';
-import {withStyles} from '@material-ui/core/styles/index';
+import { withStyles } from '@material-ui/core/styles/index';
+import cls from './style.module.scss';
 
-const HANDLER_SIZE = 32;
+const HANDLER_SIZE = 30;
 const styles = {
     buttonColorStyle: {
         position: 'absolute',
@@ -49,8 +50,8 @@ const styles = {
         position: 'absolute',
         left: 5,
         top: 5,
-//        height: 24,
-//        width: 36,
+        //        height: 24,
+        //        width: 36,
         background: '-webkit-gradient(linear, left bottom, left top, color-stop(0, #1d1d1d), color-stop(1, #131313))',
         boxShadow: '0 0.2em 0.1em 0.05em rgba(255, 255, 255, 0.1) inset, 0 -0.2em 0.1em 0.05em rgba(0, 0, 0, 0.5) inset, 0 0.5em 0.65em 0 rgba(0, 0, 0, 0.3)',
         color: 'rgb(99, 99, 99)',
@@ -72,8 +73,8 @@ const styles = {
         position: 'absolute',
         left: 50,
         top: 5,
-//        height: 24,
-//        width: 36,
+        //        height: 24,
+        //        width: 36,
         background: '-webkit-gradient(linear, left bottom, left top, color-stop(0, #1d1d1d), color-stop(1, #131313))',
         boxShadow: '0 0.2em 0.1em 0.05em rgba(255, 255, 255, 0.1) inset, 0 -0.2em 0.1em 0.05em rgba(0, 0, 0, 0.5) inset, 0 0.5em 0.65em 0 rgba(0, 0, 0, 0.3)',
         color: 'rgb(99, 99, 99)',
@@ -113,60 +114,60 @@ const styles = {
     }
 };
 
-const HEIGHT_HEADER  = 64;
-const HEIGHT_COLOR   = 320;
-const HEIGHT_DIMMER  = 64;
+const HEIGHT_HEADER = 64;
+const HEIGHT_COLOR = 320;
+const HEIGHT_DIMMER = 64;
 
-class SmartDialogColor extends SmartDialogGeneric  {
+class SmartDialogColor extends SmartDialogGeneric {
     // expected:
     static propTypes = {
-        name:               PropTypes.oneOfType([
+        name: PropTypes.oneOfType([
             PropTypes.string,
             PropTypes.object
         ]),
-        windowWidth:        PropTypes.number,
-        onClose:            PropTypes.func.isRequired,
-        onRgbChange:        PropTypes.func,
-        onDimmerChange:     PropTypes.func,
-        onToggle:           PropTypes.func,
-        ids:                PropTypes.object,
-        startRGB:           PropTypes.string,
-        startTemp:          PropTypes.number,
-        startModeTemp:      PropTypes.bool,
+        windowWidth: PropTypes.number,
+        onClose: PropTypes.func.isRequired,
+        onRgbChange: PropTypes.func,
+        onDimmerChange: PropTypes.func,
+        onToggle: PropTypes.func,
+        ids: PropTypes.object,
+        startRGB: PropTypes.string,
+        startTemp: PropTypes.number,
+        startModeTemp: PropTypes.bool,
 
-        modeRGB:            PropTypes.bool,
-        modeTemperature:    PropTypes.bool,
+        modeRGB: PropTypes.bool,
+        modeTemperature: PropTypes.bool,
 
-        startDimmer:        PropTypes.number,
-        useDimmer:          PropTypes.bool,
-        startOn:            PropTypes.bool,
-        useOn:              PropTypes.bool,
+        startDimmer: PropTypes.number,
+        useDimmer: PropTypes.bool,
+        startOn: PropTypes.bool,
+        useOn: PropTypes.bool,
     };
 
     constructor(props) {
         super(props);
         this.tMin = this.props.temperatureMin || 2200;
         this.tMax = this.props.temperatureMax || 6500;
-        this.stateRx.color    = (this.props.startRGB || '#00FF00').toString();
+        this.stateRx.color = (this.props.startRGB || '#00FF00').toString();
         this.stateRx.temperature = this.props.startTemp || UtilsColors.rgb2temperature(this.stateRx.color);
-        this.stateRx.dimmer   = this.props.useDimmer ? (this.props.startDimmer === null ? 100 : parseFloat(this.props.startDimmer) || 0) : 0;
-        this.stateRx.on       = this.props.useOn ? (this.props.startOn === null ? true : !!this.props.startOn) : true;
+        this.stateRx.dimmer = this.props.useDimmer ? (this.props.startDimmer === null ? 100 : parseFloat(this.props.startDimmer) || 0) : 0;
+        this.stateRx.on = this.props.useOn ? (this.props.startOn === null ? true : !!this.props.startOn) : true;
         this.stateRx.tempMode = (this.props.startModeTemp && this.props.modeTemperature) || (!this.props.modeRGB && this.props.modeTemperature);
 
-        this.refColor         = React.createRef();
-        this.refColorCursor   = React.createRef();
-        this.refColorImage    = React.createRef();
+        this.refColor = React.createRef();
+        this.refColorCursor = React.createRef();
+        this.refColorImage = React.createRef();
 
         this.colorWidth = 0;
-        this.colorTop   = 0;
-        this.colorLeft  = 0;
+        this.colorTop = 0;
+        this.colorLeft = 0;
         this.button = {
-            time:  0,
-            name:  '',
+            time: 0,
+            name: '',
             timer: null
         };
         if (this.stateRx.tempMode) {
-            this.dialogStyle = {background: 'rgba(154, 154, 154, 0.8)'};
+            this.dialogStyle = { background: 'rgba(154, 154, 154, 0.8)' };
         }
 
         this.setMaxHeight();
@@ -195,9 +196,9 @@ class SmartDialogColor extends SmartDialogGeneric  {
         let maxHeight = 0;
 
         this.divs = {
-            header:  {height: HEIGHT_HEADER,  visible: true},
-            color:   {height: HEIGHT_COLOR,   visible: true},
-            dimmer:  {height: HEIGHT_DIMMER,  visible: this.props.useDimmer}
+            header: { height: HEIGHT_HEADER, visible: true },
+            color: { height: HEIGHT_COLOR, visible: true },
+            dimmer: { height: HEIGHT_DIMMER, visible: this.props.useDimmer }
         };
 
         // calculate positions
@@ -225,7 +226,7 @@ class SmartDialogColor extends SmartDialogGeneric  {
 
         for (let hr = size; hr > 1; hr--) {
             oldRad = 0;
-            for(let i = 0; i < 360; i += 1) {
+            for (let i = 0; i < 360; i += 1) {
                 rad = (i + 1) * d2r;
                 s = hr / size;
                 if (s > 0.5) {
@@ -234,7 +235,7 @@ class SmartDialogColor extends SmartDialogGeneric  {
                     t = 0;
                 }
 
-                ctx.strokeStyle = 'hsl(' + (-i) + ', 100%, '+ (50 + (50 - t * 50)) + '%)';
+                ctx.strokeStyle = 'hsl(' + (-i) + ', 100%, ' + (50 + (50 - t * 50)) + '%)';
                 ctx.beginPath();
                 ctx.arc(size / 2, size / 2, hr / 2, oldRad, rad + 0.01);
                 ctx.stroke();
@@ -274,10 +275,10 @@ class SmartDialogColor extends SmartDialogGeneric  {
     tempToPos(temp, size) {
         let ratio = (temp - this.tMin) / (this.tMax - this.tMin);
         let h = (300 * ratio + 120) / 360;
-        const R =  (size / 2);
+        const R = (size / 2);
         let x = R + Math.cos(Math.PI * 2 * h) * R;
         let y = R + Math.sin(Math.PI * 2 * h) * R;
-        return {x, y};
+        return { x, y };
     }
 
     posToTemp(x, y) {
@@ -306,10 +307,10 @@ class SmartDialogColor extends SmartDialogGeneric  {
         let hsl = UtilsColors.rgbToHsl(c.values[0], c.values[1], c.values[2]);
         let h = -hsl[0];
         if (isNaN(h)) h = 0;
-        const R =  (size / 2);
+        const R = (size / 2);
         let x = R + Math.cos(Math.PI * 2 * h) * R;
         let y = R + Math.sin(Math.PI * 2 * h) * R;
-        return {x, y};
+        return { x, y };
     }
 
     static posToColor(x, y) {
@@ -318,7 +319,7 @@ class SmartDialogColor extends SmartDialogGeneric  {
             h = Math.atan2(y, -x) * 180 / Math.PI;
             if (y > 0) {
                 h = 180 - h;
-            } else{
+            } else {
                 h = 180 - h;
             }
         } else {
@@ -349,20 +350,20 @@ class SmartDialogColor extends SmartDialogGeneric  {
             this.colorLeft = this.refColorImage.current.offsetLeft;
             this.colorTop = this.refColorImage.current.offsetTop;
             let pos = this.state.tempMode ? this.tempToPos(this.state.temperature, this.colorWidth - HANDLER_SIZE) : SmartDialogColor.colorToPos(this.state.color, this.colorWidth - HANDLER_SIZE);
-            this.refColorCursor.current.style.top  = this.colorTop  + pos.y + (pos.y > 0 ? 0 : -HANDLER_SIZE) + 'px';
-            this.refColorCursor.current.style.left = this.colorLeft + pos.x + (pos.x > 0 ? 0 : -HANDLER_SIZE) + 'px';
+            this.refColorCursor.current.style.top = pos.y + (pos.y > 0 ? 0 : -HANDLER_SIZE) + 'px';
+            this.refColorCursor.current.style.left = pos.x + (pos.x > 0 ? 0 : -HANDLER_SIZE) + 'px';
             this.rect = this.refColorImage.current.getBoundingClientRect();
         }
     }
 
     sendRGB() {
         if (this.props.useOn && !this.state.on) {
-            this.setState({on: true});
+            this.setState({ on: true });
             this.props.onToggle(true);
         }
         if (this.props.useDimmer) {
             if (!this.state.dimmer) {
-                this.setState({dimmer: 100});
+                this.setState({ dimmer: 100 });
                 this.props.onDimmerChange(100);
             }
         }
@@ -375,16 +376,16 @@ class SmartDialogColor extends SmartDialogGeneric  {
     }
 
     onSwitchColorMode = () => {
-        const newState = {tempMode: !this.state.tempMode};
+        const newState = { tempMode: !this.state.tempMode };
         if (newState.tempMode) {
             // Temperature mode
             const rgb = UtilsColors.hex2array(this.state.color);
             newState.temperature = UtilsColors.rgb2temperature(rgb[0], rgb[1], rgb[2]);
-            this.setDialogStyle({background: 'rgba(154, 154, 154, 0.8)', maxHeight: this.dialogStyle.maxHeight});
+            this.setDialogStyle({ background: 'rgba(154, 154, 154, 0.8)', maxHeight: this.dialogStyle.maxHeight });
         } else {
             // Color mode
             newState.color = UtilsColors.rgb2string(UtilsColors.temperatureToRGB(this.state.temperature));
-            this.setDialogStyle({maxHeight: this.dialogStyle.maxHeight});
+            this.setDialogStyle({ maxHeight: this.dialogStyle.maxHeight });
         }
         this.setState(newState);
     }
@@ -392,18 +393,18 @@ class SmartDialogColor extends SmartDialogGeneric  {
     eventToValue(e) {
         let pageY = e.touches ? e.touches[e.touches.length - 1].clientY : e.pageY;
         let pageX = e.touches ? e.touches[e.touches.length - 1].clientX : e.pageX;
-        if(!this.rect){
-        this.rect = this.refColorImage.current.getBoundingClientRect();
+        if (!this.rect) {
+            this.rect = this.refColorImage.current.getBoundingClientRect();
         }
         const halfSize = this.colorWidth / 2;
         if (this.state.tempMode) {
             // debugger
-            const temperature = this.posToTemp(pageX  - this.rect.left - halfSize, pageY - this.rect.top - halfSize);
-            this.setState({temperature});
+            const temperature = this.posToTemp(pageX - this.rect.left - halfSize, pageY - this.rect.top - halfSize);
+            this.setState({ temperature });
         } else {
             // debugger
             const color = SmartDialogColor.posToColor(pageX - this.rect.left - halfSize, pageY - this.rect.top - halfSize);
-            this.setState({color});
+            this.setState({ color });
         }
 
         if (this.changeTimer) {
@@ -429,10 +430,10 @@ class SmartDialogColor extends SmartDialogGeneric  {
 
         this.eventToValue(e);
 
-        document.addEventListener('mousemove',  this.onMouseMove,   {passive: false, capture: true});
-        document.addEventListener('mouseup',    this.onMouseUp,     {passive: false, capture: true});
-        document.addEventListener('touchmove',  this.onMouseMove,   {passive: false, capture: true});
-        document.addEventListener('touchend',   this.onMouseUp,     {passive: false, capture: true});
+        // document.addEventListener('mousemove',  this.onMouseMove,   {passive: false, capture: true});
+        document.addEventListener('mouseup', this.onMouseUp, { passive: false, capture: true });
+        // document.addEventListener('touchmove',  this.onMouseMove,   {passive: false, capture: true});
+        document.addEventListener('touchend', this.onMouseUp, { passive: false, capture: true });
     }
 
     onMouseUp(e) {
@@ -445,10 +446,10 @@ class SmartDialogColor extends SmartDialogGeneric  {
             this.changeTimer = null;
         }
 
-        document.removeEventListener('mousemove',   this.onMouseMove,   {passive: false, capture: true});
-        document.removeEventListener('mouseup',     this.onMouseUp,     {passive: false, capture: true});
-        document.removeEventListener('touchmove',   this.onMouseMove,   {passive: false, capture: true});
-        document.removeEventListener('touchend',    this.onMouseUp,     {passive: false, capture: true});
+        // document.removeEventListener('mousemove',   this.onMouseMove,   {passive: false, capture: true});
+        document.removeEventListener('mouseup', this.onMouseUp, { passive: false, capture: true });
+        // document.removeEventListener('touchmove',   this.onMouseMove,   {passive: false, capture: true});
+        document.removeEventListener('touchend', this.onMouseUp, { passive: false, capture: true });
 
         typeof this.sendRGB === 'function' && this.sendRGB();
     }
@@ -465,14 +466,14 @@ class SmartDialogColor extends SmartDialogGeneric  {
         if (!color) {
             return '#FFFFFF';
         }
-        const [r,g,b] = UtilsColors.hex2array(color);
+        const [r, g, b] = UtilsColors.hex2array(color);
         const [h/*,s,l*/] = UtilsColors.rgbToHsl(r, g, b);
         return h * 360;
     }
 
     onDimmerChanged = dimmer => {
         this.click = Date.now();
-        this.setState({dimmer});
+        this.setState({ dimmer });
         this.changeTimer && clearTimeout(this.changeTimer);
         this.changeTimer = null;
 
@@ -481,7 +482,7 @@ class SmartDialogColor extends SmartDialogGeneric  {
                 this.changeTimer = null;
                 this.props.onDimmerChange(dimmer);
                 if (dimmer && this.props.useOn && !this.state.on) {
-                    this.setState({on: true});
+                    this.setState({ on: true });
                     this.props.onToggle(true);
                 }
             }, 1000, dimmer);
@@ -498,15 +499,15 @@ class SmartDialogColor extends SmartDialogGeneric  {
             styles.buttonOnOff,
             this.state.on ? styles.buttonOn : styles.buttonOff);
         return <Fab key="onoff-button"
-                variant="round"
-                color="primary"
-                aria-label="mute"
-                className={this.props.classes.button}
-                title={this.state.on ? I18n.t('Off') : I18n.t('On')}
-                style={style}
-                onClick={this.onToggle}
-                >
-            <IconLight/>
+            variant="round"
+            color="primary"
+            aria-label="mute"
+            className={this.props.classes.button}
+            title={this.state.on ? I18n.t('Off') : I18n.t('On')}
+            style={style}
+            onClick={this.onToggle}
+        >
+            <IconLight />
         </Fab>;
     }
 
@@ -515,67 +516,69 @@ class SmartDialogColor extends SmartDialogGeneric  {
         const style = Object.assign(
             {},
             styles.buttonColor,
-            this.state.tempMode ?  styles.buttonRgb : styles.buttonTemp);
+            this.state.tempMode ? styles.buttonRgb : styles.buttonTemp);
         return <Fab key="color-mode-button"
-                variant="round"
-                className={this.props.classes.button}
-                color="primary"
-                aria-label="mute"
-                title={this.state.tempMode ? I18n.t('HUE') : I18n.t('Color temperature')}
-                style={style}
-                onClick={this.onSwitchColorMode}
+            variant="round"
+            className={this.props.classes.button}
+            color="primary"
+            aria-label="mute"
+            title={this.state.tempMode ? I18n.t('HUE') : I18n.t('Color temperature')}
+            style={style}
+            onClick={this.onSwitchColorMode}
         >
-            {this.state.tempMode ? (<IconRGB/>) : (<IconTemp/>)}
+            {this.state.tempMode ? (<IconRGB />) : (<IconTemp />)}
         </Fab>;
     }
 
     onToggle = () => {
         this.onClick();
         this.props.onToggle && this.props.onToggle(!this.state.on);
-        this.setState({on: !this.state.on});
+        this.setState({ on: !this.state.on });
     }
 
     generateContent() {
         let pos = this.state.tempMode ?
-            this.tempToPos(this.state.temperature, this.colorWidth - HANDLER_SIZE) :
-            SmartDialogColor.colorToPos(this.state.color, this.colorWidth - HANDLER_SIZE);
+            this.tempToPos(this.state.temperature, this.refColorImage.current?.offsetWidth - HANDLER_SIZE) :
+            SmartDialogColor.colorToPos(this.state.color, this.refColorImage.current?.offsetWidth - HANDLER_SIZE);
 
         if (this.state.tempMode) {
             this.imageCT = ColorsTempImg;// this.imageCT || this.createCT(600);
         }
-
-        return [
-            <div key="color-dialog" ref={this.refColor}
-                 className={this.props.classes.div}
-                  style={{
-                    width: this.colorWidth || '20rem',
-                    left: 'calc(50% - ' + (this.colorWidth ? (this.colorWidth / 2) + 'px' : '10rem') + ')'
-                  }}>
-                <img ref={this.refColorImage}
-                     alt="color"
-                     src={this.state.tempMode ? this.imageCT : ColorsImg}//{ColorsImg}this.rgb || SmartDialogColor.createCT(600)}
-                     onMouseDown={this.onMouseDown}
-                     onTouchStart={this.onMouseDown}
-                     className={this.props.classes.colorCircle}/>
-                <div ref={this.refColorCursor}
-                     className={this.props.classes.cursor}
-                     style={{
-                         background: this.state.tempMode ? UtilsColors.rgb2string(UtilsColors.temperatureToRGB(this.state.temperature)) : this.state.color,
-                         top:  pos.y + this.colorTop  + (pos.y > 0 ? 0 : -HANDLER_SIZE),
-                         left: pos.x + this.colorLeft + (pos.x > 0 ? 0 : -HANDLER_SIZE),
-                     }}>
+        return <div className={cls.wrapperModalContentColor}>
+            <div className={cls.wrapperDiv}>
+                <div key="color-dialog" ref={this.refColor}
+                    className={cls.div}
+                // style={{
+                //     width: this.colorWidth || '20rem',
+                //     left: 'calc(50% - ' + (this.colorWidth ? (this.colorWidth / 2) + 'px' : '10rem') + ')'
+                // }}
+                >
+                    <img ref={this.refColorImage}
+                        alt="color"
+                        src={this.state.tempMode ? this.imageCT : ColorsImg}//{ColorsImg}this.rgb || SmartDialogColor.createCT(600)}
+                        onMouseDown={this.onMouseDown}
+                        onTouchStart={this.onMouseDown}
+                        className={cls.colorCircle} />
+                    <div ref={this.refColorCursor}
+                        className={this.props.classes.cursor}
+                        style={{
+                            background: this.state.tempMode ? UtilsColors.rgb2string(UtilsColors.temperatureToRGB(this.state.temperature)) : this.state.color,
+                            top: pos.y + (pos.y > 0 ? 0 : -HANDLER_SIZE),
+                            left: pos.x + (pos.x > 0 ? 0 : -HANDLER_SIZE),
+                        }}>
+                    </div>
                 </div>
-            </div>,
-            this.props.useDimmer ? <div style={styles.dimmerSlider} key="dimmer">
+            </div>
+            {this.props.useDimmer ? <div className={cls.dimmerSlider} key="dimmer">
                 <ColorSaturation
                     hue={this.getHue()}
                     saturation={this.state.dimmer}
                     onChange={this.onDimmerChanged}
                 />
-            </div> : null,
-            this.getOnOffButton(),
-            this.getColorModeButton()
-        ];
+            </div> : null}
+            {this.getOnOffButton()}
+            {this.getColorModeButton()}
+        </div>;
     }
 }
 
