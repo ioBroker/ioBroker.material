@@ -1,0 +1,22 @@
+.root {
+    color: var(--backgroundHeader) !important;
+    border: 1px solid var(--backgroundHeader) !important;
+    transition: color 0.5s, background 0.5s, border-color 0.5s !important;
+    background: var(--generalColor) !important;
+    box-shadow: none !important;
+    border-color: inherit !important;
+    &:hover {
+        background: var(--editIconColor) !important;
+        color: var(--backgroundHeader) !important;
+        border-color: var(--editIconColor) !important;
+    }
+}
+.active{
+    background: inherit !important;
+    color: var(--generalColor) !important;
+    &:hover{
+        background: var(--editIconColor) !important;
+        color: var(--backgroundHeader) !important;
+        border: 1px solid var(--backgroundHeader) !important;
+    }
+}

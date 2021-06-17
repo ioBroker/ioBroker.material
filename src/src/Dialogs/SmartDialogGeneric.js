@@ -29,6 +29,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import cls from './style.module.scss';
 import ReactEchartsCore from 'echarts-for-react/lib/core';
+import CustomFab from '../States/components/CustomFab';
 
 import * as echarts from 'echarts/core';
 import { LineChart } from 'echarts/charts';
@@ -379,9 +380,9 @@ class SmartDialogGeneric extends Component {
                     <Button onClick={() => this.onClose(true)} variant="contained" autoFocus>
                         <CloseIcon style={{ marginRight: 8 }} />{I18n.t('Close')}
                     </Button> :
-                    <Fab onClick={() => this.onClose(true)} size="small" autoFocus>
+                    <CustomFab onClick={() => this.onClose(true)} size="small" autoFocus>
                         <CloseIcon />{/*I18n.t('Close')*/}
-                    </Fab>}
+                    </CustomFab>}
             </DialogActions>
             {this.getAdditionalElements && this.getAdditionalElements()}
             <Snackbar

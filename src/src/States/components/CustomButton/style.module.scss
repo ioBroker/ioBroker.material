@@ -1,0 +1,26 @@
+.root {
+    color: var(--generalColor) !important;
+    border-color: var(--generalColor) !important;
+    transition: color 0.5s, background 0.5s, border-color 0.5s !important;
+    &:hover {
+        border-color: var(--editIconColor) !important;
+        color: var(--editIconColor) !important;
+        background-color: inherit !important;
+    }
+}
+.active{
+    background: var(--generalColor) !important;
+    color: var(--backgroundHeader) !important;
+    &:hover{
+        background: var(--editIconColor) !important;
+        color: var(--backgroundHeader) !important;
+    }
+}
+.square{
+    min-width: auto !important;
+    padding: 6px 16px !important;
+}
+.icon {
+    width: 24px;
+    height: 24px;
+}

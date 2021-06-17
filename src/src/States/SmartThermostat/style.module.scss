@@ -67,3 +67,13 @@
     align-items: center;
     opacity: 0.6;
 }
+.wrapperTextSecondActual{
+    display: flex;
+    bottom: 5px;
+    left: 20px;
+    position: absolute;
+    font-size: 20px;
+    align-items: center;
+    opacity: 0.6;
+    color:var(--generalColor);
+}

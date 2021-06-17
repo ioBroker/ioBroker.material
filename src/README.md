@@ -14,21 +14,21 @@
 
 - Make translation for icon selector work
 
-- Show buttons in common color: ornage, and so on
-- Close button white border with white "X". No background. 
+<!-- - Show buttons in common color: ornage, and so on -->
+<!-- - Close button white border with white "X". No background.  -->
 
 ## Two sizes of icons
 - 128px and 192px
 
 ## Clock
 ## Thermostat
-- Try to place in a corner the second handler for charts
+<!-- - Try to place in a corner the second handler for charts -->
 - On mobile devices hide contorls in chart-dialog and make it maximal big
 - Tooltips for values: actual temperature / target temerature
-- Show all charts that only possible //
-- Show icons for Power, Boost, Party, Swing
-- Translate Boost, power, party, Auto, Manual, Speed, Mode, Swing
-- Move actual temperature to chart, Humiditiy is small and under the set temperature
+<!-- - Show all charts that only possible // -->
+<!-- - Show icons for Power, Boost, Party, Swing -->
+<!-- - Translate Boost, power, party, Auto, Manual, Speed, Mode, Swing -->
+<!-- - Move actual temperature to chart, Humiditiy is small and under the set temperature -->
 
 ## Temperature
 - Tooltips: Temperature / Humidity

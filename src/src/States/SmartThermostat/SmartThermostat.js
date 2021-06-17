@@ -67,6 +67,9 @@ class SmartThermostat extends SmartGeneric {
             state = this.channelInfo.states.find(state => state.id && state.name === 'PARTY');
             this.partyId = state?.id || `${parts}.PARTY`;
 
+            state = this.channelInfo.states.find(state => state.id && state.name === 'SWING');
+            this.swingId = state?.id || `${parts}.SWING`;
+
         }
 
         if (this.humidityId) {
@@ -180,23 +183,34 @@ class SmartThermostat extends SmartGeneric {
     }
 
     getSecondaryDiv() {
-        if (this.actualId === this.id && !this.humidityId) {
+        if (!this.humidityId) {
             return null;
         }
         return (
             <div key={this.key + 'tile-secondary'}
                 className={cls.wrapperTextSecond}
                 title={I18n.t('Environment values')}>
+                {this.humidityId ?
+                    [
+                        (<IconHydro key={this.key + 'tile-secondary-icon-1'} style={Object.assign({}, Theme.tile.secondary.icon)} />),
+                        (<span key={this.key + 'tile-secondary-text-1'} style={Theme.tile.secondary.text}>{this.formatValue(this.state[this.humidityId], this.humUnit)}</span>)
+                    ] : null}
+            </div>);
+    }
+
+    getSecondaryDivActual() {
+        if (this.actualId === this.id) {
+            return null;
+        }
+        return (
+            <div key={this.key + 'tile-secondary'}
+                className={cls.wrapperTextSecondActual}
+                title={I18n.t('Environment values')}>
                 {this.actualId !== this.id ?
                     [
                         (<IconThermometer key={this.key + 'tile-secondary-icon-0'} style={Object.assign({}, Theme.tile.secondary.icon)} />),
                         (<span key={this.key + 'tile-secondary-text-0'} style={Theme.tile.secondary.text}>{this.formatValue(this.state[this.actualId])}</span>),
                         (<br key={this.key + 'tile-secondary-br-0'} />)
-                    ] : null}
-                {this.humidityId ?
-                    [
-                        (<IconHydro key={this.key + 'tile-secondary-icon-1'} style={Object.assign({}, Theme.tile.secondary.icon)} />),
-                        (<span key={this.key + 'tile-secondary-text-1'} style={Theme.tile.secondary.text}>{this.formatValue(this.state[this.humidityId], this.humUnit)}</span>)
                     ] : null}
             </div>);
     }
@@ -225,10 +239,21 @@ class SmartThermostat extends SmartGeneric {
         this.props.onControl(this.modeId, Number(value));
     }
 
+    onSwing = (value) => {
+        let newValue;
+        if(typeof this.state[this.swingId] === 'number'){
+            newValue = Number(value);
+        }else{
+            newValue = !this.state[this.swingId];
+        }
+        this.props.onControl(this.swingId, newValue);
+    }
+
     render() {
         return this.wrapContent([
             this.getStandardContent(this.id, false),
             this.getSecondaryDiv(),
+            this.getSecondaryDivActual(),
             this.getSecondaryDivTop(),
             this.getCharts(),
             this.state.showDialogBottom ?
@@ -244,15 +269,24 @@ class SmartThermostat extends SmartGeneric {
                     startValue={this.state[this.id] === null || this.state[this.id] === undefined ? this.min : this.state[this.id]}
                     windowWidth={this.props.windowWidth}
                     actualValue={this.state[this.actualId] === null || this.state[this.actualId] === undefined ? this.min : this.state[this.actualId]}
+                    //swing
+                    swingValue={this.swingId ? this.state[this.swingId] : null}
+                    swingArray={this.swingId ? this.props.objects[this.swingId]?.common?.states : null}
+                    onSwing={this.onSwing.bind(this)}
+                    //boost
                     boostValue={this.boostId ? this.state[this.boostId] : null}
+                    onBoostToggle={this.onBoostToggle}
+                    //power
                     powerValue={this.powerId ? this.state[this.powerId] : null}
+                    onPowerToggle={this.onPowerToggle.bind(this)}
+                    //party
                     partyValue={this.partyId ? this.state[this.partyId] : null}
+                    onPartyToggle={this.onPartyToggle.bind(this)}
+                    //mode
                     modeValue={this.modeId ? this.state[this.modeId] : null}
                     modeArray={this.modeId ? this.props.objects[this.modeId]?.common?.states : null}
-                    onBoostToggle={this.onBoostToggle}
-                    onPowerToggle={this.onPowerToggle.bind(this)}
-                    onPartyToggle={this.onPartyToggle.bind(this)}
                     onMode={this.onMode.bind(this)}
+                    //........
                     min={this.min}
                     max={this.max}
                     themeName={this.props.themeName}

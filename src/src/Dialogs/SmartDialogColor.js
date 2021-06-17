@@ -29,6 +29,9 @@ import { MdColorLens as IconRGB } from 'react-icons/md';
 import I18n from '@iobroker/adapter-react/i18n';
 import { withStyles } from '@material-ui/core/styles/index';
 import cls from './style.module.scss';
+import CustomSlider from '../States/components/CustomSlider';
+import clsx from 'clsx';
+import CustomFab from '../States/components/CustomFab';
 
 const HANDLER_SIZE = 30;
 const styles = {
@@ -96,8 +99,7 @@ const styles = {
         width: HANDLER_SIZE,
         height: HANDLER_SIZE,
         borderRadius: HANDLER_SIZE,
-        boxSizing: 'border-box',
-        border: '2px solid dimgrey'
+        boxSizing: 'border-box'
     },
     colorCircle: {
         position: 'absolute',
@@ -117,7 +119,7 @@ const styles = {
 const HEIGHT_HEADER = 64;
 const HEIGHT_COLOR = 320;
 const HEIGHT_DIMMER = 64;
-
+let isDrawing = false;
 class SmartDialogColor extends SmartDialogGeneric {
     // expected:
     static propTypes = {
@@ -213,64 +215,64 @@ class SmartDialogColor extends SmartDialogGeneric {
         }
     }
 
-    static createRgb(size) {
-        size = size || 300;
-        let rad;
-        let oldRad;
-        const d2r = Math.PI / 180;
-        let c = document.createElement('canvas');
-        c.width = c.height = size;
-        let ctx = c.getContext('2d');
-        let s;
-        let t;
+    // static createRgb(size) {
+    //     size = size || 300;
+    //     let rad;
+    //     let oldRad;
+    //     const d2r = Math.PI / 180;
+    //     let c = document.createElement('canvas');
+    //     c.width = c.height = size;
+    //     let ctx = c.getContext('2d');
+    //     let s;
+    //     let t;
 
-        for (let hr = size; hr > 1; hr--) {
-            oldRad = 0;
-            for (let i = 0; i < 360; i += 1) {
-                rad = (i + 1) * d2r;
-                s = hr / size;
-                if (s > 0.5) {
-                    t = (1 + Math.sin(Math.PI * (s + 0.5) * 2 - Math.PI / 2)) / 2;
-                } else {
-                    t = 0;
-                }
+    //     for (let hr = size; hr > 1; hr--) {
+    //         oldRad = 0;
+    //         for (let i = 0; i < 360; i += 1) {
+    //             rad = (i + 1) * d2r;
+    //             s = hr / size;
+    //             if (s > 0.5) {
+    //                 t = (1 + Math.sin(Math.PI * (s + 0.5) * 2 - Math.PI / 2)) / 2;
+    //             } else {
+    //                 t = 0;
+    //             }
 
-                ctx.strokeStyle = 'hsl(' + (-i) + ', 100%, ' + (50 + (50 - t * 50)) + '%)';
-                ctx.beginPath();
-                ctx.arc(size / 2, size / 2, hr / 2, oldRad, rad + 0.01);
-                ctx.stroke();
-                oldRad = rad;
-            }
-        }
-        return c.toDataURL();
-    }
+    //             ctx.strokeStyle = 'hsl(' + (-i) + ', 100%, ' + (50 + (50 - t * 50)) + '%)';
+    //             ctx.beginPath();
+    //             ctx.arc(size / 2, size / 2, hr / 2, oldRad, rad + 0.01);
+    //             ctx.stroke();
+    //             oldRad = rad;
+    //         }
+    //     }
+    //     return c.toDataURL();
+    // }
 
-    createCT(size) {
-        size = size || 300;
-        let rad;
-        let oldRad;
-        const d2r = Math.PI / 180;
-        let c = document.createElement('canvas');
-        c.width = c.height = size;
-        let ctx = c.getContext('2d');
+    // createCT(size) {
+    //     size = size || 300;
+    //     let rad;
+    //     let oldRad;
+    //     const d2r = Math.PI / 180;
+    //     let c = document.createElement('canvas');
+    //     c.width = c.height = size;
+    //     let ctx = c.getContext('2d');
 
-        for (let hr = size; hr > size * 0.8; hr--) {
-            oldRad = 120 * d2r;
-            for (let i = 0; i < 300; i += 1) {
-                rad = (i + 120 + 1) * d2r;
-                //s = 100 - Math.round(hr / size * 100);
+    //     for (let hr = size; hr > size * 0.8; hr--) {
+    //         oldRad = 120 * d2r;
+    //         for (let i = 0; i < 300; i += 1) {
+    //             rad = (i + 120 + 1) * d2r;
+    //             //s = 100 - Math.round(hr / size * 100);
 
-                const rgb = UtilsColors.temperatureToRGB((i / 300) * (this.tMax - this.tMin) + this.tMin);
-                ctx.strokeStyle = UtilsColors.rgb2string(rgb);
-                ctx.beginPath();
-                ctx.arc(size / 2, size / 2, hr / 2 * 0.99, oldRad, rad + 0.01);
-                ctx.stroke();
-                oldRad = rad;
-            }
+    //             const rgb = UtilsColors.temperatureToRGB((i / 300) * (this.tMax - this.tMin) + this.tMin);
+    //             ctx.strokeStyle = UtilsColors.rgb2string(rgb);
+    //             ctx.beginPath();
+    //             ctx.arc(size / 2, size / 2, hr / 2 * 0.99, oldRad, rad + 0.01);
+    //             ctx.stroke();
+    //             oldRad = rad;
+    //         }
 
-        }
-        return c.toDataURL();
-    }
+    //     }
+    //     return c.toDataURL();
+    // }
 
     tempToPos(temp, size) {
         let ratio = (temp - this.tMin) / (this.tMax - this.tMin);
@@ -419,21 +421,23 @@ class SmartDialogColor extends SmartDialogGeneric {
     }
 
     onMouseMove = e => {
-        e.preventDefault();
-        e.stopPropagation();
-        this.eventToValue(e);
+        if (isDrawing) {
+            e.preventDefault();
+            e.stopPropagation();
+            this.eventToValue(e);
+        }
     }
 
     onMouseDown = e => {
         e.preventDefault();
         e.stopPropagation();
-
+        isDrawing = true;
         this.eventToValue(e);
 
-        // document.addEventListener('mousemove',  this.onMouseMove,   {passive: false, capture: true});
-        document.addEventListener('mouseup', this.onMouseUp, { passive: false, capture: true });
-        // document.addEventListener('touchmove',  this.onMouseMove,   {passive: false, capture: true});
-        document.addEventListener('touchend', this.onMouseUp, { passive: false, capture: true });
+        document.getElementById('color').addEventListener('mousemove', this.onMouseMove, { passive: false, capture: true });
+        document.getElementById('color').addEventListener('mouseup', this.onMouseUp, { passive: false, capture: true });
+        document.getElementById('color').addEventListener('touchmove', this.onMouseMove, { passive: false, capture: true });
+        document.getElementById('color').addEventListener('touchend', this.onMouseUp, { passive: false, capture: true });
     }
 
     onMouseUp(e) {
@@ -441,15 +445,20 @@ class SmartDialogColor extends SmartDialogGeneric {
         e.stopPropagation();
         this.click = Date.now();
 
+        isDrawing = false;
         if (this.changeTimer) {
             clearTimeout(this.changeTimer);
             this.changeTimer = null;
         }
 
-        // document.removeEventListener('mousemove',   this.onMouseMove,   {passive: false, capture: true});
-        document.removeEventListener('mouseup', this.onMouseUp, { passive: false, capture: true });
-        // document.removeEventListener('touchmove',   this.onMouseMove,   {passive: false, capture: true});
-        document.removeEventListener('touchend', this.onMouseUp, { passive: false, capture: true });
+        document.getElementById('color').removeEventListener('mousemove', this.onMouseMove, { passive: false, capture: true });
+        document.getElementById('color').removeEventListener('mouseup', this.onMouseUp, { passive: false, capture: true });
+        document.getElementById('color').removeEventListener('touchmove', this.onMouseMove, { passive: false, capture: true });
+        document.getElementById('color').removeEventListener('touchend', this.onMouseUp, { passive: false, capture: true });
+        // document.removeEventListener('mousemove', this.onMouseMove, { passive: false, capture: true });
+        // document.removeEventListener('touchmove', this.onMouseMove, { passive: false, capture: true });
+
+
 
         typeof this.sendRGB === 'function' && this.sendRGB();
     }
@@ -494,40 +503,43 @@ class SmartDialogColor extends SmartDialogGeneric {
             return null;
         }
 
-        const style = Object.assign(
-            {},
-            styles.buttonOnOff,
-            this.state.on ? styles.buttonOn : styles.buttonOff);
-        return <Fab key="onoff-button"
+        // const style = Object.assign(
+        //     {},
+        //     styles.buttonOnOff,
+        //     this.state.on ? styles.buttonOn : styles.buttonOff);
+        return <CustomFab key="onoff-button"
             variant="round"
             color="primary"
             aria-label="mute"
             className={this.props.classes.button}
             title={this.state.on ? I18n.t('Off') : I18n.t('On')}
-            style={style}
+            active={!this.state.on}
+            // style={style}
             onClick={this.onToggle}
+            className={cls.buttonUseOn}
         >
             <IconLight />
-        </Fab>;
+        </CustomFab>;
     }
 
     getColorModeButton() {
         if (!this.props.modeTemperature || !this.props.modeRGB) return null;
-        const style = Object.assign(
-            {},
-            styles.buttonColor,
-            this.state.tempMode ? styles.buttonRgb : styles.buttonTemp);
-        return <Fab key="color-mode-button"
+        // const style = Object.assign(
+        //     {},
+        //     styles.buttonColor,
+        //     this.state.tempMode ? styles.buttonRgb : styles.buttonTemp);
+        return <CustomFab key="color-mode-button"
             variant="round"
             className={this.props.classes.button}
             color="primary"
             aria-label="mute"
             title={this.state.tempMode ? I18n.t('HUE') : I18n.t('Color temperature')}
-            style={style}
+            // style={style}
+            className={cls.buttonMode}
             onClick={this.onSwitchColorMode}
         >
             {this.state.tempMode ? (<IconRGB />) : (<IconTemp />)}
-        </Fab>;
+        </CustomFab>;
     }
 
     onToggle = () => {
@@ -553,14 +565,27 @@ class SmartDialogColor extends SmartDialogGeneric {
                 //     left: 'calc(50% - ' + (this.colorWidth ? (this.colorWidth / 2) + 'px' : '10rem') + ')'
                 // }}
                 >
-                    <img ref={this.refColorImage}
+                    {/* <img ref={this.refColorImage}
+                        // alt="color"
+                        // id='color'
+                        src={this.state.tempMode ? this.imageCT : ColorsImg}//{ColorsImg}this.rgb || SmartDialogColor.createCT(600)}
+                        // onMouseDown={this.onMouseDown}
+                        // onTouchStart={this.onMouseDown}
+                        className={cls.colorCircle} 
+                        
+                        /> */}
+                    <div
+                        ref={this.refColorImage}
                         alt="color"
+                        id='color'
                         src={this.state.tempMode ? this.imageCT : ColorsImg}//{ColorsImg}this.rgb || SmartDialogColor.createCT(600)}
                         onMouseDown={this.onMouseDown}
                         onTouchStart={this.onMouseDown}
-                        className={cls.colorCircle} />
+                        className={clsx(cls.colorCircle)}
+
+                    ><div className={cls.colorBackground} /></div>
                     <div ref={this.refColorCursor}
-                        className={this.props.classes.cursor}
+                        className={clsx(this.props.classes.cursor, cls.cursor)}
                         style={{
                             background: this.state.tempMode ? UtilsColors.rgb2string(UtilsColors.temperatureToRGB(this.state.temperature)) : this.state.color,
                             top: pos.y + (pos.y > 0 ? 0 : -HANDLER_SIZE),
@@ -569,13 +594,20 @@ class SmartDialogColor extends SmartDialogGeneric {
                     </div>
                 </div>
             </div>
-            {this.props.useDimmer ? <div className={cls.dimmerSlider} key="dimmer">
+            {this.props.useDimmer && <div className={cls.dimmerSlider}>
+                <CustomSlider
+                    hue={this.getHue()}
+                    value={this.state.dimmer}
+                    onChange={this.onDimmerChanged}
+                />
+            </div>}
+            {/* {this.props.useDimmer ? <div className={cls.dimmerSlider} key="dimmer">
                 <ColorSaturation
                     hue={this.getHue()}
                     saturation={this.state.dimmer}
                     onChange={this.onDimmerChanged}
                 />
-            </div> : null}
+            </div> : null} */}
             {this.getOnOffButton()}
             {this.getColorModeButton()}
         </div>;

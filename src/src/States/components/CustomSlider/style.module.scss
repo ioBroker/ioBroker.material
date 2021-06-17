@@ -1,0 +1,50 @@
+.root {
+    // color: var(--backgroundHeader) !important;
+    // border: 1px solid var(--backgroundHeader) !important;
+    // transition: color 0.5s, background 0.5s, border-color 0.5s !important;
+    // background: var(--generalColor) !important;
+    // box-shadow: none !important;
+    // border-color: inherit !important;
+    // &:hover {
+    //     background: var(--editIconColor) !important;
+    //     color: var(--backgroundHeader) !important;
+    //     border-color: var(--editIconColor) !important;
+    // }
+    border-radius: 5px;
+    height: 30px !important;
+    padding: 0 !important;
+}
+.track {
+    height: 30px !important;
+    border-radius: 5px 0 0 5px !important;
+    background: var(--generalColorOpacity) !important;
+    // margin: 16px !important;
+}
+.rail {
+    height: 30px !important;
+    border-radius: 5px !important;
+    // background: linear-gradient(90deg, black, white) !important;
+    background: inherit !important;
+    opacity: 0.7 !important;
+    box-shadow: 0 0 0 1px var(--backgroundDraver);
+}
+.thumb {
+    height: 32px !important;
+    width: 32px !important;
+    color: var(--generalColor) !important;
+    border: 1px solid var(--backgroundDraver) !important;
+    top: 4px !important;
+    margin-left: -16px !important;
+}
+.valueLabel {
+    left: calc(-50% + 14px) !important;
+}
+.scale{
+    width: 24px;
+    height: 24px;
+    border-radius: 12px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    // color: var(--backgroundDraver);
+}

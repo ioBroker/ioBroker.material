@@ -26,6 +26,8 @@ import SmartDialogGeneric from './SmartDialogGeneric';
 import ThermostatControl from '../basic-controls/react-nest-thermostat/src/react-nest-thermostat';
 import cls from './style.module.scss';
 import { ButtonGroup, FormControl, FormLabel } from '@material-ui/core';
+import CustomButton from '../States/components/CustomButton';
+import StateIcon from '../States/components/StateIcon';
 
 const styles = themes => ({
     dialogPaper: {
@@ -221,40 +223,60 @@ class SmartDialogThermostat extends SmartDialogGeneric {
         return <div className={cls.wrapperModalContent}>
             <div className={cls.wrapperThermostat}>
                 {this.state.boostValue !== null && this.state.boostValue !== undefined ?
-                    <Button
-                        variant="contained"
-                        color={this.state.boostValue ? 'primary' : ''}
+                    <CustomButton
+                        startIcon={<StateIcon type={'Boost'} />}
+                        active={this.state.boostValue}
                         onClick={this.onBoostMode}
                         className={cls.boostButton}>{I18n.t('Boost')}
-                    </Button> : null}
+                    </CustomButton> : null}
                 {this.props.powerValue !== null && this.props.powerValue !== undefined ?
-                    <Button
-                        variant="contained"
-                        color={this.props.powerValue ? 'primary' : ''}
+                    <CustomButton
+                        startIcon={<StateIcon type={'Power'} />}
+                        active={this.props.powerValue}
                         onClick={this.props.onPowerToggle}
                         className={cls.powerButton}>
                         {I18n.t('Power')}
-                    </Button> : null}
+                    </CustomButton> : null}
                 {this.props.partyValue !== null && this.props.partyValue !== undefined ?
-                    <Button
-                        variant="contained"
-                        color={this.props.partyValue ? 'primary' : ''}
+                    <CustomButton
+                        startIcon={<StateIcon type={'Party'} />}
+                        active={this.props.partyValue}
                         onClick={this.props.onPartyToggle}
                         className={cls.partyButton}>
                         {I18n.t('Party')}
-                    </Button> : null}
+                    </CustomButton> : null}
                 {this.props.modeValue !== null && this.props.modeValue !== undefined ?
                     <FormControl className={cls.modeButton} component="fieldset">
                         <FormLabel component="legend">{I18n.t('Mode')}</FormLabel>
                         <ButtonGroup color="primary">
-                            {this.props.modeArray && Object.keys(this.props.modeArray).map(name => <Button
+                            {this.props.modeArray && Object.keys(this.props.modeArray).map(name => <CustomButton
                                 onClick={() => this.props.onMode(name)}
-                                variant={String(this.props.modeValue) === name ? 'contained' : null}
+                                active={String(this.props.modeValue) === name}
                                 key={name}>
                                 {this.props.modeArray[name]}
-                            </Button>)}
+                            </CustomButton>)}
                         </ButtonGroup>
                     </FormControl>
+                    : null}
+                {this.props.swingValue !== null && this.props.swingValue !== undefined ?
+                    typeof this.props.swingValue === 'number' ?
+                        <FormControl className={cls.swingGroup} component="fieldset">
+                            <FormLabel component="legend">{I18n.t('Swing')}</FormLabel>
+                            <ButtonGroup color="primary">
+                                {this.props.swingArray && Object.keys(this.props.swingArray).map(name => <CustomButton
+                                    onClick={() => this.props.onSwing(name)}
+                                    active={String(this.props.swingValue) === name}
+                                    key={name}>
+                                    {this.props.swingArray[name]}
+                                </CustomButton>)}
+                            </ButtonGroup>
+                        </FormControl> : <CustomButton
+                            startIcon={<StateIcon type={'Swing'} />}
+                            active={this.props.swingValue}
+                            onClick={this.props.onSwing}
+                            className={cls.swingButton}>
+                            {I18n.t('Swing')}
+                        </CustomButton>
                     : null}
                 <div className={cls.charts}>
                     {this.props.humidityId && this.getCharts(this.props.humidityId, React.createRef())}
