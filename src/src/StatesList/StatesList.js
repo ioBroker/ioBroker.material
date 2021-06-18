@@ -282,6 +282,7 @@ class StatesList extends Component {
                             states={this.props.states}
                             newLine={this.props.newLine}
                             socket={this.props.socket}
+                            widthBlock={this.props.widthBlock}
                             items={items}
                             isUseBright={isUseBright}
                             ignoreIndicators={this.props.ignoreIndicators}
@@ -314,6 +315,7 @@ class StatesList extends Component {
                 states={this.props.states}
                 newLine={this.props.newLine}
                 socket={this.props.socket}
+                widthBlock={this.props.widthBlock}
                 items={items}
                 isUseBright={isUseBright}
                 ignoreIndicators={this.props.ignoreIndicators}
@@ -606,6 +608,7 @@ class StatesList extends Component {
                         editMode={this.props.editMode}
                         user={this.props.user}
                         socket={this.props.socket}
+                        widthBlock={this.props.widthBlock}
                         states={this.props.states}
                         objects={this.props.objects}
                         themeType={this.props.themeType}

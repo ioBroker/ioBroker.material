@@ -35,8 +35,8 @@ import ReactEchartsCore from 'echarts-for-react/lib/core';
 
 import * as echarts from 'echarts/core';
 import { LineChart } from 'echarts/charts';
-import {GridComponent} from 'echarts/components';
-import {SVGRenderer} from 'echarts/renderers';
+import { GridComponent } from 'echarts/components';
+import { SVGRenderer } from 'echarts/renderers';
 
 echarts.use([GridComponent, LineChart, SVGRenderer]);
 
@@ -440,7 +440,10 @@ class SmartGeneric extends Component {
         //e.preventDefault();
         e.stopPropagation();
 
-        this.timer = setTimeout(this.onLongClick, 500);
+        this.timer = setTimeout(() => {
+            this.timer = null;
+            this.onLongClick();
+        }, 500);
 
         document.addEventListener('mouseup', this.onMouseUp, { passive: false, capture: true });
         document.addEventListener('touchend', this.onMouseUp, { passive: false, capture: true });
@@ -453,7 +456,10 @@ class SmartGeneric extends Component {
         //e.preventDefault();
         e.stopPropagation();
 
-        this.timer = setTimeout(this.onLongClickBottom, 500);
+        this.timer = setTimeout(() => {
+            this.timer = null;
+            this.onLongClickBottom();
+        }, 500);
 
         document.addEventListener('mouseup', this.onMouseUp, { passive: false, capture: true });
         document.addEventListener('touchend', this.onMouseUp, { passive: false, capture: true });
@@ -464,6 +470,12 @@ class SmartGeneric extends Component {
             this.props.onCollectIds(this, this.subscribes, false);
             this.subscribed = null;
         }
+        if (this.expireInSecInterval) {
+            clearInterval(this.expireInSecInterval);
+            this.expireInSecInterval = null;
+        }
+        this.timer && clearTimer(this.timer);
+        this.timer = null;
     }
 
     saveSettings(newSettings, cb) {
@@ -873,7 +885,7 @@ class SmartGeneric extends Component {
         return name && name.length >= 15 ? 12 : (name && name.length > 10 ? 14 : 16);
     }
 
-    readHistory = async () => {
+    readHistory = async (id) => {
         const now = new Date();
         now.setHours(now.getHours() - 24);
         now.setMinutes(0);
@@ -894,7 +906,7 @@ class SmartGeneric extends Component {
             aggregate: 'minmax'
         };
 
-        return this.props.socket.getHistory(this.id, options)
+        return this.props.socket.getHistory(id || this.id, options)
             .then(values => {
                 // merge range and chart
                 let chart = [];
@@ -947,14 +959,14 @@ class SmartGeneric extends Component {
     }
 
 
-    getCharts = () => {
+    getCharts = (id) => {
         if (!this.firstGetCharts) {
             this.firstGetCharts = true;
-            this.readHistory();
+            this.readHistory(id);
         }
         if (!this.expireInSecInterval) {
             this.expireInSecInterval = setInterval(() => {
-                this.readHistory();
+                this.readHistory(id);
                 this.expireInSecInterval = null;
             }, 60000);
         }

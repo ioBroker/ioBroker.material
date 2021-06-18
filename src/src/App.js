@@ -41,6 +41,7 @@ import { MdMic as IconMic } from 'react-icons/md';
 import { MdMenu as IconMenu } from 'react-icons/md';
 import { MdRefresh as IconRefresh } from 'react-icons/md';
 import { FaSignOutAlt as IconLogout } from 'react-icons/fa';
+import { GiResize } from "react-icons/gi";
 
 import Theme from './theme';
 import I18n from '@iobroker/adapter-react/i18n';
@@ -58,6 +59,7 @@ import cls from './style.module.scss';
 import { withSnackbar } from 'notistack';
 import './helpers/stylesVariables.scss';
 import clsx from 'clsx';
+import { Tooltip } from '@material-ui/core';
 
 const isKeyboardAvailableOnFullScreen = (typeof Element !== 'undefined' && 'ALLOW_KEYBOARD_INPUT' in Element) && Element.ALLOW_KEYBOARD_INPUT;
 
@@ -143,7 +145,7 @@ class App extends GenericApp {
         super.componentDidMount();
         let path = decodeURIComponent(window.location.hash).replace(/^#/, '');
         const menuFixed = (typeof Storage !== 'undefined') ? window.localStorage.getItem('menuFixed') === '1' : false;
-
+        const widthBlock = window.localStorage.getItem('Mterial.width') ? JSON.parse(window.localStorage.getItem('Mterial.width')) : false;
         const state = {
             menuFixed,
             open: menuFixed,
@@ -168,10 +170,11 @@ class App extends GenericApp {
             appSettings: {},
             actualVersion: '',
             bigMessage: '',
+            widthBlock
         };
 
         this.setState(state);
-        document.getElementsByTagName('HTML')[0].className = this.state.themeName;
+        document.getElementsByTagName('HTML')[0].className = `${this.state.themeName} ${widthBlock ? 'double' : 'single'}`;
 
         this.updateWindowDimensions();
         window.addEventListener('resize', this.updateWindowDimensions);
@@ -1445,10 +1448,26 @@ class App extends GenericApp {
                     {this.getButtonSignal(useBright)}
                     {this.getButtonEditSettings(useBright)}
                     {this.getButtonSync(useBright)}
+                    {this.state.editMode &&
+                        <Tooltip title={I18n.t('Change size block')}>
+                            <IconButton
+                                onClick={() => {
+                                    let widthBlock = !this.state.widthBlock;
+                                    this.setState({ widthBlock }, () => {
+                                        window.localStorage.setItem('Mterial.width', widthBlock);
+                                        document.getElementsByTagName('HTML')[0].className = `${this.state.themeName} ${widthBlock ? 'double' : 'single'}`;
+                                    })
+                                }}
+                                className={clsx(cls.iconSettingts, this.state.widthBlock && cls.iconSettingtsActive)}
+                            >
+                                <GiResize width={Theme.iconSize} height={Theme.iconSize} />
+                            </IconButton>
+                        </Tooltip>}
                     {this.state.editMode && <ToggleThemeMenu
                         toggleTheme={() => this.toggleTheme()}
                         themeName={this.state.themeName}
                         className={cls.iconSettingts}
+                        widthBlock={this.state.widthBlock}
                         t={I18n.t} />}
                     {this.getEditButton(useBright)}
                     {this.getButtonSpeech(useBright)}
@@ -1484,6 +1503,7 @@ class App extends GenericApp {
             user={this.user}
             states={this.states}
             socket={this.socket}
+            widthBlock={this.state.widthBlock}
             align={this.state.settings && this.state.settings.align}
             debug={this.state.appSettings ? (this.state.appSettings.debug === undefined ? true : this.state.appSettings.debug) : true}
             connected={this.state.connected}

@@ -3,31 +3,31 @@
     // margin: 10px;
     padding: 10px;
     border-radius: 7px;
-    width: 200px;
+    width: calc(200px * var(--widthBlock));
     flex-direction: column;
     display: flex;
     justify-content: center;
 }
 .timeWrapper {
     color: var(--silverColor);
-    font-size: 55px;
+    font-size: calc(55px * var(--widthBlock));
     font-weight: bold;
     font-family: inherit;
     // margin-bottom: 6px;
     position: relative;
     span {
-        font-size: 13px;
+        font-size: calc(13px * var(--widthBlock));
         position: absolute;
-        top: -4px;
-        right: -19px;
+        top: -7px;
+        right: -15px;
     }
 }
 .timeWrapperSmall {
-    font-size: 22px;
+    font-size: calc(22px * var(--widthBlock));
     span {
         right: -11px;
         top: -8px;
-        font-size: 9px;
+        font-size: calc(9px * var(--widthBlock));
     }
 }
 .wrapperButtons {
@@ -47,20 +47,20 @@
     display: flex;
     flex-direction: column;
     align-self: center;
-    width: 222px;
+    width: calc(234px * var(--widthBlock));
 }
 .clockSmall {
-    width: 96px;
+    width: calc(96px * var(--widthBlock));
 }
 .dayOfWeek {
-    font-size: 16px;
+    font-size: calc(16px * var(--widthBlock));
     color: var(--generalColor);
     display: flex;
     justify-content: space-between;
 }
 .dayOfWeekSmall{
     flex-direction: column;
-    font-size: 12px;
+    font-size: calc(12px * var(--widthBlock));
     position: absolute;
     bottom: 10px;
 }
@@ -68,12 +68,12 @@
     // height: 19px;
 }
 .clockBigSmall{
-    font-size: 33px;
+    font-size: calc(33px * var(--widthBlock));
 }
 .hour12 {
-    width: 24px;
-    height: 24px;
-    font-size: 13px;
+    width: calc(24px * var(--widthBlock));
+    height: calc(24px * var(--widthBlock));
+    font-size: calc(13px * var(--widthBlock));
     display: flex;
     align-items: center;
     justify-content: center;

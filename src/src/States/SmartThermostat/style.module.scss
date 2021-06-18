@@ -30,14 +30,14 @@
     position: absolute;
     right: 7px;
     top: 18px;
-    font-size: 17.5px;
+    font-size: calc(17.5px * var(--widthBlock));
 }
 .tileTextSecond {
     display: flex;
     top: 38px;
     right: 7px;
     position: absolute;
-    font-size: 20px;
+    font-size: calc(20px * var(--widthBlock));
     align-items: center;
     opacity: 0.6;
 }
@@ -63,7 +63,7 @@
     top: 42px;
     right: 7px;
     position: absolute;
-    font-size: 20px;
+    font-size: calc(20px * var(--widthBlock));
     align-items: center;
     opacity: 0.6;
 }
@@ -72,7 +72,7 @@
     bottom: 5px;
     left: 20px;
     position: absolute;
-    font-size: 20px;
+    font-size: calc(20px * var(--widthBlock));
     align-items: center;
     opacity: 0.6;
     color:var(--generalColor);

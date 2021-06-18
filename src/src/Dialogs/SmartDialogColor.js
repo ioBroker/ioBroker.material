@@ -345,7 +345,7 @@ class SmartDialogColor extends SmartDialogGeneric {
             /*const h = this.refColor.current.offsetHeight - 6 * 16;
             if (h < this.refColor.current.offsetWidth) {
                 this.colorWidth = h;
-                this.refColor.current.style.width = this.colorWidth + 'px';
+                this.refColor.current.style.width = this.colorWidth + 'px';.
                 this.refColor.current.style.left = 'calc(50% - ' + (this.colorWidth / 2) + 'px)';
             }*/
             this.colorWidth = this.refColorImage.current.offsetWidth;
@@ -356,6 +356,12 @@ class SmartDialogColor extends SmartDialogGeneric {
             this.refColorCursor.current.style.left = pos.x + (pos.x > 0 ? 0 : -HANDLER_SIZE) + 'px';
             this.rect = this.refColorImage.current.getBoundingClientRect();
         }
+    }
+
+    dragCursor = () => {
+        let pos = this.state.tempMode ? this.tempToPos(this.state.temperature, this.colorWidth - HANDLER_SIZE) : SmartDialogColor.colorToPos(this.state.color, this.colorWidth - HANDLER_SIZE);
+        this.refColorCursor.current.style.top = !isNaN(pos.y) ? pos.y + (pos.y > 0 ? 0 : -HANDLER_SIZE) + 'px' : 0;//
+        this.refColorCursor.current.style.left = !isNaN(pos.x) ? pos.x + (pos.x > 0 ? 0 : -HANDLER_SIZE) + 'px' : `calc(50% - ${HANDLER_SIZE}px)`;
     }
 
     sendRGB() {
@@ -557,15 +563,13 @@ class SmartDialogColor extends SmartDialogGeneric {
             this.imageCT = ColorsTempImg;// this.imageCT || this.createCT(600);
         }
         return <div className={cls.wrapperModalContentColor}>
-            <div className={cls.wrapperDiv}>
-                <div key="color-dialog" ref={this.refColor}
-                    className={cls.div}
-                // style={{
-                //     width: this.colorWidth || '20rem',
-                //     left: 'calc(50% - ' + (this.colorWidth ? (this.colorWidth / 2) + 'px' : '10rem') + ')'
-                // }}
-                >
-                    {/* <img ref={this.refColorImage}
+            <div className={cls.marginAuto}>
+                <div className={cls.wrapperDiv}>
+                    <div key="color-dialog"
+                        ref={this.refColor}
+                        className={cls.div}
+                    >
+                        {/* <img ref={this.refColorImage}
                         // alt="color"
                         // id='color'
                         src={this.state.tempMode ? this.imageCT : ColorsImg}//{ColorsImg}this.rgb || SmartDialogColor.createCT(600)}
@@ -574,40 +578,38 @@ class SmartDialogColor extends SmartDialogGeneric {
                         className={cls.colorCircle} 
                         
                         /> */}
-                    <div
-                        ref={this.refColorImage}
-                        alt="color"
-                        id='color'
-                        src={this.state.tempMode ? this.imageCT : ColorsImg}//{ColorsImg}this.rgb || SmartDialogColor.createCT(600)}
-                        onMouseDown={this.onMouseDown}
-                        onTouchStart={this.onMouseDown}
-                        className={clsx(cls.colorCircle)}
-
-                    ><div className={cls.colorBackground} /></div>
-                    <div ref={this.refColorCursor}
-                        className={clsx(this.props.classes.cursor, cls.cursor)}
-                        style={{
-                            background: this.state.tempMode ? UtilsColors.rgb2string(UtilsColors.temperatureToRGB(this.state.temperature)) : this.state.color,
-                            top: pos.y + (pos.y > 0 ? 0 : -HANDLER_SIZE),
-                            left: pos.x + (pos.x > 0 ? 0 : -HANDLER_SIZE),
-                        }}>
+                        <div
+                            ref={this.refColorImage}
+                            alt="color"
+                            id='color'
+                            onMouseDown={this.onMouseDown}
+                            onTouchStart={this.onMouseDown}
+                            className={clsx(cls.colorCircle)}
+                        >
+                            <div className={this.state.tempMode ? cls.rotateCT : cls.rotate}>
+                                <div className={clsx(this.state.tempMode ? cls.colorBackgroundCT : cls.colorBackground)} />
+                            </div>
+                        </div>
+                        <div ref={this.refColorCursor}
+                            className={clsx(this.props.classes.cursor, cls.cursor)}
+                            style={{
+                                background: this.state.tempMode ? UtilsColors.rgb2string(UtilsColors.temperatureToRGB(this.state.temperature)) : this.state.color,
+                                top: isNaN(pos.y) ? 0 : pos.y + (pos.y > 0 ? 0 : -HANDLER_SIZE),
+                                left: isNaN(pos.x) ? `calc(50% - ${HANDLER_SIZE / 2}px)` : pos.x + (pos.x > 0 ? 0 : -HANDLER_SIZE),
+                                opacity: 0.9
+                            }}>
+                        </div>
                     </div>
                 </div>
+                {this.props.useDimmer && <div className={cls.dimmerSlider}>
+                    <CustomSlider
+                        hue={this.getHue()}
+                        value={this.state.dimmer}
+                        onChange={this.onDimmerChanged}
+                        className={cls.width300}
+                    />
+                </div>}
             </div>
-            {this.props.useDimmer && <div className={cls.dimmerSlider}>
-                <CustomSlider
-                    hue={this.getHue()}
-                    value={this.state.dimmer}
-                    onChange={this.onDimmerChanged}
-                />
-            </div>}
-            {/* {this.props.useDimmer ? <div className={cls.dimmerSlider} key="dimmer">
-                <ColorSaturation
-                    hue={this.getHue()}
-                    saturation={this.state.dimmer}
-                    onChange={this.onDimmerChanged}
-                />
-            </div> : null} */}
             {this.getOnOffButton()}
             {this.getColorModeButton()}
         </div>;

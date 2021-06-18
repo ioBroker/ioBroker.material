@@ -109,6 +109,14 @@ $themeLight: (
     --gradientAddDefault: linear-gradient(231deg, #a9a9a9 17%, #878888 74%, #5d5e5f 100%),
     --colorTextOff: #b1b1b1,
 );
+
+$double: (
+    --widthBlock: 1.5
+);
+
+$single: (
+    --widthBlock: 1
+);
 //var(--lineColorActive)
 @mixin spread-map($map: ()) {
     @each $key, $value in $map {
@@ -126,4 +134,10 @@ $themeLight: (
 }
 :root.light {
     @include spread-map($themeLight);
+}
+:root.double {
+    @include spread-map($double);
+}
+:root.single {
+    @include spread-map($single);
 }

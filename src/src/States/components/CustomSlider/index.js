@@ -10,12 +10,12 @@ const CustomSlider = ({ fullWidth, size, onClick, value, className, onChange, hu
     const rgb = hue === '#FFFFFF' ? '#FFFFFF' : UtilsColor.rgb2string(UtilsColor.hslToRgb(hue / 360, 1, 0.5));
     const rgba = UtilsColor.hexToRgbA(rgb, 0.4);
     const color = 'linear-gradient(to right, rgba(0, 0, 0, 1) 0%,' + rgba + ' 100%)';
-
+    const colorGenerate = value || value === 0 ? 255 - 256 / 24 * value || 1 : 255;
     return <Slider
-        className={cls.root}
+        className={clsx(cls.root,className)}
         onChange={(e, v) => onChange(v)}
         value={value}
-        scale={(x) => <div className={cls.scale} style={{ background: rgba }} >{x}</div>}
+        scale={(x) => <div className={cls.scale} style={{ color: `rgb(${colorGenerate}, ${colorGenerate}, ${colorGenerate})`, background: UtilsColor.hexToRgbA(rgb, value || value === 0 ? value / 100 : 1) }} >{x}</div>}
         style={{ background: color }}
         classes={{
             track: cls.track,

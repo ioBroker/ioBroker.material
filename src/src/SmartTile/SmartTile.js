@@ -136,8 +136,9 @@ class SmartTile extends Component {
             }
             delete style.background;
         }
-        style.width = 128;
-        if(this.state.width > 1){
+        style.width = this.props.widthBlock ? 192 : 128;
+        style.height = style.width;
+        if (this.state.width > 1) {
             style.width = style.width * this.state.width + (8 * this.state.width);
         }
         style.color = Utils.isUseBright(style.background) ? 'white' : 'black';
@@ -235,6 +236,7 @@ class SmartTile extends Component {
             channelInfo={channelInfo}
             tile={tile}
             socket={this.props.socket}
+            widthBlock={this.props.widthBlock}
             ignoreIndicators={this.props.ignoreIndicators}
             editMode={this.props.editMode}
             states={this.props.states}

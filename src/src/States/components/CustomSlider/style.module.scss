@@ -39,12 +39,13 @@
 .valueLabel {
     left: calc(-50% + 14px) !important;
 }
-.scale{
+.scale {
     width: 24px;
     height: 24px;
     border-radius: 12px;
     align-items: center;
     justify-content: center;
     display: flex;
+    // text-shadow: black 0px 0px 1.5px;
     // color: var(--backgroundDraver);
 }

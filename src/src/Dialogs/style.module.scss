@@ -25,6 +25,17 @@
     top: 7.3em;
     left: 0;
 }
+.swingButton{
+    position: absolute !important;
+    top: 7.3em;
+    right: 0;
+}
+.swingGroup{
+    position: absolute !important;
+    top: 0;
+    right: 0;
+
+}
 .modeButton {
     position: absolute !important;
     bottom: 0;
@@ -89,14 +100,8 @@
     left: -5px;
 }
 .div {
-    // width: 20rem;
-    // // position: absolute;
-    height: 100%;
-    width: 100%;
-    // margin: auto;
-    // left: 0;
-    // right: 0;
-    // top: 0;
+    height: 57vmin;
+    width: 57vmin;
     position: relative;
     display: flex;
     max-width: 300px;
@@ -110,11 +115,21 @@
     align-items: center;
 }
 .dimmerSlider {
-    width: calc(100% - 4px);
+    width: calc(100% - 10px);
     height: 50px;
+    // max-width: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.width300{
+    max-width: 300px;
 }
 .cursor {
     border: 2px solid var(--backgroundDraver);
+}
+.marginAuto{
+    margin: auto 0;
 }
 .colorCircle {
     width: 100%;
@@ -131,7 +146,6 @@
     width: 100%;
     height: 100%;
     position: relative;
-    transform: rotate(30deg);
     &::after,
     &::before {
         position: absolute;
@@ -143,13 +157,68 @@
         left: 0;
         right: 0;
         bottom: 50%;
-        background-size: 300px 300px;
+        background-size: 100% 200%;
     }
     &::after {
         bottom: 0;
         background: linear-gradient(240deg, rgba(255, 0, 255, 1) 50%, transparent 50%),
             linear-gradient(300deg, rgba(0, 0, 255, 1) 50%, transparent 50%),
             linear-gradient(360deg, rgba(0, 255, 255, 1) 50%, transparent 50%);
+        z-index: -1;
+    }
+    // transform: rotate(30deg);
+}
+.rotate{
+    transform: rotate(30deg);
+    width: calc(100% + 4px);
+    height: 100%;
+}
+.rotateCT{
+    transform: rotate(-65deg);
+    opacity: 0.8;
+    width: calc(100% + 4px);
+    height: 100%;
+}
+.colorBackgroundCT {
+    border-radius: 50%;
+    filter: blur(2px);
+    width: 100%;
+    height: 100%;
+    position: relative;
+    &::after,
+    &::before {
+        position: absolute;
+        content: "";
+        background: linear-gradient(0deg, #ff9226 50%, transparent 50%),
+            linear-gradient(10deg, #ff9226 50%, transparent 50%), linear-gradient(20deg, #ff9837 50%, transparent 50%),
+            linear-gradient(30deg, #ff9e46 50%, transparent 50%), linear-gradient(40deg, #ffa452 50%, transparent 50%),
+            linear-gradient(50deg, #ffa95c 50%, transparent 50%), linear-gradient(60deg, #ffae68 50%, transparent 50%),
+            linear-gradient(70deg, #ffb372 50%, transparent 50%), linear-gradient(80deg, #ffb87b 50%, transparent 50%),
+            linear-gradient(90deg, #ffbc84 50%, transparent 50%), linear-gradient(100deg, #ffc08c 50%, transparent 50%),
+            linear-gradient(120deg, #ffc494 50%, transparent 50%), linear-gradient(130deg, #ffcca3 50%, transparent 50%),
+            linear-gradient(140deg, #ffcfa9 50%, transparent 50%), linear-gradient(150deg, #ffd3af 50%, transparent 50%),
+            linear-gradient(160deg, #ffd6b5 50%, transparent 50%), linear-gradient(170deg, #ffdabc 50%, transparent 50%),
+            linear-gradient(180deg, #ffddc1 50%, transparent 50%);
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 50%;
+        background-size: 100% 200%;
+    }
+    &::after {
+        bottom: 0;
+        background: linear-gradient(190deg, #ffe0c7 50%, transparent 50%),
+            linear-gradient(200deg, #ffe3cb 50%, transparent 50%), linear-gradient(210deg, #ffe6d1 50%, transparent 50%),
+            linear-gradient(220deg, #ffe9d6 50%, transparent 50%), linear-gradient(230deg, #ffebda 50%, transparent 50%),
+            linear-gradient(240deg, #ffeede 50%, transparent 50%), linear-gradient(250deg, #fff0e3 50%, transparent 50%),
+            linear-gradient(260deg, #fff2e7 50%, transparent 50%), linear-gradient(270deg, #fff5eb 50%, transparent 50%),
+            linear-gradient(280deg, #fff7ef 50%, transparent 50%), linear-gradient(290deg, #fffaf3 50%, transparent 50%),
+            linear-gradient(300deg, #fffcf7 50%, transparent 50%), linear-gradient(310deg, white 50%, transparent 50%);
+        // linear-gradient(320deg, rgba(255, 255, 0, 1) 50%, transparent 50%);
+        // linear-gradient(330deg, rgba(255, 255, 0, 1) 50%, transparent 50%),
+        // linear-gradient(340deg, rgba(255, 255, 0, 1) 50%, transparent 50%)
+        // linear-gradient(350deg, rgba(255, 255, 0, 1) 50%, transparent 50%),
+        // linear-gradient(380deg, rgba(255, 0, 0, 1) 50%, transparent 50%);
         z-index: -1;
     }
 }
@@ -159,7 +228,7 @@
     height: 100%;
     flex-direction: column;
 }
-.buttonMode{
+.buttonMode {
     position: absolute !important;
     width: 40px !important;
     height: 40px !important;
@@ -167,7 +236,7 @@
     padding: 0 !important;
     left: 72px;
 }
-.buttonUseOn{
+.buttonUseOn {
     position: absolute !important;
     width: 40px !important;
     height: 40px !important;

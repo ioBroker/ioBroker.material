@@ -255,9 +255,9 @@ class SmartThermostat extends SmartGeneric {
             this.getSecondaryDiv(),
             this.getSecondaryDivActual(),
             this.getSecondaryDivTop(),
-            this.getCharts(),
+            this.getCharts(this.actualId),
             this.state.showDialogBottom ?
-                dialogChartCallBack(this.onDialogCloseBottom, this.settingsId, this.props.socket, this.props.themeType) : null,
+                dialogChartCallBack(this.onDialogCloseBottom, this.actualId, this.props.socket, this.props.themeType) : null,
             this.state.showDialog ?
                 <Dialog
                     key={this.key + 'dialog'}

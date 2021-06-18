@@ -6060,10 +6060,10 @@ invariant@^2.2.4:
   dependencies:
     loose-envify "^1.0.0"
 
-iobroker.type-detector@^1.0.11:
-  version "1.0.11"
-  resolved "https://registry.yarnpkg.com/iobroker.type-detector/-/iobroker.type-detector-1.0.11.tgz#3e3fd55df44a2db7306e18d39f1a25374b04d3df"
-  integrity sha512-jVOKGjbsRZMW6Q5cf89pSnL8zKtSt7TyeRqezBrmckgOuvgEW9B3M0wxa0GVH3N6ulQ9Ilc85mUwpx14Lt4S2g==
+iobroker.type-detector@^1.0.12:
+  version "1.0.12"
+  resolved "https://registry.yarnpkg.com/iobroker.type-detector/-/iobroker.type-detector-1.0.12.tgz#68182af38d037233c771e3ad261d82e13ec9b752"
+  integrity sha512-j7GB950zyga3X75F4yJ0G/3FxsF93W1vTUXP5WLUpR+0n/r4AsVABdttKZLJaGAXwIkfvY5aG096qy+fJKRUpw==
 
 ip-regex@^2.1.0:
   version "2.1.0"

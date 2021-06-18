@@ -424,13 +424,14 @@ class SmartColor extends SmartGeneric {
 
     getIcon() {
         let customIcon;
+        const color = this.getColor();
         if (this.state.settings.useDefaultIcon) {
-            customIcon = (<IconAdapter className={clsx(clsGeneric.iconStyle, this.state[this.ids.on?.id] && clsGeneric.activeIconStyle)} src={this.getDefaultIcon()} alt="icon" style={{ height: '100%' }} />);
+            customIcon = (<IconAdapter style={color && this.state[this.ids.on?.id] ? { color } : null} className={clsx(clsGeneric.iconStyle, this.state[this.ids.on?.id] && clsGeneric.activeIconStyle)} src={this.getDefaultIcon()} alt="icon" style={{ height: '100%' }} />);
         } else {
             if (this.state.settings.icon) {
-                customIcon = (<IconAdapter className={clsx(clsGeneric.iconStyle, this.state[this.ids.on?.id] && clsGeneric.activeIconStyle)} src={this.state.settings.icon} alt="icon" style={{ height: '100%' }} />);
+                customIcon = (<IconAdapter style={color && this.state[this.ids.on?.id] ? { color } : null} className={clsx(clsGeneric.iconStyle, this.state[this.ids.on?.id] && clsGeneric.activeIconStyle)} src={this.state.settings.icon} alt="icon" style={{ height: '100%' }} />);
             } else {
-                customIcon = (<Icon className={clsx(clsGeneric.iconStyle, this.state[this.ids.on?.id] && clsGeneric.activeIconStyle)} />);
+                customIcon = (<Icon style={color && this.state[this.ids.on?.id] ? { color } : null} className={clsx(clsGeneric.iconStyle, this.state[this.ids.on?.id] && clsGeneric.activeIconStyle)} />);
             }
         }
 
@@ -528,6 +529,12 @@ class SmartColor extends SmartGeneric {
         }
     }
 
+    colorBlock = (color) => {
+        if (color) {
+            return <div className={cls.colorBlock} style={{ background: color }}></div>
+        }
+    }
+
     render() {
         // if (this.state.showDialog) {
         //     this.props.tile.unregisterHandler('onClick');
@@ -546,8 +553,8 @@ class SmartColor extends SmartGeneric {
                 modeTemperature = true;
             }
         const color = this.getColor() || '#000000';
-
         return this.wrapContent([
+            this.colorBlock(this.getColor()),
             this.getStandardContent(this.id, false),
             this.state.showDialog ?
                 <Dialog key={this.key + 'dialog'}

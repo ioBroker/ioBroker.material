@@ -38,27 +38,27 @@
     position: absolute;
     top: 8px;
     left: 8px;
-    width: 40px;
-    height: 40px;
-    border-radius: 30px;
+    width: calc(40px * var(--widthBlock));
+    height: calc(40px * var(--widthBlock));
+    border-radius: calc(40px * var(--widthBlock));
     background: var(--iconWrapperBorder);
     display: flex;
     align-items: center;
     justify-content: center;
 }
 .styleIcon {
-    width: 38px;
-    height: 38px;
-    border-radius: 30px;
+    width: calc(38px * var(--widthBlock));
+    height: calc(38px * var(--widthBlock));
+    border-radius: calc(38px * var(--widthBlock));
     background: var(--iconWrapper);
     display: flex;
     align-items: center;
     justify-content: center;
 }
 .iconStyle {
-    width: 25px;
-    height: 25px;
-    border-radius: 30px;
+    width: calc(25px * var(--widthBlock));
+    height: calc(25px * var(--widthBlock));
+    border-radius: calc(25px * var(--widthBlock));
     z-index: 1;
     color: var(--silverColor);
     transition: color 0.5s;
@@ -134,8 +134,8 @@
     }
 }
 .iconEditStyle {
-    width: 40px;
-    height: 40px;
+    width: calc(40px * var(--widthBlock));
+    height: calc(40px * var(--widthBlock));
     color: var(--editIconColor);
     stroke: var(--editIconBorder);
     stroke-width: 0.5px;
@@ -160,7 +160,7 @@
     height: 100%;
 }
 .styleCharts {
-    height: 50px !important;
+    height: calc(50px * var(--widthBlock)) !important;
 }
 .wrapperCharts {
     width: 100%;

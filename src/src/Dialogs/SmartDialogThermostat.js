@@ -262,7 +262,7 @@ class SmartDialogThermostat extends SmartDialogGeneric {
                     typeof this.props.swingValue === 'number' ?
                         <FormControl className={cls.swingGroup} component="fieldset">
                             <FormLabel component="legend">{I18n.t('Swing')}</FormLabel>
-                            <ButtonGroup color="primary">
+                            <ButtonGroup color="primary" orientation="vertical">
                                 {this.props.swingArray && Object.keys(this.props.swingArray).map(name => <CustomButton
                                     onClick={() => this.props.onSwing(name)}
                                     active={String(this.props.swingValue) === name}
