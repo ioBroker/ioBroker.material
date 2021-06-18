@@ -17,13 +17,11 @@
 - Nothing here: fix the background
 
 ## Two sizes of icons
-<!-- - 128px and 192px -->
 
 ## Clock
-<!-- - Position is not in center -->
 ## Thermostat
 - On mobile devices hide contorls in chart-dialog and make it maximal big
-- Tooltips for values: actual temperature / target temerature
+- ? Tooltips for values: actual temperature / target temerature
 ## Temperature
 - Tooltips: Temperature / Humidity
 - Show Humidity on chart (and all others that have history ON)
@@ -33,8 +31,8 @@
 
 ## RGB
 - 2 modes:
-  <!-- - RGB selection + Dimmer
-  - Color temperature + Dimmer -->
+  - Color temperature + Dimmer 
 - Tooltip of power, Color type
 
 ## Weather
+- https://demo.home-assistant.io/#/lovelace/0
