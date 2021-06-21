@@ -182,7 +182,7 @@ class SmartWeatherForecast extends SmartGeneric {
         this.collectTimer = null;
 
         if (this.channelInfo.states) {
-            //console.log(JSON.stringify(this.channelInfo.states, null, 2));
+            console.log(11223344, this.channelInfo.states);
 
             // Actual
             let state = this.channelInfo.states.find(state => state.id && state.name === 'ICON');

@@ -25,16 +25,15 @@
     top: 7.3em;
     left: 0;
 }
-.swingButton{
+.swingButton {
     position: absolute !important;
     top: 7.3em;
     right: 0;
 }
-.swingGroup{
+.swingGroup {
     position: absolute !important;
     top: 0;
     right: 0;
-
 }
 .modeButton {
     position: absolute !important;
@@ -107,6 +106,11 @@
     max-width: 300px;
     max-height: 300px;
 }
+.wrapperTemperature {
+    // flex-direction: column;
+    justify-content: space-between;
+    // transform: rotate(-90deg);
+}
 .wrapperDiv {
     display: flex;
     width: 100%;
@@ -122,13 +126,13 @@
     align-items: center;
     justify-content: center;
 }
-.width300{
+.width300 {
     max-width: 300px;
 }
 .cursor {
     border: 2px solid var(--backgroundDraver);
 }
-.marginAuto{
+.marginAuto {
     margin: auto 0;
 }
 .colorCircle {
@@ -168,12 +172,12 @@
     }
     // transform: rotate(30deg);
 }
-.rotate{
+.rotate {
     transform: rotate(30deg);
     width: calc(100% + 4px);
     height: 100%;
 }
-.rotateCT{
+.rotateCT {
     transform: rotate(-65deg);
     opacity: 0.8;
     width: calc(100% + 4px);
@@ -242,6 +246,15 @@
     height: 40px !important;
     border-radius: 20px !important;
     padding: 0 !important;
+}
+.wrapperSlider{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.textSlider{
+    margin-bottom: 20px;
+    color:var(--generalColor);
 }
 @media screen and (max-width: 600px) {
     .paper {

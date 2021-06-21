@@ -16,6 +16,9 @@
 
 - Nothing here: fix the background
 
+- Charts: detect  `custom.${defaultHistory}`. Give all datapoints into Component "objs"
+
+
 ## Two sizes of icons
 
 ## Clock
@@ -31,8 +34,16 @@
 
 ## RGB
 - 2 modes:
-  - Color temperature + Dimmer 
+  <!-- - Color temperature + Dimmer  -->
+- Show by Color temperature the Kelvin and not percent  
 - Tooltip of power, Color type
 
 ## Weather
 - https://demo.home-assistant.io/#/lovelace/0
+- Use IDs from channel detector
+- Chart opacity 0.4
+- Show dialog with chart if humidity or temperature with "custom.history.0"
+- Big size - increase fonts and images
+- Type detector to detect current
+
+## Weather current (as type detector)

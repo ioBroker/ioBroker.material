@@ -959,14 +959,16 @@ class SmartGeneric extends Component {
     }
 
 
-    getCharts = (id) => {
+    getCharts = idOrData => {
         if (!this.firstGetCharts) {
             this.firstGetCharts = true;
-            this.readHistory(id);
+            if (typeof idOrData === 'string') {
+                this.readHistory(idOrData);
+            }
         }
-        if (!this.expireInSecInterval) {
+        if (!this.expireInSecInterval && typeof idOrData === 'string') {
             this.expireInSecInterval = setInterval(() => {
-                this.readHistory(id);
+                this.readHistory(idOrData);
                 this.expireInSecInterval = null;
             }, 60000);
         }
@@ -1005,9 +1007,8 @@ class SmartGeneric extends Component {
             {
                 show: false,
                 boundaryGap: false,
-                data: []
-            }
-            ,
+                data: typeof idOrData === 'string' ? [] : idOrData
+            },
             yAxis: {
                 show: false,
                 type: 'value'
@@ -1020,11 +1021,11 @@ class SmartGeneric extends Component {
                     showSymbol: false,
                     color: style.color,
                     areaStyle: { color: style.areaStyle },
-                    data: []
+                    data: typeof idOrData === 'string' ? [] : idOrData
                 }
             ]
         };
-
+        
         return <div className={cls.wrapperCharts}>
             <ReactEchartsCore
                 className={cls.styleCharts}

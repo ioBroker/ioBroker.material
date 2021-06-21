@@ -341,7 +341,7 @@ class SmartDialogColor extends SmartDialogGeneric {
     }
 
     componentDidUpdate() {
-        if (!this.colorWidth) {
+        if (!this.colorWidth && !this.state.tempMode) {
             /*const h = this.refColor.current.offsetHeight - 6 * 16;
             if (h < this.refColor.current.offsetWidth) {
                 this.colorWidth = h;
@@ -504,6 +504,15 @@ class SmartDialogColor extends SmartDialogGeneric {
         }
     }
 
+    onTemperatureChanged = value => {
+        this.setState({ temperature: (((this.tMax - this.tMin) / 100) * value) + this.tMin });
+
+        this.changeTimerTemperature = setTimeout(value => {
+            this.changeTimerTemperature = null;
+            this.props.onRgbChange(UtilsColors.rgb2string(UtilsColors.temperatureToRGB(this.state.temperature)), Math.round(this.state.temperature), SmartDialogColor.COLOR_MODES.TEMPERATURE);
+        }, 1000, value);
+    }
+
     getOnOffButton() {
         if (!this.props.useOn) {
             return null;
@@ -565,19 +574,10 @@ class SmartDialogColor extends SmartDialogGeneric {
         return <div className={cls.wrapperModalContentColor}>
             <div className={cls.marginAuto}>
                 <div className={cls.wrapperDiv}>
-                    <div key="color-dialog"
+                    {!this.state.tempMode ? <div key="color-dialog"
                         ref={this.refColor}
                         className={cls.div}
                     >
-                        {/* <img ref={this.refColorImage}
-                        // alt="color"
-                        // id='color'
-                        src={this.state.tempMode ? this.imageCT : ColorsImg}//{ColorsImg}this.rgb || SmartDialogColor.createCT(600)}
-                        // onMouseDown={this.onMouseDown}
-                        // onTouchStart={this.onMouseDown}
-                        className={cls.colorCircle} 
-                        
-                        /> */}
                         <div
                             ref={this.refColorImage}
                             alt="color"
@@ -599,9 +599,33 @@ class SmartDialogColor extends SmartDialogGeneric {
                                 opacity: 0.9
                             }}>
                         </div>
-                    </div>
+                    </div> : <div className={clsx(cls.div, cls.wrapperTemperature)}>
+                        <div className={cls.wrapperSlider}>
+                            <div className={cls.textSlider}>{I18n.t('temperature')}</div>
+                        <CustomSlider
+                            hue={this.state.temperature}
+                            value={100 * (this.state.temperature - this.tMin) / (this.tMax - this.tMin)}
+                            onChange={this.onTemperatureChanged}
+                            className={cls.width300}
+                            orientation
+                            temperature
+                            tMin={this.tMin}
+                            tMax={this.tMax}
+                        />
+                        </div>
+                        <div className={cls.wrapperSlider}>
+                            <div className={cls.textSlider}>{I18n.t('brightness')}</div>
+                        <CustomSlider
+                            hue={this.getHue()}
+                            value={this.state.dimmer}
+                            onChange={this.onDimmerChanged}
+                            className={cls.width300}
+                            orientation
+                        />
+                        </div>
+                    </div>}
                 </div>
-                {this.props.useDimmer && <div className={cls.dimmerSlider}>
+                {this.props.useDimmer && !this.state.tempMode && <div className={cls.dimmerSlider}>
                     <CustomSlider
                         hue={this.getHue()}
                         value={this.state.dimmer}

@@ -5,22 +5,25 @@ import cls from './style.module.scss';
 import clsx from 'clsx';
 import UtilsColor from '../../../UtilsColors';
 
-const CustomSlider = ({ fullWidth, size, onClick, value, className, onChange, hue }) => {
+const CustomSlider = ({ fullWidth, size, onClick, value, className, onChange, hue, orientation, temperature }) => {
 
-    const rgb = hue === '#FFFFFF' ? '#FFFFFF' : UtilsColor.rgb2string(UtilsColor.hslToRgb(hue / 360, 1, 0.5));
+    const rgb = hue === '#FFFFFF' ?
+        '#FFFFFF' :
+        temperature ? UtilsColor.rgb2string(UtilsColor.temperatureToRGB(hue)) : UtilsColor.rgb2string(UtilsColor.hslToRgb(hue / 360, 1, 0.5));
     const rgba = UtilsColor.hexToRgbA(rgb, 0.4);
-    const color = 'linear-gradient(to right, rgba(0, 0, 0, 1) 0%,' + rgba + ' 100%)';
+    const color = temperature ? `linear-gradient(to bottom, white 0%,#ff9226 100%)` : `linear-gradient(to ${!orientation ? 'right' : 'top'}, rgba(0, 0, 0, 1) 0%,${rgba} 100%)`;
     const colorGenerate = value || value === 0 ? 255 - 256 / 24 * value || 1 : 255;
     return <Slider
-        className={clsx(cls.root,className)}
+        className={clsx(orientation ? cls.rootVertical : cls.root, className)}
         onChange={(e, v) => onChange(v)}
         value={value}
-        scale={(x) => <div className={cls.scale} style={{ color: `rgb(${colorGenerate}, ${colorGenerate}, ${colorGenerate})`, background: UtilsColor.hexToRgbA(rgb, value || value === 0 ? value / 100 : 1) }} >{x}</div>}
+        orientation={orientation ? 'vertical' : 'horizontal'}
+        scale={(x) => <div className={cls.scale} style={{ color: `rgb(${colorGenerate}, ${colorGenerate}, ${colorGenerate})`, background: temperature ? rgb : UtilsColor.hexToRgbA(rgb, value || value === 0 ? value / 100 : 1) }} >{x}</div>}
         style={{ background: color }}
         classes={{
-            track: cls.track,
-            rail: cls.rail,
-            thumb: cls.thumb,
+            track: orientation ? cls.trackVertical : cls.track,
+            rail: orientation ? cls.railVertical : cls.rail,
+            thumb: orientation ? cls.thumbVertical : cls.thumb,
             valueLabel: cls.valueLabel
         }}
         valueLabelDisplay="auto"
@@ -35,6 +38,8 @@ CustomSlider.defaultProps = {
     fullWidth: false,
     square: false,
     active: false,
+    orientation: false,
+    temperature: false,
     onChange: () => { }
 };
 

@@ -359,6 +359,7 @@ class StatesList extends Component {
                 {this.getToggleDragButton()}
                 {this.getAddButton()}
                 {this.getAddButtonClock()}
+                {this.getAddButtonWhether()}
             </div>);
     }
 
@@ -423,6 +424,30 @@ class StatesList extends Component {
         });
     }
 
+    onAddCustomWhether() {
+        const newState = { customURLs: JSON.parse(JSON.stringify(this.state.customURLs || [])) };
+
+        newState.customURLs.push({
+            type: 'whether',
+            title: I18n.t('Custom Whether'),
+            id: '_custom_' + Date.now(),
+            settingsId: this.state.enumID,
+            doubleSize: true,
+            enabled: true,
+            seconds: false,
+            "12/24": false,
+            dayOfWeek: true
+        });
+
+        this.order = null;
+
+        const settings = Utils.getSettings(this.props.objects[this.props.enumID], { user: this.props.user });
+        settings.URLs = newState.customURLs;
+        this.props.onSaveSettings && this.props.onSaveSettings(this.props.enumID, settings, () => {
+            this.setState(newState);
+        });
+    }
+
     getAddButton() {
         if (this.props.editMode && this.props.enumID !== Utils.INSTANCES) {
             return (<Fab key={this.props.dialogKey + '-add-button'}
@@ -446,6 +471,21 @@ class StatesList extends Component {
                 style={{ fontSize: 24 }}
                 onClick={() => this.onAddCustomClock()}
                 className={cls.buttonClock}>
+                <IconAdd />
+            </Fab>);
+        } else {
+            return null;
+        }
+    }
+
+    getAddButtonWhether() {
+        if (this.props.editMode && this.props.enumID !== Utils.INSTANCES) {
+            return (<Fab
+                size="small"
+                title={I18n.t('Add custom Clock')}
+                style={{ fontSize: 24 }}
+                onClick={() => this.onAddCustomWhether()}
+                className={cls.buttonWhether}>
                 <IconAdd />
             </Fab>);
         } else {
@@ -490,6 +530,7 @@ class StatesList extends Component {
                     {this.getToggleDragButton()}
                     {this.getAddButton()}
                     {this.getAddButtonClock()}
+                    {this.getAddButtonWhether()}
                 </div>
             </div>);
         }

@@ -44,6 +44,7 @@ import SmartColor from '../States/SmartColor/SmartColor';
 import SmartClock from '../States/SmartClock/SmartClock';
 import cls from './style.module.scss';
 import SmartDimmer from '../States/SmartDimmer/SmartDimmer';
+import SmartWhether from '../States/SmartWhether/SmartWhether';
 
 class SmartTile extends Component {
     static propTypes = {
@@ -320,6 +321,9 @@ class SmartTile extends Component {
                     break;
                 case 'clock'://Types.clock:
                     Control = SmartClock;
+                    break;
+                case 'whether'://Types.whether:
+                    Control = SmartWhether;
                     break;
                 default:
                     break;
