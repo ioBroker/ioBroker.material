@@ -18,7 +18,7 @@ const CustomSlider = ({ fullWidth, size, onClick, value, className, onChange, hu
         onChange={(e, v) => onChange(v)}
         value={value}
         orientation={orientation ? 'vertical' : 'horizontal'}
-        scale={(x) => <div className={cls.scale} style={{ color: `rgb(${colorGenerate}, ${colorGenerate}, ${colorGenerate})`, background: temperature ? rgb : UtilsColor.hexToRgbA(rgb, value || value === 0 ? value / 100 : 1) }} >{x}</div>}
+        scale={(x) => <div className={clsx(cls.scale, temperature && cls.scaleFont)} style={{ color: `rgb(${colorGenerate}, ${colorGenerate}, ${colorGenerate})`, background: temperature ? rgb : UtilsColor.hexToRgbA(rgb, value || value === 0 ? value / 100 : 1) }} >{temperature?hue:x}</div>}
         style={{ background: color }}
         classes={{
             track: orientation ? cls.trackVertical : cls.track,

@@ -601,7 +601,7 @@ class SmartDialogColor extends SmartDialogGeneric {
                         </div>
                     </div> : <div className={clsx(cls.div, cls.wrapperTemperature)}>
                         <div className={cls.wrapperSlider}>
-                            <div className={cls.textSlider}>{I18n.t('temperature')}</div>
+                            <div className={cls.textSlider}>{I18n.t('Temperature')}</div>
                         <CustomSlider
                             hue={this.state.temperature}
                             value={100 * (this.state.temperature - this.tMin) / (this.tMax - this.tMin)}
@@ -614,7 +614,7 @@ class SmartDialogColor extends SmartDialogGeneric {
                         />
                         </div>
                         <div className={cls.wrapperSlider}>
-                            <div className={cls.textSlider}>{I18n.t('brightness')}</div>
+                            <div className={cls.textSlider}>{I18n.t('Brightness')}</div>
                         <CustomSlider
                             hue={this.getHue()}
                             value={this.state.dimmer}

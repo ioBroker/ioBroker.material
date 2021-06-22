@@ -24,6 +24,8 @@ import I18n from '@iobroker/adapter-react/i18n';
 import IconAdapter from '@iobroker/adapter-react/Components/Icon';
 import cls from './style.module.scss';
 import clsGeneric from '../style.module.scss';
+import Weather from '../../basic-controls/react-weather/Weather';
+import { dialogChartCallBack } from '../../Dialogs/DialogChart';
 
 const styles = {
     'currentIcon-div': {
@@ -138,7 +140,7 @@ const styles = {
 
 class SmartWeatherForecast extends SmartGeneric {
     static propTypes = {
-        classes:    PropTypes.object.isRequired
+        classes: PropTypes.object.isRequired
     };
 
     constructor(props) {
@@ -182,8 +184,6 @@ class SmartWeatherForecast extends SmartGeneric {
         this.collectTimer = null;
 
         if (this.channelInfo.states) {
-            console.log(11223344, this.channelInfo.states);
-
             // Actual
             let state = this.channelInfo.states.find(state => state.id && state.name === 'ICON');
             if (state) {
@@ -285,7 +285,7 @@ class SmartWeatherForecast extends SmartGeneric {
                     this.ids.days[d].date = state && state.id;
                 }
                 state = this.channelInfo.states.find(state => state.id && state.name === 'ICON' + d);
-                this.ids.days[d].icon = state && (state.id !== this.id) && state.id ;
+                this.ids.days[d].icon = state && (state.id !== this.id) && state.id;
 
                 state = this.channelInfo.states.find(state => state.id && state.name === 'STATE' + d);
                 this.ids.days[d].state = state && state.id;
@@ -336,21 +336,25 @@ class SmartWeatherForecast extends SmartGeneric {
                     this.ids.days[d] = null;
                 }
             }
-
+            const idx = this.ids.days.indexOf(null);
+            if (idx > -1) {
+                this.ids.days.splice(idx, 1);
+            }
             let max = this.ids.days.length - 1;
             while (!this.ids.days[max] && max >= 0) {
                 max--;
             }
             if (max < this.ids.days.length && !this.ids.days[max + 1]) {
-                this.ids.days.splice(max + 1, this.ids.days.length  - max - 1);
+                this.ids.days.splice(max + 1, this.ids.days.length - max - 1);
             }
         }
 
         this.width = 2;
-        this.props.tile.setState({isPointer: false});
-        this.props.tile.setState({state: true});
+        this.props.tile.setState({ isPointer: false });
+        this.props.tile.setState({ state: true });
         this.key = 'smart-weather-' + this.id + '-';
 
+        this.stateRx.showDialogBottom = false;
         this.stateRx.showDialog = false; // support dialog in this tile used in generic class)
 
         this.componentReady();
@@ -359,11 +363,11 @@ class SmartWeatherForecast extends SmartGeneric {
     applySettings(settings) {
         settings = settings || (this.state && this.state.settings);
         if (settings) {
-            if (settings.tempID && (!this.subscribes || this.subscribes.indexOf(settings.tempID) === -1))  {
+            if (settings.tempID && (!this.subscribes || this.subscribes.indexOf(settings.tempID) === -1)) {
                 this.subscribes = this.subscribes || [];
                 this.subscribes.push(settings.tempID);
             }
-            if (settings.humidityID && (!this.subscribes || this.subscribes.indexOf(settings.humidityID) === -1))  {
+            if (settings.humidityID && (!this.subscribes || this.subscribes.indexOf(settings.humidityID) === -1)) {
                 this.subscribes = this.subscribes || [];
                 this.subscribes.push(settings.humidityID);
             }
@@ -401,48 +405,48 @@ class SmartWeatherForecast extends SmartGeneric {
                 this.collectTimer = setTimeout(() => this.onUpdateTimer(), 200);
             }
         } else
-        if (id === this.ids.current.icon ||
-            id === this.ids.current.state ||
-            id === this.ids.current.windIcon) {
-            this.collectState = this.collectState || {};
-            this.collectState[id] = state.val || '';
-            this.collectTimer && clearTimeout(this.collectTimer);
-            this.collectTimer = setTimeout(() => this.onUpdateTimer(), 200);
-        }  else
-        if (this.ids.current.location && this.ids.current.location.indexOf(id) !== -1) {
-            this.collectState = this.collectState || {};
-            if (state.val && state.val.replace(/[,.-]/g, '').trim()) {
-                this.collectState.location = state.val || '';
-            }
-            this.collectTimer && clearTimeout(this.collectTimer);
-            this.collectTimer = setTimeout(() => this.onUpdateTimer(), 200);
-        } else if (id === this.ids.current.windDirection || id === this.ids.current.windDegrees) {
-            let dir = '';
-            if (state && state.val !== null && state.val !== '' && state.val !== undefined && (typeof state.val === 'number' || parseInt(state.val, 10).toString() === state.val.toString())) {
-                dir = I18n.t('wind_' + Utils.getWindDirection(state.val)).replace('wind_', '');
-            } else {
-                dir = state.val;
-            }
+            if (id === this.ids.current.icon ||
+                id === this.ids.current.state ||
+                id === this.ids.current.windIcon) {
+                this.collectState = this.collectState || {};
+                this.collectState[id] = state.val || '';
+                this.collectTimer && clearTimeout(this.collectTimer);
+                this.collectTimer = setTimeout(() => this.onUpdateTimer(), 200);
+            } else
+                if (this.ids.current.location && this.ids.current.location.indexOf(id) !== -1) {
+                    this.collectState = this.collectState || {};
+                    if (state.val && state.val.replace(/[,.-]/g, '').trim()) {
+                        this.collectState.location = state.val || '';
+                    }
+                    this.collectTimer && clearTimeout(this.collectTimer);
+                    this.collectTimer = setTimeout(() => this.onUpdateTimer(), 200);
+                } else if (id === this.ids.current.windDirection || id === this.ids.current.windDegrees) {
+                    let dir = '';
+                    if (state && state.val !== null && state.val !== '' && state.val !== undefined && (typeof state.val === 'number' || parseInt(state.val, 10).toString() === state.val.toString())) {
+                        dir = I18n.t('wind_' + Utils.getWindDirection(state.val)).replace('wind_', '');
+                    } else {
+                        dir = state.val;
+                    }
 
-            this.collectState = this.collectState || {};
-            this.collectState[id] = dir;
-            this.collectTimer && clearTimeout(this.collectTimer);
-            this.collectTimer = setTimeout(() => this.onUpdateTimer(), 200);
-        }  else if (id === this.ids.current.date) {
-            let date = '';
+                    this.collectState = this.collectState || {};
+                    this.collectState[id] = dir;
+                    this.collectTimer && clearTimeout(this.collectTimer);
+                    this.collectTimer = setTimeout(() => this.onUpdateTimer(), 200);
+                } else if (id === this.ids.current.date) {
+                    let date = '';
 
-            if (state && state.val) {
-                date = Utils.date2string(state.val) || '';
-            }
+                    if (state && state.val) {
+                        date = Utils.date2string(state.val) || '';
+                    }
 
-            this.collectState = this.collectState || {};
-            this.collectState[id] = date;
-            this.collectTimer && clearTimeout(this.collectTimer);
-            this.collectTimer = setTimeout(() => this.onUpdateTimer(), 200);
-        } else {
-            console.log(id + ' => ' + state.val);
-            super.updateState(id, state);
-        }
+                    this.collectState = this.collectState || {};
+                    this.collectState[id] = date;
+                    this.collectTimer && clearTimeout(this.collectTimer);
+                    this.collectTimer = setTimeout(() => this.onUpdateTimer(), 200);
+                } else {
+                    console.log(id + ' => ' + state.val);
+                    super.updateState(id, state);
+                }
     }
 
     getDialogSettings() {
@@ -489,8 +493,8 @@ class SmartWeatherForecast extends SmartGeneric {
         if (!temp && temp !== 0) {
             temp = this.ids.current.temperature && this.state[this.ids.current.temperature];
         }
-        return (<div  key="todayIcon" className={classes['currentIcon-div']}>
-            <img className={classes['currentIcon-icon']} src={this.state[this.ids.current.icon]} alt={this.state[this.ids.current.state] || ''}/>
+        return (<div key="todayIcon" className={classes['currentIcon-div']}>
+            <img className={classes['currentIcon-icon']} src={this.state[this.ids.current.icon]} alt={this.state[this.ids.current.state] || ''} />
             {temp !== null && temp !== undefined ? (<div className={classes['currentIcon-temperature']}>{temp}°</div>) : null}
         </div>);
     }
@@ -533,7 +537,7 @@ class SmartWeatherForecast extends SmartGeneric {
             {(windDir !== null && windDir !== undefined) || (windSpeed !== null && windSpeed !== undefined) ?
                 (<div key="wind" className={classes['todayState-wind']}>
                     {!windIcon ? (<span key="windTitle" className={classes['todayState-windTitle']}>{I18n.t('Wind')}:</span>) : null}
-                    {windIcon ? (<img className={classes['todayState-windIcon']} src={windIcon} alt="state"/>) : null}
+                    {windIcon ? (<img className={classes['todayState-windIcon']} src={windIcon} alt="state" />) : null}
                     {windDir ? (<span className={classes['todayState-windDir']}>{windDir}</span>) : null}
                     {windSpeed !== null && windSpeed !== undefined && !isNaN(windSpeed) ? (<span key="windSpeed" className={classes['todayState-windSpeed']}>{windSpeed}{this.windUnit}</span>) : null}
                 </div>)
@@ -586,25 +590,60 @@ class SmartWeatherForecast extends SmartGeneric {
         </div>);
     }
 
+    getChartData() {
+        const ids = this.ids.days.map(e => e.temperatureMax);
+        Promise.all(ids.map(id => id && this.props.socket.getState(id).then(state => state && state.val)))
+            .then(data => {
+                this.setState({ charts: data });
+            });
+    }
+
+    async componentDidMount() {
+        this.interval = setInterval(() => this.onUpdateTimer(), 60000);
+        this.getChartData();
+    }
+
+    onUpdateTimer() {
+        this.getChartData();
+    }
+
+    getWeather() {
+        if (!this.ids) {
+            return
+        }
+        return (
+            <Weather
+                doubleSize={this.state?.settings?.doubleSize}
+                socket={this.props.socket}
+                data={this.ids}
+            />
+        );
+    }
+
     render() {
         return this.wrapContent([
-            this.getCurrentIconDiv(),
-            this.getCurrentDateLocationDiv(),
-            this.getTodayWindDiv(),
-            this.getTodayTempDiv(),
+            // this.getCurrentIconDiv(),
+            this.getCharts(this.state.charts, cls.customCharts),
+            this.getWeather(),
+            // this.getCurrentDateLocationDiv(),
+            // this.getTodayWindDiv(),
+            // this.getTodayTempDiv(),
+            this.checkHistory(this.ids.current.humidity, true) && this.state.showDialogBottom ?
+                dialogChartCallBack(this.onDialogCloseBottom, this.ids.current.humidity, this.props.socket, this.props.themeType, this.props.systemConfig) : null,
             this.state.showDialog ?
                 <Dialog dialogKey={this.key + 'dialog'}
-                        key={this.key + 'dialog'}
-                        name={this.state.settings.name}
-                        enumNames={this.props.enumNames}
-                        settings={this.state.settings}
-                        objects={this.props.objects}
-                        windUnit={this.windUnit}
-                        pressureUnit={this.pressureUnit}
-                        onCollectIds={this.props.onCollectIds}
-                        ids={this.ids}
-                        windowWidth={this.props.windowWidth}
-                        onClose={this.onDialogClose}
+                    key={this.key + 'dialog'}
+                    transparent
+                    name={this.state.settings.name}
+                    enumNames={this.props.enumNames}
+                    settings={this.state.settings}
+                    objects={this.props.objects}
+                    windUnit={this.windUnit}
+                    pressureUnit={this.pressureUnit}
+                    onCollectIds={this.props.onCollectIds}
+                    ids={this.ids}
+                    windowWidth={this.props.windowWidth}
+                    onClose={this.onDialogClose}
                 /> : null
         ]);
     }

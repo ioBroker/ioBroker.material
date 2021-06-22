@@ -247,15 +247,179 @@
     border-radius: 20px !important;
     padding: 0 !important;
 }
-.wrapperSlider{
+.wrapperSlider {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
-.textSlider{
+.textSlider {
     margin-bottom: 20px;
-    color:var(--generalColor);
+    color: var(--generalColor);
 }
+//weather
+.wrapperBlockWeather {
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 22px);
+    justify-content: center;
+    padding: 10px;
+    color: var(--silverColor);
+    .currentDiv {
+        height: 200px;
+        position: relative;
+        margin: 4px;
+        overflow: hidden;
+        border: 1px solid var(--generalColor);
+        border-radius: 5px;
+        background-color: var(--backgroundDraver);
+    }
+    .daysDiv {
+        overflow-x: hidden;
+        // overflow-y: auto;
+        display: flex;
+    }
+    .dayDiv {
+        height: 140px;
+        width: 100%;
+        position: relative;
+        border: 1px solid var(--generalColor);
+        border-radius: 5px;
+        background-color: var(--backgroundDraver);
+        margin: 4px;
+        padding: 4px;
+        flex: 1;
+    }
+    .currentIconDiv {
+        position: absolute;
+        width: 90px;
+        height: 90px;
+        z-index: 0;
+        left: 3px;
+        top: 40px;
+    }
+    .currentIconIcon {
+        width: 100%;
+        z-index: 0;
+    }
+    .currentIconTemperature {
+        position: absolute;
+        width: 100%;
+        font-size: 40px;
+        z-index: 1;
+        font-weight: normal;
+        text-align: right;
+        color: var(--silverColor);
+        top: 8px;
+        right: -70px;
+    }
+    .currentDateDiv {
+        position: absolute;
+        z-index: 1;
+        width: calc(100% - 2em);
+        top: 16px;
+        left: 16px;
+    }
+    .currentDateDate {
+        font-weight: 900;
+        display: inline-block;
+        color: var(--generalColor);
+    }
+    .currentDateLocation {
+        font-weight: 900;
+        color: var(--generalColor);
+        display: inline-block;
+        position: absolute;
+        text-overflow: ellipsis;
+        width: calc(100% - 75px);
+        white-space: nowrap;
+        right: 0;
+        text-align: right;
+    }
+    .todayStateName {
+        font-weight: 900;
+        color: var(--generalColor);
+    }
+    .todayStateDiv {
+        position: absolute;
+        z-index: 1;
+        width: calc(100% - 90px);
+        font-weight: 600;
+        bottom: 16px;
+        left: 20px;
+        text-align: left;
+        font-size: 14px;
+        color: var(--silverColor);
+    }
+    .tempMax {
+        font-weight: 900;
+    }
+    .todayTempDiv {
+        position: absolute;
+        z-index: 1;
+        font-weight: normal;
+        top: 35px;
+        max-width: calc(100% - 2em - 90px);
+        right: 16px;
+        text-align: right;
+        color: var(--silverColor);
+        font-weight: 600;
+    }
+    .dayIconDiv {
+        // position: absolute;
+        width: 30px;
+        height: 30px;
+        z-index: 0;
+        left: 16px;
+        top: 30px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center center;
+        display: flex;
+        align-items: center;
+        div{
+            margin-left: 10px;
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--silverColor);
+        }
+    }
+    .dayIconTemperature {
+    }
+    .dayDateDiv {
+        // position: absolute;
+        z-index: 1;
+        // width: calc(100% - 2em);
+        // top: 16px;
+        // left: 16px;
+    }
+    .dayDateDate {
+        font-weight: bold;
+        display: flex;
+        font-size: 13px;
+        width: 100%;
+        justify-content: center;
+        color: var(--generalColor);
+    }
+    .dayStateDiv {
+        // position: absolute;
+        z-index: 1;
+        width: calc(100% - 90px);
+        font-weight: normal;
+        bottom: 16px;
+        left: 118px;
+        text-align: left;
+    }
+    .dayTemp-div {
+        // position: absolute;
+        z-index: 1;
+        font-weight: normal;
+        top: 35px;
+        max-width: calc(100% - 2em - 90px);
+        right: 16px;
+        text-align: right;
+    }
+}
+
 @media screen and (max-width: 600px) {
     .paper {
         max-height: 100% !important;

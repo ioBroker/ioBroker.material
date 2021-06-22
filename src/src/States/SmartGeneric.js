@@ -893,9 +893,8 @@ class SmartGeneric extends Component {
         now.setMilliseconds(0);
         let start = now.getTime();
         let end = Date.now();
-
         const options = {
-            instance: 'history.0',
+            instance: this.props.systemConfig?.common?.defaultHistory || 'history.0',
             start,
             end,
             step: 1800000,
@@ -958,8 +957,29 @@ class SmartGeneric extends Component {
         return values.map(e => e.val !== null ? e.val : 0);
     }
 
+    checkHistory = (idOrData, showCornerBottom) => {
+        let bool = true;
+        if (typeof idOrData === 'string') {
+            if (!this.props.allObjects[idOrData]) {
+                bool = false;
+            }
+            if (!this.props.allObjects[idOrData]?.common?.custom) {
+                bool = false;
+            }
+            if (this.props.allObjects[idOrData]?.common?.custom && !this.props.allObjects[idOrData]?.common?.custom[this.props.systemConfig?.common?.defaultHistory || 'history.0']) {
+                bool = false;
+            }
+        }
+        if (showCornerBottom) {
+            this.showCornerBottom = bool;
+        }
+        return bool;
+    }
 
-    getCharts = idOrData => {
+    getCharts = (idOrData, className) => {
+        if (!this.checkHistory(idOrData, true)) {
+            return
+        }
         if (!this.firstGetCharts) {
             this.firstGetCharts = true;
             if (typeof idOrData === 'string') {
@@ -1025,10 +1045,10 @@ class SmartGeneric extends Component {
                 }
             ]
         };
-        
+
         return <div className={cls.wrapperCharts}>
             <ReactEchartsCore
-                className={cls.styleCharts}
+                className={clsx(cls.styleCharts, className)}
                 ref={this.echartsReact}
                 echarts={echarts}
                 option={option}

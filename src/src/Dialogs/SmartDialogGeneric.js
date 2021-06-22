@@ -189,7 +189,7 @@ class SmartDialogGeneric extends Component {
         let end = Date.now();
 
         const options = {
-            instance: 'history.0',
+            instance: this.props?.systemConfig?.common?.defaultHistory ||'history.0',
             start,
             end,
             step: 1800000,

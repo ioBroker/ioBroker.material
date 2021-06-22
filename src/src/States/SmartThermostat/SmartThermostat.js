@@ -257,7 +257,7 @@ class SmartThermostat extends SmartGeneric {
             this.getSecondaryDivTop(),
             this.getCharts(this.actualId),
             this.state.showDialogBottom ?
-                dialogChartCallBack(this.onDialogCloseBottom, this.actualId, this.props.socket, this.props.themeType) : null,
+                dialogChartCallBack(this.onDialogCloseBottom, this.actualId, this.props.socket, this.props.themeType,this.props.systemConfig) : null,
             this.state.showDialog ?
                 <Dialog
                     key={this.key + 'dialog'}
@@ -269,6 +269,8 @@ class SmartThermostat extends SmartGeneric {
                     startValue={this.state[this.id] === null || this.state[this.id] === undefined ? this.min : this.state[this.id]}
                     windowWidth={this.props.windowWidth}
                     actualValue={this.state[this.actualId] === null || this.state[this.actualId] === undefined ? this.min : this.state[this.actualId]}
+                    //checkHistory
+                    checkHistory={this.checkHistory}
                     //swing
                     swingValue={this.swingId ? this.state[this.swingId] : null}
                     swingArray={this.swingId ? this.props.objects[this.swingId]?.common?.states : null}

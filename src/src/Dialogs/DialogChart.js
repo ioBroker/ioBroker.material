@@ -5,7 +5,7 @@ import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import {  DialogTitle, makeStyles, ThemeProvider } from '@material-ui/core';
+import { DialogTitle, makeStyles, ThemeProvider } from '@material-ui/core';
 
 
 import IconClose from '@material-ui/icons/Close';
@@ -76,7 +76,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const DialogChart = ({ cb, id, socket, themeType }) => {
+const DialogChart = ({ cb, id, socket, themeType, systemConfig }) => {
     const classes = useStyles();
     const [open, setOpen] = useState(true);
     const [object, setObject] = useState(null);
@@ -117,8 +117,8 @@ const DialogChart = ({ cb, id, socket, themeType }) => {
                         end={Date.now()}
                         // noToolbar
                         // //dateFormat={"dddd, mmmm dS, yyyy, h:MM:ss TT"}
-                        defaultHistory="history.0"
-                        historyInstance="history.0"
+                        defaultHistory={systemConfig?.common?.defaultHistory || 'history.0'}
+                        historyInstance={systemConfig?.common?.defaultHistory || 'history.0'}
                     />}
                 </div>
             </DialogContent>
@@ -135,7 +135,7 @@ const DialogChart = ({ cb, id, socket, themeType }) => {
     </ThemeProvider>;
 }
 
-export const dialogChartCallBack = (cb, id, socket, themeType) => {
+export const dialogChartCallBack = (cb, id, socket, themeType, systemConfig) => {
     if (!node) {
         node = document.createElement('div');
         node.id = 'renderModal';
@@ -146,7 +146,8 @@ export const dialogChartCallBack = (cb, id, socket, themeType) => {
         <DialogChart
             cb={cb}
             themeType={themeType}
-            id={id} 
+            id={id}
             socket={socket}
+            systemConfig={systemConfig}
         />, node);
 }

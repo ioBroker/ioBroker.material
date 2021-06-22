@@ -237,6 +237,8 @@ class SmartTile extends Component {
             channelInfo={channelInfo}
             tile={tile}
             socket={this.props.socket}
+            allObjects={this.props.allObjects}
+            systemConfig={this.props.systemConfig}
             widthBlock={this.props.widthBlock}
             ignoreIndicators={this.props.ignoreIndicators}
             editMode={this.props.editMode}
@@ -322,8 +324,8 @@ class SmartTile extends Component {
                 case 'clock'://Types.clock:
                     Control = SmartClock;
                     break;
-                case 'whether'://Types.whether:
-                    Control = SmartWhether;
+                // case 'whether'://Types.whether:
+                //     Control = SmartWhether;
                     break;
                 default:
                     break;

@@ -10,8 +10,8 @@
     // justify-content: center;
 }
 .iconWhether {
-    width: 40px;
-    height: 40px;
+    width: calc(40px * var(--widthBlock));
+    height: calc(40px * var(--widthBlock));
 }
 .iconWrapper {
     display: flex;
@@ -25,11 +25,11 @@
 }
 .styleText {
     margin-left: 10px;
-    font-size: 30px;
+    font-size: calc(12px * var(--widthBlock));
 }
 .iconWhetherMin {
-    width: 20px;
-    height: 20px;
+    width: calc(20px * var(--widthBlock));
+    height: calc(20px * var(--widthBlock));
 }
 .wrapperBottomBlockCurrent {
     display: flex;
@@ -42,7 +42,7 @@
     display: flex;
 }
 .temperature {
-    font-size: 10px;
+    font-size: calc(10px * var(--widthBlock));
     span {
         color: silver;
         // margin-left: 5px;
@@ -58,8 +58,7 @@
 }
 .date {
     color: var(--generalColor);
-    font-size: 14px;
-
+    font-size: calc(14px * var(--widthBlock));
 }
 @media screen and (max-width: 835px) {
 }

@@ -229,6 +229,8 @@ class StatesSubList extends Component {
             key={state.id + '-sublist-' + Component.name + '-' + i}
             id={channelId}
             socket={this.props.socket}
+            allObjects={this.props.allObjects}
+            systemConfig={this.props.systemConfig}
             widthBlock={this.props.widthBlock}
             enumNames={[this.name, Utils.getObjectName(this.props.objects, this.state.enumID, null, { language: I18n.getLanguage() })]}
             enumFunctions={this.props.enumFunctions}

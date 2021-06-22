@@ -282,6 +282,8 @@ class StatesList extends Component {
                             states={this.props.states}
                             newLine={this.props.newLine}
                             socket={this.props.socket}
+                            allObjects={this.props.allObjects}
+                            systemConfig={this.props.systemConfig}
                             widthBlock={this.props.widthBlock}
                             items={items}
                             isUseBright={isUseBright}
@@ -315,6 +317,8 @@ class StatesList extends Component {
                 states={this.props.states}
                 newLine={this.props.newLine}
                 socket={this.props.socket}
+                allObjects={this.props.allObjects}
+                systemConfig={this.props.systemConfig}
                 widthBlock={this.props.widthBlock}
                 items={items}
                 isUseBright={isUseBright}
@@ -359,7 +363,7 @@ class StatesList extends Component {
                 {this.getToggleDragButton()}
                 {this.getAddButton()}
                 {this.getAddButtonClock()}
-                {this.getAddButtonWhether()}
+                {/* {this.getAddButtonWhether()} */}
             </div>);
     }
 
@@ -478,20 +482,20 @@ class StatesList extends Component {
         }
     }
 
-    getAddButtonWhether() {
-        if (this.props.editMode && this.props.enumID !== Utils.INSTANCES) {
-            return (<Fab
-                size="small"
-                title={I18n.t('Add custom Clock')}
-                style={{ fontSize: 24 }}
-                onClick={() => this.onAddCustomWhether()}
-                className={cls.buttonWhether}>
-                <IconAdd />
-            </Fab>);
-        } else {
-            return null;
-        }
-    }
+    // getAddButtonWhether() {
+    //     if (this.props.editMode && this.props.enumID !== Utils.INSTANCES) {
+    //         return (<Fab
+    //             size="small"
+    //             title={I18n.t('Add custom Clock')}
+    //             style={{ fontSize: 24 }}
+    //             onClick={() => this.onAddCustomWhether()}
+    //             className={cls.buttonWhether}>
+    //             <IconAdd />
+    //         </Fab>);
+    //     } else {
+    //         return null;
+    //     }
+    // }
 
     wrapContent(columns, isNothing) {
         let style;
@@ -530,7 +534,7 @@ class StatesList extends Component {
                     {this.getToggleDragButton()}
                     {this.getAddButton()}
                     {this.getAddButtonClock()}
-                    {this.getAddButtonWhether()}
+                    {/* {this.getAddButtonWhether()} */}
                 </div>
             </div>);
         }
@@ -649,6 +653,8 @@ class StatesList extends Component {
                         editMode={this.props.editMode}
                         user={this.props.user}
                         socket={this.props.socket}
+                        allObjects={this.props.allObjects}
+                        systemConfig={this.props.systemConfig}
                         widthBlock={this.props.widthBlock}
                         states={this.props.states}
                         objects={this.props.objects}

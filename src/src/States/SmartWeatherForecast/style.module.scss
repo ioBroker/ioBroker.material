@@ -58,3 +58,7 @@
     bottom: 0;
     left: 0;
 }
+.customCharts{
+    opacity: 0.4;
+    height: calc(40px * var(--widthBlock)) !important;
+}

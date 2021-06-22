@@ -26,11 +26,13 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Utils from '@iobroker/adapter-react/Components/Utils';
 import SmartDialogGeneric from './SmartDialogGeneric';
 import I18n from '@iobroker/adapter-react/i18n';
+import { getIcon } from '../basic-controls/react-weather/Weather';
+import cls from './style.module.scss';
 
-const HEIGHT_HEADER  = 64;
+const HEIGHT_HEADER = 64;
 const HEIGHT_CURRENT = 200;
-const HEIGHT_DAY     = 140;
-const HEIGHT_CHART   = 160;
+const HEIGHT_DAY = 140;
+const HEIGHT_CHART = 160;
 
 const styles = {
     'header-div': {
@@ -335,22 +337,22 @@ const styles = {
 
 };
 
-class SmartDialogWeatherForecast extends SmartDialogGeneric  {
+class SmartDialogWeatherForecast extends SmartDialogGeneric {
     // expected:
     static propTypes = {
-        name:               PropTypes.oneOfType([
+        name: PropTypes.oneOfType([
             PropTypes.string,
             PropTypes.object
         ]),
-        dialogKey:          PropTypes.string.isRequired,
-        windowWidth:        PropTypes.number,
-        onClose:            PropTypes.func.isRequired,
-        objects:            PropTypes.object,
-        states:             PropTypes.object,
-        onCollectIds:       PropTypes.func,
-        enumNames:          PropTypes.array,
-        ids:                PropTypes.object.isRequired,
-        settings:           PropTypes.object
+        dialogKey: PropTypes.string.isRequired,
+        windowWidth: PropTypes.number,
+        onClose: PropTypes.func.isRequired,
+        objects: PropTypes.object,
+        states: PropTypes.object,
+        onCollectIds: PropTypes.func,
+        enumNames: PropTypes.array,
+        ids: PropTypes.object.isRequired,
+        settings: PropTypes.object
     };
 
     constructor(props) {
@@ -378,11 +380,11 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric  {
             }
         }
         if (this.props.settings) {
-            if (this.props.settings.tempID && this.subscribes.indexOf(this.props.settings.tempID) === -1)  {
+            if (this.props.settings.tempID && this.subscribes.indexOf(this.props.settings.tempID) === -1) {
                 this.subscribes = this.subscribes || [];
                 this.subscribes.push(this.props.settings.tempID);
             }
-            if (this.props.settings.humidityID && this.subscribes.indexOf(this.props.settings.humidityID) === -1)  {
+            if (this.props.settings.humidityID && this.subscribes.indexOf(this.props.settings.humidityID) === -1) {
                 this.subscribes = this.subscribes || [];
                 this.subscribes.push(this.props.settings.humidityID);
             }
@@ -409,14 +411,16 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric  {
         states = states || this.state;
 
         this.divs = {
-            'header':  {height: HEIGHT_HEADER,  visible: true},
-            'current': {height: HEIGHT_CURRENT, visible: true},
-            'chart':   {height: HEIGHT_CHART,
-                visible: states && states[this.ids.current.chart] && !states[this.ids.current.chart].match(/\.html$|\.htm/)}
+            'header': { height: HEIGHT_HEADER, visible: true },
+            'current': { height: HEIGHT_CURRENT, visible: true },
+            'chart': {
+                height: HEIGHT_CHART,
+                visible: states && states[this.ids.current.chart] && !states[this.ids.current.chart].match(/\.html$|\.htm/)
+            }
         };
         for (let d = 0; d < this.ids.days.length; d++) {
             if (this.ids.days[d]) {
-                this.divs['day' + d] = {height: HEIGHT_DAY, visible: true};
+                this.divs['day' + d] = { height: HEIGHT_DAY, visible: true };
             }
         }
         // calculate positions
@@ -427,7 +431,7 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric  {
         }
 
         if (this.dialogStyle.maxHeight !== maxHeight) {
-            this.dialogStyle = {maxHeight: maxHeight};
+            this.dialogStyle = { maxHeight: maxHeight };
         }
     }
 
@@ -462,48 +466,48 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric  {
                 }
                 return;
             } else
-            if (id === this.ids.days[d].icon ||
-                id === this.ids.days[d].state) {
-                this.collectState = this.collectState || {};
-                this.collectState[id] = state.val || '';
-                this.collectTimer && clearTimeout(this.collectTimer);
-                this.collectTimer = setTimeout(() => this.onUpdateTimer(), 200);
-                return;
-            } else
-            if (id === this.ids.days[d].icon ||
-                id === this.ids.days[d].state ||
-                id === this.ids.days[d].windIcon) {
-                this.collectState = this.collectState || {};
-                this.collectState[id] = state.val || '';
-                this.collectTimer && clearTimeout(this.collectTimer);
-                this.collectTimer = setTimeout(() => this.onUpdateTimer(), 200);
-                return;
-            } else if (id === this.ids.days[d].windDirection) {
-                let dir = '';
-                if (state && state.val !== null && state.val !== '' && state.val !== undefined && (typeof state.val === 'number' || parseInt(state.val, 10).toString() === state.val.toString())) {
-                    dir = I18n.t('wind_' + Utils.getWindDirection(state.val)).replace('wind_', '');
-                } else {
-                    dir = state.val;
-                }
+                if (id === this.ids.days[d].icon ||
+                    id === this.ids.days[d].state) {
+                    this.collectState = this.collectState || {};
+                    this.collectState[id] = state.val || '';
+                    this.collectTimer && clearTimeout(this.collectTimer);
+                    this.collectTimer = setTimeout(() => this.onUpdateTimer(), 200);
+                    return;
+                } else
+                    if (id === this.ids.days[d].icon ||
+                        id === this.ids.days[d].state ||
+                        id === this.ids.days[d].windIcon) {
+                        this.collectState = this.collectState || {};
+                        this.collectState[id] = state.val || '';
+                        this.collectTimer && clearTimeout(this.collectTimer);
+                        this.collectTimer = setTimeout(() => this.onUpdateTimer(), 200);
+                        return;
+                    } else if (id === this.ids.days[d].windDirection) {
+                        let dir = '';
+                        if (state && state.val !== null && state.val !== '' && state.val !== undefined && (typeof state.val === 'number' || parseInt(state.val, 10).toString() === state.val.toString())) {
+                            dir = I18n.t('wind_' + Utils.getWindDirection(state.val)).replace('wind_', '');
+                        } else {
+                            dir = state.val;
+                        }
 
-                this.collectState = this.collectState || {};
-                this.collectState[id] = dir;
-                this.collectTimer && clearTimeout(this.collectTimer);
-                this.collectTimer = setTimeout(() => this.onUpdateTimer(), 200);
-                return;
-            }  else if (id === this.ids.days[d].date) {
-                let date = '';
+                        this.collectState = this.collectState || {};
+                        this.collectState[id] = dir;
+                        this.collectTimer && clearTimeout(this.collectTimer);
+                        this.collectTimer = setTimeout(() => this.onUpdateTimer(), 200);
+                        return;
+                    } else if (id === this.ids.days[d].date) {
+                        let date = '';
 
-                if (state && state.val) {
-                    date = Utils.date2string(state.val) || '';
-                }
+                        if (state && state.val) {
+                            date = Utils.date2string(state.val) || '';
+                        }
 
-                this.collectState = this.collectState || {};
-                this.collectState[id] = date;
-                this.collectTimer && clearTimeout(this.collectTimer);
-                this.collectTimer = setTimeout(() => this.onUpdateTimer(), 200);
-                return;
-            }
+                        this.collectState = this.collectState || {};
+                        this.collectState[id] = date;
+                        this.collectTimer && clearTimeout(this.collectTimer);
+                        this.collectTimer = setTimeout(() => this.onUpdateTimer(), 200);
+                        return;
+                    }
         }
 
         if (id === this.ids.current.temperature ||
@@ -524,53 +528,53 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric  {
                 this.collectTimer = setTimeout(() => this.onUpdateTimer(), 200);
             }
         } else
-        if (id === this.ids.current.icon ||
-            id === this.ids.current.history ||
-            id === this.ids.current.chart ||
-            id === this.ids.current.state ||
-            id === this.ids.current.windIcon) {
-            this.collectState = this.collectState || {};
-            this.collectState[id] = state.val || '';
-            this.collectTimer && clearTimeout(this.collectTimer);
-            this.collectTimer = setTimeout(() => this.onUpdateTimer(), 200);
-        }  else
-        if (this.ids.current.location && this.ids.current.location.indexOf(id) !== -1) {
-            this.collectState = this.collectState || {};
-            if (state.val && state.val.replace(/[,.-]/g, '').trim()) {
-                this.collectState.location = state.val || '';
-            }
-            this.collectTimer && clearTimeout(this.collectTimer);
-            this.collectTimer = setTimeout(() => this.onUpdateTimer(), 200);
-        } else if (id === this.ids.current.windDirection) {
-            let dir = '';
-            if (state && state.val !== null && state.val !== '' && state.val !== undefined && (typeof state.val === 'number' || parseInt(state.val, 10).toString() === state.val.toString())) {
-                dir = I18n.t('wind_' + Utils.getWindDirection(state.val)).replace('wind_', '');
-            } else {
-                dir = state.val;
-            }
+            if (id === this.ids.current.icon ||
+                id === this.ids.current.history ||
+                id === this.ids.current.chart ||
+                id === this.ids.current.state ||
+                id === this.ids.current.windIcon) {
+                this.collectState = this.collectState || {};
+                this.collectState[id] = state.val || '';
+                this.collectTimer && clearTimeout(this.collectTimer);
+                this.collectTimer = setTimeout(() => this.onUpdateTimer(), 200);
+            } else
+                if (this.ids.current.location && this.ids.current.location.indexOf(id) !== -1) {
+                    this.collectState = this.collectState || {};
+                    if (state.val && state.val.replace(/[,.-]/g, '').trim()) {
+                        this.collectState.location = state.val || '';
+                    }
+                    this.collectTimer && clearTimeout(this.collectTimer);
+                    this.collectTimer = setTimeout(() => this.onUpdateTimer(), 200);
+                } else if (id === this.ids.current.windDirection) {
+                    let dir = '';
+                    if (state && state.val !== null && state.val !== '' && state.val !== undefined && (typeof state.val === 'number' || parseInt(state.val, 10).toString() === state.val.toString())) {
+                        dir = I18n.t('wind_' + Utils.getWindDirection(state.val)).replace('wind_', '');
+                    } else {
+                        dir = state.val;
+                    }
 
-            this.collectState = this.collectState || {};
-            this.collectState[id] = dir;
-            this.collectTimer && clearTimeout(this.collectTimer);
-            this.collectTimer = setTimeout(() => this.onUpdateTimer(), 200);
-        }  else if (id === this.ids.current.date) {
-            let date = '';
+                    this.collectState = this.collectState || {};
+                    this.collectState[id] = dir;
+                    this.collectTimer && clearTimeout(this.collectTimer);
+                    this.collectTimer = setTimeout(() => this.onUpdateTimer(), 200);
+                } else if (id === this.ids.current.date) {
+                    let date = '';
 
-            if (state && state.val) {
-                date = Utils.date2string(state.val) || '';
-            }
+                    if (state && state.val) {
+                        date = Utils.date2string(state.val) || '';
+                    }
 
-            this.collectState = this.collectState || {};
-            this.collectState[id] = date;
-            this.collectTimer && clearTimeout(this.collectTimer);
-            this.collectTimer = setTimeout(() => this.onUpdateTimer(), 200);
-        } else {
-            console.log(id + ' => ' + state.val);
-            super.updateState(id, state);
-        }
+                    this.collectState = this.collectState || {};
+                    this.collectState[id] = date;
+                    this.collectTimer && clearTimeout(this.collectTimer);
+                    this.collectTimer = setTimeout(() => this.onUpdateTimer(), 200);
+                } else {
+                    console.log(id + ' => ' + state.val);
+                    super.updateState(id, state);
+                }
     }
 
-    getHeader = this.divs.header.visible ? () => this.name : null;
+    getHeader = this.divs?.header?.visible ? () => this.name : null;
 
     getDayIconDiv(d) {
         const classes = this.props.classes;
@@ -578,10 +582,11 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric  {
         const icon = this.ids.days[d].icon && this.state[this.ids.days[d].icon];
 
         if (!temp && !icon) return null;
-
-        return (<div  key={'dayIcon' + d} className={classes['dayIcon-div']}>
-            {icon ? (<img className={classes['dayIcon-icon']} src={icon} alt={this.state[this.ids.days[d].state] || ''}/>) : null}
-            {temp !== null && temp !== undefined ? (<div className={classes['dayIcon-temperature']}>{temp}°</div>) : null}
+        ///delete
+        return (<div key={'dayIcon' + d} className={cls.dayIconDiv}>
+            {icon ? (<img className={classes['dayIcon-icon']} src={getIcon(icon, true) || icon} alt={this.state[this.ids.days[d].state] || ''} />) : null}
+            <div className={cls.dayIconTemperature}>{22}°</div>
+            {temp !== null && temp !== undefined ? (<div className={cls.dayIconTemperature}>{temp}°</div>) : null}
         </div>);
     }
 
@@ -590,19 +595,19 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric  {
         let date = this.ids.days[d].date && this.state[this.ids.days[d].date];
         if (!date) {
             const now = new Date();
-            now.setDate(now.getDate() + d);
+            now.setDate(now.getDate() + d + 1);
             date = Utils.date2string(now);
         }
 
-        return (<div key={'location' + d} className={classes['dayDate-div']}>
-            <div className={classes['dayDate-date']}>{date}</div>
+        return (<div key={'location' + d} className={cls.dayDateDiv}>
+            <div className={cls.dayDateDate}>{date}</div>
         </div>);
     }
 
     getDayWindDiv(d) {
         const classes = this.props.classes;
         let windChill = this.ids.days[d].windchill && this.state[this.ids.days[d].date];
-        let windDir   = this.ids.days[d].windDirection && this.state[this.ids.days[d].windDirection];
+        let windDir = this.ids.days[d].windDirection && this.state[this.ids.days[d].windDirection];
         if (windDir !== null && windDir !== undefined && (typeof windDir === 'number' || parseInt(windDir, 10) === windDir)) {
             windDir = I18n.t('wind_' + Utils.getWindDirection(windDir)).replace('wind_', '');
         }
@@ -615,19 +620,19 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric  {
             return null;
         }
 
-        return (<div key={'dayWind' + d} className={classes['dayState-div']}>
+        return (<div key={'dayWind' + d} className={cls.dayStateDiv}>
 
             {windChill !== null && windChill !== undefined ?
                 (<div key={'windChill' + d} className={classes['dayState-windChill']}>
-                    <span className={classes['dayState-windChillTitle']}>{I18n.t('Windchill')}: </span>
+                    <span className={cls.todayStateName}>{I18n.t('Windchill')}: </span>
                     <span className={classes['dayState-windChillValue']}>{windChill}</span>
                 </div>)
                 : null}
 
             {(windDir !== null && windDir !== undefined) || (windSpeed !== null && windSpeed !== undefined) ?
                 (<div key={'wind' + d} className={classes['dayState-wind']}>
-                    <span key={'windTitle' + d} className={classes['dayState-windTitle']}>{I18n.t('Wind')}:</span>
-                    {windIcon ? (<img className={classes['dayState-windIcon']} src={windIcon} alt="state"/>) : null}
+                    <span key={'windTitle' + d} className={cls.todayStateName}>{I18n.t('Wind')}:</span>
+                    {windIcon ? (<img className={classes['dayState-windIcon']} src={getIcon(windIcon, true) || windIcon} alt="state" />) : null}
                     {windDir ? (<span className={classes['dayState-windDir']}>{windDir}</span>) : null}
                     {windSpeed !== null && windSpeed !== undefined && !isNaN(windSpeed) ? (<span key={'daySpeed' + d} className={classes['dayState-windSpeed']}>{windSpeed}{this.props.windUnit}</span>) : null}
                 </div>)
@@ -698,7 +703,7 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric  {
             return null;
         }
 
-        return (<div key={'dayTemp' + d} className={classes['dayTemp-div']}>
+        return (<div key={'dayTemp' + d} className={cls.dayTempDiv}>
             {temp !== null && temp !== undefined ?
                 (<div key={'temp' + d} className={classes['dayTemp-temperature']}>
                     <span className={classes['dayTemp-temperatureValue']}>{temp}</span>
@@ -730,8 +735,8 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric  {
     getDayDiv(d) {
         if (!this.ids.days[d]) return null;
         let parts = [
-            this.getDayIconDiv(d),
             this.getDayDateDiv(d),
+            this.getDayIconDiv(d),
             this.getDayWindDiv(d),
             this.getDayTempDiv(d),
         ];
@@ -739,7 +744,7 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric  {
             return null;
         }
 
-        return (<Paper key={'day' + d} className={this.props.classes['day-div']}>{parts}</Paper>);
+        return (<Paper key={'day' + d} className={cls.dayDiv}>{parts}</Paper>);
     }
 
     getCurrentIconDiv() {
@@ -750,9 +755,9 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric  {
             temp = this.ids.current.temperature && this.state[this.ids.current.temperature];
         }
 
-        return (<div  key="todayIcon" className={classes['currentIcon-div']}>
-            <img className={classes['currentIcon-icon']} src={this.state[this.ids.current.icon]} alt={this.state[this.ids.current.state] || ''}/>
-            {temp !== null && temp !== undefined ? (<div className={classes['currentIcon-temperature']}>{temp}°</div>) : null}
+        return (<div key="todayIcon" className={cls.currentIconDiv}>
+            <img className={cls.currentIconIcon} src={getIcon(this.state[this.ids.current.icon], true) || this.state[this.ids.current.icon]} alt={this.state[this.ids.current.state] || ''} />
+            {temp !== null && temp !== undefined ? (<div className={cls.currentIconTemperature}>{temp}°</div>) : null}
         </div>);
     }
 
@@ -764,9 +769,9 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric  {
         location = location || I18n.t('Weather');
         date = date || Utils.date2string(new Date());
 
-        return (<div key="location" className={classes['currentDate-div']}>
-            <div className={classes['currentDate-date']}>{date},</div>
-            <div className={classes['currentDate-location']}>{location}</div>
+        return (<div key="location" className={cls.currentDateDiv}>
+            <div className={cls.currentDateDate}>{date}</div>
+            <div className={cls.currentDateLocation}>{location}</div>
         </div>);
     }
 
@@ -785,19 +790,19 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric  {
         }
 
         let state = this.ids.current.state && this.state[this.ids.current.state];
-        return (<div key="todayWind" className={classes['todayState-div']}>
+        return (<div key="todayWind" className={cls.todayStateDiv}>
 
             {windChill !== null && windChill !== undefined ?
                 (<div key="windChill" className={classes['todayState-windChill']}>
-                    <span className={classes['todayState-windChillTitle']}>{I18n.t('Windchill')}: </span>
+                    <span className={cls.todayStateName}>{I18n.t('Windchill')}: </span>
                     <span className={classes['todayState-windChillValue']}>{windChill}</span>
                 </div>)
                 : null}
 
             {(windDir !== null && windDir !== undefined) || (windSpeed !== null && windSpeed !== undefined) ?
                 (<div key="wind" className={classes['todayState-wind']}>
-                    <span key="windTitle" className={classes['todayState-windTitle']}>{I18n.t('Wind')}:</span>
-                    {windIcon ? (<img className={classes['todayState-windIcon']} src={windIcon} alt="state"/>) : null}
+                    <span key="windTitle" className={cls.todayStateName}>{I18n.t('Wind')}:</span>
+                    {windIcon ? (<img className={classes['todayState-windIcon']} src={getIcon(windIcon, true) || windIcon} alt="state" />) : null}
                     {windDir ? (<span className={classes['todayState-windDir']}>{windDir}</span>) : null}
                     {windSpeed !== null && windSpeed !== undefined && !isNaN(windSpeed) ? (<span key="windSpeed" className={classes['todayState-windSpeed']}>{windSpeed}{this.props.windUnit}</span>) : null}
                 </div>)
@@ -805,7 +810,7 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric  {
 
             {humidity || humidity === 0 ?
                 (<div key="humidity" className={classes['todayState-humidity']}>
-                    <span className={classes['todayState-humidityTitle']}>{I18n.t('Humidity')}: </span>
+                    <span className={cls.todayStateName}>{I18n.t('Humidity')}: </span>
                     <span className={classes['todayState-humidityValue']}>{humidity}%</span>
                 </div>)
                 : null}
@@ -825,13 +830,13 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric  {
         if (tempMin !== null && tempMin !== undefined &&
             tempMax !== null && tempMax !== undefined) {
             temp = [
-                (<span key="max" className={classes['todayTemp-temperatureMax']}>{tempMax}°</span>),
+                (<span key="max" className={cls.tempMax}>{tempMax}°</span>),
                 (<span key="mid"> / </span>),
-                (<span key="min" className={classes['todayTemp-temperatureMin']}>{tempMin}°</span>)
+                (<span key="min" >{tempMin}°</span>)
             ];
         }
 
-        return (<div key="todayTemp" className={classes['todayTemp-div']}>
+        return (<div key="todayTemp" className={cls.todayTempDiv}>
             {temp !== null && temp !== undefined ?
                 (<div key="temp" className={classes['todayTemp-temperature']}>
                     <span className={classes['todayTemp-temperatureValue']}>{temp}</span>
@@ -840,14 +845,14 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric  {
 
             {precipitation !== null && precipitation !== undefined ?
                 (<div key="precipitation" className={classes['todayTemp-precipitation']}>
-                    <span key="windTitle" className={classes['todayTemp-precipitationTitle']}>{I18n.t('Precip.')}:</span>
+                    <span key="windTitle" className={cls.todayStateName}>{I18n.t('Precip.')}:</span>
                     <span className={classes['todayTemp-precipitationValue']}>{precipitation}%</span>
                 </div>)
                 : null}
 
             {pressure !== null && pressure !== undefined ?
                 (<div key="pressure" className={classes['todayTemp-pressure']}>
-                    <span key="windTitle" className={classes['todayTemp-pressureTitle']}>{I18n.t('Pressure')}:</span>
+                    <span key="windTitle" className={cls.todayStateName}>{I18n.t('Pressure')}:</span>
                     <span className={classes['todayTemp-pressureValue']}>{pressure}{this.props.pressureUnit}</span>
                 </div>)
                 : null}
@@ -864,28 +869,28 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric  {
                 chart += '&ts=' + Date.now();
             }
             return [
-                (<Paper key="chart" className={this.props.classes['chart-div']} onClick={() => this.setState({chartOpened: true})}>
+                (<Paper key="chart" className={this.props.classes['chart-div']} onClick={() => this.setState({ chartOpened: true })}>
                     <div className={classes['chart-header']}>{I18n.t('Chart')}</div>
                     <div className={classes['chart-img']} style={{
                         backgroundImage: 'url(' + this.state[this.ids.current.chart] + ')'
-                    }}/>
+                    }} />
                 </Paper>),
                 this.state.chartOpened ? (<Dialog
-                        key="chart-dialog"
-                        open={true}
-                        classes={{paper: this.props.classes['chart-dialog-paper']}}
-                        onClose={() => this.setState({chartOpened: false})}
-                        className={this.props.classes['chart-dialog']}
-                        aria-labelledby="alert-dialog-title"
-                        aria-describedby="alert-dialog-description"
-                    >
-                        <DialogTitle id="alert-dialog-title">{I18n.t('Chart')}</DialogTitle>
-                        <DialogContent className={this.props.classes['chart-dialog-content']}
-                        style={{backgroundImage: 'url(' + chart + ')'}}/>
-                        <DialogActions>
-                            <Button onClick={() => this.setState({chartOpened: false})} color="primary" autoFocus>{I18n.t('Close')}</Button>
-                        </DialogActions>
-                    </Dialog>) : null];
+                    key="chart-dialog"
+                    open={true}
+                    classes={{ paper: this.props.classes['chart-dialog-paper'] }}
+                    onClose={() => this.setState({ chartOpened: false })}
+                    className={this.props.classes['chart-dialog']}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    <DialogTitle id="alert-dialog-title">{I18n.t('Chart')}</DialogTitle>
+                    <DialogContent className={this.props.classes['chart-dialog-content']}
+                        style={{ backgroundImage: 'url(' + chart + ')' }} />
+                    <DialogActions>
+                        <Button onClick={() => this.setState({ chartOpened: false })} color="primary" autoFocus>{I18n.t('Close')}</Button>
+                    </DialogActions>
+                </Dialog>) : null];
         } else {
             return null;
         }
@@ -903,7 +908,7 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric  {
         }
         days = days.filter(day => day);
         if (days.length) {
-            return (<div key="allDays" className={this.props.classes['days-div']}>{days}</div>);
+            return (<div key="allDays" className={cls.daysDiv}>{days}</div>);
         } else {
             return null;
         }
@@ -918,9 +923,9 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric  {
 
     getCurrentDiv() {
         return <Paper key="current"
-               className={this.props.classes['current-div']}
-               style={this.ids.current.chart && this.state[this.ids.current.chart] ? {cursor: 'pointer'} : {}}
-               onClick={() => this.onOpenHistory()}>
+            className={cls.currentDiv}
+            style={this.ids.current.chart && this.state[this.ids.current.chart] ? { cursor: 'pointer' } : {}}
+            onClick={() => this.onOpenHistory()}>
             {this.getCurrentIconDiv()}
             {this.getCurrentDateLocationDiv()}
             {this.getTodayWindDiv()}
@@ -929,11 +934,11 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric  {
     }
 
     generateContent() {
-        return [
+        return <div className={cls.wrapperBlockWeather}>{[
             //this.getHeaderDiv(),
             this.getCurrentDiv(),
             this.getDaysDiv()
-        ];
+        ]}</div>;
     }
 }
 

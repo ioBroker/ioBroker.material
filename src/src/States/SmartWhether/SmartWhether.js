@@ -24,7 +24,7 @@ import Theme from '../../theme';
 import Utils from '@iobroker/adapter-react/Components/Utils';
 import Clock from '../../basic-controls/react-clock/Clock';
 import cls from './style.module.scss';
-import Whether from '../../basic-controls/react-weather/Whether';
+import Weather from '../../basic-controls/react-weather/Weather';
 
 const styles = {
     'title-div': {
@@ -114,7 +114,6 @@ class SmartWhether extends SmartGeneric {
         const ids = array.map(e => `openweathermap.0.forecast.day${e}.temperatureMax`);
         Promise.all(ids.map(id => id && this.props.socket.getState(id).then(state => state && state.val)))
         .then(data => {
-            console.log(11223344,data);
             this.setState({charts:data});
         });
         
@@ -198,7 +197,7 @@ class SmartWhether extends SmartGeneric {
 
         return (
             <div key={this.key + 'icon'} className={cls.wrapContent}>
-                <Whether
+                <Weather
                     secondsParams={this.state?.settings?.seconds}
                     dayOfWeekParams={this.state?.settings?.dayOfWeek}
                     hour12Params={this.state?.settings['12/24']}

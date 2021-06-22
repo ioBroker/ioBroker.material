@@ -102,6 +102,8 @@ class App extends GenericApp {
         I18n.setLanguage((navigator.language || navigator.userLanguage || 'en').substring(0, 2).toLowerCase());
 
         this.objects = {};
+        this.allObjects = {};
+        this.systemConfig = {};
         this.states = {};
         this.instances = null;
         this.tasks = [];
@@ -281,6 +283,7 @@ class App extends GenericApp {
             // Read all enums
             .then(_data => {
                 data = _data;
+                this.allObjects = JSON.parse(JSON.stringify(_data)) || {};
                 return this.socket.getEnums();
             })
             .then(_enums => {
@@ -374,6 +377,7 @@ class App extends GenericApp {
                 })
                 .then(config => {
                     config = config || {};
+                    this.systemConfig = JSON.parse(JSON.stringify(config)) || {};
                     result['system.config'] = config;
                     let appSettings = Utils.getSettings(appConfig || { _id: appConfigID }, {
                         user: this.user,
@@ -1503,6 +1507,8 @@ class App extends GenericApp {
             user={this.user}
             states={this.states}
             socket={this.socket}
+            allObjects={this.allObjects}
+            systemConfig={this.systemConfig}
             widthBlock={this.state.widthBlock}
             align={this.state.settings && this.state.settings.align}
             debug={this.state.appSettings ? (this.state.appSettings.debug === undefined ? true : this.state.appSettings.debug) : true}
