@@ -16,8 +16,7 @@
 
 - Nothing here: fix the background
 
-<!-- - Charts: detect  `custom.${defaultHistory}`. Give all datapoints into Component "objs" -->
-
+- Collect all IDs and give it in "objs" as array
 
 ## Two sizes of icons
 
@@ -27,23 +26,17 @@
 - ? Tooltips for values: actual temperature / target temerature
 ## Temperature
 - Tooltips: Temperature / Humidity
-<!-- - Show Humidity on chart (and all others that have history ON) -->
-
 ## Switch
 - Show charts for switch: ON/OFF, voltage, current, frequency, consumption, power
 
 ## RGB
 - 2 modes:
-  <!-- - Color temperature + Dimmer  -->
-<!-- - Show by Color temperature the Kelvin and not percent   -->
+- Change layout of temerature
 - Tooltip of power, Color type
 
 ## Weather
-<!-- - https://demo.home-assistant.io/#/lovelace/0 -->
-<!-- - Use IDs from channel detector -->
-<!-- - Chart opacity 0.4 -->
-<!-- - Show dialog with chart if humidity or temperature with "custom.history.0" -->
-<!-- - Big size - increase fonts and images -->
-- Type detector to detect current
+- (BF) Type detector to detect current temperature get from current and day 0
 
 ## Weather current (as type detector)
+
+## Vacuum

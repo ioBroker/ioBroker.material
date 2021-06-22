@@ -291,10 +291,10 @@
     }
     .currentIconDiv {
         position: absolute;
-        width: 90px;
-        height: 90px;
+        width: 200px;
+        height: 200px;
         z-index: 0;
-        left: 3px;
+        left: -50px;
         top: 40px;
     }
     .currentIconIcon {
@@ -345,7 +345,7 @@
         width: calc(100% - 90px);
         font-weight: 600;
         bottom: 16px;
-        left: 20px;
+        left: 160px;
         text-align: left;
         font-size: 14px;
         color: var(--silverColor);

@@ -112,6 +112,7 @@ const DialogChart = ({ cb, id, socket, themeType, systemConfig }) => {
                         lang={I18n.getLanguage()}
                         socket={socket}
                         obj={object}
+                        objs={[object]}
                         themeType={themeType}
                         from={Date.now() - 3600000 * 2}
                         end={Date.now()}
