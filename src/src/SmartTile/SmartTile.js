@@ -44,7 +44,7 @@ import SmartColor from '../States/SmartColor/SmartColor';
 import SmartClock from '../States/SmartClock/SmartClock';
 import cls from './style.module.scss';
 import SmartDimmer from '../States/SmartDimmer/SmartDimmer';
-import SmartWhether from '../States/SmartWhether/SmartWhether';
+import SmartVacuumCleaner from '../States/SmartVacuumCleaner/SmartVacuumCleaner';
 
 class SmartTile extends Component {
     static propTypes = {
@@ -145,7 +145,7 @@ class SmartTile extends Component {
         style.color = Utils.isUseBright(style.background) ? 'white' : 'black';
 
         if (!this.channelInfo) {
-            style.paddingTop = 50;
+            // style.paddingTop = 50;
             style.textAlign = 'center'
         }
 
@@ -278,6 +278,9 @@ class SmartTile extends Component {
                 case Types.temperature:
                     Control = SmartThermometer;
                     break;
+                case Types.vacuumCleaner:
+                    Control = SmartVacuumCleaner;
+                    break
                 case Types.info:
                     Control = SmartInfo;
                     break;
@@ -324,14 +327,14 @@ class SmartTile extends Component {
                 case 'clock'://Types.clock:
                     Control = SmartClock;
                     break;
-                // case 'whether'://Types.whether:
-                //     Control = SmartWhether;
+                    // case 'whether'://Types.whether:
+                    //     Control = SmartWhether;
                     break;
                 default:
                     break;
             }
         } else {
-            return this.wrapContent((<span>{I18n.t('Nothing here')}</span>));
+            return this.wrapContent((<span className={cls.emptyBlock}>{I18n.t('Nothing here')}</span>));
         }
 
         if (!Control) {

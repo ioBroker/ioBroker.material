@@ -76,15 +76,17 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const DialogChart = ({ cb, id, socket, themeType, systemConfig }) => {
+const DialogChart = ({ cb, id, socket, themeType, systemConfig, allObjects, ids }) => {
     const classes = useStyles();
     const [open, setOpen] = useState(true);
-    const [object, setObject] = useState(null);
+    const [arrayObjects, setArrayObjects] = useState([]);
 
-    useEffect(async () => {
-        const obj = await socket.getObject(id);
-        setObject(obj);
-    }, [])
+    useEffect(() => {
+        if (ids.length) {
+            let newArray = ids.map(idUri => allObjects[idUri]);
+            setArrayObjects(newArray);
+        }
+    }, [ids])
 
     const onClose = () => {
         cb()
@@ -107,12 +109,12 @@ const DialogChart = ({ cb, id, socket, themeType, systemConfig }) => {
             {/* <DialogTitle>{I18n.t('Add state %s', `sssss`)}</DialogTitle> */}
             <DialogContent className={classes.overflowHidden} dividers>
                 <div className={classes.showDialog}>
-                    {object && <ObjectChart
+                    {allObjects[id] && <ObjectChart
                         t={I18n.t}
                         lang={I18n.getLanguage()}
                         socket={socket}
-                        obj={object}
-                        objs={[object]}
+                        obj={allObjects[id]}
+                        objs={arrayObjects}
                         themeType={themeType}
                         from={Date.now() - 3600000 * 2}
                         end={Date.now()}
@@ -136,7 +138,7 @@ const DialogChart = ({ cb, id, socket, themeType, systemConfig }) => {
     </ThemeProvider>;
 }
 
-export const dialogChartCallBack = (cb, id, socket, themeType, systemConfig) => {
+export const dialogChartCallBack = (cb, id, socket, themeType, systemConfig, allObjects, ids) => {
     if (!node) {
         node = document.createElement('div');
         node.id = 'renderModal';
@@ -150,5 +152,7 @@ export const dialogChartCallBack = (cb, id, socket, themeType, systemConfig) => 
             id={id}
             socket={socket}
             systemConfig={systemConfig}
+            allObjects={allObjects}
+            ids={ids}
         />, node);
 }

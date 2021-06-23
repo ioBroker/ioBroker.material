@@ -14,9 +14,9 @@
 
 - Make translation for icon selector work
 
-- Nothing here: fix the background
+- All dialog transparent panles must have more decent(opacity) border
 
-- Collect all IDs and give it in "objs" as array
+<!-- - Collect all IDs and give it in "objs" as array -->
 
 ## Two sizes of icons
 
@@ -31,7 +31,6 @@
 
 ## RGB
 - 2 modes:
-- Change layout of temerature
 - Tooltip of power, Color type
 
 ## Weather

@@ -542,6 +542,7 @@ class SmartGeneric extends Component {
 
     toggleEnabled = () => {
         let settings = JSON.parse(JSON.stringify(this.state.settings));
+        debugger
         settings.enabled = !settings.enabled;
 
         this.saveSettings(settings, () => this.setState({ settings }));
@@ -957,7 +958,7 @@ class SmartGeneric extends Component {
         return values.map(e => e.val !== null ? e.val : 0);
     }
 
-    checkHistory = (idOrData, showCornerBottom) => {
+    checkHistory = (idOrData, showCornerBottom = false) => {
         let bool = true;
         if (typeof idOrData === 'string') {
             if (!this.props.allObjects[idOrData]) {
@@ -976,8 +977,31 @@ class SmartGeneric extends Component {
         return bool;
     }
 
-    getCharts = (idOrData, className) => {
-        if (!this.checkHistory(idOrData, true)) {
+    getAllIds = () => {
+        if (this.channelInfo.states.length) {
+            return this.channelInfo.states.filter(el => el.id).map(el => el.id);
+        }
+        return [];
+    }
+
+    getIdHistorys = (ids, showCornerBottom) => {
+        if (!ids || !ids.length) {
+            return [];
+        }
+        let array = [];
+        ids.forEach(id => {
+            if (this.checkHistory(id)) {
+                array.push(id);
+            }
+        });
+        if (showCornerBottom && !array.length) {
+            this.showCornerBottom = false;
+        }
+        return array;
+    }
+
+    getCharts = (idOrData, className, showCornerBottom = true) => {
+        if (!this.checkHistory(idOrData, showCornerBottom)) {
             return
         }
         if (!this.firstGetCharts) {

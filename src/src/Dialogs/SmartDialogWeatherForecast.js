@@ -28,6 +28,12 @@ import SmartDialogGeneric from './SmartDialogGeneric';
 import I18n from '@iobroker/adapter-react/i18n';
 import { getIcon } from '../basic-controls/react-weather/Weather';
 import cls from './style.module.scss';
+import IconHydro from '../icons/Humidity';
+import iconPrecipitation from '../icons/precipitation.svg';
+import iconPressure from '../icons/pressure.svg';
+import iconWind from '../icons/wind.svg';
+import iconWindChill from '../icons/windChill.svg';
+import IconAdapter from '@iobroker/adapter-react/Components/Icon';
 
 const HEIGHT_HEADER = 64;
 const HEIGHT_CURRENT = 200;
@@ -520,7 +526,7 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric {
             id === this.ids.current.temperatureMax ||
             id === this.ids.current.precipitation ||
             id === this.ids.current.pressure) {
-            const val = Math.round(parseFloat(state.val));
+            const val = Math.round(parseFloat(state?.val));
             if (!isNaN(val)) {
                 this.collectState = this.collectState || {};
                 this.collectState[id] = val;
@@ -534,7 +540,7 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric {
                 id === this.ids.current.state ||
                 id === this.ids.current.windIcon) {
                 this.collectState = this.collectState || {};
-                this.collectState[id] = state.val || '';
+                this.collectState[id] = state?.val || '';
                 this.collectTimer && clearTimeout(this.collectTimer);
                 this.collectTimer = setTimeout(() => this.onUpdateTimer(), 200);
             } else
@@ -578,15 +584,70 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric {
 
     getDayIconDiv(d) {
         const classes = this.props.classes;
-        const temp = this.ids.days[d].temperature && this.state[this.ids.days[d].temperature];
+        // const temp = this.ids.days[d].temperature && this.state[this.ids.days[d].temperature];
+        let tempMin = this.ids.days[d].temperatureMin && this.state[this.ids.days[d].temperatureMin];
+        let tempMax = this.ids.days[d].temperatureMax && this.state[this.ids.days[d].temperatureMax];
+        if (!tempMin && tempMin !== 0 &&
+            this.ids.current.temperatureMin) {
+            const obj = this.props.objects[this.ids.current.temperatureMin];
+            if (obj &&
+                obj.common &&
+                obj.common.role &&
+                obj.common.role.indexOf('forecast.0') !== -1) {
+                tempMin = this.state[this.ids.current.temperatureMin];
+            }
+        }
+        if (!tempMax && tempMax !== 0 &&
+            this.ids.current.temperatureMax) {
+            const obj = this.props.objects[this.ids.current.temperatureMax];
+            if (obj &&
+                obj.common &&
+                obj.common.role &&
+                obj.common.role.indexOf('forecast.0') !== -1) {
+                tempMax = this.state[this.ids.current.temperatureMax];
+            }
+        }
+        let temp;
+        if (tempMin !== null && tempMin !== undefined &&
+            tempMax !== null && tempMax !== undefined && tempMin !== tempMax) {
+            temp = [
+                (<span key="max" className={classes['dayTemp-temperatureMax']}>{tempMax}°</span>),
+                (<span key="mid"> / </span>),
+                (<span key="min" className={classes['dayTemp-temperatureMin']}>{tempMin}°</span>)
+            ];
+        } else if (
+            (tempMin !== null && tempMin !== undefined) ||
+            (tempMax !== null && tempMax !== undefined)) {
+            if (tempMin === null || tempMin === undefined) {
+                tempMin = tempMax;
+            }
+            temp = (<span key="max" className={classes['dayTemp-temperatureMax']}>{tempMin}°</span>);
+        }
+        let humidity = this.ids.days[d].humidity && this.state[this.ids.days[d].humidity];
+
+        if (!humidity && humidity !== 0 &&
+            this.ids.current.humidity &&
+            this.props.objects[this.ids.current.humidity] &&
+            this.props.objects[this.ids.current.humidity].common &&
+            this.props.objects[this.ids.current.humidity].common.role &&
+            this.props.objects[this.ids.current.humidity].common.role.indexOf('forecast.0') !== -1) {
+            humidity = this.state[this.ids.current.humidity];
+        }
         const icon = this.ids.days[d].icon && this.state[this.ids.days[d].icon];
 
-        if (!temp && !icon) return null;
+        if (!temp && !icon &&
+            !humidity && humidity !== 0) return null;
         ///delete
         return (<div key={'dayIcon' + d} className={cls.dayIconDiv}>
             {icon ? (<img className={classes['dayIcon-icon']} src={getIcon(icon, true) || icon} alt={this.state[this.ids.days[d].state] || ''} />) : null}
-            <div className={cls.dayIconTemperature}>{22}°</div>
-            {temp !== null && temp !== undefined ? (<div className={cls.dayIconTemperature}>{temp}°</div>) : null}
+            {/* <div className={cls.dayIconTemperature}>{22}°</div> */}
+            {temp !== null && temp !== undefined ? (<div className={cls.dayIconTemperature}>{temp}</div>) : null}
+            {humidity !== null && humidity !== undefined ?
+                (<div key={'humidity' + d} className={cls.wrapperSpecialIcon}>
+                    <IconHydro className={cls.specialIcon} />
+                    <span >{humidity}%</span>
+                </div>)
+                : null}
         </div>);
     }
 
@@ -623,110 +684,56 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric {
         return (<div key={'dayWind' + d} className={cls.dayStateDiv}>
 
             {windChill !== null && windChill !== undefined ?
-                (<div key={'windChill' + d} className={classes['dayState-windChill']}>
-                    <span className={cls.todayStateName}>{I18n.t('Windchill')}: </span>
-                    <span className={classes['dayState-windChillValue']}>{windChill}</span>
+                (<div key={'windChill' + d} className={cls.wrapperSpecialIcon}>
+                    {/* <span className={cls.todayStateName}>{I18n.t('Windchill')}: </span> */}
+                    <IconAdapter src={iconWindChill} className={cls.specialIcon} />
+                    <span className={classes['dayState-windChillValue']}>
+                        {/* {windChill} */}
+                        {windSpeed}{this.props.windUnit}
+                        </span>
                 </div>)
                 : null}
 
             {(windDir !== null && windDir !== undefined) || (windSpeed !== null && windSpeed !== undefined) ?
-                (<div key={'wind' + d} className={classes['dayState-wind']}>
-                    <span key={'windTitle' + d} className={cls.todayStateName}>{I18n.t('Wind')}:</span>
-                    {windIcon ? (<img className={classes['dayState-windIcon']} src={getIcon(windIcon, true) || windIcon} alt="state" />) : null}
-                    {windDir ? (<span className={classes['dayState-windDir']}>{windDir}</span>) : null}
-                    {windSpeed !== null && windSpeed !== undefined && !isNaN(windSpeed) ? (<span key={'daySpeed' + d} className={classes['dayState-windSpeed']}>{windSpeed}{this.props.windUnit}</span>) : null}
+                (<div key={'wind' + d} className={cls.wrapperSpecialIcon}>
+                    {/* <span key={'windTitle' + d} className={cls.todayStateName}>{I18n.t('Wind')}:</span> */}
+                    <IconAdapter src={iconWind} className={cls.specialIcon} />
+                    <div>
+                        {windIcon ? (<img className={classes['dayState-windIcon']} src={getIcon(windIcon, true) || windIcon} alt="state" />) : null}
+                        {windDir ? (<span className={classes['dayState-windDir']}>{windDir}</span>) : null}
+                        {windSpeed !== null && windSpeed !== undefined && !isNaN(windSpeed) ? (<span key={'daySpeed' + d} className={classes['dayState-windSpeed']}>{windSpeed}{this.props.windUnit}</span>) : null}
+                    </div>
                 </div>)
                 : null}
 
-            {state ? (<div key={'state' + d} className={classes['dayState-state']}>{state}</div>) : null}
+            {/* {state ? (<div key={'state' + d} className={classes['dayState-state']}>{state}</div>) : null} */}
         </div>);
     }
 
     getDayTempDiv(d) {
         const classes = this.props.classes;
-        let tempMin = this.ids.days[d].temperatureMin && this.state[this.ids.days[d].temperatureMin];
-        let tempMax = this.ids.days[d].temperatureMax && this.state[this.ids.days[d].temperatureMax];
         let precipitation = this.ids.days[d].precipitation && this.state[this.ids.days[d].precipitation];
         let pressure = this.ids.days[d].pressure && this.state[this.ids.days[d].pressure];
-        let humidity = this.ids.days[d].humidity && this.state[this.ids.days[d].humidity];
 
-        if (!humidity && humidity !== 0 &&
-            this.ids.current.humidity &&
-            this.props.objects[this.ids.current.humidity] &&
-            this.props.objects[this.ids.current.humidity].common &&
-            this.props.objects[this.ids.current.humidity].common.role &&
-            this.props.objects[this.ids.current.humidity].common.role.indexOf('forecast.0') !== -1) {
-            humidity = this.state[this.ids.current.humidity];
-        }
-        if (!tempMin && tempMin !== 0 &&
-            this.ids.current.temperatureMin) {
-            const obj = this.props.objects[this.ids.current.temperatureMin];
-            if (obj &&
-                obj.common &&
-                obj.common.role &&
-                obj.common.role.indexOf('forecast.0') !== -1) {
-                tempMin = this.state[this.ids.current.temperatureMin];
-            }
-        }
-        if (!tempMax && tempMax !== 0 &&
-            this.ids.current.temperatureMax) {
-            const obj = this.props.objects[this.ids.current.temperatureMax];
-            if (obj &&
-                obj.common &&
-                obj.common.role &&
-                obj.common.role.indexOf('forecast.0') !== -1) {
-                tempMax = this.state[this.ids.current.temperatureMax];
-            }
-        }
-
-        let temp;
-        if (tempMin !== null && tempMin !== undefined &&
-            tempMax !== null && tempMax !== undefined && tempMin !== tempMax) {
-            temp = [
-                (<span key="max" className={classes['dayTemp-temperatureMax']}>{tempMax}°</span>),
-                (<span key="mid"> / </span>),
-                (<span key="min" className={classes['dayTemp-temperatureMin']}>{tempMin}°</span>)
-            ];
-        } else if (
-            (tempMin !== null && tempMin !== undefined) ||
-            (tempMax !== null && tempMax !== undefined)) {
-            if (tempMin === null || tempMin === undefined) {
-                tempMin = tempMax;
-            }
-            temp = (<span key="max" className={classes['dayTemp-temperatureMax']}>{tempMin}°</span>);
-        }
-
-        if (!temp &&
+        if (
             !precipitation && precipitation !== 0 &&
-            !pressure && pressure !== 0 &&
-            !humidity && humidity !== 0) {
+            !pressure && pressure !== 0) {
             return null;
         }
 
         return (<div key={'dayTemp' + d} className={cls.dayTempDiv}>
-            {temp !== null && temp !== undefined ?
-                (<div key={'temp' + d} className={classes['dayTemp-temperature']}>
-                    <span className={classes['dayTemp-temperatureValue']}>{temp}</span>
-                </div>)
-                : null}
-
             {precipitation !== null && precipitation !== undefined ?
-                (<div key={'precipitation' + d} className={classes['dayTemp-precipitation']}>
-                    <span key={'windTitle' + d} className={classes['dayTemp-precipitationTitle']}>{I18n.t('Precip.')}:</span>
-                    <span className={classes['dayTemp-precipitationValue']}>{precipitation}%</span>
-                </div>)
-                : null}
-
-            {humidity !== null && humidity !== undefined ?
-                (<div key={'humidity' + d} className={classes['dayTemp-humidity']}>
-                    <span key={'windTitle' + d} className={classes['dayTemp-humidityTitle']}>{I18n.t('Humidity')}:</span>
-                    <span className={classes['dayTemp-humidityValue']}>{humidity}%</span>
+                (<div key={'precipitation' + d} className={cls.wrapperSpecialIcon}>
+                    <IconAdapter src={iconPrecipitation} className={cls.specialIcon} />
+                    <span className={classes['dayTemp-precipitationValue']}>
+                        {precipitation}%</span>
                 </div>)
                 : null}
             {pressure !== null && pressure !== undefined ?
-                (<div key={'pressure' + d} className={classes['dayTemp-pressure']}>
-                    <span key={'windTitle' + d} className={classes['dayTemp-pressureTitle']}>{I18n.t('Pressure')}:</span>
-                    <span className={classes['dayTemp-pressureValue']}>{pressure}{this.props.pressureUnit}</span>
+                (<div key={'pressure' + d} className={cls.wrapperSpecialIcon}>
+                    <IconAdapter src={iconPressure} className={cls.specialIcon} />
+                    <span className={classes['dayTemp-pressureValue']}>
+                        {pressure}{this.props.pressureUnit}</span>
                 </div>)
                 : null}
         </div>);

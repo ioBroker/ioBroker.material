@@ -309,6 +309,7 @@ class StatesSubList extends Component {
                         'gate',
                         // 'humidity',
                         'info',
+                        'vacuumCleaner',
                         'instance',
                         'light',
                         'lock',

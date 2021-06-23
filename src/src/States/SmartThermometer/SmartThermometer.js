@@ -159,7 +159,7 @@ class SmartThermometer extends SmartGeneric {
             this.getSecondaryDivTop(),
             this.getCharts(),
             this.state.showDialogBottom ?
-                dialogChartCallBack(this.onDialogCloseBottom, this.settingsId, this.props.socket,this.props.themeType,this.props.systemConfig) : null
+                dialogChartCallBack(this.onDialogCloseBottom, this.settingsId, this.props.socket, this.props.themeType, this.props.systemConfig, this.props.allObjects, this.getIdHistorys(this.getAllIds())) : null
         ]);
     }
 }

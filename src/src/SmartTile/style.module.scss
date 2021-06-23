@@ -25,3 +25,9 @@
     // background: linear-gradient(45deg, rgba(18,20,22,1) 0%, rgba(0,0,0,1) 60%, rgba(48,52,57,1) 100%);
     background: var(--itemBlockBackground);
 }
+.emptyBlock{
+    align-items: center;
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}

@@ -78,13 +78,13 @@ const Weather = ({
 }) => {
 
     const temperatureCallBack = (_, state) => {
-        if (state.val && temperature.current) {
+        if (state?.val && temperature.current) {
             temperature.current.innerHTML = `${Math.round(state.val)}°C`;
         }
     }
 
     const humidityCallBack = (_, state) => {
-        if (state.val && humidity.current) {
+        if (state?.val && humidity.current) {
             humidity.current.innerHTML = `${Math.round(state.val)}%`;
         }
     }
@@ -93,26 +93,27 @@ const Weather = ({
     const [iconName, setIconName] = useState('');
 
     const titleCallBack = (_, state) => {
-        if (state.val) {
+        if (state?.val) {
             setTitle(state.val);
         }
     }
 
     const iconCallBack = (_, state) => {
-        if (state.val) {
-            setIconName(state.val);
+        if (state?.val) {
+            setIconName(state.val || '');
         }
     }
 
     useEffect(() => {
-        socket.subscribeState(data.current.temperature, temperatureCallBack);
-        socket.subscribeState(data.current.humidity, humidityCallBack);
-        socket.subscribeState(data.current.state, titleCallBack);
-        socket.subscribeState(data.current.icon, iconCallBack);
+        data.current.temperature && socket.subscribeState(data.current.temperature, temperatureCallBack);
+        data.current.humidity && socket.subscribeState(data.current.humidity, humidityCallBack);
+        data.current.state && socket.subscribeState(data.current.state, titleCallBack);
+        data.current.icon && socket.subscribeState(data.current.icon, iconCallBack);
         return () => {
-            socket.unsubscribeState(data.current.temperature, temperatureCallBack);
-            socket.unsubscribeState(data.current.humidity, humidityCallBack);
-            socket.unsubscribeState(data.current.state, titleCallBack);
+            data.current.temperature && socket.unsubscribeState(data.current.temperature, temperatureCallBack);
+            data.current.humidity && socket.unsubscribeState(data.current.humidity, humidityCallBack);
+            data.current.state && socket.unsubscribeState(data.current.state, titleCallBack);
+            data.current.icon && socket.unsubscribeState(data.current.icon, iconCallBack);
         }
     }, []);
 
@@ -151,25 +152,25 @@ const Weather = ({
     }
 
     const temperatureMinCallBack = (state, idx) => {
-        if (state.val && temperatureMinRefs[idx]?.current) {
+        if (state?.val && temperatureMinRefs[idx]?.current) {
             temperatureMinRefs[idx].current.innerHTML = `${Math.round(state.val)}°C`;
         }
     }
 
     const temperatureMaxCallBack = (state, idx) => {
-        if (state.val && temperatureMaxRefs[idx]?.current) {
+        if (state?.val && temperatureMaxRefs[idx]?.current) {
             temperatureMaxRefs[idx].current.innerHTML = `${Math.round(state.val)}°C`;
         }
     }
 
     const titleMinCallBack = (state, idx) => {
-        if (state.val) {
+        if (state?.val) {
             setTitleRefs(titleRefs => titleRefs.map((_, i) => i === idx ? state.val : titleRefs[i]));
         }
     }
 
     const iconsCallBack = (state, idx) => {
-        if (state.val) {
+        if (state?.val) {
             setIconNames(iconNames => iconNames.map((_, i) => i === idx ? state.val : iconNames[i]));
         }
     }
@@ -184,19 +185,19 @@ const Weather = ({
                     state: getIndex(i, titleMinCallBack),
                     icon: getIndex(i, iconsCallBack)
                 };
-                socket.subscribeState(data.days[i].temperatureMin, callBacks[i].min);
-                socket.subscribeState(data.days[i].temperatureMax, callBacks[i].max);
-                socket.subscribeState(data.days[i].state, callBacks[i].state);
-                socket.subscribeState(data.days[i].icon, callBacks[i].icon);
+                data.days[i].temperatureMin && socket.subscribeState(data.days[i].temperatureMin, callBacks[i].min);
+                data.days[i].temperatureMax && socket.subscribeState(data.days[i].temperatureMax, callBacks[i].max);
+                data.days[i].state && socket.subscribeState(data.days[i].state, callBacks[i].state);
+                data.days[i].icon && socket.subscribeState(data.days[i].icon, callBacks[i].icon);
             }
         }
         return () => {
             if (callBacks.length) {
                 for (var i = 0; i < data.days.length; i++) {
-                    socket.unsubscribeState(data.days[i].temperatureMin, callBacks[i].min);
-                    socket.unsubscribeState(data.days[i].temperatureMax, callBacks[i].max);
-                    socket.unsubscribeState(data.days[i].state, callBacks[i].state);
-                    socket.unsubscribeState(data.days[i].icon, callBacks[i].icon);
+                    data.days[i].temperatureMin && socket.unsubscribeState(data.days[i].temperatureMin, callBacks[i].min);
+                    data.days[i].temperatureMax && socket.unsubscribeState(data.days[i].temperatureMax, callBacks[i].max);
+                    data.days[i].state && socket.unsubscribeState(data.days[i].state, callBacks[i].state);
+                    data.days[i].icon && socket.unsubscribeState(data.days[i].icon, callBacks[i].icon);
                 }
             }
         }
@@ -210,17 +211,17 @@ const Weather = ({
                 <div className={cls.styleText}>{title}</div>
             </div>
             <div>
-                <div ref={temperature} className={cls.temperatureTop}>18°C</div>
-                <div ref={humidity} className={cls.humidity}>58%</div>
+                <div ref={temperature} className={cls.temperatureTop}>-°C</div>
+                <div ref={humidity} className={cls.humidity}>-%</div>
             </div>
         </div>
         <div className={cls.wrapperBottomBlock}>
             {arrLength > 0 && data.days.map((e, idx) => <div className={cls.wrapperBottomBlockCurrent}>
                 <div className={cls.date}>{I18n.t(getWeekDay(date, idx + 1))}</div>
                 <div><IconAdapter className={cls.iconWhetherMin} src={getIcon(iconNames[idx], true) || clearSky} /></div>
-                <div ref={temperatureMaxRefs[idx]} className={cls.temperature}>30°C</div>
+                <div ref={temperatureMaxRefs[idx]} className={cls.temperature}>-°C</div>
                 <div className={cls.temperature}>
-                    <span ref={temperatureMinRefs[idx]}>19°C</span>
+                    <span ref={temperatureMinRefs[idx]}>-°C</span>
                 </div>
                 {/* <div>30°C<span>19°C</span></div> */}
             </div>)}

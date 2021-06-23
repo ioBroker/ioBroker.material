@@ -623,13 +623,13 @@ class SmartWeatherForecast extends SmartGeneric {
     render() {
         return this.wrapContent([
             // this.getCurrentIconDiv(),
-            this.getCharts(this.state.charts, cls.customCharts),
+            this.getCharts(this.state.charts, cls.customCharts, false),
             this.getWeather(),
             // this.getCurrentDateLocationDiv(),
             // this.getTodayWindDiv(),
             // this.getTodayTempDiv(),
-            this.checkHistory(this.ids.current.humidity, true) && this.state.showDialogBottom ?
-                dialogChartCallBack(this.onDialogCloseBottom, this.ids.current.humidity, this.props.socket, this.props.themeType, this.props.systemConfig) : null,
+            this.checkHistory(this.ids.current.temperature, true) && this.state.showDialogBottom ?
+                dialogChartCallBack(this.onDialogCloseBottom, this.ids.current.temperature, this.props.socket, this.props.themeType, this.props.systemConfig, this.props.allObjects, this.getIdHistorys(this.getAllIds())) : null,
             this.state.showDialog ?
                 <Dialog dialogKey={this.key + 'dialog'}
                     key={this.key + 'dialog'}

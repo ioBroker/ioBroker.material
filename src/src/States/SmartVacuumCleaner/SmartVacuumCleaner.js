@@ -15,11 +15,12 @@
  **/
 import React from 'react';
 import SmartGeneric from '../SmartGeneric';
-import Icon from '../../icons/Thermometer'
+import iconRobot from '../../icons/robot-vacuum.svg';
+import Icon from '../../icons/RobotVacuum';
 import IconThermometer from '../../icons/ThermometerSimple';
 import IconHydro from '../../icons/Humidity';
 import Theme from '../../theme';
-import Dialog from '../../Dialogs/SmartDialogThermostat';
+import Dialog from '../../Dialogs/SmartDialogVacuumCleaner';
 import I18n from '@iobroker/adapter-react/i18n';
 import IconAdapter from '@iobroker/adapter-react/Components/Icon';
 import cls from './style.module.scss';
@@ -27,7 +28,7 @@ import clsGeneric from '../style.module.scss';
 import { dialogChartCallBack } from '../../Dialogs/DialogChart';
 import clsx from 'clsx';
 
-class SmartThermostat extends SmartGeneric {
+class SmartVacuumCleaner extends SmartGeneric {
     // props = {
     //    objects: OBJECT
     //    tile: parentDiv
@@ -38,105 +39,117 @@ class SmartThermostat extends SmartGeneric {
     constructor(props) {
         super(props);
         if (this.channelInfo.states) {
-            let state = this.channelInfo.states.find(state => state.id && state.name === 'SET');
+            let state = this.channelInfo.states.find(state => state.id && state.name === 'POWER');
             if (state && this.props.objects[state.id] && this.props.objects[state.id].common) {
                 this.id = state.id;
+                this.powerId = state.id;
             } else {
                 this.id = '';
             }
 
-            state = this.channelInfo.states.find(state => state.id && state.name === 'ACTUAL');
-            this.actualId = state ? state.id : this.id;
-
-            let parts = this.actualId.split('.');
+            let parts = this.id.split('.');
             parts.pop();
             parts = parts.join('.');
-
-            state = this.channelInfo.states.find(state => state.id && state.name === 'BOOST');
-            this.boostId = state && state.id;
-
-            state = this.channelInfo.states.find(state => state.id && state.name === 'HUMIDITY');
-            this.humidityId = state && state.id;
-
-            state = this.channelInfo.states.find(state => state.id && state.name === 'POWER');
-            this.powerId = state?.id || `${parts}.POWER`;
 
             state = this.channelInfo.states.find(state => state.id && state.name === 'MODE');
             this.modeId = state?.id || `${parts}.MODE`;
 
-            state = this.channelInfo.states.find(state => state.id && state.name === 'PARTY');
-            this.partyId = state?.id || `${parts}.PARTY`;
+            state = this.channelInfo.states.find(state => state.id && state.name === 'WORK_MODE');
+            this.workModeId = state?.id || `${parts}.WORK_MODE`;
 
-            state = this.channelInfo.states.find(state => state.id && state.name === 'SWING');
-            this.swingId = state?.id || `${parts}.SWING`;
+            state = this.channelInfo.states.find(state => state.id && state.name === 'WATER');
+            this.watherId = state?.id || `${parts}.WATER`;
+
+            state = this.channelInfo.states.find(state => state.id && state.name === 'WASTE');
+            this.wasteId = state?.id || `${parts}.WASTE`;
+
+            state = this.channelInfo.states.find(state => state.id && state.name === 'BATTERY');
+            this.batteryId = state?.id || `${parts}.BATTERY`;
+
+            state = this.channelInfo.states.find(state => state.id && state.name === 'STATE');
+            this.stateId = state?.id || `${parts}.STATE`;
+
+            state = this.channelInfo.states.find(state => state.id && state.name === 'PAUSE');
+            this.pauseId = state?.id || `${parts}.PAUSE`;
 
         }
 
-        if (this.humidityId) {
-            const common = this.props.objects[this.humidityId] && this.props.objects[this.humidityId].common;
-            this.humUnit = common.unit || '%';
+        if (this.watherId) {
+            const common = this.props.objects[this.watherId] && this.props.objects[this.watherId].common;
+            debugger
+            this.watherUnit = common.unit || '%';
         }
 
-        if (this.id) {
-            const common = this.props.objects[this.id] && this.props.objects[this.id].common;
-            this.max = common.max;
-            if (this.max === undefined) {
-                this.max = 30;
-            }
-            this.max = parseFloat(this.max);
-
-            this.min = common.min;
-            if (this.min === undefined) {
-                this.min = 12;
-            }
-            this.min = parseFloat(this.min);
-
-            this.unit = common.unit || '°C';
-
-            if (this.unit === 'C') {
-                this.unit = '°C';
-            } else
-                if (this.unit === 'C°') {
-                    this.unit = '°C';
-                }
-            if (this.unit === 'F') {
-                this.unit = '°F';
-            } else
-                if (this.unit === 'F°') {
-                    this.unit = '°F';
-                }
-
-            this.step = common.step || 0.5;
-
-            this.props.tile.setState({ isPointer: true });
+        if (this.wasteId) {
+            const common = this.props.objects[this.wasteId] && this.props.objects[this.wasteId].common;
+            this.wasteUnit = common.unit || '%';
         }
 
-        this.unit = this.unit || '°C';
+        if (this.batteryId) {
+            const common = this.props.objects[this.batteryId] && this.props.objects[this.batteryId].common;
+            this.batteryUnit = common.unit || '%';
+        }
+
+        // if (this.id) {
+        //     const common = this.props.objects[this.id] && this.props.objects[this.id].common;
+        //     this.max = common.max;
+        //     if (this.max === undefined) {
+        //         this.max = 30;
+        //     }
+        //     this.max = parseFloat(this.max);
+
+        //     this.min = common.min;
+        //     if (this.min === undefined) {
+        //         this.min = 12;
+        //     }
+        //     this.min = parseFloat(this.min);
+
+        //     this.unit = common.unit || '°C';
+
+        //     if (this.unit === 'C') {
+        //         this.unit = '°C';
+        //     } else
+        //         if (this.unit === 'C°') {
+        //             this.unit = '°C';
+        //         }
+        //     if (this.unit === 'F') {
+        //         this.unit = '°F';
+        //     } else
+        //         if (this.unit === 'F°') {
+        //             this.unit = '°F';
+        //         }
+
+        //     this.step = common.step || 0.5;
+
+        //     this.props.tile.setState({ isPointer: true });
+        // }
+
+        // this.unit = this.unit || '°C';
 
         this.stateRx.showDialog = false;
         this.stateRx.showDialogBottom = false;
         this.props.tile.setState({ state: true });
-        this.key = `smart-thermostat-${this.id}-`;
+        this.key = `smart-vacuumCleaner-${this.id}-`;
         this.step = this.step || 0.5;
 
         this.componentReady();
     }
 
-    updateState(id, state) {
-        let newState = {};
-        if (!state) {
-            return;
-        }
-        if (this.actualId === id || id === this.id || id === this.humidityId || id === this.modeId) {
-            newState[id] = typeof state.val === 'number' ? state.val : parseFloat(state.val);
-            if (isNaN(newState[id])) {
-                newState[id] = null;
-            }
-            this.setState(newState);
-        } else {
-            super.updateState(id, state);
-        }
-    }
+    // updateState(id, state) {
+    //     let newState = {};
+    //     if (!state) {
+    //         return;
+    //     }
+    //     if (this.actualId === id || id === this.id || id === this.humidityId || id === this.modeId) {
+    //         newState[id] = typeof state.val === 'number' ? state.val : parseFloat(state.val);
+    //         if (isNaN(newState[id])) {
+    //             newState[id] = null;
+    //         }
+    //         this.setState(newState);
+    //     } else {
+    //         super.updateState(id, state);
+    //     }
+    // }
 
     setValue = degrees => {
         console.log('Control ' + this.id + ' = ' + degrees);
@@ -249,7 +262,25 @@ class SmartThermostat extends SmartGeneric {
         this.props.onControl(this.swingId, newValue);
     }
 
+    updateState(id, state) {
+        let newState = {};
+        if (!state) {
+            return;
+        }
+        if (this.powerId === id || this.id === id || id === this.humidityId || id === this.modeId) {
+            debugger
+            newState[id] = typeof state.val !== 'number' ? state.val : parseFloat(state.val);
+            if (isNaN(newState[id])) {
+                newState[id] = null;
+            }
+            this.setState(newState);
+        } else {
+            super.updateState(id, state);
+        }
+    }
+
     render() {
+        console.log(11223344,this.state)
         return this.wrapContent([
             this.getStandardContent(this.id, false),
             this.getSecondaryDiv(),
@@ -306,5 +337,5 @@ class SmartThermostat extends SmartGeneric {
     }
 }
 
-export default SmartThermostat;
+export default SmartVacuumCleaner;
 

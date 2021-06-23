@@ -107,9 +107,13 @@
     max-height: 300px;
 }
 .wrapperTemperature {
-    // flex-direction: column;
-    justify-content: space-between;
-    // transform: rotate(-90deg);
+    justify-content: space-around;
+    padding: 10px 10px 20px 10px;
+    border: 1px solid var(--generalColor);
+    border-radius: 5px;
+    background-color: var(--backgroundDraver);
+    height: 50vmin;
+    width: 50vmin;
 }
 .wrapperDiv {
     display: flex;
@@ -269,7 +273,7 @@
         position: relative;
         margin: 4px;
         overflow: hidden;
-        border: 1px solid var(--generalColor);
+        border: 1px solid var(--editBorder);
         border-radius: 5px;
         background-color: var(--backgroundDraver);
     }
@@ -282,12 +286,13 @@
         height: 140px;
         width: 100%;
         position: relative;
-        border: 1px solid var(--generalColor);
+        border: 1px solid var(--editBorder);
         border-radius: 5px;
         background-color: var(--backgroundDraver);
         margin: 4px;
         padding: 4px;
         flex: 1;
+        overflow: hidden;
     }
     .currentIconDiv {
         position: absolute;
@@ -365,25 +370,30 @@
         font-weight: 600;
     }
     .dayIconDiv {
-        // position: absolute;
-        width: 30px;
-        height: 30px;
         z-index: 0;
-        left: 16px;
-        top: 30px;
+        position: absolute;
+        width: 75px;
+        height: 75px;
+        bottom: -17px;
+        left: -18px;
         background-size: contain;
         background-repeat: no-repeat;
         background-position: center center;
         display: flex;
         align-items: center;
-        div{
-            margin-left: 10px;
-            font-size: 20px;
-            font-weight: 600;
-            color: var(--silverColor);
-        }
     }
     .dayIconTemperature {
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--silverColor);
+        display: flex;
+        z-index: 1;
+        top: 5px;
+        position: absolute;
+        right: -55px;
+        &:first-child {
+            font-weight: 900;
+        }
     }
     .dayDateDiv {
         // position: absolute;
@@ -403,23 +413,50 @@
     .dayStateDiv {
         // position: absolute;
         z-index: 1;
-        width: calc(100% - 90px);
+        // width: calc(100% - 90px);
+        margin-top: 4px;
         font-weight: normal;
         bottom: 16px;
         left: 118px;
         text-align: left;
     }
-    .dayTemp-div {
-        // position: absolute;
-        z-index: 1;
+    .dayTempDiv {
         font-weight: normal;
-        top: 35px;
-        max-width: calc(100% - 2em - 90px);
-        right: 16px;
         text-align: right;
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .dayStateWind {
+        white-space: nowrap;
+        // overflow: hidden;
+        font-size: 14px;
+    }
+    .wrapperSpecialIcon {
+        display: flex;
+        align-items: center;
+        font-size: 14px;
+        color: var(--silverColor);
+        margin-left: 3px;
+    }
+    .specialIcon {
+        width: 14px;
+        height: 14px;
+        margin-right: 3px;
     }
 }
-
+.wrapperVacuumCleaner {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    .vacuumCleaner {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        fill: var(--backgroundDraver);
+        transition: fill 0.5s ease 0s;
+        stroke: var(--generalColor);
+    }
+}
 @media screen and (max-width: 600px) {
     .paper {
         max-height: 100% !important;
