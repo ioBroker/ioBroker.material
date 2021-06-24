@@ -36,7 +36,9 @@
 
 ## Weather
 - (BF) Type detector to detect current temperature get from current and day 0
+- Link to icons
 
 ## Weather current (as type detector)
 
 ## Vacuum
+- Link to icon
