@@ -400,7 +400,7 @@ class App extends GenericApp {
 
     onCommand = (id, state) => {
         if (this.state.appSettings && (this.state.appSettings.text2command || this.state.appSettings.text2command === 0)) {
-            if (state && !state.ack && state.val && id === 'text2command.' + this.state.appSettings.text2command + '.response') {
+            if (state && !state.ack && state.val && id === `text2command.${this.state.appSettings.text2command}.response`) {
                 this.speak(state.val);
             }
         }

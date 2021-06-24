@@ -97,11 +97,13 @@ class StatesSubList extends Component {
             dragging: false,
             visibleChildren: {}
         };
+
         if (this.state.enumID === Utils.INSTANCES) {
             this.name = I18n.t('All instances');
         } else {
             this.name = this.state.enumSubID && this.state.enumSubID !== 'others' ? Utils.getObjectName(this.props.objects, this.state.enumSubID, false, { language: I18n.getLanguage() }) : I18n.t('Others');
         }
+
         this.widgetTypes = {};
         this.collectVisibility = null;
         this.collectVisibilityTimer = null;
@@ -136,6 +138,7 @@ class StatesSubList extends Component {
             newState.visible = false;
             changed = true;
         }
+
         if (nextProps.enumSubID !== this.state.enumSubID) {
             this.name = nextProps.enumSubID ? Utils.getObjectName(this.props.objects, nextProps.enumSubID, false, { language: I18n.getLanguage() }) : I18n.t('Others');
             newState.enumSubID = nextProps.enumSubID;
@@ -143,6 +146,7 @@ class StatesSubList extends Component {
             newState.visible = false;
             changed = true;
         }
+
         if (changed) {
             this.setState(newState);
         }
@@ -173,9 +177,8 @@ class StatesSubList extends Component {
         let enabled = settings.subEnabled[this.props.enumID] === undefined ? true : settings.subEnabled[this.props.enumID];
         enabled = !enabled;
         settings.subEnabled[this.props.enumID] = enabled;
-        this.props.onSaveSettings && this.props.onSaveSettings(this.props.enumSubID, settings, () => {
-            this.setState({ enabled });
-        });
+        this.props.onSaveSettings && this.props.onSaveSettings(this.props.enumSubID, settings, () =>
+            this.setState({ enabled }));
     }
 
     onVisibilityTimer() {
@@ -225,7 +228,7 @@ class StatesSubList extends Component {
 
         let Component = control; // This will be used by rendering
         //              ↓
-        return (<Component
+        return <Component
             key={state.id + '-sublist-' + Component.name + '-' + i}
             id={channelId}
             socket={this.props.socket}
@@ -248,7 +251,7 @@ class StatesSubList extends Component {
             onSaveSettings={this.props.onSaveSettings}
             onCollectIds={this.props.onCollectIds}
             onControl={this.props.onControl}
-        />);
+        />;
     }
 
     getListItems(items) {
@@ -307,7 +310,7 @@ class StatesSubList extends Component {
                         'fireAlarm',
                         'floodAlarm',
                         'gate',
-                        // 'humidity',
+                        'humidity',
                         'info',
                         'vacuumCleaner',
                         'instance',
@@ -414,7 +417,7 @@ class StatesSubList extends Component {
     wrapItem(item, index) {
         if (this.state.visibleChildren[item.id]) {
             const key = 'item-' + this.state.enumID + '-' + this.state.enumSubID + '-' + item.id;
-            return (<Draggable key={key} draggableId={key} index={index}>
+            return <Draggable key={key} draggableId={key} index={index}>
                 {(provided, snapshot) => (
                     <div
                         className={this.props.classes['drag-item'] + (snapshot.isDragging ? ' ' + this.props.classes['drag-item-overlay'] : '')}
@@ -426,7 +429,7 @@ class StatesSubList extends Component {
                         {item.control}
                     </div>
                 )}
-            </Draggable>);
+            </Draggable>;
         } else {
             return (<div key={'item-' + item.id}>{item.control}</div>);
         }
@@ -439,41 +442,34 @@ class StatesSubList extends Component {
             style.borderRadius = '1em';
         }
 
-        return (
-            <div style={{ width: '100%', overflow: 'auto' }}>
-                <div className={cls.wrapperItems} style={style} ref={provided.innerRef} {...provided.droppableProps}>
-                    {items.map((item, index) => this.wrapItem(item, index))}
-                    {provided.placeholder}
-                </div>
-            </div>);
+        return <div style={{ width: '100%', overflow: 'auto' }}>
+            <div className={cls.wrapperItems} style={style} ref={provided.innerRef} {...provided.droppableProps}>
+                {items.map((item, index) => this.wrapItem(item, index))}
+                {provided.placeholder}
+            </div>
+        </div>;
     }
 
     wrapContent(items) {
         if (this.state.subDragging && this.props.editMode && this.props.enumID !== Utils.INSTANCES && this.state.enabled) {
-            return (
-                <DragDropContext
-                    onDragEnd={result => this.onDragEnd(result)}
-                    onDragStart={() => this.onDragStart()}>
-                    <Droppable droppableId={(this.state.enumID + '-' + this.state.enumSubID).replace(/[^\w\d]/g, '_') + '-droppable'} direction="horizontal">
-                        {(provided, snapshot) => this.wrapAllItems(items, provided, snapshot)}
-                    </Droppable>
-                </DragDropContext>
-            );
+            return <DragDropContext
+                onDragEnd={result => this.onDragEnd(result)}
+                onDragStart={() => this.onDragStart()}>
+                <Droppable droppableId={(this.state.enumID + '-' + this.state.enumSubID).replace(/[^\w\d]/g, '_') + '-droppable'} direction="horizontal">
+                    {(provided, snapshot) => this.wrapAllItems(items, provided, snapshot)}
+                </Droppable>
+            </DragDropContext>;
         } else if (this.props.editMode || (!this.state.subDragging || !this.state.enabled)) {
-            return (
-                <div key={(this.state.enumID + '-' + this.state.enumSubID).replace(/[^\w\d]/g, '_') + '-inset'} style={{ width: '100%', overflow: 'auto', opacity: this.state.enabled ? 1 : 0.5 }}>
-                    <div key="inline-div" className={cls.wrapperItems}>
-                        {items.map(e =>
-                            <div key={'inline-div-' + e.id}>
-                                {e.control}
-                            </div>)}
-                    </div>
+            return <div key={(this.state.enumID + '-' + this.state.enumSubID).replace(/[^\w\d]/g, '_') + '-inset'} style={{ width: '100%', overflow: 'auto', opacity: this.state.enabled ? 1 : 0.5 }}>
+                <div key="inline-div" className={cls.wrapperItems}>
+                    {items.map(e =>
+                        <div key={'inline-div-' + e.id}>{e.control}</div>)}
                 </div>
-            );
+            </div>;
         } else {
-            return (<div className={cls.wrapperItems}>{items.map(e => <div key={'inline-div-' + e.id}>
+            return <div className={cls.wrapperItems}>{items.map(e => <div key={'inline-div-' + e.id}>
                 {e.control}
-            </div>)}</div>);
+            </div>)}</div>;
         }
     }
 
@@ -503,7 +499,9 @@ class StatesSubList extends Component {
 
     controlAllBlinds(isOn) {
         for (let id in this.widgetTypes) {
-            if (!this.widgetTypes.hasOwnProperty(id)) continue;
+            if (!this.widgetTypes.hasOwnProperty(id)) {
+                continue;
+            }
             if (this.widgetTypes[id].type === Types.blind) {
                 if (this.widgetTypes[id].ON_SET) {
                     this.props.onControl(this.widgetTypes[id].ON_SET, isOn);
@@ -530,7 +528,9 @@ class StatesSubList extends Component {
     }
 
     getControlAll() {
-        if (this.props.editMode) return null;
+        if (this.props.editMode) {
+            return null;
+        }
 
         let countLights = 0;
         let countBlinds = 0;
@@ -558,7 +558,8 @@ class StatesSubList extends Component {
                 <IconLight />
             </IconButton>);
         }
-        if (countBlinds > 0) {
+
+        if (countBlinds > 1) {
             controls.push(<IconButton key="blind-off" size="small" aria-label="Off" onClick={() => this.controlAllBlinds(false)} className={clsx(cls.styleIconH3, cls.styleIconH3off)} title={I18n.t('Close all blinds')}><IconBlind style={{ width: 14, height: 14, margin: 2 }} /></IconButton>);
             controls.push(<IconButton key="blind-on" size="small" aria-label="On" onClick={() => this.controlAllBlinds(true)}
                 className={clsx(cls.styleIconH3, cls.styleIconH3on)} title={I18n.t('Open all blinds')}><IconBlind style={{ width: 14, height: 14, margin: 2 }} /></IconButton>);
@@ -589,35 +590,34 @@ class StatesSubList extends Component {
 
                 //style={Object.assign({}, Theme.list.row, {display: display})}
                 const enumIcon = this.props.objects[this.state.enumSubID]?.common?.icon;
-                return (
-                    <div key={(this.state.enumID + '-' + this.state.enumSubID).replace(/[^\w\d]/g, '_') + '-title'}
-                        className={cls.ListRow}
-                        style={style}>
-                        <h3 {...this.props.dragHandleProps}
-                            className={clsx(cls.h3Style, !this.props.subDragging && cls.h3Active)}
-                        >
-                            {this.props.editMode ? (
-                                <IconGrip style={{ color: this.props.isUseBright ? 'white' : 'black', width: 24, height: 24, float: 'left', opacity: this.state.subDragging ? 0 : 1 }} />)
-                                : null}
-                            {enumIcon && <ListItemIcon className={cls.itemIcon} key="icon">
-                                <IconAdapter className={cls.itemIconColor} src={enumIcon} />
-                            </ListItemIcon>}
-                            {this.name}
-                            {this.getControlAll()}
-                            {visibilityButton}
-                        </h3>
-                        {this.wrapContent(items)}
-                    </div>);
+                return <div key={(this.state.enumID + '-' + this.state.enumSubID).replace(/[^\w\d]/g, '_') + '-title'}
+                    className={cls.ListRow}
+                    style={style}>
+                    <h3 {...this.props.dragHandleProps}
+                        className={clsx(cls.h3Style, !this.props.subDragging && cls.h3Active)}
+                    >
+                        {this.props.editMode ? (
+                            <IconGrip style={{ color: this.props.isUseBright ? 'white' : 'black', width: 24, height: 24, float: 'left', opacity: this.state.subDragging ? 0 : 1 }} />)
+                            : null}
+                        {enumIcon && <ListItemIcon className={cls.itemIcon} key="icon">
+                            <IconAdapter className={cls.itemIconColor} src={enumIcon} />
+                        </ListItemIcon>}
+                        {this.name}
+                        {this.getControlAll()}
+                        {visibilityButton}
+                    </h3>
+                    {this.wrapContent(items)}
+                </div>;
             } else {
                 if (this.props.editMode) {
-                    return (<div {...this.props.dragHandleProps} />);
+                    return <div {...this.props.dragHandleProps} />;
                 } else {
                     return null;
                 }
             }
         } else {
             if (this.props.editMode) {
-                return (<div {...this.props.dragHandleProps} />);
+                return <div {...this.props.dragHandleProps} />;
             } else {
                 return null;
             }

@@ -55,7 +55,7 @@ function isTouchDevice() {
     return mq(query);
 }
 
-const isTouch = isTouchDevice();
+// const isTouch = isTouchDevice();
 
 class SmartGeneric extends Component {
     static propTypes = {
@@ -885,7 +885,7 @@ class SmartGeneric extends Component {
         return name && name.length >= 15 ? 12 : (name && name.length > 10 ? 14 : 16);
     }
 
-    readHistory = async (id) => {
+    readHistory = async id => {
         const now = new Date();
         now.setHours(now.getHours() - 24);
         now.setMinutes(0);
@@ -893,6 +893,7 @@ class SmartGeneric extends Component {
         now.setMilliseconds(0);
         let start = now.getTime();
         let end = Date.now();
+
         const options = {
             instance: this.props.systemConfig?.common?.defaultHistory || 'history.0',
             start,

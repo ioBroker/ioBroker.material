@@ -18,14 +18,15 @@
 
 <!-- - Collect all IDs and give it in "objs" as array -->
 
-## Two sizes of icons
-
 ## Clock
+
 ## Thermostat
-- On mobile devices hide contorls in chart-dialog and make it maximal big
-- ? Tooltips for values: actual temperature / target temerature
+- On mobile devices hide controls in chart-dialog and make it maximal big
+- ? Tooltips for values: actual temperature / target temperature
+
 ## Temperature
 - Tooltips: Temperature / Humidity
+
 ## Switch
 - Show charts for switch: ON/OFF, voltage, current, frequency, consumption, power
 
@@ -35,6 +36,7 @@
 
 ## Weather
 - (BF) Type detector to detect current temperature get from current and day 0
+- Link to icons
 
 ## Weather current (as type detector)
 
@@ -65,3 +67,5 @@
  - mist.svg https://www.flaticon.com/free-icon/windy_1163673
 
  //https://www.flaticon.com/packs/weather-161 (pack)
+ 
+- Link to icon
