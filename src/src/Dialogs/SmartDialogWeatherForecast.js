@@ -463,7 +463,7 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric {
                 id === this.ids.days[d].temperatureMax ||
                 id === this.ids.days[d].precipitation ||
                 id === this.ids.days[d].pressure) {
-                const val = Math.round(parseFloat(state.val));
+                const val = Math.round(parseFloat(state?.val));
                 if (!isNaN(val)) {
                     this.collectState = this.collectState || {};
                     this.collectState[id] = val;
@@ -475,7 +475,7 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric {
                 if (id === this.ids.days[d].icon ||
                     id === this.ids.days[d].state) {
                     this.collectState = this.collectState || {};
-                    this.collectState[id] = state.val || '';
+                    this.collectState[id] = state?.val || '';
                     this.collectTimer && clearTimeout(this.collectTimer);
                     this.collectTimer = setTimeout(() => this.onUpdateTimer(), 200);
                     return;
@@ -504,8 +504,8 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric {
                     } else if (id === this.ids.days[d].date) {
                         let date = '';
 
-                        if (state && state.val) {
-                            date = Utils.date2string(state.val) || '';
+                        if (state && state?.val) {
+                            date = Utils.date2string(state?.val) || '';
                         }
 
                         this.collectState = this.collectState || {};
@@ -546,8 +546,8 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric {
             } else
                 if (this.ids.current.location && this.ids.current.location.indexOf(id) !== -1) {
                     this.collectState = this.collectState || {};
-                    if (state.val && state.val.replace(/[,.-]/g, '').trim()) {
-                        this.collectState.location = state.val || '';
+                    if (state?.val && state?.val.replace(/[,.-]/g, '').trim()) {
+                        this.collectState.location = state?.val || '';
                     }
                     this.collectTimer && clearTimeout(this.collectTimer);
                     this.collectTimer = setTimeout(() => this.onUpdateTimer(), 200);

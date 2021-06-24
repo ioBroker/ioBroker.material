@@ -205,7 +205,7 @@ const Weather = ({
     return <div className={cls.whetherkWrapper}>
         <div className={cls.wrapperBlock}>
             <div className={cls.iconWrapper}>
-                <div ref={titleIcon}>
+                <div className={clsx(cls.iconWhetherWrapper, !arrLength && cls.noteArrayIcon)}>
                     <IconAdapter className={cls.iconWhether} src={getIcon(iconName, true) || clearSky} />
                 </div>
                 <div className={cls.styleText}>{title}</div>
@@ -215,8 +215,8 @@ const Weather = ({
                 <div ref={humidity} className={cls.humidity}>-%</div>
             </div>
         </div>
-        <div className={cls.wrapperBottomBlock}>
-            {arrLength > 0 && data.days.map((e, idx) => <div className={cls.wrapperBottomBlockCurrent}>
+        {arrLength > 0 && <div className={cls.wrapperBottomBlock}>
+            {data.days.map((e, idx) => <div className={cls.wrapperBottomBlockCurrent}>
                 <div className={cls.date}>{I18n.t(getWeekDay(date, idx + 1))}</div>
                 <div><IconAdapter className={cls.iconWhetherMin} src={getIcon(iconNames[idx], true) || clearSky} /></div>
                 <div ref={temperatureMaxRefs[idx]} className={cls.temperature}>-°C</div>
@@ -225,7 +225,7 @@ const Weather = ({
                 </div>
                 {/* <div>30°C<span>19°C</span></div> */}
             </div>)}
-        </div>
+        </div>}
     </div>
 }
 

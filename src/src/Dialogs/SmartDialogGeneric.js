@@ -33,8 +33,8 @@ import CustomFab from '../States/components/CustomFab';
 
 import * as echarts from 'echarts/core';
 import { LineChart } from 'echarts/charts';
-import {GridComponent} from 'echarts/components';
-import {SVGRenderer} from 'echarts/renderers';
+import { GridComponent } from 'echarts/components';
+import { SVGRenderer } from 'echarts/renderers';
 
 echarts.use([GridComponent, LineChart, SVGRenderer]);
 class SmartDialogGeneric extends Component {
@@ -189,7 +189,7 @@ class SmartDialogGeneric extends Component {
         let end = Date.now();
 
         const options = {
-            instance: this.props?.systemConfig?.common?.defaultHistory ||'history.0',
+            instance: this.props?.systemConfig?.common?.defaultHistory || 'history.0',
             start,
             end,
             step: 1800000,
@@ -273,8 +273,8 @@ class SmartDialogGeneric extends Component {
             style.color = '#f85e27';
             style.areaStyle = '#f85e276b';
         } else if (this.props.themeName === 'blue') {
-            style.color = '#EDDF73';
-            style.areaStyle = '#EDDF736b';
+            style.color = '#3399CC';
+            style.areaStyle = '#3399cc24';
         } else if (this.props.themeName === 'colored') {
             style.color = '#194040';
             style.areaStyle = '#1940406b';
@@ -364,14 +364,19 @@ class SmartDialogGeneric extends Component {
         return <Dialog
             fullWidth
             scroll="paper"
-            classes={{ paper: clsx('dialog-paper', this.props.classes?.dialogPaper, this.props.transparent && cls.paper) }}
+            classes={{
+                paper: clsx('dialog-paper', this.props.classes?.dialogPaper, this.props.transparent && cls.paper)
+            }}
             open={true}
             disableBackdropClick={!!this.getButtons}
             onClose={() => this.onClose()}
             maxWidth="sm"
         >
             {this.getHeader ? <DialogTitle>{this.getHeader()}</DialogTitle> : null}
-            <DialogContent style={{ position: 'relative' }}>
+            <DialogContent
+                classes={{
+                    root: this.props.overflowHidden ? cls.overflowHidden : null,
+                }} style={{ position: 'relative' }}>
                 {this.generateContent()}
             </DialogContent>
             <DialogActions>

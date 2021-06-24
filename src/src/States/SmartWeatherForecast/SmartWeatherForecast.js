@@ -435,8 +435,8 @@ class SmartWeatherForecast extends SmartGeneric {
                 } else if (id === this.ids.current.date) {
                     let date = '';
 
-                    if (state && state.val) {
-                        date = Utils.date2string(state.val) || '';
+                    if (state && state?.val) {
+                        date = Utils.date2string(state?.val) || '';
                     }
 
                     this.collectState = this.collectState || {};
@@ -444,7 +444,7 @@ class SmartWeatherForecast extends SmartGeneric {
                     this.collectTimer && clearTimeout(this.collectTimer);
                     this.collectTimer = setTimeout(() => this.onUpdateTimer(), 200);
                 } else {
-                    console.log(id + ' => ' + state.val);
+                    console.log(id + ' => ' + state?.val);
                     super.updateState(id, state);
                 }
     }
@@ -621,6 +621,7 @@ class SmartWeatherForecast extends SmartGeneric {
     }
 
     render() {
+        console.log(11223344, this.ids.current)
         return this.wrapContent([
             // this.getCurrentIconDiv(),
             this.getCharts(this.state.charts, cls.customCharts, false),
@@ -630,7 +631,7 @@ class SmartWeatherForecast extends SmartGeneric {
             // this.getTodayTempDiv(),
             this.checkHistory(this.ids.current.temperature, true) && this.state.showDialogBottom ?
                 dialogChartCallBack(this.onDialogCloseBottom, this.ids.current.temperature, this.props.socket, this.props.themeType, this.props.systemConfig, this.props.allObjects, this.getIdHistorys(this.getAllIds())) : null,
-            this.state.showDialog ?
+            this.checkCornerTop(this.ids.days.length, true) && this.state.showDialog ?
                 <Dialog dialogKey={this.key + 'dialog'}
                     key={this.key + 'dialog'}
                     transparent

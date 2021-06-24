@@ -96,12 +96,12 @@ class SmartDialogVacuumCleaner extends SmartDialogGeneric {
     generateContent() {
         return <div className={cls.wrapperModalContent}>
             <div className={cls.wrapperThermostat}>
-                {this.state.boostValue !== null && this.state.boostValue !== undefined ?
+                {this.props.pauseValue !== null && this.props.pauseValue !== undefined ?
                     <CustomButton
-                        startIcon={<StateIcon type={'Boost'} />}
-                        active={this.state.boostValue}
-                        onClick={this.onBoostMode}
-                        className={cls.boostButton}>{I18n.t('Boost')}
+                        startIcon={<StateIcon type={'Pause'} />}
+                        active={this.props.pauseValue}
+                        onClick={this.props.onPauseToggle}
+                        className={cls.boostButton}>{I18n.t('Pause')}
                     </CustomButton> : null}
                 {this.props.powerValue !== null && this.props.powerValue !== undefined ?
                     <CustomButton
@@ -132,26 +132,25 @@ class SmartDialogVacuumCleaner extends SmartDialogGeneric {
                         </ButtonGroup>
                     </FormControl>
                     : null}
-                {this.props.swingValue !== null && this.props.swingValue !== undefined ?
-                    typeof this.props.swingValue === 'number' ?
-                        <FormControl className={cls.swingGroup} component="fieldset">
-                            <FormLabel component="legend">{I18n.t('Swing')}</FormLabel>
-                            <ButtonGroup color="primary" orientation="vertical">
-                                {this.props.swingArray && Object.keys(this.props.swingArray).map(name => <CustomButton
-                                    onClick={() => this.props.onSwing(name)}
-                                    active={String(this.props.swingValue) === name}
-                                    key={name}>
-                                    {this.props.swingArray[name]}
-                                </CustomButton>)}
-                            </ButtonGroup>
-                        </FormControl> : <CustomButton
-                            startIcon={<StateIcon type={'Swing'} />}
-                            active={this.props.swingValue}
-                            onClick={this.props.onSwing}
-                            className={cls.swingButton}>
-                            {I18n.t('Swing')}
-                        </CustomButton>
+                {this.props.stateVacuum !== null && this.props.stateVacuum !== undefined ?
+                    <div className={cls.stateVacuum}>
+                        <div className={cls.titleVacuum}>{I18n.t('State')}</div>
+                        <span>{this.props.stateVacuum}</span>
+                    </div>
                     : null}
+
+                {this.props.workModeValue !== null && this.props.workModeValue !== undefined ?
+                    <FormControl className={cls.swingGroup} component="fieldset">
+                        <FormLabel component="legend">{I18n.t('Work mode')}</FormLabel>
+                        <ButtonGroup color="primary" orientation="vertical">
+                            {this.props.workModeArray && Object.keys(this.props.workModeArray).map(name => <CustomButton
+                                onClick={() => this.props.onWorkMode(name)}
+                                active={String(this.props.workModeValue) === name}
+                                key={name}>
+                                {this.props.workModeArray[name]}
+                            </CustomButton>)}
+                        </ButtonGroup>
+                    </FormControl> : null}
                 <div className={cls.charts}>
                     {this.props.humidityId && this.props.checkHistory(this.props.humidityId) && this.getCharts(this.props.humidityId, React.createRef())}
                     {this.props.actualId && this.props.checkHistory(this.props.actualId) && this.getCharts(this.props.actualId, React.createRef())}
@@ -169,7 +168,12 @@ class SmartDialogVacuumCleaner extends SmartDialogGeneric {
                         targetTemperature={this.state.value}
                     /> */}
                     <div className={cls.wrapperVacuumCleaner}>
-                        <Icon className={cls.vacuumCleaner} />
+                        {this.props.batteryVacuum !== null && this.props.batteryVacuum !== undefined ?
+                            <div className={cls.batteryVacuum}>
+                                {this.props.batteryVacuum}{this.props.batteryUnit}
+                            </div>
+                            : null}
+                        <Icon className={clsx(cls.vacuumCleaner, this.props.powerValue && !this.props.pauseValue && cls.vacuumCleanerWork, this.props.powerValue && this.props.pauseValue && cls.vacuumCleanerPause)} />
                     </div>
                 </div>
             </div>

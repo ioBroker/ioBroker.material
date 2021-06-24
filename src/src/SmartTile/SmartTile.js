@@ -319,6 +319,7 @@ class SmartTile extends Component {
                     Control = SmartColor;
                     break;
                 case Types.weatherForecast:
+                case Types.weatherCurrent:
                     Control = SmartWeatherForecast;
                     break;
                 case Types.url:

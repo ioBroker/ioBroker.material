@@ -542,7 +542,6 @@ class SmartGeneric extends Component {
 
     toggleEnabled = () => {
         let settings = JSON.parse(JSON.stringify(this.state.settings));
-        debugger
         settings.enabled = !settings.enabled;
 
         this.saveSettings(settings, () => this.setState({ settings }));
@@ -960,6 +959,9 @@ class SmartGeneric extends Component {
 
     checkHistory = (idOrData, showCornerBottom = false) => {
         let bool = true;
+        if (!idOrData) {
+            bool = false;
+        }
         if (typeof idOrData === 'string') {
             if (!this.props.allObjects[idOrData]) {
                 bool = false;
@@ -973,6 +975,17 @@ class SmartGeneric extends Component {
         }
         if (showCornerBottom) {
             this.showCornerBottom = bool;
+        }
+        return bool;
+    }
+
+    checkCornerTop = (condition, showCorner = false) => {
+        let bool = true;
+        if (!condition) {
+            bool = false;
+        }
+        if (showCorner) {
+            this.showCorner = bool;
         }
         return bool;
     }
@@ -1002,7 +1015,7 @@ class SmartGeneric extends Component {
 
     getCharts = (idOrData, className, showCornerBottom = true) => {
         if (!this.checkHistory(idOrData, showCornerBottom)) {
-            return
+            return null;
         }
         if (!this.firstGetCharts) {
             this.firstGetCharts = true;
@@ -1025,8 +1038,8 @@ class SmartGeneric extends Component {
             style.color = '#f85e27';
             style.areaStyle = '#f85e276b';
         } else if (this.props.themeName === 'blue') {
-            style.color = '#EDDF73';
-            style.areaStyle = '#EDDF736b';
+            style.color = '#3399CC';
+            style.areaStyle = '#3399cc24';
         } else if (this.props.themeName === 'colored') {
             style.color = '#194040';
             style.areaStyle = '#1940406b';

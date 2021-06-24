@@ -26,6 +26,7 @@ import IconAdapter from '@iobroker/adapter-react/Components/Icon';
 import cls from './style.module.scss';
 import clsGeneric from '../style.module.scss';
 import { dialogChartCallBack } from '../../Dialogs/DialogChart';
+import { IoMdBatteryCharging } from "react-icons/io";
 import clsx from 'clsx';
 
 class SmartVacuumCleaner extends SmartGeneric {
@@ -39,7 +40,7 @@ class SmartVacuumCleaner extends SmartGeneric {
     constructor(props) {
         super(props);
         if (this.channelInfo.states) {
-            let state = this.channelInfo.states.find(state => state.id && state.name === 'POWER');
+            let state = this.channelInfo.states.find(state => state.id && state.name === 'POWER');//
             if (state && this.props.objects[state.id] && this.props.objects[state.id].common) {
                 this.id = state.id;
                 this.powerId = state.id;
@@ -51,10 +52,10 @@ class SmartVacuumCleaner extends SmartGeneric {
             parts.pop();
             parts = parts.join('.');
 
-            state = this.channelInfo.states.find(state => state.id && state.name === 'MODE');
+            state = this.channelInfo.states.find(state => state.id && state.name === 'MODE');//
             this.modeId = state?.id || `${parts}.MODE`;
 
-            state = this.channelInfo.states.find(state => state.id && state.name === 'WORK_MODE');
+            state = this.channelInfo.states.find(state => state.id && state.name === 'WORK_MODE');//
             this.workModeId = state?.id || `${parts}.WORK_MODE`;
 
             state = this.channelInfo.states.find(state => state.id && state.name === 'WATER');
@@ -69,25 +70,24 @@ class SmartVacuumCleaner extends SmartGeneric {
             state = this.channelInfo.states.find(state => state.id && state.name === 'STATE');
             this.stateId = state?.id || `${parts}.STATE`;
 
-            state = this.channelInfo.states.find(state => state.id && state.name === 'PAUSE');
+            state = this.channelInfo.states.find(state => state.id && state.name === 'PAUSE');//
             this.pauseId = state?.id || `${parts}.PAUSE`;
 
         }
 
         if (this.watherId) {
             const common = this.props.objects[this.watherId] && this.props.objects[this.watherId].common;
-            debugger
-            this.watherUnit = common.unit || '%';
+            this.watherUnit = common?.unit || '%';
         }
 
         if (this.wasteId) {
             const common = this.props.objects[this.wasteId] && this.props.objects[this.wasteId].common;
-            this.wasteUnit = common.unit || '%';
+            this.wasteUnit = common?.unit || '%';
         }
 
         if (this.batteryId) {
             const common = this.props.objects[this.batteryId] && this.props.objects[this.batteryId].common;
-            this.batteryUnit = common.unit || '%';
+            this.batteryUnit = common?.unit || '%';
         }
 
         // if (this.id) {
@@ -192,50 +192,43 @@ class SmartVacuumCleaner extends SmartGeneric {
 
 
     getSecondaryDivTop() {
-        return <div className={cls.temperature}>{this.formatValue(this.state[this.id])}</div>
+        return <div className={cls.battery}><IoMdBatteryCharging />{this.formatValue(this.state[this.batteryId], this.batteryUnit)}</div>
     }
 
-    getSecondaryDiv() {
-        if (!this.humidityId) {
-            return null;
-        }
-        return (
-            <div key={this.key + 'tile-secondary'}
-                className={cls.wrapperTextSecond}
-                title={I18n.t('Environment values')}>
-                {this.humidityId ?
-                    [
-                        (<IconHydro key={this.key + 'tile-secondary-icon-1'} style={Object.assign({}, Theme.tile.secondary.icon)} />),
-                        (<span key={this.key + 'tile-secondary-text-1'} style={Theme.tile.secondary.text}>{this.formatValue(this.state[this.humidityId], this.humUnit)}</span>)
-                    ] : null}
-            </div>);
-    }
+    // getSecondaryDiv() {
+    //     if (!this.humidityId) {
+    //         return null;
+    //     }
+    //     return (
+    //         <div key={this.key + 'tile-secondary'}
+    //             className={cls.wrapperTextSecond}
+    //             title={I18n.t('Environment values')}>
+    //             {this.humidityId ?
+    //                 [
+    //                     (<IconHydro key={this.key + 'tile-secondary-icon-1'} style={Object.assign({}, Theme.tile.secondary.icon)} />),
+    //                     (<span key={this.key + 'tile-secondary-text-1'} style={Theme.tile.secondary.text}>{this.formatValue(this.state[this.humidityId], this.humUnit)}</span>)
+    //                 ] : null}
+    //         </div>);
+    // }
 
     getSecondaryDivActual() {
-        if (this.actualId === this.id) {
+        if (!this.stateId) {
             return null;
         }
         return (
             <div key={this.key + 'tile-secondary'}
                 className={cls.wrapperTextSecondActual}
                 title={I18n.t('Environment values')}>
-                {this.actualId !== this.id ?
-                    [
-                        (<IconThermometer key={this.key + 'tile-secondary-icon-0'} style={Object.assign({}, Theme.tile.secondary.icon)} />),
-                        (<span key={this.key + 'tile-secondary-text-0'} style={Theme.tile.secondary.text}>{this.formatValue(this.state[this.actualId])}</span>),
-                        (<br key={this.key + 'tile-secondary-br-0'} />)
-                    ] : null}
+                {this.stateId ?
+                    <span key={this.key + 'tile-secondary-text-0'} style={Theme.tile.secondary.text}>
+                        {this.state[this.stateId]}
+                    </span>
+                    : null}
             </div>);
     }
 
-    onBoostToggle = boostOn => {
-        if (boostOn === undefined) {
-            boostOn = !this.state[this.boostId];
-        }
-        const newValue = {};
-        newValue[this.boostId] = boostOn;
-        this.setState(newValue);
-        this.props.onControl(this.boostId, boostOn);
+    onPauseToggle = () => {
+        this.props.onControl(this.pauseId, !this.state[this.pauseId]);
     }
 
     onPowerToggle = () => {
@@ -252,14 +245,8 @@ class SmartVacuumCleaner extends SmartGeneric {
         this.props.onControl(this.modeId, Number(value));
     }
 
-    onSwing = (value) => {
-        let newValue;
-        if (typeof this.state[this.swingId] === 'number') {
-            newValue = Number(value);
-        } else {
-            newValue = !this.state[this.swingId];
-        }
-        this.props.onControl(this.swingId, newValue);
+    onWorkMode = (value) => {
+        this.props.onControl(this.workModeId, Number(value));
     }
 
     updateState(id, state) {
@@ -267,10 +254,9 @@ class SmartVacuumCleaner extends SmartGeneric {
         if (!state) {
             return;
         }
-        if (this.powerId === id || this.id === id || id === this.humidityId || id === this.modeId) {
-            debugger
+        if (this.batteryId === id || this.stateId === id || this.pauseId === id || this.workModeId === id || this.powerId === id || this.id === id || id === this.humidityId || id === this.modeId) {
             newState[id] = typeof state.val !== 'number' ? state.val : parseFloat(state.val);
-            if (isNaN(newState[id])) {
+            if (typeof state.val === 'number' && isNaN(newState[id])) {
                 newState[id] = null;
             }
             this.setState(newState);
@@ -280,20 +266,21 @@ class SmartVacuumCleaner extends SmartGeneric {
     }
 
     render() {
-        console.log(11223344,this.state)
+        console.log(11223344, this.state)
         return this.wrapContent([
             this.getStandardContent(this.id, false),
-            this.getSecondaryDiv(),
+            // this.getSecondaryDiv(),
             this.getSecondaryDivActual(),
             this.getSecondaryDivTop(),
             this.getCharts(this.actualId),
-            this.state.showDialogBottom ?
-                dialogChartCallBack(this.onDialogCloseBottom, this.actualId, this.props.socket, this.props.themeType, this.props.systemConfig, this.props.allObjects, this.getIdHistorys(this.getAllIds())) : null,
+            this.checkHistory(this.batteryId, true) && this.state.showDialogBottom ?
+                dialogChartCallBack(this.onDialogCloseBottom, this.batteryId, this.props.socket, this.props.themeType, this.props.systemConfig, this.props.allObjects, this.getIdHistorys(this.getAllIds())) : null,
             this.state.showDialog ?
                 <Dialog
                     key={this.key + 'dialog'}
                     unit={this.unit}
                     transparent
+                    overflowHidden
                     commaAsDelimiter={this.commaAsDelimiter}
                     step={this.step}
                     dialogKey={this.key + 'dialog'}
@@ -302,13 +289,18 @@ class SmartVacuumCleaner extends SmartGeneric {
                     actualValue={this.state[this.actualId] === null || this.state[this.actualId] === undefined ? this.min : this.state[this.actualId]}
                     //checkHistory
                     checkHistory={this.checkHistory}
-                    //swing
-                    swingValue={this.swingId ? this.state[this.swingId] : null}
-                    swingArray={this.swingId ? this.props.objects[this.swingId]?.common?.states : null}
-                    onSwing={this.onSwing.bind(this)}
-                    //boost
-                    boostValue={this.boostId ? this.state[this.boostId] : null}
-                    onBoostToggle={this.onBoostToggle}
+                    //state
+                    stateVacuum={this.stateId ? this.state[this.stateId] : null}
+                    //battery
+                    batteryVacuum={this.batteryId ? this.state[this.batteryId] : null}
+                    batteryUnit={this.batteryUnit}
+                    //workMode
+                    workModeValue={this.workModeId ? this.state[this.workModeId] : null}
+                    workModeArray={this.workModeId ? this.props.objects[this.workModeId]?.common?.states : null}
+                    onWorkMode={this.onWorkMode.bind(this)}
+                    //pause
+                    pauseValue={this.pauseId ? this.state[this.pauseId] : null}
+                    onPauseToggle={this.onPauseToggle.bind(this)}
                     //power
                     powerValue={this.powerId ? this.state[this.powerId] : null}
                     onPowerToggle={this.onPowerToggle.bind(this)}
