@@ -14,18 +14,19 @@
 
 - Make translation for icon selector work
 
-- All dialog transparent panles must have more decent(opacity) border
+- All dialog transparent panels must have more decent(opacity) border
 
 <!-- - Collect all IDs and give it in "objs" as array -->
 
-## Two sizes of icons
-
 ## Clock
+
 ## Thermostat
-- On mobile devices hide contorls in chart-dialog and make it maximal big
-- ? Tooltips for values: actual temperature / target temerature
+- On mobile devices hide controls in chart-dialog and make it maximal big
+- ? Tooltips for values: actual temperature / target temperature
+
 ## Temperature
 - Tooltips: Temperature / Humidity
+
 ## Switch
 - Show charts for switch: ON/OFF, voltage, current, frequency, consumption, power
 
