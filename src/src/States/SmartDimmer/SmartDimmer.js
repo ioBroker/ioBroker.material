@@ -16,7 +16,7 @@
 import React from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-import {TiLightbulb as Icon} from 'react-icons/ti'
+import { TiLightbulb as Icon } from 'react-icons/ti'
 
 import SmartGeneric from '../SmartGeneric';
 import Theme from '../../theme';
@@ -110,48 +110,48 @@ class SmartDimmer extends SmartGeneric {
                 state: val
             });
             if (state.ack && this.state.executing) {
-                this.setState({executing: false});
+                this.setState({ executing: false });
             }
         } else
-        if (this.actualId === id || (this.id === id && this.id === this.actualId && state.ack)) {
-            const val = typeof state.val === 'number' ? state.val : parseFloat(state.val);
-            if (!isNaN(val)) {
-                newState[id] = this.realValueToPercent(val);
-                this.setState(newState);
+            if (this.actualId === id || (this.id === id && this.id === this.actualId && state.ack)) {
+                const val = typeof state.val === 'number' ? state.val : parseFloat(state.val);
+                if (!isNaN(val)) {
+                    newState[id] = this.realValueToPercent(val);
+                    this.setState(newState);
 
-                if (!this.onActualId) {
-                    const tileState = val !== this.min;
-                    this.props.tile.setState({
-                        state: tileState
-                    });
+                    if (!this.onActualId) {
+                        const tileState = val !== this.min;
+                        this.props.tile.setState({
+                            state: tileState
+                        });
+                    }
+                } else {
+                    newState[id] = null;
+                    this.setState(newState);
+                    if (!this.onActualId) {
+                        this.props.tile.setState({
+                            state: false
+                        });
+                    }
                 }
+
+                // hide desired value
+                if (this.state.setValue === newState[id] && state.ack) {
+                    this.setState({ setValue: null });
+                }
+
+                if (state.ack && this.state.executing) {
+                    this.setState({ executing: false });
+                }
+            } else if (id === this.id) {
+                newState[id] = typeof state.val === 'number' ? state.val : parseFloat(state.val);
+                this.setState(newState);
+            } else if (id === this.onId) {
+                newState[id] = typeof state.val === 'number' ? !!state.val : state.val === true || state.val === 'true' || state.val === '1' || state.val === 'on' || state.val === 'ON' || state.val === 'ein' || state.val === 'EIN';
+                this.setState(newState);
             } else {
-                newState[id] = null;
-                this.setState(newState);
-                if (!this.onActualId) {
-                    this.props.tile.setState({
-                        state: false
-                    });
-                }
+                super.updateState(id, state);
             }
-
-            // hide desired value
-            if (this.state.setValue === newState[id] && state.ack) {
-                this.setState({setValue: null});
-            }
-
-            if (state.ack && this.state.executing) {
-                this.setState({executing: false});
-            }
-        } else if (id === this.id) {
-            newState[id] = typeof state.val === 'number' ? state.val : parseFloat(state.val);
-            this.setState(newState);
-        } else if (id === this.onId) {
-            newState[id] = typeof state.val === 'number' ? !!state.val : state.val === true || state.val === 'true' || state.val === '1' || state.val === 'on' || state.val === 'ON' || state.val === 'ein' || state.val === 'EIN';
-            this.setState(newState);
-        } else {
-            super.updateState(id, state);
-        }
     }
 
     setValue = percent => {
@@ -165,7 +165,7 @@ class SmartDimmer extends SmartGeneric {
         }
 
         console.log('Control ' + this.id + ' = ' + this.percentToRealValue(percent));
-        this.setState({executing: this.state.settings.noAck ? false : true, setValue: percent});
+        this.setState({ executing: this.state.settings.noAck ? false : true, setValue: percent });
         this.props.onControl(this.id, this.percentToRealValue(percent));
     }
 
@@ -187,12 +187,12 @@ class SmartDimmer extends SmartGeneric {
     getIcon() {
         let customIcon;
         if (this.state.settings.useDefaultIcon) {
-            customIcon = (<IconAdapter src={this.getDefaultIcon()} alt="icon" style={{height: '100%'}}/>);
+            customIcon = (<IconAdapter src={this.getDefaultIcon()} alt="icon" style={{ height: '100%' }} />);
         } else {
             if (this.state.settings.icon) {
-                customIcon = (<IconAdapter src={this.state.settings.icon} alt="icon" style={{height: '100%'}}/>);
+                customIcon = (<IconAdapter src={this.state.settings.icon} alt="icon" style={{ height: '100%' }} />);
             } else {
-                customIcon = (<Icon className={clsx(clsGeneric.iconStyle,this.state[this.actualId] !== this.min && clsGeneric.activeIconStyle)}/>);
+                customIcon = (<Icon className={clsx(clsGeneric.iconStyle, this.state[this.actualId] !== this.min && clsGeneric.activeIconStyle)} />);
             }
         }
         // return (
@@ -201,7 +201,7 @@ class SmartDimmer extends SmartGeneric {
         //         {this.state.executing ? <CircularProgress style={{position: 'absolute', top: 0, left: 0}} size={Theme.tile.tileIcon.width}/> : null}
         //     </div>
         // );
-        return SmartGeneric.renderIcon(customIcon,this.state.executing,this.state[this.actualId] !== this.min);
+        return SmartGeneric.renderIcon(customIcon, this.state.executing, this.state[this.actualId] !== this.min);
     }
 
     getStateText() {
@@ -224,6 +224,7 @@ class SmartDimmer extends SmartGeneric {
             this.getStandardContent(this.id, true),
             this.state.showDialog ?
                 <Dialog key={this.key + 'dialog'}
+                    transparent
                     windowWidth={this.props.windowWidth}
                     startValue={this.realValueToPercent()}
                     onValueChange={this.setValue}

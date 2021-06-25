@@ -86,6 +86,7 @@ class SmartGeneric extends Component {
             settings: {},
             showSettings: false,
             editMode: null,
+            checkAllStates: false,
             ignoreIndicators: this.props.ignoreIndicators || []
         };
         this.defaultEnabling = true; // overload this property to hide element by default
@@ -192,6 +193,18 @@ class SmartGeneric extends Component {
     }
 
     componentReady() {
+        if (this.stateRx.checkAllStates) {
+            let parts = this.id.split('.');
+            parts.pop();
+            parts = parts.join('.');
+            const newState = Object.keys(this.props.allObjects).filter(name => name !== parts && name.startsWith(parts) && !this.channelInfo.states.find(state => state.id === name));
+            const newObj = {};
+            this.subscribes = this.subscribes.concat(newState);
+            newState.forEach(name => {
+                newObj[name] = null;
+            })
+            this.stateRx = Object.assign(this.stateRx, newObj);
+        }
         if (this.id && this.props.objects[this.id]) {
             this.settingsId = this.id;
         } else
@@ -205,7 +218,9 @@ class SmartGeneric extends Component {
         }
 
         if (this.stateRx.showDialogBottom !== undefined) {
-            this.showCornerBottom = true;
+            if(this.getIdHistorys(this.getAllIds(true)).length){
+                this.showCornerBottom = true;
+            }
             this.props.tile.registerHandler('onMouseDown', this.onTileMouseDownBottom);
         }
 
@@ -991,9 +1006,11 @@ class SmartGeneric extends Component {
         return bool;
     }
 
-    getAllIds = () => {
-        if (this.channelInfo.states.length) {
+    getAllIds = (all = false) => {
+        if (this.channelInfo.states.length && !all) {
             return this.channelInfo.states.filter(el => el.id).map(el => el.id);
+        } else if (this.subscribes.length && all) {
+            return this.subscribes;
         }
         return [];
     }

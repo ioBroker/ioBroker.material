@@ -2,6 +2,7 @@
     color: var(--generalColor) !important;
     border-color: var(--generalColor) !important;
     transition: color 0.5s, background 0.5s, border-color 0.5s !important;
+    background-color: var(--editBackground) !important;
     &:hover {
         border-color: var(--editIconColor) !important;
         color: var(--editIconColor) !important;

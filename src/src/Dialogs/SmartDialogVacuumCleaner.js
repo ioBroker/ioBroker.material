@@ -26,6 +26,10 @@ import { ButtonGroup, FormControl, FormLabel } from '@material-ui/core';
 import CustomButton from '../States/components/CustomButton';
 import StateIcon from '../States/components/StateIcon';
 import Icon from '../icons/RobotVacuum';
+import Circle1 from '../icons/Circle1';
+import Circle2 from '../icons/Circle2';
+import { IoMdBatteryCharging } from "react-icons/io";
+import IconAdapter from '@iobroker/adapter-react/Components/Icon';
 
 const styles = themes => ({
     dialogPaper: {
@@ -151,30 +155,30 @@ class SmartDialogVacuumCleaner extends SmartDialogGeneric {
                             </CustomButton>)}
                         </ButtonGroup>
                     </FormControl> : null}
-                <div className={cls.charts}>
-                    {this.props.humidityId && this.props.checkHistory(this.props.humidityId) && this.getCharts(this.props.humidityId, React.createRef())}
-                    {this.props.actualId && this.props.checkHistory(this.props.actualId) && this.getCharts(this.props.actualId, React.createRef())}
-                    {this.props.setId && this.props.checkHistory(this.props.setId) && this.getCharts(this.props.setId, React.createRef())}
+                <div className={cls.wrapperState}>
+                    {this.props.batteryVacuum !== null && this.props.batteryVacuum !== undefined && <div className={cls.batteryVacuumTop}>
+                        <IoMdBatteryCharging />{this.props.batteryVacuum}{this.props.batteryUnit}
+                    </div>}
+                    {this.props.wasteVacuum !== null && this.props.wasteVacuum !== undefined && <div className={cls.waterVacuumTop}>
+                        <StateIcon type="WATER" />{this.props.wasteVacuum}{this.props.wasteUnit}
+                    </div>}
+                    {this.props.watherVacuum !== null && this.props.watherVacuum !== undefined && <div className={cls.wasteVacuumTop}>
+                        <StateIcon type="WASTE" />{this.props.watherVacuum}{this.props.watherUnit}
+                    </div>}
                 </div>
-                <div ref={this.refPanel} className={cls.wrapperControl}>
-                    {/* <ThermostatControl
-                        afterComma={1}
-                        unit={this.props.unit}
-                        commaAsDelimiter={this.props.commaAsDelimiter === undefined ? true : this.props.commaAsDelimiter}
-                        minValue={this.min}
-                        maxValue={this.max}
-                        hvacMode={'heating'}
-                        ambientTemperature={this.props.actualValue}
-                        targetTemperature={this.state.value}
-                    /> */}
-                    <div className={cls.wrapperVacuumCleaner}>
-                        {this.props.batteryVacuum !== null && this.props.batteryVacuum !== undefined ?
-                            <div className={cls.batteryVacuum}>
-                                {this.props.batteryVacuum}{this.props.batteryUnit}
-                            </div>
-                            : null}
-                        <Icon className={clsx(cls.vacuumCleaner, this.props.powerValue && !this.props.pauseValue && cls.vacuumCleanerWork, this.props.powerValue && this.props.pauseValue && cls.vacuumCleanerPause)} />
-                    </div>
+                <div className={cls.wrapperControl}>
+                    {this.props.imageVacuum !== null && this.props.imageVacuum !== undefined && this.props.powerValue && !this.props.pauseValue ?
+                        <IconAdapter className={cls.styleImageState} src={this.props.imageVacuum} />
+                        : <div className={cls.wrapperVacuumCleaner}>
+                            <Icon d={"M0,100 C150,200 350,0 500,100 L500,00 L0,0 Z"} className={clsx(cls.vacuumCleaner, this.props.powerValue && !this.props.pauseValue && cls.vacuumCleanerWork, this.props.powerValue && this.props.pauseValue && cls.vacuumCleanerPause)} />
+                            {this.props.batteryVacuum !== null && this.props.batteryVacuum !== undefined && <div className={clsx(cls.batteryAnimation, this.props.powerValue && !this.props.pauseValue && cls.vacuumCleanerWork, this.props.powerValue && this.props.pauseValue && cls.vacuumCleanerPause)}>
+                                <Circle1 style={{ top: `${this.props.batteryVacuum ? 100 - this.props.batteryVacuum : 0}%` }} className={cls.circle1} />
+                                <Circle2 style={{ top: `calc(5px + ${this.props.batteryVacuum ? 100 - this.props.batteryVacuum : 0}%)` }} className={cls.circle2} />
+                                <div className={cls.batteryVacuum}>
+                                    <IoMdBatteryCharging />{this.props.batteryVacuum}{this.props.batteryUnit}
+                                </div>
+                            </div>}
+                        </div>}
                 </div>
             </div>
         </div>;

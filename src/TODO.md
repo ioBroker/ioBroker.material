@@ -14,12 +14,30 @@
 
 - Make translation for icon selector work
 
-<!-- - All dialog transparent panles must have more decent(opacity) border -->
-
 <!-- - Collect all IDs and give it in "objs" as array -->
+- Show chart in the corner if any state of the device has "history"//////////
+
+- Find out why we have double devices: http://localhost:3000/#rooms.K%C3%BCche
+
+## Dimmer
+- Fix control
+- Change dialog
 
 ## Clock
 
+## Gate
+- Like lock
+
+## Locaiton
+- Use open street map => open layers: https://www.npmjs.com/package/react-openlayers
+- Double tile
+- Dialog with big map
+- Possibility to enter name in dialog
+
+## Volume
+- Fix dailog style//
+
+## Blinds
 ## Thermostat
 - On mobile devices hide controls in chart-dialog and make it maximal big
 - ? Tooltips for values: actual temperature / target temperature
@@ -41,6 +59,8 @@
 ## Weather current (as type detector)
 
 ## Vacuum
+<!-- - Water + Waste  -->
+<!-- - Add icons for battery, water and waste -->
 
 ## Icons url
  - precipitation.svg https://www.flaticon.com/free-icon/precipitation_4005834?term=precipitation&page=1&position=10&page=1&position=10&related_id=4005834&origin=search
@@ -67,5 +87,5 @@
  - mist.svg https://www.flaticon.com/free-icon/windy_1163673
 
  //https://www.flaticon.com/packs/weather-161 (pack)
- 
-- Link to icon
+
+

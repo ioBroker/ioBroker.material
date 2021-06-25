@@ -57,7 +57,7 @@ const icons = [{
 export const getIcon = (nameUri, decode) => {
     let name = nameUri;
     if (decode && nameUri) {
-        name = decodeURI(nameUri.split('/').pop().split('.')[0]);
+        name = decodeURI(nameUri.toString().split('/').pop().split('.')[0]);
     }
     const search = icons.find(el => el.name.find(nameIcon => nameIcon === name));
     if (search) {

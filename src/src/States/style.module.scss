@@ -58,7 +58,8 @@
 .iconStyle {
     width: calc(25px * var(--widthBlock));
     height: calc(25px * var(--widthBlock));
-    border-radius: calc(25px * var(--widthBlock));
+    // border-radius: calc(25px * var(--widthBlock));
+    margin: calc(8px * var(--widthBlock));
     z-index: 1;
     color: var(--silverColor);
     transition: color 0.5s;

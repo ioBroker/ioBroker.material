@@ -73,6 +73,8 @@ class SmartVacuumCleaner extends SmartGeneric {
             state = this.channelInfo.states.find(state => state.id && state.name === 'PAUSE');//
             this.pauseId = state?.id || `${parts}.PAUSE`;
 
+            this.imageId = `${parts}.IMAGE`;
+
         }
 
         if (this.watherId) {
@@ -131,25 +133,10 @@ class SmartVacuumCleaner extends SmartGeneric {
         this.props.tile.setState({ state: true });
         this.key = `smart-vacuumCleaner-${this.id}-`;
         this.step = this.step || 0.5;
+        this.stateRx.checkAllStates = true;
 
         this.componentReady();
     }
-
-    // updateState(id, state) {
-    //     let newState = {};
-    //     if (!state) {
-    //         return;
-    //     }
-    //     if (this.actualId === id || id === this.id || id === this.humidityId || id === this.modeId) {
-    //         newState[id] = typeof state.val === 'number' ? state.val : parseFloat(state.val);
-    //         if (isNaN(newState[id])) {
-    //             newState[id] = null;
-    //         }
-    //         this.setState(newState);
-    //     } else {
-    //         super.updateState(id, state);
-    //     }
-    // }
 
     setValue = degrees => {
         console.log('Control ' + this.id + ' = ' + degrees);
@@ -254,7 +241,7 @@ class SmartVacuumCleaner extends SmartGeneric {
         if (!state) {
             return;
         }
-        if (this.batteryId === id || this.stateId === id || this.pauseId === id || this.workModeId === id || this.powerId === id || this.id === id || id === this.humidityId || id === this.modeId) {
+        if (this.watherId === id || this.wasteId === id || this.imageId === id || this.batteryId === id || this.stateId === id || this.pauseId === id || this.workModeId === id || this.powerId === id || this.id === id || id === this.humidityId || id === this.modeId) {
             newState[id] = typeof state.val !== 'number' ? state.val : parseFloat(state.val);
             if (typeof state.val === 'number' && isNaN(newState[id])) {
                 newState[id] = null;
@@ -266,15 +253,14 @@ class SmartVacuumCleaner extends SmartGeneric {
     }
 
     render() {
-        console.log(11223344, this.state)
         return this.wrapContent([
             this.getStandardContent(this.id, false),
             // this.getSecondaryDiv(),
             this.getSecondaryDivActual(),
             this.getSecondaryDivTop(),
-            this.getCharts(this.actualId),
-            this.checkHistory(this.batteryId, true) && this.state.showDialogBottom ?
-                dialogChartCallBack(this.onDialogCloseBottom, this.batteryId, this.props.socket, this.props.themeType, this.props.systemConfig, this.props.allObjects, this.getIdHistorys(this.getAllIds())) : null,
+            this.getCharts(this.actualId,null,false),
+            this.state.showDialogBottom ?
+                dialogChartCallBack(this.onDialogCloseBottom, this.batteryId, this.props.socket, this.props.themeType, this.props.systemConfig, this.props.allObjects, this.getIdHistorys(this.getAllIds(true))) : null,
             this.state.showDialog ?
                 <Dialog
                     key={this.key + 'dialog'}
@@ -288,16 +274,24 @@ class SmartVacuumCleaner extends SmartGeneric {
                     windowWidth={this.props.windowWidth}
                     actualValue={this.state[this.actualId] === null || this.state[this.actualId] === undefined ? this.min : this.state[this.actualId]}
                     //checkHistory
-                    checkHistory={this.checkHistory}
+                    // checkHistory={this.checkHistory}
                     //state
                     stateVacuum={this.stateId ? this.state[this.stateId] : null}
                     //battery
                     batteryVacuum={this.batteryId ? this.state[this.batteryId] : null}
                     batteryUnit={this.batteryUnit}
+                    //waste
+                    wasteVacuum={this.wasteId ? this.state[this.wasteId] : null}
+                    wasteUnit={this.wasteUnit}
+                    //watherId
+                    watherVacuum={this.watherId ? this.state[this.watherId] : null}
+                    watherUnit={this.watherUnit}
                     //workMode
                     workModeValue={this.workModeId ? this.state[this.workModeId] : null}
                     workModeArray={this.workModeId ? this.props.objects[this.workModeId]?.common?.states : null}
                     onWorkMode={this.onWorkMode.bind(this)}
+                    //image
+                    imageVacuum={this.imageId ? this.state[this.imageId] : null}
                     //pause
                     pauseValue={this.pauseId ? this.state[this.pauseId] : null}
                     onPauseToggle={this.onPauseToggle.bind(this)}
@@ -323,7 +317,7 @@ class SmartVacuumCleaner extends SmartGeneric {
                     actualId={this.props.objects[this.actualId] && this.actualId.indexOf('ACTUAL') !== -1 ? this.actualId : null}
                     setId={this.props.objects[this.id] ? this.id : null}
                     ///Modal Charts
-                    openModal={id => dialogChartCallBack(() => { }, id, this.props.socket, this.props.themeType, this.props.systemConfig, this.props.allObjects, [])}
+                    // openModal={id => dialogChartCallBack(() => { }, id, this.props.socket, this.props.themeType, this.props.systemConfig, this.props.allObjects, [])}
                 /> : null
         ]);
     }

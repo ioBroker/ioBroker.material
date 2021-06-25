@@ -621,7 +621,6 @@ class SmartWeatherForecast extends SmartGeneric {
     }
 
     render() {
-        console.log(11223344, this.ids.current)
         return this.wrapContent([
             // this.getCurrentIconDiv(),
             this.getCharts(this.state.charts, cls.customCharts, false),
