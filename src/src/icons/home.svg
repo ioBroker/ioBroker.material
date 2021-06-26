@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- copyright 2017 bluefox dogafox@gmail.com -->
-<svg id="glowy" width="170" height="170" viewBox="-20 -20 190 190" xmlns="http://www.w3.org/2000/svg" version="1.1">
+<svg id="glowy" viewBox="-20 -20 190 190" xmlns="http://www.w3.org/2000/svg">
 
     <defs>
         <filter id="white-glow" x="-5000%" y="-5000%" width="10000%" height="10000%">

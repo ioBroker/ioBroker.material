@@ -1,6 +1,6 @@
 {
   "name": "material-app",
-  "version": "0.3.0",
+  "version": "0.13.9",
   "private": true,
   "commentDependencies": {
     "@date-io/core": "DO not update to version 2",

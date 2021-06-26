@@ -1,9 +1,5 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 viewBox="0 0 63.907 63.907" style="fill:currentColor;enable-background:new 0 0 63.907 63.907;"
-	 xml:space="preserve"
-	>
-<g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 63.907 63.907">
+<g fill="currentColor">
 	<circle cx="30.515" cy="6.136" r="6.136"/>
 	<path d="M47.399,27.455C42.346,24.53,38.2,20.579,34.71,15.931c-2.193-3.084-7.991-2.923-10.347-0.097
 		c-3.584,3.487-6.625,7.081-9.037,10.677c-0.986,1.473-0.594,3.466,0.878,4.452c0.549,0.368,1.168,0.544,1.783,0.544

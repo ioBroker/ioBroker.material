@@ -197,6 +197,13 @@ function build() {
         stdout: true  // default = true, false means don't write stdout
     };
 
+    // update version
+    const version = require('./package.json').version;
+    const json = require('./src/package.json');
+    json.version = version;
+    fs.writeFileSync(__dirname + '/src/package.json', JSON.stringify(json, null, 2));
+
+
     console.log(options.cwd);
 
     if (fs.existsSync(__dirname + '/src/node_modules/react-scripts/scripts/build.js')) {

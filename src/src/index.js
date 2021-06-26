@@ -37,16 +37,14 @@ let themeName = Utils.getThemeName();
 
 function build() {
     const notistackRef = React.createRef();
-    const onClickDismiss = key => () => {
+    const onClickDismiss = key => () =>
         notistackRef.current.closeSnackbar(key);
-    }
+
     return ReactDOM.render(<MuiThemeProvider theme={theme(themeName)}>
         <SnackbarProvider
             ref={notistackRef}
             action={(key) => (
-                <Button onClick={onClickDismiss(key)}>
-                    x
-                </Button>
+                <Button onClick={onClickDismiss(key)}>x</Button>
             )} maxSnack={6}>
             <App onThemeChange={_themeName => {
                 themeName = _themeName;
