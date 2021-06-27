@@ -577,7 +577,7 @@ class StatesSubList extends Component {
 
                 const style = !visible ? { display: 'none' } : (this.state.newLine || this.props.editMode ? { display: 'block', border: 'none' } : null);
 
-                if (this.state.align) {
+                if (this.state.align && style) {
                     style.textAlign = this.state.align;
                 }
 

@@ -28,14 +28,14 @@
 ## Gate
 - Like lock
 
-## Locaiton
+## Location
 - Use open street map => open layers: https://www.npmjs.com/package/react-openlayers
 - Double tile
 - Dialog with big map
 - Possibility to enter name in dialog
 
 ## Volume
-- Fix dailog style//
+- Fix dialog style//
 
 ## Blinds
 ## Thermostat
@@ -61,6 +61,10 @@
 ## Vacuum
 <!-- - Water + Waste  -->
 <!-- - Add icons for battery, water and waste -->
+
+## Motion
+- Show brightness chart
+- Show motion chart in dialog together with brightness
 
 ## Icons url
 

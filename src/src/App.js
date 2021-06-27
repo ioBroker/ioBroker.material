@@ -41,7 +41,7 @@ import { MdMic as IconMic } from 'react-icons/md';
 import { MdMenu as IconMenu } from 'react-icons/md';
 import { MdRefresh as IconRefresh } from 'react-icons/md';
 import { FaSignOutAlt as IconLogout } from 'react-icons/fa';
-import { GiResize } from "react-icons/gi";
+import { GiResize } from 'react-icons/gi';
 
 import Theme from './theme';
 import I18n from '@iobroker/adapter-react/i18n';
@@ -52,7 +52,6 @@ import StatesList from './StatesList/StatesList';
 import SpeechDialog from './SpeechDialog';
 import DialogSettings from './Dialogs/SmartDialogSettings';
 import LoadingIndicator from './basic-controls/react-loading-screen/LoadingIndicator';
-//import ServerConnection from './Connection';
 import GenericApp from '@iobroker/adapter-react/GenericApp';
 import ToggleThemeMenu from './Components/ToggleThemeMenu';
 import cls from './style.module.scss';
@@ -90,15 +89,6 @@ class App extends GenericApp {
         };
         super(props, extendedProps);
 
-        this.translations = {
-            'en': require('./i18n/en'),
-            'ru': require('./i18n/ru'),
-            'de': require('./i18n/de'),
-            'zh-cn': require('./i18n/zh-cn'),
-        };
-
-        // init translations
-        I18n.setTranslations(this.translations);
         I18n.setLanguage((navigator.language || navigator.userLanguage || 'en').substring(0, 2).toLowerCase());
 
         this.objects = {};
@@ -147,7 +137,7 @@ class App extends GenericApp {
         super.componentDidMount();
         let path = decodeURIComponent(window.location.hash).replace(/^#/, '');
         const menuFixed = (typeof Storage !== 'undefined') ? window.localStorage.getItem('menuFixed') === '1' : false;
-        const widthBlock = window.localStorage.getItem('Mterial.width') ? JSON.parse(window.localStorage.getItem('Mterial.width')) : false;
+        const widthBlock = window.localStorage.getItem('Material.width') ? JSON.parse(window.localStorage.getItem('Material.width')) : false;
         const state = {
             menuFixed,
             open: menuFixed,
@@ -1284,7 +1274,7 @@ class App extends GenericApp {
             <IconButton
                 onClick={this.toggleEditMode}
                 // style={style}
-                className={clsx(cls.iconSettingts, this.state.editMode && cls.iconSettingtsActive)}
+                className={clsx(cls.iconSettings, this.state.editMode && cls.iconSettingsActive)}
             >
                 <IconEdit width={Theme.iconSize} height={Theme.iconSize} />
             </IconButton>
@@ -1458,11 +1448,11 @@ class App extends GenericApp {
                                 onClick={() => {
                                     let widthBlock = !this.state.widthBlock;
                                     this.setState({ widthBlock }, () => {
-                                        window.localStorage.setItem('Mterial.width', widthBlock);
+                                        window.localStorage.setItem('Material.width', widthBlock);
                                         document.getElementsByTagName('HTML')[0].className = `${this.state.themeName} ${widthBlock ? 'double' : 'single'}`;
                                     })
                                 }}
-                                className={clsx(cls.iconSettingts, this.state.widthBlock && cls.iconSettingtsActive)}
+                                className={clsx(cls.iconSettings, this.state.widthBlock && cls.iconSettingsActive)}
                             >
                                 <GiResize width={Theme.iconSize} height={Theme.iconSize} />
                             </IconButton>
@@ -1470,7 +1460,7 @@ class App extends GenericApp {
                     {this.state.editMode && <ToggleThemeMenu
                         toggleTheme={() => this.toggleTheme()}
                         themeName={this.state.themeName}
-                        className={cls.iconSettingts}
+                        className={cls.iconSettings}
                         widthBlock={this.state.widthBlock}
                         t={I18n.t} />}
                     {this.getEditButton(useBright)}

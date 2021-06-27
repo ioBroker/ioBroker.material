@@ -54,9 +54,9 @@ function build() {
     </MuiThemeProvider>, document.getElementById('root'));
 }
 
-if (false && window.location.host !== 'localhost:3000') {
+if (window.location.host !== 'localhost:3000') {
     Sentry.init({
-        dsn: 'https://3cedc5ceb5544e2e8248053c817fc98b@sentry.iobroker.net/131',
+        dsn: 'https://e5306c44730b45aea200a2f5a2635ae9@sentry.iobroker.net/135',
         integrations: [
             new SentryIntegrations.Dedupe()
         ]

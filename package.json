@@ -42,9 +42,9 @@
   "scripts": {
     "test": "node node_modules/gulp/bin/gulp.js",
     "build": "node node_modules/gulp/bin/gulp.js",
-    "prepare": "node node_modules/gulp/bin/gulp.js",
-    "prepublishOnly": "node node_modules/gulp/bin/gulp.js",
-    "beforePush": "node node_modules/gulp/bin/gulp.js",
+    "prepare1": "node node_modules/gulp/bin/gulp.js",
+    "prepublishOnly1": "node node_modules/gulp/bin/gulp.js",
+    "beforePush1": "node node_modules/gulp/bin/gulp.js",
     "release": "release-script"
   },
   "license": "CC-BY-NC-4.0",
