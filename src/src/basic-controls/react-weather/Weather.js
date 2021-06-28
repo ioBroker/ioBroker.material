@@ -76,7 +76,9 @@ const Weather = ({
     socket,
     data
 }) => {
-
+    if(!data){
+        return
+    }
     const temperatureCallBack = (_, state) => {
         if (state?.val && temperature.current) {
             temperature.current.innerHTML = `${Math.round(state.val)}°C`;

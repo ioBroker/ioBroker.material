@@ -592,7 +592,7 @@ class StatesList extends Component {
                 // collect others
                 let column = [];
                 items.forEach(item => {
-                    if (used.indexOf(item) === -1) {
+                    if (!used.includes(item) && !column.includes(item)) {
                         column.push(item);
                     }
                 });
@@ -610,7 +610,6 @@ class StatesList extends Component {
                         columns.push({ id: 'others', items: column });
                     }
                 }
-
                 if (!this.state.visible) {
                     columns.push({ id: 'nothing' });
                 }
@@ -668,7 +667,6 @@ class StatesList extends Component {
                 return null;
             }
         }.bind(this)).filter(e => e);
-
         return this.wrapContent(orderedColumns);
     }
 }

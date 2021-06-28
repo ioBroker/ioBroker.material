@@ -172,7 +172,7 @@ class SmartDialogVacuumCleaner extends SmartDialogGeneric {
                         : <div className={cls.wrapperVacuumCleaner}>
                             <Icon d={"M0,100 C150,200 350,0 500,100 L500,00 L0,0 Z"} className={clsx(cls.vacuumCleaner, this.props.powerValue && !this.props.pauseValue && cls.vacuumCleanerWork, this.props.powerValue && this.props.pauseValue && cls.vacuumCleanerPause)} />
                             {this.props.batteryVacuum !== null && this.props.batteryVacuum !== undefined && <div className={clsx(cls.batteryAnimation, this.props.powerValue && !this.props.pauseValue && cls.vacuumCleanerWork, this.props.powerValue && this.props.pauseValue && cls.vacuumCleanerPause)}>
-                                <Circle1 style={{ top: `${this.props.batteryVacuum ? 100 - this.props.batteryVacuum : 0}%` }} className={cls.circle1} />
+                                <Circle2 style={{ top: `${this.props.batteryVacuum ? 100 - this.props.batteryVacuum : 0}%` }} className={cls.circle1} />
                                 <Circle2 style={{ top: `calc(5px + ${this.props.batteryVacuum ? 100 - this.props.batteryVacuum : 0}%)` }} className={cls.circle2} />
                                 <div className={cls.batteryVacuum}>
                                     <IoMdBatteryCharging />{this.props.batteryVacuum}{this.props.batteryUnit}

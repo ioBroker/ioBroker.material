@@ -189,7 +189,7 @@ class SmartVolume extends SmartGeneric {
                 } else {
                     IconCustom = IconVolume100;
                 }
-                customIcon = (<IconCustom className={clsx(clsGeneric.iconStyle,this.state[this.actualId] !== this.min && clsGeneric.activeIconStyle)} />);
+                customIcon = (<IconCustom className={clsx(clsGeneric.iconStyle, this.state[this.actualId] !== this.min && clsGeneric.activeIconStyle)} />);
             }
         }
         // return (
@@ -234,6 +234,7 @@ class SmartVolume extends SmartGeneric {
             this.muteId && this.getSecondaryDiv(),
             this.state.showDialog ?
                 <Dialog key={this.key + 'dialog'}
+                    transparent
                     startValue={this.state[this.id]}
                     startMuteValue={this.muteId ? this.state[this.muteId] : false}
                     onMute={this.muteId ? this.toggle : null}

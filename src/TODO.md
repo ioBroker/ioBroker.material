@@ -14,28 +14,37 @@
 
 - Make translation for icon selector work
 
+- Dialogs with 0.8 background opcaity + blur
+
+- Option to select the chart via drop down menus:
+    - default
+    - none
+    - IDs from type-detector
+    - custom => show ID selector
+
 <!-- - Collect all IDs and give it in "objs" as array -->
 - Show chart in the corner if any state of the device has "history"//////////
 
-- Find out why we have double devices: http://localhost:3000/#rooms.K%C3%BCche
-
 ## Dimmer
-- Fix control
-- Change dialog
+- Add tooltips for all 4 buttons (on, off, ? , close)
 
 ## Clock
 
 ## Gate
-- Like lock
+- Depends on type of variable: 
+  - boolean: OPEN / CLOSE buttons
+  - number: slider from min to max
 
 ## Location
 - Use open street map => open layers: https://www.npmjs.com/package/react-openlayers
-- Double tile
+<!-- - Double tile -->
 - Dialog with big map
 - Possibility to enter name in dialog
+- And the icon
+- Show on tile and on dialog when last time the data was updated
+- https://rubenspgcavalcante.github.io/leaflet-ant-path/
 
 ## Volume
-- Fix dialog style//
 
 ## Blinds
 ## Thermostat
@@ -49,7 +58,6 @@
 - Show charts for switch: ON/OFF, voltage, current, frequency, consumption, power
 
 ## RGB
-- 2 modes:
 - Tooltip of power, Color type
 
 ## Weather
@@ -61,9 +69,10 @@
 ## Vacuum
 <!-- - Water + Waste  -->
 <!-- - Add icons for battery, water and waste -->
+- Support of MAP_BASE64 and MAP_URL: https://github.com/ioBroker/ioBroker.type-detector/blob/master/index.js#L362
 
 ## Motion
-- Show brightness chart
+- Show brightness chart in tile
 - Show motion chart in dialog together with brightness
 
 ## Icons url

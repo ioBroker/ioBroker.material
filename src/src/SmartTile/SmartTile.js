@@ -45,6 +45,7 @@ import SmartClock from '../States/SmartClock/SmartClock';
 import cls from './style.module.scss';
 import SmartDimmer from '../States/SmartDimmer/SmartDimmer';
 import SmartVacuumCleaner from '../States/SmartVacuumCleaner/SmartVacuumCleaner';
+import SmartLocation from '../States/SmartLocation/SmartLocation';
 
 class SmartTile extends Component {
     static propTypes = {
@@ -325,12 +326,15 @@ class SmartTile extends Component {
                 case Types.url:
                     Control = SmartURL;
                     break;
+                case Types.location:
+                    Control = SmartLocation;
+                    break;
                 case 'clock'://Types.clock:
                     Control = SmartClock;
                     break;
                     // case 'whether'://Types.whether:
                     //     Control = SmartWhether;
-                    break;
+                    // break;
                 default:
                     break;
             }

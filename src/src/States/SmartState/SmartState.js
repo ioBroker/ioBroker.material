@@ -33,6 +33,7 @@ import { MdBrightness4 as IconSun4 } from 'react-icons/md';
 import { MdBrightness5 as IconSun5 } from 'react-icons/md';
 import { MdBrightness6 as IconSun6 } from 'react-icons/md';
 import { MdBrightness7 as IconSun7 } from 'react-icons/md';
+import Dialog from '../../Dialogs/SmartDialogSlider';
 
 import Theme from '../../theme';
 import I18n from '@iobroker/adapter-react/i18n';
@@ -116,6 +117,8 @@ class SmartState extends SmartGeneric {
                 left: '1rem'
             };
         } else if (this.channelInfo.type === Types.motion) {
+            this.max = 100;
+            this.min = 0;
             this.iconOn = IconMotionOn;
             this.iconOff = IconMotionOff;
             this.iconColorOn = 'green';
@@ -123,6 +126,8 @@ class SmartState extends SmartGeneric {
             this.textOn = 'motion';
             this.showTime = true;
             this.textOff = '-';
+            this.stateRx.showDialog = false; // support dialog in this tile used in generic class)
+
         } else if (this.channelInfo.type === Types.fireAlarm) {
             this.iconOn = IconFireOn;
             this.iconOff = IconFireOff;
@@ -223,7 +228,7 @@ class SmartState extends SmartGeneric {
                 customIcon = (<IconAdapter alt="icon" src={isOn ? this.state.settings.icon : this.state.settings.iconOff || this.state.settings.icon} style={{ height: '100%', zIndex: 1 }} />);
             } else {
                 const Icon = isOn ? this.iconOn : this.iconOff;
-                customIcon = (<Icon className={clsGeneric.iconStyle}/>);
+                customIcon = (<Icon className={clsGeneric.iconStyle} />);
             }
         }
         return SmartGeneric.renderIcon(customIcon);
@@ -233,7 +238,7 @@ class SmartState extends SmartGeneric {
         const state = this.state[this.id];
         if (state === undefined || state === null || !this.lastChange || !this.showTime) {
             const isOn = this.state[this.id] === '1' || this.state[this.id] === 1 || this.state[this.id] === true || this.state[this.id] === 'true' || this.state[this.id] === 'on' || this.state[this.id] === 'ON';
-            return <div className={clsx(isOn?cls.textOn:cls.textOff)}>{isOn ? I18n.t(this.textOn) : I18n.t(this.textOff)}</div>;
+            return <div className={clsx(isOn ? cls.textOn : cls.textOff)}>{isOn ? I18n.t(this.textOn) : I18n.t(this.textOff)}</div>;
         } else {
             return (<Moment style={{ fontSize: 12 }} date={this.lastChange} interval={15} fromNow locale={I18n.getLanguage()} />);
         }
@@ -255,10 +260,53 @@ class SmartState extends SmartGeneric {
 
     }
 
+    setValue = percent => {
+        debugger
+        if (percent) {
+            this.lastNotNullPercent = percent;
+        } else {
+            const p = this.realValueToPercent();
+            if (p) {
+                this.lastNotNullPercent = p;
+            }
+        }
+        this.setState({ executing: this.state.settings.noAck ? false : true, [this.secondary.id]: percent });
+        this.props.onControl(this.secondary.id, this.percentToRealValue(percent));
+    }
+
+    percentToRealValue(percent) {
+        percent = parseFloat(percent);
+        return Math.round((this.max - this.min) * percent / 100);
+    }
+
+    realValueToPercent(val) {
+        if (val === undefined) {
+            if (this.props.states[this.secondary.id]) {
+                val = this.props.states[this.secondary.id].val || 0;
+            } else {
+                val = 0;
+            }
+        }
+        val = parseFloat(val);
+        return Math.round((val - this.min) / (this.max - this.min) * 100);
+    }
+
     render() {
         return this.wrapContent([
             this.getStandardContent(this.actualId),
-            this.getSecondaryDiv()
+            this.getSecondaryDiv(),
+            this.channelInfo.type === Types.motion &&
+                this.state.showDialog ?
+                <Dialog key={this.key + 'dialog'}
+                    transparent
+                    windowWidth={this.props.windowWidth}
+                    startValue={this.state[this.secondary.id]}
+                    onValueChange={this.setValue}
+                    // startToggleValue={this.onActualId ? this.state[this.onActualId] : false}
+                    // onToggle={this.onId && this.onToggleValue}
+                    onClose={this.onDialogClose}
+                    type={Dialog.types.dimmer}
+                /> : null
         ]);
     }
 }

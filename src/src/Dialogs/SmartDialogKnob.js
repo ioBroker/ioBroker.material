@@ -16,17 +16,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
-import {withStyles} from "@material-ui/core/styles";
+import { withStyles } from "@material-ui/core/styles";
 
 import Fab from '@material-ui/core/Fab';
 
-import {MdVolumeMute as IconVolume0} from 'react-icons/md';
-import {MdVolumeUp as IconVolume100} from 'react-icons/md';
+import { MdVolumeMute as IconVolume0 } from 'react-icons/md';
+import { MdVolumeUp as IconVolume100 } from 'react-icons/md';
 
 import I18n from '@iobroker/adapter-react/i18n';
 
 import SmartDialogGeneric from './SmartDialogGeneric';
 import KnobControl from '../basic-controls/react-knob/KnobControl';
+import cls from './style.module.scss';
 
 const styles = theme => ({
     dialogPaper: {
@@ -48,18 +49,18 @@ const styles = theme => ({
     },
     knobControl: {
         left: 'calc(50% - 6em)',
-        marginTop: '2em',
+        // marginTop: '2em',
         width: '12em',
         height: '12em',
         position: 'absolute'
     }
 });
 
-class SmartDialogKnob extends SmartDialogGeneric  {
+class SmartDialogKnob extends SmartDialogGeneric {
     constructor(props) {
         super(props);
         this.maxHeight = 400;
-        this.stateRx.value     = this.externalValue2localValue(this.props.startValue || 0);
+        this.stateRx.value = this.externalValue2localValue(this.props.startValue || 0);
         this.stateRx.muteValue = this.props.startMuteValue || false;
 
         this.dialogStyle = { // used in generic
@@ -106,7 +107,7 @@ class SmartDialogKnob extends SmartDialogGeneric  {
     onValueChanged = value => {
         this.click = Date.now();
 
-        this.setState({value: this.externalValue2localValue(value)});
+        this.setState({ value: this.externalValue2localValue(value) });
         if (this.controlTimer) {
             clearTimeout(this.controlTimer);
         }
@@ -137,39 +138,39 @@ class SmartDialogKnob extends SmartDialogGeneric  {
             title={this.state.muteValue ? I18n.t('unmute') : I18n.t('mute')}
             onClick={this.onMute}
             className={clsx(this.props.classes.buttonMuteStyle, this.state.muteValue && this.props.classes.buttonMuted)}>
-            {this.state.muteValue ? <IconVolume0/> : <IconVolume100/>}
+            {this.state.muteValue ? <IconVolume0 /> : <IconVolume100 />}
         </Fab>;
     }
 
     generateContent() {
-        return [
+        return <div className={cls.wrapperKnob}>
             <KnobControl
                 className={this.props.classes.knobControl}
                 value={this.localValue2externalValue(this.state.value)}
                 onChange={this.onValueChanged}
                 parent={this}
-            />,
-            this.getMuteButton()
-        ];
+            />
+            {this.getMuteButton()}
+        </div>
     }
 }
 
 SmartDialogKnob.propTypes = {
-    name:               PropTypes.oneOfType([
+    name: PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.object
     ]),
-    dialogKey:          PropTypes.string,
-    windowWidth:        PropTypes.number,
+    dialogKey: PropTypes.string,
+    windowWidth: PropTypes.number,
 
-    onClose:            PropTypes.func,
+    onClose: PropTypes.func,
 
-    onMute:             PropTypes.func,
+    onMute: PropTypes.func,
 
-    onValueChange:      PropTypes.func,
-    startValue:         PropTypes.number,
-    startMuteValue:     PropTypes.bool,
-    type:               PropTypes.number
+    onValueChange: PropTypes.func,
+    startValue: PropTypes.number,
+    startMuteValue: PropTypes.bool,
+    type: PropTypes.number
 };
 
 

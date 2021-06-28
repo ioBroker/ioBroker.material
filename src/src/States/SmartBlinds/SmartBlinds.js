@@ -178,8 +178,8 @@ class SmartBlinds extends SmartGeneric {
                 customIcon = <IconAdapter src={this.state.settings.icon} alt="icon" style={{ height: '100%', zIndex: 1 }} />;
             } else {
                 customIcon = <Icon className={clsx(clsGeneric.iconStyle, this.state[this.actualId] !== this.min && clsGeneric.activeIconStyle)} />;
+            }
         }
-    }
 
         // const overlapStyle = Object.assign({}, styles.overlap, {height: this.realValueToPercent(this.state[this.id]) + '%'});
         // if (this.state.settings.colorOn) {
@@ -194,56 +194,57 @@ class SmartBlinds extends SmartGeneric {
         return SmartGeneric.renderIcon(customIcon, this.state.executing, this.state[this.actualId] !== this.min);
     }
 
-getDialogSettings() {
-    const settings = super.getDialogSettings();
+    getDialogSettings() {
+        const settings = super.getDialogSettings();
 
-    settings.unshift({
-        name: 'inverted',
-        value: this.state.settings.inverted || false,
-        type: 'boolean'
-    });
+        settings.unshift({
+            name: 'inverted',
+            value: this.state.settings.inverted || false,
+            type: 'boolean'
+        });
 
-    settings.unshift({
-        name: 'toggleOnClick',
-        value: this.state.settings.toggleOnClick || false,
-        type: 'boolean'
-    });
+        settings.unshift({
+            name: 'toggleOnClick',
+            value: this.state.settings.toggleOnClick || false,
+            type: 'boolean'
+        });
 
-    return settings;
-}
+        return settings;
+    }
 
-saveDialogSettings(settings) {
-    this.props.tile.setState({ isPointer: settings.toggleOnClick });
-    super.saveDialogSettings(settings);
-}
+    saveDialogSettings(settings) {
+        this.props.tile.setState({ isPointer: settings.toggleOnClick });
+        super.saveDialogSettings(settings);
+    }
 
-getStateText() {
-    if (this.state[this.actualId] === null || this.state[this.actualId] === undefined) {
-        return '---';
-    } else {
-        if (this.workingId && this.state[this.workingId] && this.state.setValue !== null && this.state.setValue !== undefined) {
-            return `${this.realValueToPercent()}% → ${this.state.setValue}%`;
+    getStateText() {
+        if (this.state[this.actualId] === null || this.state[this.actualId] === undefined) {
+            return '---';
         } else {
-            return this.realValueToPercent() + '%';
+            if (this.workingId && this.state[this.workingId] && this.state.setValue !== null && this.state.setValue !== undefined) {
+                return `${this.realValueToPercent()}% → ${this.state.setValue}%`;
+            } else {
+                return this.realValueToPercent() + '%';
+            }
         }
     }
-}
 
-render() {
-    return this.wrapContent([
-        this.getStandardContent(this.id, true),
-        this.state.showDialog ?
-            <Dialog key={this.key + 'dialog'}
-                startValue={this.realValueToPercent()}
-                onValueChange={this.setValue}
-                windowWidth={this.props.windowWidth}
-                inverted={this.state.settings.inverted}
-                onStop={this.stopId ? this.onStop : null}
-                onClose={this.onDialogClose}
-                type={Dialog.types.blinds}
-            /> : null
-    ]);
-}
+    render() {
+        return this.wrapContent([
+            this.getStandardContent(this.id, true),
+            this.state.showDialog ?
+                <Dialog key={this.key + 'dialog'}
+                    transparent
+                    startValue={this.realValueToPercent()}
+                    onValueChange={this.setValue}
+                    windowWidth={this.props.windowWidth}
+                    inverted={this.state.settings.inverted}
+                    onStop={this.stopId ? this.onStop : null}
+                    onClose={this.onDialogClose}
+                    type={Dialog.types.blinds}
+                /> : null
+        ]);
+    }
 }
 
 export default SmartBlinds;

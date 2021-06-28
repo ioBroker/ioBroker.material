@@ -1,6 +1,6 @@
 .root {
     color: var(--generalColor) !important;
-    border-color: var(--generalColor) !important;
+    border-color: var(--editIconColor) !important;
     transition: color 0.5s, background 0.5s, border-color 0.5s !important;
     background-color: var(--editBackground) !important;
     &:hover {

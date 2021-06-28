@@ -384,7 +384,7 @@ class SmartColor extends SmartGeneric {
                 newValue[this.ids.dimmer.id] = 100;
                 this.props.onControl(this.ids.dimmer.id, 100);
             } else {
-                this.props.onControl(this.ids.dimmer.id, this.state[this.ids.dimmer.id]);
+                this.props.onControl(this.ids.dimmer?.id, this.state[this.ids.dimmer?.id]);
             }
         }
 
