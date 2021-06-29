@@ -716,7 +716,7 @@
     text-align: center;
     font-size: 2em;
 }
-.wrapperSliderBlock{
+.wrapperSliderBlock {
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -724,18 +724,89 @@
     max-width: 202px;
     max-height: 400px;
 }
-.wrapperSlider{
+.wrapperSlider {
     display: flex;
     width: 100%;
     height: 100%;
     align-items: center;
     justify-content: center;
 }
-.wrapperKnob{
+.wrapperKnob {
     display: flex;
     width: 100%;
     height: 100%;
     align-items: center;
+}
+//map
+.mapWrapper {
+    // background: #c0c0c094;
+    // margin: 10px;
+    padding: 4px;
+    width: 100%;
+    flex-direction: column;
+    display: flex;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+    opacity: 0.9;
+    overflow: hidden;
+}
+.map {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    [class*="leaflet-control-zoom leaflet-bar leaflet-control"] {
+        margin-top: 45px !important;
+    }
+}
+.mapCircle {
+    stroke: var(--backgroundDraver) !important;
+    stroke-width: 1px;
+}
+.mapPolyline {
+    stroke: var(--backgroundDraver) !important;
+}
+.iconStyle {
+    width: 40px;
+    height: 40px;
+    position: relative;
+    top: -33px;
+    left: -14px;
+    color: var(--editIconColor);
+    stroke: var(--generalColor);
+    stroke-width: 4px;
+    object-fit: cover;
+}
+.iconRadius {
+    border-radius: 50%;
+}
+.wrapperName {
+    position: absolute;
+    z-index: 1111;
+    top: 4px;
+    color: var(--editBackground);
+    background: var(--editIconColor);
+    padding: 6px;
+    border-radius: 10px 0 4px 0;
+    font-size: 20px;
+    font-weight: 900;
+}
+.wrapperMapState {
+    position: absolute;
+    z-index: 1111;
+    bottom: 4px;
+    color: var(--editBackground);
+    background: var(--editIconColor);
+    padding: 5px;
+    border-radius: 0 4px 0 10px;
+    font-size: 15px;
+}
+.mapCenter {
+    position: absolute !important;
+    right: 12px;
+    top: 12px;
+    z-index: 2222;
+    padding: 0px !important;
 }
 @media screen and (max-width: 600px) {
     .paper {

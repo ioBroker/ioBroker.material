@@ -218,7 +218,7 @@ class SmartGeneric extends Component {
         }
 
         if (this.stateRx.showDialogBottom !== undefined) {
-            if(this.getIdHistorys(this.getAllIds(true)).length){
+            if (this.getIdHistorys(this.getAllIds(true)).length) {
                 this.showCornerBottom = true;
             }
             this.props.tile.registerHandler('onMouseDown', this.onTileMouseDownBottom);
@@ -488,6 +488,10 @@ class SmartGeneric extends Component {
         if (this.expireInSecInterval) {
             clearInterval(this.expireInSecInterval);
             this.expireInSecInterval = null;
+        }
+        if (this.expireInSecIntervalHistory) {
+            clearInterval(this.expireInSecIntervalHistory);
+            this.expireInSecIntervalHistory = null;
         }
         this.timer && clearTimer(this.timer);
         this.timer = null;
@@ -781,7 +785,7 @@ class SmartGeneric extends Component {
     //  getFirstName
     //  getAdditionalName
     //
-    getStandardContent(stateId, noPointerEvents) {
+    getStandardContent(stateId, noPointerEvents, noStyle = false) {
         let styleState;
         let styleName;
         let styleText;
@@ -809,6 +813,13 @@ class SmartGeneric extends Component {
         if (this.state.settings.background) {
             styleText.color = 'black';
             styleText.background = 'rgba(255,255,255,0.7)';
+        }
+
+        if (noStyle) {
+            return ({
+                name: this.getFirstName ? this.getFirstName() : this.state.settings.name,
+                state: this.getStateText ? this.getStateText() : null
+            });
         }
 
         return [
@@ -1029,6 +1040,70 @@ class SmartGeneric extends Component {
             this.showCornerBottom = false;
         }
         return array;
+    }
+
+    getReadHistoryData = (idOrData, callBack) => {
+        if (!this.checkHistory(idOrData)) {
+            callBack([]);
+            return null;
+        }
+        this.readHistoryData(idOrData, callBack);
+    }
+
+    readHistoryData = async (id, callBack = () => { }) => {
+        const now = new Date();
+        now.setHours(now.getHours() - 24);
+        now.setMinutes(0);
+        now.setSeconds(0);
+        now.setMilliseconds(0);
+        let start = now.getTime();
+        let end = Date.now();
+
+        const options = {
+            instance: this.props.systemConfig?.common?.defaultHistory || 'history.0',
+            start,
+            end,
+            step: 60000,
+            from: false,
+            ack: false,
+            q: false,
+            addID: false,
+            aggregate: 'minmax'
+        };
+
+        return this.props.socket.getHistory(id || this.id, options)
+            .then(values => {
+                let chart = [];
+                let r = 0;
+                let range = this.rangeValues;
+
+                for (let t = 0; t < values.length; t++) {
+                    if (range) {
+                        while (r < range.length && range[r].ts < values[t].ts) {
+                            chart.push(range[r]);
+                            r++;
+                        }
+                    }
+                    if (!chart.length || chart[chart.length - 1].ts < values[t].ts) {
+                        chart.push(values[t]);
+                    }
+                }
+
+                if (range) {
+                    while (r < range.length) {
+                        chart.push(range[r]);
+                        console.log(`add range ${new Date(range[r].ts).toISOString()}: ${range[r].val}`);
+                        r++;
+                    }
+                }
+
+                // sort
+                chart.sort((a, b) => a.ts > b.ts ? 1 : (a.ts < b.ts ? -1 : 0));
+                callBack(this.convertData(chart));
+            })
+            .catch(e => {
+                console.error('Cannot read history: ' + e);
+            })
     }
 
     getCharts = (idOrData, className, showCornerBottom = true) => {

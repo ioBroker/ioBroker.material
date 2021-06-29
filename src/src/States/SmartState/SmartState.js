@@ -126,7 +126,7 @@ class SmartState extends SmartGeneric {
             this.textOn = 'motion';
             this.showTime = true;
             this.textOff = '-';
-            this.stateRx.showDialog = false; // support dialog in this tile used in generic class)
+            // this.stateRx.showDialog = false; // support dialog in this tile used in generic class)
 
         } else if (this.channelInfo.type === Types.fireAlarm) {
             this.iconOn = IconFireOn;
@@ -295,18 +295,18 @@ class SmartState extends SmartGeneric {
         return this.wrapContent([
             this.getStandardContent(this.actualId),
             this.getSecondaryDiv(),
-            this.channelInfo.type === Types.motion &&
-                this.state.showDialog ?
-                <Dialog key={this.key + 'dialog'}
-                    transparent
-                    windowWidth={this.props.windowWidth}
-                    startValue={this.state[this.secondary.id]}
-                    onValueChange={this.setValue}
-                    // startToggleValue={this.onActualId ? this.state[this.onActualId] : false}
-                    // onToggle={this.onId && this.onToggleValue}
-                    onClose={this.onDialogClose}
-                    type={Dialog.types.dimmer}
-                /> : null
+            // this.channelInfo.type === Types.motion &&
+            //     this.state.showDialog ?
+            //     <Dialog key={this.key + 'dialog'}
+            //         transparent
+            //         windowWidth={this.props.windowWidth}
+            //         startValue={this.state[this.secondary.id]}
+            //         onValueChange={this.setValue}
+            //         // startToggleValue={this.onActualId ? this.state[this.onActualId] : false}
+            //         // onToggle={this.onId && this.onToggleValue}
+            //         onClose={this.onDialogClose}
+            //         type={Dialog.types.dimmer}
+            //     /> : null
         ]);
     }
 }

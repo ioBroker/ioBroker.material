@@ -19,7 +19,7 @@ import PropTypes from 'prop-types';
 
 import SmartGeneric from '../SmartGeneric';
 import Utils from '@iobroker/adapter-react/Components/Utils';
-import Dialog from '../../Dialogs/SmartDialogWeatherForecast';
+import Dialog from '../../Dialogs/SmartDialogMap';
 import I18n from '@iobroker/adapter-react/i18n';
 import IconAdapter from '@iobroker/adapter-react/Components/Icon';
 import cls from './style.module.scss';
@@ -37,6 +37,8 @@ import { OSM, Vector as VectorSource } from 'ol/source';
 import { Point } from 'ol/geom';
 import { toLonLat, fromLonLat } from 'ol/proj';
 import PinSVG from '../../icons/pin.svg';
+import clsx from 'clsx/dist/clsx';
+import Moment from 'react-moment';
 
 const styles = {
     'currentIcon-div': {
@@ -189,7 +191,7 @@ class SmartLocation extends SmartGeneric {
         this.props.tile.setState({ state: true });
         this.key = 'smart-location-' + this.id + '-';
 
-        this.stateRx.showDialogBottom = false;
+        // this.stateRx.showDialogBottom = false;
         this.stateRx.showDialog = false; // support dialog in this tile used in generic class)
 
         this.componentReady();
@@ -223,9 +225,16 @@ class SmartLocation extends SmartGeneric {
             return;
         }
         if (this.accuracy === id || id === this.id || id === this.radius || id === this.elevation) {
-            newState[id] = typeof state.val === 'number' ? state.val : parseFloat(state.val);
-            if (isNaN(newState[id])) {
+            newState[id] = typeof state.val !== 'number' ? state.val : parseFloat(state.val);
+            if (typeof state.val === 'number' && isNaN(newState[id])) {
                 newState[id] = null;
+            }
+            if (id === this.id) {
+                if (state.lc) {
+                    this.lastChange = state.lc;
+                } else {
+                    this.lastChange = 0;
+                }
             }
             this.setState(newState);
         } else {
@@ -269,111 +278,38 @@ class SmartLocation extends SmartGeneric {
         });
         return settings;
     }
-
-    // getChartData() {
-    //     const ids = this.ids.days.map(e => e.temperatureMax);
-    //     Promise.all(ids.map(id => id && this.props.socket.getState(id).then(state => state && state.val)))
-    //         .then(data => {
-    //             this.setState({ charts: data });
-    //         });
-    // }
-
-    // async componentDidMount() {
-    //     this.interval = setInterval(() => this.onUpdateTimer(), 60000);
-    //     this.getChartData();
-    // }
-
-    // onUpdateTimer() {
-    //     this.getChartData();
-    // }
-    updateMap() {
-        // OPEN STREET MAPS
-        if (window.navigator.geolocation && (!this.state.longitude || !this.state.latitude)) {
-            window.navigator.geolocation.getCurrentPosition(position => this.positionReady(position));
+    getStateText = () => {
+        const state = this.state[this.id];
+        if (state === undefined || state === null || !this.lastChange) {
+            return null;
+        } else {
+            return (<Moment style={{ fontSize: 12 }} date={this.lastChange} interval={15} fromNow locale={I18n.getLanguage()} />);
         }
-
-        const center = fromLonLat([parseFloat(this.state.longitude || 0), parseFloat(this.state.latitude || 0)]);
-
-        if (!this.OSM) {
-            // get the coordinates from browser
-
-            this.OSM = {};
-            this.OSM.markerSource = new VectorSource();
-
-            this.OSM.markerStyle = new Style({
-                image: new Icon(/** @type {olx.style.IconOptions} */({
-                    anchor: [0.5, 49],
-                    anchorXUnits: 'fraction',
-                    anchorYUnits: 'pixels',
-                    opacity: 0.75,
-                    src: PinSVG
-                }))
-            });
-
-            this.OSM.oMap = new Map({
-                target: 'map',
-                layers: [
-                    new Tile({ source: new OSM() }),
-                    new LayerVector({
-                        source: this.OSM.markerSource,
-                        style: this.OSM.markerStyle,
-                    })
-                ],
-                view: new View({ center, zoom: 17 })
-            });
-
-            this.OSM.marker = new Feature({
-                geometry: new Point(center),
-                name: I18n.t('Your home')
-            });
-
-            this.OSM.markerSource.addFeature(this.OSM.marker);
-
-            this.OSM.oMap.on('singleclick', event => {
-                const lonLat = toLonLat(event.coordinate);
-                this.setState({ longitude: lonLat[0], latitude: lonLat[1] }, () => this.updateMap());
-            });
-        }
-
-        const zoom = this.OSM.oMap.getView().getZoom();
-        this.OSM.marker.setGeometry(new Point(center));
-        this.OSM.oMap.setView(new View({ center, zoom }));
     }
-
-    // componentDidMount() {
-    //     this.updateMap();
-    // }
-
     getLocation() {
-        // if (!this.ids) {
-        //     return
-        // }
-        // return <div className={cls.mapWrapper}>
-        //     <div id="map" className={cls.map} />
-        // </div>
-        return <Location />;
+        return <Location iconSetting={this.state.settings.icon || null} center={this.state[this.id]} data={this.getStandardContent(this.id, false, true)} />;
     }
 
     render() {
         return this.wrapContent([
             this.getLocation(),
-            // this.checkHistory(this.ids.current.temperature, true) && this.state.showDialogBottom ?
-            //     dialogChartCallBack(this.onDialogCloseBottom, this.ids.current.temperature, this.props.socket, this.props.themeType, this.props.systemConfig, this.props.allObjects, this.getIdHistorys(this.getAllIds())) : null,
-            // this.checkCornerTop(this.ids.days.length, true) && this.state.showDialog ?
-            //     <Dialog dialogKey={this.key + 'dialog'}
-            //         key={this.key + 'dialog'}
-            //         transparent
-            //         name={this.state.settings.name}
-            //         enumNames={this.props.enumNames}
-            //         settings={this.state.settings}
-            //         objects={this.props.objects}
-            //         windUnit={this.windUnit}
-            //         pressureUnit={this.pressureUnit}
-            //         onCollectIds={this.props.onCollectIds}
-            //         ids={this.ids}
-            //         windowWidth={this.props.windowWidth}
-            //         onClose={this.onDialogClose}
-            //     /> : null
+            this.state.showDialog ?
+                <Dialog dialogKey={this.key + 'dialog'}
+                    key={this.key + 'dialog'}
+                    transparent
+                    name={this.state.settings.name}
+                    enumNames={this.props.enumNames}
+                    settings={this.state.settings}
+                    objects={this.props.objects}
+                    ids={this.ids}
+                    windowWidth={this.props.windowWidth}
+                    onClose={this.onDialogClose}
+                    iconSetting={this.state.settings.icon || null}
+                    center={this.state[this.id]}
+                    data={this.getStandardContent(this.id, false, true)}
+                    radius={this.state[this.radius]}
+                    getReadHistoryData={(callback) => this.getReadHistoryData(this.id, callback)}
+                /> : null
         ]);
     }
 }

@@ -1,87 +1,81 @@
 import React, { useEffect, useRef, useState } from 'react';
+import ReactDOMServer from 'react-dom/server';
 import cls from './style.module.scss';
 import I18n from '@iobroker/adapter-react/i18n';
-import { IconButton, Tooltip } from '@material-ui/core';
-import { MdAvTimer } from 'react-icons/md';
-import { FaRegCalendarTimes } from "react-icons/fa";
 import clsx from 'clsx/dist/clsx';
-// import {
-//     interaction, layer, custom, control, //name spaces
-//     Interactions, Overlays, Controls,     //group
-//     Map, Layers, Overlay, Util    //objects
-// } from "react-openlayers";
-import 'ol/ol.css';
-import { Map, View } from "ol";
-// import TileLayer from "ol/layer/Tile";
-import OSM from "ol/source/OSM";
-import Tile from 'ol/layer/Tile';
-import { MapContainer as LeafletMap, TileLayer } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
+import Pin from '../../icons/Pin';
+import L from 'leaflet';
+import IconAdapter from '@iobroker/adapter-react/Components/Icon';
 
 
 
-const Location = ({ children, zoom, center }) => {
-    const [map, setMap] = useState({});
-    const [isMounted, setIsMounted] = useState(false);
-    const mapElement = useRef(map);
 
-    // const updateMap = () => {
-    //     // if (!map) {
-    //     const initialMap = new Map({
-    //         target: mapElement.current,
-    //         layers: [
-    //             new TileLayer({
-    //                 source: new OSM()
-    //             })
-    //         ],
-    //         view: new View({
-    //             center: [53.90170546878013, 27.55670285783708],
-    //             zoom: 6
-    //         }),
-    //         controls: [],
-    //         layers: [new Tile({ source: new OSM() })],
-    //     });
-    //     setMap(initialMap);
-    //     if (mapElement.current) {
-    //         setIsMounted(true)
-    //     }
-    //     // }
-    // }
-
-    useEffect(() => {
-        if (isMounted) {
-        } else {
-            // updateMap();
-        }
+const MapUpdate = ({ position }) => {
+    const map = useMapEvents({
+        click: () => {
+            map.locate()
+        },
+        locationfound: (location) => {
+            console.log(11223344, 'location found:', location)
+        },
     })
-    console.log(11223344, mapElement)
+    useEffect(() => {
+        map.invalidateSize()
+    })
+    useEffect(() => {
+        map.setView(position)
+    }, [position])
+    return null
+}
+
+const Location = ({ center, data, iconSetting }) => {
+    const icon = L.divIcon({
+        className: 'custom-icon',
+        html: ReactDOMServer.renderToString(<IconAdapter className={clsx(cls.iconStyle, iconSetting && cls.iconRadius)} src={iconSetting || <Pin className={cls.iconStyle} />} />)
+    });
+    const [position, setPosition] = useState([0, 0]);
+    useEffect(() => {
+        if (typeof center === 'string') {
+            console.log(11223344, center)
+            const parts = center.split(',').map(i => parseFloat(i.trim()));
+            setPosition([parts[0], parts[1]]);
+        }
+    }, [center])
     return <div className={cls.mapWrapper}>
-        {/* <div ref={mapElement} className={cls.map} >
-        </div> */}
-        <LeafletMap
-            center={[0,0]}
-            zoom={6}
-            maxZoom={18}
-            attributionControl={true}
-            zoomControl={true}
-            doubleClickZoom={true}
-            scrollWheelZoom={true}
-            dragging={true}
+        <div className={cls.wrapperName}>{data.name}</div>
+        <div className={cls.wrapperState}>{data.state}</div>
+        <MapContainer
+            // center={position}
+            zoom={14}
+            // maxZoom={18}
+            attributionControl={false}
+            zoomControl={false}
+            doubleClickZoom={false}
+            scrollWheelZoom={false}
+            dragging={false}
             animate={true}
             easeLinearity={0.35}
-            style={{height:'100%'}}
-            // whenCreated={this.onMap}
+            className={cls.map}
         >
+            <MapUpdate position={position} />
             <TileLayer
-                url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-        </LeafletMap>
+            <Marker icon={icon} position={position}>
+            </Marker>
+        </MapContainer>
     </div>
 }
 
 Location.defaultProps = {
-    children: '',
-    zoom: 6,
-    center: [0, 0]
+    center: '0, 0',
+    data:{
+        name:'',
+        state:''
+    },
+    iconSetting:''
 };
 
 export default Location;
