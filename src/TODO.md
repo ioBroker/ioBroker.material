@@ -36,14 +36,8 @@
   - number: slider from min to max
 
 ## Location
-- Use open street map => open layers: https://www.npmjs.com/package/react-openlayers
-<!-- - Double tile -->
-- Dialog with big map
-- Possibility to enter name in dialog
-- And the icon
-- Show on tile and on dialog when last time the data was updated
-- https://rubenspgcavalcante.github.io/leaflet-ant-path/
-
+- Change icons to persons
+- Allow set of the zoom level for mini-map and for dialog-map and use it
 ## Volume
 
 ## Blinds

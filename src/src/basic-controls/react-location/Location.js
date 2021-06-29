@@ -9,9 +9,6 @@ import Pin from '../../icons/Pin';
 import L from 'leaflet';
 import IconAdapter from '@iobroker/adapter-react/Components/Icon';
 
-
-
-
 const MapUpdate = ({ position }) => {
     const map = useMapEvents({
         click: () => {
@@ -20,20 +17,24 @@ const MapUpdate = ({ position }) => {
         locationfound: (location) => {
             console.log(11223344, 'location found:', location)
         },
-    })
+    });
+    
     useEffect(() => {
         map.invalidateSize()
-    })
+    });
+
     useEffect(() => {
         map.setView(position)
-    }, [position])
+    }, [position]);
+
     return null
 }
 
 const Location = ({ center, data, iconSetting }) => {
     const icon = L.divIcon({
         className: 'custom-icon',
-        html: ReactDOMServer.renderToString(<IconAdapter className={clsx(cls.iconStyle, iconSetting && cls.iconRadius)} src={iconSetting || <Pin className={cls.iconStyle} />} />)
+        //html: ReactDOMServer.renderToString(<IconAdapter className={clsx(cls.iconStyle, iconSetting && cls.iconRadius)} src={iconSetting || <Pin className={cls.iconStyle} />} />)
+        html: `<img src="${iconSetting}" className="${clsx(cls.iconStyle, iconSetting && cls.iconRadius)}"/>`
     });
     const [position, setPosition] = useState([0, 0]);
     useEffect(() => {
@@ -48,8 +49,7 @@ const Location = ({ center, data, iconSetting }) => {
         <div className={cls.wrapperState}>{data.state}</div>
         <MapContainer
             // center={position}
-            zoom={14}
-            // maxZoom={18}
+            zoom={12}
             attributionControl={false}
             zoomControl={false}
             doubleClickZoom={false}
@@ -60,9 +60,7 @@ const Location = ({ center, data, iconSetting }) => {
             className={cls.map}
         >
             <MapUpdate position={position} />
-            <TileLayer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
+            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"/>
             <Marker icon={icon} position={position}>
             </Marker>
         </MapContainer>
@@ -72,10 +70,10 @@ const Location = ({ center, data, iconSetting }) => {
 Location.defaultProps = {
     center: '0, 0',
     data:{
-        name:'',
-        state:''
+        name: '',
+        state: ''
     },
-    iconSetting:''
+    iconSetting: ''
 };
 
 export default Location;

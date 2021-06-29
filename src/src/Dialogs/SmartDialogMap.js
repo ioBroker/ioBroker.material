@@ -75,6 +75,7 @@ const Location = ({ center, data, iconSetting, getReadHistoryData, radius }) => 
             setHistory(newHistory);
         })
     }, [center]);
+    console.log(11223344,'Icon',iconSetting)
     return <div className={cls.mapWrapper}>
         <div className={cls.wrapperName}>{data.name}</div>
         <div className={cls.wrapperMapState}>{data.state}</div>
