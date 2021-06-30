@@ -78,3 +78,6 @@
 ## Custom e-chart
 - or typedetector or rooms
 - Name
+
+## Camera
+- Auto detect and add widget
