@@ -122,11 +122,11 @@ Location.defaultProps = {
 
 class SmartDialogMap extends SmartDialogGeneric {
     // expected:
-    // startValue
-    // actualValue
-    // onValueChange
-    // onClose
-    // objects
+    // center
+    // data
+    // getReadHistoryData
+    // radius
+    // iconSetting
     // states
     constructor(props) {
         super(props);
@@ -155,14 +155,18 @@ SmartDialogMap.propTypes = {
     dialogKey: PropTypes.string.isRequired,
     windowWidth: PropTypes.number,
     onClose: PropTypes.func.isRequired,
-    unit: PropTypes.string,
-    step: PropTypes.number,
-    commaAsDelimiter: PropTypes.bool,
+    transparent: PropTypes.string,
+    enumNames: PropTypes.number,
+    settings: PropTypes.bool,
+    iconSetting: PropTypes.bool,
+    center: PropTypes.string,
+    data: PropTypes.object,
+    radius: PropTypes.number,
+    getReadHistoryData: PropTypes.func,
 
     objects: PropTypes.object,
-    states: PropTypes.object,
+    ids: PropTypes.object,
     onValueChange: PropTypes.func,
-    startValue: PropTypes.number.isRequired,
     actualValue: PropTypes.number,
 };
 

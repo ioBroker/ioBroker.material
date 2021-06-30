@@ -5,7 +5,7 @@ import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import { DialogTitle, makeStyles, ThemeProvider } from '@material-ui/core';
+import { makeStyles, ThemeProvider } from '@material-ui/core';
 import cls from './style.module.scss';
 
 import IconClose from '@material-ui/icons/Close';

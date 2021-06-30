@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2020 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2021 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -183,13 +183,12 @@ class SmartLocation extends SmartGeneric {
 
             state = this.channelInfo.states.find(state => state.id && state.name === 'ACCURACY');
             this.accuracy = state?.id || `${parts}.ACCURACY`;
-
         }
 
         this.width = 2;
         this.props.tile.setState({ isPointer: false });
         this.props.tile.setState({ state: true });
-        this.key = 'smart-location-' + this.id + '-';
+        this.key = `smart-location-${this.id}-`;
 
         // this.stateRx.showDialogBottom = false;
         this.stateRx.showDialog = false; // support dialog in this tile used in generic class)
@@ -299,15 +298,15 @@ class SmartLocation extends SmartGeneric {
         if (state === undefined || state === null || !this.lastChange) {
             return null;
         } else {
-            return (<Moment style={{ fontSize: 12 }} date={this.lastChange} interval={15} fromNow locale={I18n.getLanguage()} />);
+            return <Moment style={{ fontSize: 12 }} date={this.lastChange} interval={15} fromNow locale={I18n.getLanguage()} />;
         }
     }
     getLocation() {
         return <Location
-            settings={this.state.settings}
             iconSetting={this.state.settings.icon || null}
             center={this.state[this.id]}
-            data={this.getStandardContent(this.id, false, true)} />;
+            data={this.getStandardContent(this.id, false, true)}
+        />;
     }
 
     render() {
@@ -329,7 +328,7 @@ class SmartLocation extends SmartGeneric {
                     center={this.state[this.id]}
                     data={this.getStandardContent(this.id, false, true)}
                     radius={this.state[this.radius]}
-                    getReadHistoryData={(callback) => this.getReadHistoryData(this.id, callback)}
+                    getReadHistoryData={callback => this.getReadHistoryData(this.id, callback)}
                 /> : null
         ]);
     }

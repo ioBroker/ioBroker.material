@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2020 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2021 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,9 +70,7 @@ class SmartInfo extends SmartGeneric {
             }
 
             if (infoIDs[1]) {
-                this.secondary = {
-                    id: infoIDs[1]
-                };
+                this.secondary = {id: infoIDs[1]};
             }
             const name = this.getObjectNameCh();
             this.infos = infoIDs.map(id => SmartInfo.getObjectAttributes(this.props.objects, id, name));
@@ -94,7 +92,7 @@ class SmartInfo extends SmartGeneric {
             isPointer: this.showCorner
         });
 
-        this.key = 'smart-info-' + this.id + '-';
+        this.key = `smart-info-${this.id}-`;
 
         this.componentReady();
     }
@@ -148,6 +146,7 @@ class SmartInfo extends SmartGeneric {
                 common: objects[id].common
             }
         }
+        // TODO: add voltage, power, frequency, current
     }
 
     updateState(id, state) {

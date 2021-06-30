@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2020 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2021 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -975,9 +975,9 @@ class SmartGeneric extends Component {
                     }
                 });
             })
-            .catch(e => {
-                console.error('Cannot read history: ' + e);
-            })
+            .catch(e =>
+                console.error('Cannot read history: ' + e)
+            );
     }
 
     convertData = (values) => {
