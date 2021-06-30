@@ -16,7 +16,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import ReactDOMServer from 'react-dom/server';
-
 import clsx from 'clsx';
 
 import I18n from '@iobroker/adapter-react/i18n';
@@ -28,21 +27,13 @@ import 'leaflet/dist/leaflet.css';
 import { MapContainer, TileLayer, Marker, useMapEvents, Polyline, Circle } from 'react-leaflet';
 import Pin from '../icons/Pin';
 import L from 'leaflet';
-import IconAdapter from '@iobroker/adapter-react/Components/Icon';
 import CustomFab from '../States/components/CustomFab';
 
 const MapUpdate = ({ position, setMap }) => {
-    const map = useMapEvents({
-        click: () => {
-            // map.locate()
-        },
-        locationfound: (location) => {
-            console.log(11223344, 'location found:', location)
-        },
-    });
+    const map = useMapEvents({ });
     useEffect(() => {
         setMap(map);
-        map.setView(position,undefined,{noMoveStart:true});
+        map.setView(position, undefined, { noMoveStart: true });
     }, []);
     useEffect(() => {
         map.invalidateSize()
@@ -51,15 +42,17 @@ const MapUpdate = ({ position, setMap }) => {
     return null
 }
 
-const Location = ({ center, data, iconSetting, getReadHistoryData, radius }) => {
+const Location = ({ center, data, iconSetting, getReadHistoryData, radius, settings }) => {
     const icon = L.divIcon({
         className: 'custom-icon',
-        html: ReactDOMServer.renderToString(<IconAdapter className={clsx(cls.iconStyle, iconSetting && cls.iconRadius)} src={iconSetting || <Pin className={cls.iconStyle} />} />)
+        html: ReactDOMServer.renderToString(iconSetting ? <img className={clsx(cls.iconStyle, cls.iconRadius)} src={iconSetting} alt="icon" /> : <Pin className={cls.iconStyle} />)
     });
+
     const [position, setPosition] = useState([0, 0]);
-    const [zoom] = useState(15);
+    const [zoom] = useState(settings?.zoomDialogMap || 15);
     const [history, setHistory] = useState([]);
     const [map, setMap] = useState(null);
+
     useEffect(() => {
         if (typeof center === 'string') {
             const parts = center.split(',').map(i => parseFloat(i.trim()));
@@ -75,7 +68,7 @@ const Location = ({ center, data, iconSetting, getReadHistoryData, radius }) => 
             setHistory(newHistory);
         })
     }, [center]);
-    console.log(11223344,'Icon',iconSetting)
+
     return <div className={cls.mapWrapper}>
         <div className={cls.wrapperName}>{data.name}</div>
         <div className={cls.wrapperMapState}>{data.state}</div>
@@ -148,6 +141,7 @@ class SmartDialogMap extends SmartDialogGeneric {
                 data={this.props.data}
                 getReadHistoryData={this.props.getReadHistoryData}
                 radius={this.props.radius}
+                settings={this.props.settings}
             />
         </div>;
     }

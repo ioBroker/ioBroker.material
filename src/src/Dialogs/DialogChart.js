@@ -6,7 +6,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import { DialogTitle, makeStyles, ThemeProvider } from '@material-ui/core';
-
+import cls from './style.module.scss';
 
 import IconClose from '@material-ui/icons/Close';
 
@@ -80,7 +80,9 @@ const DialogChart = ({ cb, id, socket, themeType, systemConfig, allObjects, ids 
     const classes = useStyles();
     const [open, setOpen] = useState(true);
     const [arrayObjects, setArrayObjects] = useState([]);
-
+    useEffect(() => {
+        document.getElementById('root').className = `blurDialogOpen`;
+    }, [])
     useEffect(() => {
         if (ids.length) {
             let newArray = ids.map(idUri => allObjects[idUri]);
@@ -91,6 +93,7 @@ const DialogChart = ({ cb, id, socket, themeType, systemConfig, allObjects, ids 
     const onClose = () => {
         cb()
         setOpen(false);
+        document.getElementById('root').className = ``;
         if (node) {
             document.body.removeChild(node);
             node = null;
@@ -104,7 +107,10 @@ const DialogChart = ({ cb, id, socket, themeType, systemConfig, allObjects, ids 
             // fullScreen
             onClose={onClose}
             open={open}
-            classes={{ paper: classes.paper }}
+            classes={{
+                paper: classes.paper,
+                root: cls.rootDialog
+            }}
         >
             {/* <DialogTitle>{I18n.t('Add state %s', `sssss`)}</DialogTitle> */}
             <DialogContent className={classes.overflowHidden} dividers>

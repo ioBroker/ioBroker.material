@@ -91,6 +91,7 @@ class SmartDialogThermostat extends SmartDialogGeneric {
     }
 
     componentDidMount() {
+        document.getElementById('root').className = `blurDialogOpen`;
         this.initMouseHandlers();
     }
 

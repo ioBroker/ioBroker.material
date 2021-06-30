@@ -60,6 +60,8 @@ import './helpers/stylesVariables.scss';
 import clsx from 'clsx';
 import { Tooltip } from '@material-ui/core';
 
+import IconAdapter from '@iobroker/adapter-react/Components/Icon';
+
 const isKeyboardAvailableOnFullScreen = (typeof Element !== 'undefined' && 'ALLOW_KEYBOARD_INPUT' in Element) && Element.ALLOW_KEYBOARD_INPUT;
 
 const appConfigID = 'system.adapter.material.0';
@@ -1241,11 +1243,11 @@ class App extends GenericApp {
     getVersionControl() {
         if (!this.state.editMode) return null;
         if (this.state.actualVersion && (this.state.actualVersion !== VERSION || (this.urlVersion && this.state.actualVersion !== this.urlVersion))) {
-            return (<Button onClick={() => this.onUpdateVersion()} variant="contained" size="small" title={I18n.t('Update to') + ' ' + this.state.actualVersion} color="secondary">
+            return (<Button className={cls.iconSettings} onClick={() => this.onUpdateVersion()} variant="contained" size="small" title={I18n.t('Update to') + ' ' + this.state.actualVersion} color="secondary">
                 <IconRefresh style={{ marginRight: 5 }} /> {parseFloat(this.state.width) > 500 ? I18n.t('Update to') + ' ' + this.state.actualVersion : ''}
             </Button>);
         } else {
-            return (<span onClick={() => this.onUpdateVersion()}>{VERSION}</span>);
+            return (<span className={cls.iconSettings} onClick={() => this.onUpdateVersion()}>{VERSION}</span>);
         }
     }
 
@@ -1339,8 +1341,9 @@ class App extends GenericApp {
         if (App.isFullScreenSupported() && !this.initialFullScreenMode) {
             return (
                 <IconButton
-                    style={{ color: useBright ? Theme.palette.textColorBright : Theme.palette.textColorDark }}
-                    onClick={this.onToggleFullScreen}>
+                    onClick={this.onToggleFullScreen}
+                    className={cls.iconSettings}
+                    >
                     {this.state.fullScreen ?
                         <IconFullScreenExit width={Theme.iconSize} height={Theme.iconSize} /> :
                         <IconFullScreen width={Theme.iconSize} height={Theme.iconSize} />
@@ -1371,7 +1374,8 @@ class App extends GenericApp {
             return (
                 <IconButton
                     onClick={this.editEnumSettingsOpen}
-                    style={{ color: this.state.editEnumSettings ? Theme.palette.editActive : (useBright ? Theme.palette.textColorBright : Theme.palette.textColorDark) }}>
+                    className={cls.iconSettings}
+                    >
                     <IconSettings width={Theme.iconSize} height={Theme.iconSize} />
                 </IconButton>);
         } else {
@@ -1419,21 +1423,23 @@ class App extends GenericApp {
     getAppBar() {
         const toolbarBackground = this.state.settings ? this.state.settings.color : undefined;
         const useBright = !toolbarBackground || Utils.isUseBright(toolbarBackground);
-
+        console.log(11223344, toolbarBackground)
         return (<AppBar
             position="fixed"
+            className={cls.colorBar}
             style={{
                 width: this.state.menuFixed ? 'calc(100% - ' + Theme.menu.width + 'px)' : '100%',
-                color: useBright ? Theme.palette.textColorBright : Theme.palette.textColorDark,
+                // color: 'white',
                 marginLeft: this.state.menuFixed ? Theme.menu.width : 0
             }}
         >
             <Toolbar className={cls.wrapperToolBar} >
+                {toolbarBackground && <div style={{ borderColor: toolbarBackground }} className={cls.toolbarBackgroundOpacity}></div>}
                 {!this.state.menuFixed &&
                     (<IconButton color="inherit" aria-label="Menu" onClick={this.onToggleMenu} >
                         <IconMenu />
                     </IconButton>)}
-                {Utils.getIcon(this.state.settings, Theme.appBarIcon)}
+                <IconAdapter style={Theme.appBarIcon} src={this.state?.settings?.icon} />
                 <h3 color="inherit" style={{ flex: 1 }}>
                     {this.getTitle()}
                 </h3>

@@ -1,39 +1,55 @@
-.wrapperBlock{
+.wrapperBlock {
     padding-top: 55px;
     width: 100%;
     overflow-y: auto;
     display: flex;
     // height: fit-content;
 }
-.block{
+.block {
     height: fit-content;
     display: flex;
     flex-wrap: wrap;
 }
-.droppableList{
+.droppableList {
     padding-top: 55px;
     width: 100%;
     flex-wrap: wrap;
     overflow-y: auto;
     display: block;
 }
-.buttonClock{
+.buttonClock {
     position: absolute !important;
     top: 70px;
-    right: 170px;
+    right: 80px;
+    padding: 0 !important;
 }
-.buttonWhether{
+.customUrlWrapper {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+.customUrlWrapperText {
+    display: flex;
+    padding: 16px;
+    width: 100%;
+    margin-top: 76px;
+    color: rgb(0 0 0 / 60%);
+    background: silver;
+    position: absolute;
+    left: -1px;
+}
+.buttonWhether {
     position: absolute !important;
     top: 70px;
     right: 250px;
 }
-.dragStyle{
+.dragStyle {
     background: #43b71dcb;
     opacity: 0.3;
     border-radius: 14px;
     margin: 0 10px;
     width: calc(100% - 20px);
 }
-.drag{
+.drag {
     transition: margin 0.5s, border-radius 0.5s, background 0.5s, opacity 0.5s;
 }

@@ -15,10 +15,8 @@
  **/
 import React from 'react';
 import SmartGeneric from '../SmartGeneric';
-import iconRobot from '../../icons/robot-vacuum.svg';
+
 import Icon from '../../icons/RobotVacuum';
-import IconThermometer from '../../icons/ThermometerSimple';
-import IconHydro from '../../icons/Humidity';
 import Theme from '../../theme';
 import Dialog from '../../Dialogs/SmartDialogVacuumCleaner';
 import I18n from '@iobroker/adapter-react/i18n';
@@ -72,6 +70,12 @@ class SmartVacuumCleaner extends SmartGeneric {
 
             state = this.channelInfo.states.find(state => state.id && state.name === 'PAUSE');//
             this.pauseId = state?.id || `${parts}.PAUSE`;
+
+            state = this.channelInfo.states.find(state => state.id && state.name === 'MAP_BASE64');//
+            this.mapBase64Id = state?.id || `${parts}.MAP_BASE64`;
+
+            state = this.channelInfo.states.find(state => state.id && state.name === 'MAP_URL');//
+            this.mapUrlId = state?.id || `${parts}.MAP_URL`;
 
             this.imageId = `${parts}.IMAGE`;
 
@@ -241,7 +245,7 @@ class SmartVacuumCleaner extends SmartGeneric {
         if (!state) {
             return;
         }
-        if (this.watherId === id || this.wasteId === id || this.imageId === id || this.batteryId === id || this.stateId === id || this.pauseId === id || this.workModeId === id || this.powerId === id || this.id === id || id === this.humidityId || id === this.modeId) {
+        if (this.mapBase64Id === id || this.mapUrlId === id || this.watherId === id || this.wasteId === id || this.imageId === id || this.batteryId === id || this.stateId === id || this.pauseId === id || this.workModeId === id || this.powerId === id || this.id === id || id === this.humidityId || id === this.modeId) {
             newState[id] = typeof state.val !== 'number' ? state.val : parseFloat(state.val);
             if (typeof state.val === 'number' && isNaN(newState[id])) {
                 newState[id] = null;
@@ -258,7 +262,7 @@ class SmartVacuumCleaner extends SmartGeneric {
             // this.getSecondaryDiv(),
             this.getSecondaryDivActual(),
             this.getSecondaryDivTop(),
-            this.getCharts(this.actualId,null,false),
+            this.getCharts(this.actualId, null, false),
             this.state.showDialogBottom ?
                 dialogChartCallBack(this.onDialogCloseBottom, this.batteryId, this.props.socket, this.props.themeType, this.props.systemConfig, this.props.allObjects, this.getIdHistorys(this.getAllIds(true))) : null,
             this.state.showDialog ?
@@ -291,7 +295,9 @@ class SmartVacuumCleaner extends SmartGeneric {
                     workModeArray={this.workModeId ? this.props.objects[this.workModeId]?.common?.states : null}
                     onWorkMode={this.onWorkMode.bind(this)}
                     //image
-                    imageVacuum={this.imageId ? this.state[this.imageId] : null}
+                    imageVacuum={this.imageId && this.state[this.imageId] ? this.state[this.imageId] :
+                        this.mapBase64Id && this.state[this.mapBase64Id] ? this.state[this.mapBase64Id] :
+                            this.mapUrlId && this.state[this.mapUrlId] ? this.state[this.mapUrlId] : null}
                     //pause
                     pauseValue={this.pauseId ? this.state[this.pauseId] : null}
                     onPauseToggle={this.onPauseToggle.bind(this)}
@@ -316,8 +322,8 @@ class SmartVacuumCleaner extends SmartGeneric {
                     humidityId={this.props.objects[this.humidityId] ? this.humidityId : null}
                     actualId={this.props.objects[this.actualId] && this.actualId.indexOf('ACTUAL') !== -1 ? this.actualId : null}
                     setId={this.props.objects[this.id] ? this.id : null}
-                    ///Modal Charts
-                    // openModal={id => dialogChartCallBack(() => { }, id, this.props.socket, this.props.themeType, this.props.systemConfig, this.props.allObjects, [])}
+                ///Modal Charts
+                // openModal={id => dialogChartCallBack(() => { }, id, this.props.socket, this.props.themeType, this.props.systemConfig, this.props.allObjects, [])}
                 /> : null
         ]);
     }

@@ -4,10 +4,11 @@ import { Fab } from '@material-ui/core';
 import cls from './style.module.scss';
 import clsx from 'clsx';
 
-const CustomFab = ({ fullWidth, size, onClick, style, className, children, active }) => {
+const CustomFab = ({ fullWidth, size, onClick, style, className, children, active, title }) => {
     return <Fab
         variant="outlined"
         color="primary"
+        title={title}
         onClick={onClick}
         fullWidth={fullWidth}
         style={style}
@@ -21,6 +22,7 @@ const CustomFab = ({ fullWidth, size, onClick, style, className, children, activ
 
 CustomFab.defaultProps = {
     value: '',
+    title: '',
     className: null,
     variant: 'standard',
     size: 'medium',

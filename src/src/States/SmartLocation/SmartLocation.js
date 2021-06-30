@@ -243,38 +243,54 @@ class SmartLocation extends SmartGeneric {
     }
 
     getDialogSettings() {
-        const settings = super.getDialogSettings();
+        let settings = super.getDialogSettings();
+        // settings.push({
+        //     name: 'chartLast',
+        //     value: this.state.settings.chartLast || false,
+        //     type: 'boolean'
+        // });
+        // settings.push({
+        //     name: 'tempID',
+        //     value: this.state.settings.tempID || '',
+        //     type: 'string'
+        // });
+        // settings.push({
+        //     name: 'humidityID',
+        //     value: this.state.settings.humidityID || '',
+        //     type: 'string'
+        // });
+        // settings.push({
+        //     name: 'locationText',
+        //     value: this.state.settings.locationText || '',
+        //     type: 'string'
+        // });
+        // settings.push({
+        //     name: 'hideFirstDay',
+        //     value: this.state.settings.hideFirstDay || false,
+        //     type: 'boolean'
+        // });
         settings.push({
-            name: 'chartLast',
-            value: this.state.settings.chartLast || false,
-            type: 'boolean'
+            name: 'zoomMiniMap',
+            value: this.state.settings.zoomMiniMap || 12,
+            max: 18,
+            type: 'number'
         });
         settings.push({
-            name: 'tempID',
-            value: this.state.settings.tempID || '',
-            type: 'string'
-        });
-        settings.push({
-            name: 'humidityID',
-            value: this.state.settings.humidityID || '',
-            type: 'string'
-        });
-        settings.push({
-            name: 'locationText',
-            value: this.state.settings.locationText || '',
-            type: 'string'
-        });
-        settings.push({
-            name: 'hideFirstDay',
-            value: this.state.settings.hideFirstDay || false,
-            type: 'boolean'
+            name: 'zoomDialogMap',
+            value: this.state.settings.zoomDialogMap || 15,
+            max: 18,
+            type: 'number'
         });
         // remove doubleSize from list
-        settings.forEach((item, i) => {
-            if (item.name === 'doubleSize') {
-                settings.splice(i, 1);
-                return false
+        settings = settings.filter((e, i) => {
+            if (e && (e.name === 'noAck'
+                || e.name === 'colorOn'
+                // || e.name === 'icon'
+                || e.name === 'background'
+            )) {
+                return false;
             }
+            return true;
         });
         return settings;
     }
@@ -287,14 +303,19 @@ class SmartLocation extends SmartGeneric {
         }
     }
     getLocation() {
-        return <Location iconSetting={this.state.settings.icon || null} center={this.state[this.id]} data={this.getStandardContent(this.id, false, true)} />;
+        return <Location
+            settings={this.state.settings}
+            iconSetting={this.state.settings.icon || null}
+            center={this.state[this.id]}
+            data={this.getStandardContent(this.id, false, true)} />;
     }
 
     render() {
         return this.wrapContent([
             this.getLocation(),
             this.state.showDialog ?
-                <Dialog dialogKey={this.key + 'dialog'}
+                <Dialog 
+                    dialogKey={this.key + 'dialog'}
                     key={this.key + 'dialog'}
                     transparent
                     name={this.state.settings.name}

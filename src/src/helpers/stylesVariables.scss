@@ -168,3 +168,7 @@ $single: (
 :root.single {
     @include spread-map($single);
 }
+.blurDialogOpen{
+    filter: blur(8px);
+    transition: filter .5s;
+}

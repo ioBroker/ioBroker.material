@@ -3,6 +3,17 @@
     height: 100vh !important;
     display: flex;
 }
+.colorBar {
+    color: var(--silverColor) !important;
+}
+.toolbarBackgroundOpacity {
+    position: absolute;
+    width: calc(100% - 6px);
+    height: calc(100% - 4px);
+    left: 1px;
+    border: 2px solid;
+    border-radius: 8px;
+}
 .wrapperToolBar {
     height: 45px;
     min-height: 45px !important;
@@ -33,7 +44,7 @@
     z-index: 10001 !important;
 }
 .buttonStyle {
-    color:  var(--silverColor) !important;
+    color: var(--silverColor) !important;
     transition: all 0.5s;
 }
 .buttonActive {
@@ -42,7 +53,7 @@
 .contentItem {
     display: flex;
     align-items: center;
-    color:  var(--silverColor);
+    color: var(--silverColor);
     width: 100%;
 }
 .itemIcon {
@@ -85,10 +96,10 @@
 .overFlow {
     overflow-y: auto;
 }
-.iconSettings{
+.iconSettings {
     color: var(--white) !important;
 }
-.iconSettingsActive{
+.iconSettingsActive {
     color: var(--generalColor) !important;
 }
 @media screen and (max-width: 835px) {

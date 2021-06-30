@@ -42,6 +42,7 @@ import IconAdapter from '@iobroker/adapter-react/Components/Icon';
 import cls from './style.module.scss';
 import clsGeneric from '../style.module.scss';
 import clsx from 'clsx/dist/clsx';
+import { dialogChartCallBack } from '../../Dialogs/DialogChart';
 
 // import IconLockOpened from "react-icons/lib/md/lock-open";
 // import IconLockClosed from "react-icons/lib/md/lock";
@@ -295,6 +296,10 @@ class SmartState extends SmartGeneric {
         return this.wrapContent([
             this.getStandardContent(this.actualId),
             this.getSecondaryDiv(),
+            this.channelInfo.type === Types.motion &&
+            this.getCharts(this.secondary?.id),
+            this.channelInfo.type === Types.motion && this.state.showDialogBottom ?
+                dialogChartCallBack(this.onDialogCloseBottom, this.secondary.id, this.props.socket, this.props.themeType, this.props.systemConfig, this.props.allObjects, this.getIdHistorys(this.getAllIds())) : null,
             // this.channelInfo.type === Types.motion &&
             //     this.state.showDialog ?
             //     <Dialog key={this.key + 'dialog'}

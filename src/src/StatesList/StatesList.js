@@ -21,7 +21,7 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { FaArrowsAltV as IconVertical } from 'react-icons/fa'
 import { MdAdd as IconAdd } from 'react-icons/md'
 import { FaArrowsAltH as IconHorizontal } from 'react-icons/fa'
-import Fab from '@material-ui/core/Fab';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import Theme from '../theme';
 import Utils from '@iobroker/adapter-react/Components/Utils';
@@ -30,6 +30,8 @@ import StatesSubList from '../StatesSubList/StatesSubList';
 import Clock from '../basic-controls/react-clock/Clock';
 import cls from './style.module.scss';
 import clsx from 'clsx';
+import SmartDialogWidget from '../Dialogs/SmartDialogWidget';
+import CustomFab from '../States/components/CustomFab';
 
 
 const styles = {
@@ -54,13 +56,15 @@ const styles = {
         position: 'fixed',
         top: 70,
         right: 30,
-        zIndex: 4
+        zIndex: 4,
+        padding: '0 !important'
     },
     'add-button': {
         position: 'fixed',
         top: 70,
         right: 100,
-        zIndex: 4
+        zIndex: 4,
+        padding: '0 !important'
     }
 };
 
@@ -93,6 +97,7 @@ class StatesList extends Component {
             newLine: false,
             dragging: false,
             subDragging: false,
+            widgetDialog: false,
             enumID: this.props.enumID,
             align: this.props.align,
             order: Utils.getSettingsOrder(this.props.objects[this.props.enumID], null, { user: this.props.user }),
@@ -352,7 +357,47 @@ class StatesList extends Component {
 
         }
     }
-
+    getDialogWidget = () => {
+        if (!this.state.widgetDialog) {
+            return null;
+        }
+        return <SmartDialogWidget
+            dialogKey="WidgetKey"
+            key="WidgetKey"
+            transparent
+            overflowHidden
+            name={I18n.t('Widgets')}
+            enumNames={this.props.enumNames}
+            objects={this.props.objects}
+            windowWidth={this.props.windowWidth}
+            onClose={this.onDialogClose}
+            arrayWidgets={[
+                {
+                    component:
+                        <Clock
+                            secondsParams={true}
+                            dayOfWeekParams={true}
+                            hour12Params={true}
+                            date={true}
+                            doubleSize={true}
+                        />,
+                    name: I18n.t('Add custom Clock'),
+                    onClick: this.onAddCustomClock
+                },
+                {
+                    component:
+                        <div className={cls.customUrlWrapper}>
+                            <div className={cls.customUrlWrapperText}>
+                                {I18n.t('Custom URL')}
+                            </div>
+                        </div>,
+                    name: I18n.t('Add custom URL'),
+                    onClick: this.onAddCustomURL
+                }
+            ]
+            }
+        />
+    }
     wrapAllItems(columns, provided, snapshot, style) {
         style = Object.assign({ marginLeft: this.props.marginLeft, width: 'calc(100% - ' + this.props.marginLeft + 'px)' }, style);
 
@@ -361,28 +406,29 @@ class StatesList extends Component {
                 {columns}
                 {provided.placeholder}
                 {this.getToggleDragButton()}
-                {this.getAddButton()}
-                {this.getAddButtonClock()}
+                {/* {this.getAddButton()} */}
+                {this.getAddButtonWidgets()}
+                {this.getDialogWidget()}
                 {/* {this.getAddButtonWhether()} */}
             </div>);
     }
 
     getToggleDragButton() {
         if (this.props.editMode && this.props.enumID !== Utils.INSTANCES) {
-            return (<Fab key={this.props.dialogKey + '-drag-button'}
+            return (<CustomFab key={this.props.dialogKey + '-drag-button'}
                 size="small"
                 title={I18n.t('Drag direction')}
                 style={{ fontSize: 24 }}
                 onClick={() => this.setState({ subDragging: !this.state.subDragging })}
                 className={this.props.classes['drag-button']}>
                 {this.state.subDragging ? <IconHorizontal /> : <IconVertical />}
-            </Fab>);
+            </CustomFab>);
         } else {
             return null;
         }
     }
 
-    onAddCustomURL() {
+    onAddCustomURL = () => {
         const newState = { customURLs: JSON.parse(JSON.stringify(this.state.customURLs || [])) };
 
         newState.customURLs.push({
@@ -404,7 +450,7 @@ class StatesList extends Component {
         });
     }
 
-    onAddCustomClock() {
+    onAddCustomClock = () => {
         const newState = { customURLs: JSON.parse(JSON.stringify(this.state.customURLs || [])) };
 
         newState.customURLs.push({
@@ -452,31 +498,34 @@ class StatesList extends Component {
         });
     }
 
-    getAddButton() {
-        if (this.props.editMode && this.props.enumID !== Utils.INSTANCES) {
-            return (<Fab key={this.props.dialogKey + '-add-button'}
-                size="small"
-                title={I18n.t('Add custom URL')}
-                style={{ fontSize: 24 }}
-                onClick={() => this.onAddCustomURL()}
-                className={this.props.classes['add-button']}>
-                <IconAdd />
-            </Fab>);
-        } else {
-            return null;
-        }
-    }
+    // getAddButton() {
+    //     if (this.props.editMode && this.props.enumID !== Utils.INSTANCES) {
+    //         return (<CustomFab key={this.props.dialogKey + '-add-button'}
+    //             size="small"
+    //             title={I18n.t('Add custom URL')}
+    //             style={{ fontSize: 24 }}
+    //             onClick={() => this.onAddCustomURL()}
+    //             className={this.props.classes['add-button']}>
+    //             <IconAdd />
+    //         </CustomFab>);
+    //     } else {
+    //         return null;
+    //     }
+    // }
 
-    getAddButtonClock() {
+    getAddButtonWidgets() {
         if (this.props.editMode && this.props.enumID !== Utils.INSTANCES) {
-            return (<Fab
-                size="small"
-                title={I18n.t('Add custom Clock')}
-                style={{ fontSize: 24 }}
-                onClick={() => this.onAddCustomClock()}
-                className={cls.buttonClock}>
-                <IconAdd />
-            </Fab>);
+            return (
+                <Tooltip title={I18n.t('Widgets')}>
+                    <CustomFab
+                        size="small"
+                        title={I18n.t('Widgets')}
+                        style={{ fontSize: 24 }}
+                        onClick={this.onDialogOpen}
+                        className={cls.buttonClock}>
+                        <IconAdd />
+                    </CustomFab>
+                </Tooltip>);
         } else {
             return null;
         }
@@ -496,6 +545,13 @@ class StatesList extends Component {
     //         return null;
     //     }
     // }
+    onDialogClose = () => {
+        this.setState({ widgetDialog: false });
+    }
+
+    onDialogOpen = () => {
+        this.setState({ widgetDialog: true });
+    }
 
     wrapContent(columns, isNothing) {
         let style;
@@ -532,8 +588,9 @@ class StatesList extends Component {
                 <div className={cls.block}>
                     {columns}
                     {this.getToggleDragButton()}
-                    {this.getAddButton()}
-                    {this.getAddButtonClock()}
+                    {/* {this.getAddButton()} */}
+                    {this.getAddButtonWidgets()}
+                    {this.getDialogWidget()}
                     {/* {this.getAddButtonWhether()} */}
                 </div>
             </div>);
@@ -647,6 +704,7 @@ class StatesList extends Component {
             const elem = columns.find(c => c.id === id);
             if (elem) {
                 if (elem.id === 'nothing') {
+                    debugger
                     return (<SmartTile
                         key="nothing"
                         editMode={this.props.editMode}

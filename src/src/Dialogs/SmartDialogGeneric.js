@@ -98,6 +98,7 @@ class SmartDialogGeneric extends Component {
     }
 
     componentDidMount() {
+        document.getElementById('root').className = `blurDialogOpen`;
         // move this element to the top of body
         /*if (this.refModal) {
             this.savedParent = this.refModal.current.parentElement;
@@ -116,6 +117,7 @@ class SmartDialogGeneric extends Component {
     }
 
     componentWillUnmount() {
+        document.getElementById('root').className = ``;
         //this.refModal && this.savedParent.appendChild(this.refModal.current);
 
         if (this.props.onCollectIds && this.subscribed) {
@@ -365,7 +367,8 @@ class SmartDialogGeneric extends Component {
             fullWidth
             scroll="paper"
             classes={{
-                paper: clsx('dialog-paper', this.props.classes?.dialogPaper, this.props.transparent && cls.paper)
+                paper: clsx('dialog-paper', this.props.classes?.dialogPaper, this.props.transparent && cls.paper),
+                root: cls.rootDialog
             }}
             open={true}
             disableBackdropClick={!!this.getButtons}
