@@ -704,7 +704,6 @@ class StatesList extends Component {
             const elem = columns.find(c => c.id === id);
             if (elem) {
                 if (elem.id === 'nothing') {
-                    debugger
                     return (<SmartTile
                         key="nothing"
                         editMode={this.props.editMode}

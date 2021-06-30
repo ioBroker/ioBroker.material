@@ -395,9 +395,8 @@ class SmartGeneric extends Component {
         } else {
             val = typeof state.val === 'number' ? !!state.val : state.val === true || state.val === 'true' || state.val === '1' || state.val === 'on' || state.val === 'ON';
         }
-        const newState = {};
-        newState[id] = val;
-        this.setState(newState);
+
+        this.setState({[id]: val});
     }
 
     // default handler
@@ -629,11 +628,11 @@ class SmartGeneric extends Component {
 
                 titles.push(I18n.t(state.id.split('.').pop()));
 
-                result.push((<Icon
+                state.icon && result.push(<Icon
                     key={that.key + 'indicator-' + state.name.toLowerCase()}
                     className={'indicator-' + state.name.toLowerCase()}
-                    style={Object.assign({}, Theme.tile.tileIndicator, { color: state.color })}
-                />));
+                    style={Object.assign({}, Theme.tile.tileIndicator, { color: state.color || 'inherit' })}
+                />);
             }
         });
 
@@ -1106,7 +1105,11 @@ class SmartGeneric extends Component {
             })
     }
 
-    getCharts = (idOrData, className, showCornerBottom = true) => {
+    getChartId() {
+        return this.id;
+    }
+
+    getCharts = (idOrData = this.getChartId(), className, showCornerBottom = true) => {
         if (!this.checkHistory(idOrData, showCornerBottom)) {
             return null;
         }

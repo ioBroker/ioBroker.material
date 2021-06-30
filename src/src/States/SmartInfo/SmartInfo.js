@@ -225,6 +225,7 @@ class SmartInfo extends SmartGeneric {
         return this.wrapContent([
             this.getStandardContent(this.actualId),
             this.getSecondaryDiv(),
+            this.getCharts(),
             this.getNumberOfValuesIndicator(),
             this.state.showDialog ?
                 <Dialog key={this.key + 'dialog'}

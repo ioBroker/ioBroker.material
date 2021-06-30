@@ -262,7 +262,6 @@ class SmartState extends SmartGeneric {
     }
 
     setValue = percent => {
-        debugger
         if (percent) {
             this.lastNotNullPercent = percent;
         } else {

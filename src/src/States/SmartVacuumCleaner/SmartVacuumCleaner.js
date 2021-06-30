@@ -57,7 +57,7 @@ class SmartVacuumCleaner extends SmartGeneric {
             this.workModeId = state?.id || `${parts}.WORK_MODE`;
 
             state = this.channelInfo.states.find(state => state.id && state.name === 'WATER');
-            this.watherId = state?.id || `${parts}.WATER`;
+            this.waterId = state?.id || `${parts}.WATER`;
 
             state = this.channelInfo.states.find(state => state.id && state.name === 'WASTE');
             this.wasteId = state?.id || `${parts}.WASTE`;
@@ -78,12 +78,11 @@ class SmartVacuumCleaner extends SmartGeneric {
             this.mapUrlId = state?.id || `${parts}.MAP_URL`;
 
             this.imageId = `${parts}.IMAGE`;
-
         }
 
-        if (this.watherId) {
-            const common = this.props.objects[this.watherId] && this.props.objects[this.watherId].common;
-            this.watherUnit = common?.unit || '%';
+        if (this.waterId) {
+            const common = this.props.objects[this.waterId] && this.props.objects[this.waterId].common;
+            this.waterUnit = common?.unit || '%';
         }
 
         if (this.wasteId) {
@@ -95,42 +94,6 @@ class SmartVacuumCleaner extends SmartGeneric {
             const common = this.props.objects[this.batteryId] && this.props.objects[this.batteryId].common;
             this.batteryUnit = common?.unit || '%';
         }
-
-        // if (this.id) {
-        //     const common = this.props.objects[this.id] && this.props.objects[this.id].common;
-        //     this.max = common.max;
-        //     if (this.max === undefined) {
-        //         this.max = 30;
-        //     }
-        //     this.max = parseFloat(this.max);
-
-        //     this.min = common.min;
-        //     if (this.min === undefined) {
-        //         this.min = 12;
-        //     }
-        //     this.min = parseFloat(this.min);
-
-        //     this.unit = common.unit || '°C';
-
-        //     if (this.unit === 'C') {
-        //         this.unit = '°C';
-        //     } else
-        //         if (this.unit === 'C°') {
-        //             this.unit = '°C';
-        //         }
-        //     if (this.unit === 'F') {
-        //         this.unit = '°F';
-        //     } else
-        //         if (this.unit === 'F°') {
-        //             this.unit = '°F';
-        //         }
-
-        //     this.step = common.step || 0.5;
-
-        //     this.props.tile.setState({ isPointer: true });
-        // }
-
-        // this.unit = this.unit || '°C';
 
         this.stateRx.showDialog = false;
         this.stateRx.showDialogBottom = false;
@@ -206,8 +169,7 @@ class SmartVacuumCleaner extends SmartGeneric {
         if (!this.stateId) {
             return null;
         }
-        return (
-            <div key={this.key + 'tile-secondary'}
+        return <div key={this.key + 'tile-secondary'}
                 className={cls.wrapperTextSecondActual}
                 title={I18n.t('Environment values')}>
                 {this.stateId ?
@@ -215,7 +177,7 @@ class SmartVacuumCleaner extends SmartGeneric {
                         {this.state[this.stateId]}
                     </span>
                     : null}
-            </div>);
+            </div>;
     }
 
     onPauseToggle = () => {
@@ -245,7 +207,30 @@ class SmartVacuumCleaner extends SmartGeneric {
         if (!state) {
             return;
         }
-        if (this.mapBase64Id === id || this.mapUrlId === id || this.watherId === id || this.wasteId === id || this.imageId === id || this.batteryId === id || this.stateId === id || this.pauseId === id || this.workModeId === id || this.powerId === id || this.id === id || id === this.humidityId || id === this.modeId) {
+        if (id === this.stateId) {
+            const states = this.props.objects[id]?.common?.states;
+            if (states) {
+                if (states[state.val])  {
+                    state.val = states[state.val];
+                }
+            }
+        }
+
+        if (this.mapBase64Id === id || 
+            this.mapUrlId === id || 
+            this.waterId === id || 
+            this.wasteId === id || 
+            //this.filterId === id || 
+            this.imageId === id || 
+            this.batteryId === id || 
+            this.stateId === id || 
+            this.pauseId === id || 
+            this.workModeId === id || 
+            this.powerId === id || 
+            this.id === id || 
+            this.humidityId === id || 
+            this.modeId === id
+        ) {
             newState[id] = typeof state.val !== 'number' ? state.val : parseFloat(state.val);
             if (typeof state.val === 'number' && isNaN(newState[id])) {
                 newState[id] = null;
@@ -287,9 +272,9 @@ class SmartVacuumCleaner extends SmartGeneric {
                     //waste
                     wasteVacuum={this.wasteId ? this.state[this.wasteId] : null}
                     wasteUnit={this.wasteUnit}
-                    //watherId
-                    watherVacuum={this.watherId ? this.state[this.watherId] : null}
-                    watherUnit={this.watherUnit}
+                    //waterId
+                    waterVacuum={this.waterId ? this.state[this.waterId] : null}
+                    waterUnit={this.waterUnit}
                     //workMode
                     workModeValue={this.workModeId ? this.state[this.workModeId] : null}
                     workModeArray={this.workModeId ? this.props.objects[this.workModeId]?.common?.states : null}

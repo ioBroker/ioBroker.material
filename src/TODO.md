@@ -5,28 +5,31 @@
 - Think about autoFocus
 - Use startIcon in buttons
 
-<!-- - Add new widget dialog -->
- <!-- - If possible with dynamic picture (because of themes) -->
- <!-- - If possible with demo data -->
- <!-- - If not possible - static picture -->
-
 - Don't forget about comma/point in floats
 
 - Make translation for icon selector work
-
-<!-- - Dialogs with 0.8 background opcaity + blur -->
 
 - Option to select the chart via drop down menus:
     - default
     - none
     - IDs from type-detector
     - custom => show ID selector
+- Or try to find firts ID with history and show it    
 
 <!-- - Collect all IDs and give it in "objs" as array -->
 - Show chart in the corner if any state of the device has "history"//////////
 
 - history check alias
 
+- if some objects exists, do not show nothing here, but progress bar
+
+## Control by state
+- Change page
+- Change thema
+- Open dialog
+
+## Loading 
+- In dark mode make background dark
 ## Dimmer
 - Add tooltips for all 4 buttons (on, off, ? , close)
 
@@ -38,8 +41,7 @@
   - number: slider from min to max
 
 ## Location
-<!-- - Change icons to persons
-- Allow set of the zoom level for mini-map and for dialog-map and use it -->
+- (BF) Add persion icons to adapter-react
 ## Volume
 
 ## Blinds
@@ -64,8 +66,8 @@
 
 ## Vacuum
 <!-- - Water + Waste  -->
-<!-- - Add icons for battery, water and waste -->
-<!-- - Support of MAP_BASE64 and MAP_URL: https://github.com/ioBroker/ioBroker.type-detector/blob/master/index.js#L362 -->
+- Show filter, sensors,  main, side brush
+- Map border raidus 15
 
 ## Motion
 <!-- - Show brightness chart in tile -->
@@ -73,4 +75,6 @@
 
 ## Icons url
 
-
+## Custom e-chart
+- or typedetector or rooms
+- Name

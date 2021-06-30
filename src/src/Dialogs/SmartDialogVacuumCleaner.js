@@ -90,6 +90,27 @@ class SmartDialogVacuumCleaner extends SmartDialogGeneric {
         this.refPanel = React.createRef();
         this.svgControl = null;
         this.componentReady();
+
+        this.workModeArray = this.props.workModeArray;
+        this.modeArray = this.props.modeArray;
+
+        // If too many items => remove all items with numbers
+        if (this.workModeArray && Object.keys(this.workModeArray).length > 6) {
+            this.workModeArray = {};
+            Object.keys(this.props.workModeArray).filter(id => isNaN(parseFloat(this.props.workModeArray[id])))
+                .forEach(id => this.workModeArray[id] = this.props.workModeArray[id]);
+            if (!Object.keys(this.workModeArray).length) {
+                this.workModeArray = this.props.workModeArray;
+            }
+        }
+        if (this.modeArray && Object.keys(this.modeArray).length > 6) {
+            this.modeArray = {};
+            Object.keys(this.props.modeArray).filter(id => isNaN(parseFloat(this.props.modeArray[id])))
+                .forEach(id => this.modeArray[id] = this.props.modeArray[id]);
+            if (!Object.keys(this.modeArray).length) {
+                this.modeArray = this.props.modeArray;
+            }
+        }
     }
 
     onBoostMode = () => {
@@ -127,11 +148,11 @@ class SmartDialogVacuumCleaner extends SmartDialogGeneric {
                     <FormControl className={cls.modeButton} component="fieldset">
                         <FormLabel component="legend">{I18n.t('Mode')}</FormLabel>
                         <ButtonGroup color="primary">
-                            {this.props.modeArray && Object.keys(this.props.modeArray).map(name => <CustomButton
+                            {this.modeArray && Object.keys(this.modeArray).map(name => <CustomButton
                                 onClick={() => this.props.onMode(name)}
                                 active={String(this.props.modeValue) === name}
                                 key={name}>
-                                {this.props.modeArray[name]}
+                                {this.modeArray[name]}
                             </CustomButton>)}
                         </ButtonGroup>
                     </FormControl>
@@ -147,11 +168,11 @@ class SmartDialogVacuumCleaner extends SmartDialogGeneric {
                     <FormControl className={cls.swingGroup} component="fieldset">
                         <FormLabel component="legend">{I18n.t('Work mode')}</FormLabel>
                         <ButtonGroup color="primary" orientation="vertical">
-                            {this.props.workModeArray && Object.keys(this.props.workModeArray).map(name => <CustomButton
+                            {this.workModeArray && Object.keys(this.workModeArray).map(name => <CustomButton
                                 onClick={() => this.props.onWorkMode(name)}
                                 active={String(this.props.workModeValue) === name}
                                 key={name}>
-                                {this.props.workModeArray[name]}
+                                {this.workModeArray[name]}
                             </CustomButton>)}
                         </ButtonGroup>
                     </FormControl> : null}
@@ -162,12 +183,12 @@ class SmartDialogVacuumCleaner extends SmartDialogGeneric {
                     {this.props.wasteVacuum !== null && this.props.wasteVacuum !== undefined && <div className={cls.waterVacuumTop}>
                         <StateIcon type="WATER" />{this.props.wasteVacuum}{this.props.wasteUnit}
                     </div>}
-                    {this.props.watherVacuum !== null && this.props.watherVacuum !== undefined && <div className={cls.wasteVacuumTop}>
-                        <StateIcon type="WASTE" />{this.props.watherVacuum}{this.props.watherUnit}
+                    {this.props.waterVacuum !== null && this.props.waterVacuum !== undefined && <div className={cls.wasteVacuumTop}>
+                        <StateIcon type="WASTE" />{this.props.waterVacuum}{this.props.waterUnit}
                     </div>}
                 </div>
                 <div className={cls.wrapperControl}>
-                    {this.props.imageVacuum !== null && this.props.imageVacuum !== undefined && this.props.powerValue && !this.props.pauseValue ?
+                    {this.props.imageVacuum !== null && this.props.imageVacuum !== undefined && this.props.powerValue ?
                         <IconAdapter className={cls.styleImageState} src={this.props.imageVacuum} />
                         : <div className={cls.wrapperVacuumCleaner}>
                             <Icon d={"M0,100 C150,200 350,0 500,100 L500,00 L0,0 Z"} className={clsx(cls.vacuumCleaner, this.props.powerValue && !this.props.pauseValue && cls.vacuumCleanerWork, this.props.powerValue && this.props.pauseValue && cls.vacuumCleanerPause)} />
