@@ -45,13 +45,16 @@ import Utils from '@iobroker/adapter-react/Components/Utils';
 import Theme from '../theme';
 import I18n from '@iobroker/adapter-react/i18n';
 import UploadImage from '../basic-controls/UploadImage';
+import CustomButton from '../States/components/CustomButton';
+import CustomFab from '../States/components/CustomFab';
 
 const styles = {
     descCopyIcon: {
         position: 'absolute',
         top: 0,
         right: 0,
-        background: 'rgba(255,255,255,0.7)'
+        background: 'rgba(255,255,255,0.7)',
+        padding: 0
     },
     descDivId: {
         fontSize: 'smaller'
@@ -214,21 +217,22 @@ class SmartDialogSettings extends SmartDialogGeneric {
 
     generateObjectInfo() {
         if (this.props.settingsId) {
-            return (<Paper key={'object-info'} style={{ margin: 5, padding: 5, position: 'relative' }} elevation={1}>
+            return (<div key={'object-info'} style={{ margin: 5, padding: 5, position: 'relative' }} elevation={1}>
                 <CopyToClipboard
                     text={this.props.settingsId}>
-                    <IconButton
+                    <CustomFab
                         title={I18n.t('Copy ID to clipboard')}
                         onClick={this.copyId}
+                        active
                         style={styles.descCopyIcon}>
                         <CopyIcon width={Theme.iconSize} height={Theme.iconSize} />
-                    </IconButton>
+                    </CustomFab>
                 </CopyToClipboard>
                 {this.state.anchorEl ? (<Button variant="outlined" disabled style={styles.descCopied}>{I18n.t('Copied')}</Button>) : null}
                 <div><span style={styles.descTitle}>{I18n.t('Name')}: </span>{Utils.getObjectName(this.props.objects, this.props.settingsId)}</div>
                 <div style={styles.descDivId}><span style={styles.descTitle}>{I18n.t('Description')}: </span>{Utils.getObjectName(this.props.objects, this.props.settingsId, null, null, true)}</div>
                 <div style={styles.descDivId}><span style={styles.descTitle}>ID: </span>{this.props.settingsId}</div>
-            </Paper>);
+            </div>);
         } else {
             return null;
         }
@@ -238,7 +242,7 @@ class SmartDialogSettings extends SmartDialogGeneric {
         return this.props.name;
     }
     getButtons() {
-        return <Button onClick={this.onSave} variant="contained" color="primary" startIcon={<OkIcon />}>{I18n.t('Save')}</Button>
+        return <CustomButton active onClick={this.onSave} variant="contained" color="primary" startIcon={<OkIcon />}>{I18n.t('Save')}</CustomButton>
     }
 
     generateContent() {
@@ -247,12 +251,12 @@ class SmartDialogSettings extends SmartDialogGeneric {
 
             let item;
             if (e.type === 'delete') {
-                item = <Button
+                item = <CustomButton
                     color="secondary"
                     variant="contained"
                     key={this.props.dialogKey + '-delete'}
                     onClick={() => this.onDelete()}
-                >{I18n.t('Delete')}</Button>;
+                >{I18n.t('Delete')}</CustomButton>;
             } else if (e.type === 'boolean') {
                 item = <BoolControl
                     key={this.props.dialogKey + '-' + e.name + '-bool'}
@@ -340,7 +344,9 @@ class SmartDialogSettings extends SmartDialogGeneric {
 
         result.push(this.generateObjectInfo());
 
-        return <List key={this.props.dialogKey + '-list'}><Paper elevation={1}>{result}</Paper></List>;
+        return <List key={this.props.dialogKey + '-list'}>
+            <Paper style={{backgroundColor:'transparent'}} elevation={1}>{result}</Paper>
+        </List>;
         /*return [
             <Toolbar key={this.props.dialogKey + '-toolbar'} >
                 <h4 key={this.props.dialogKey + '-header'} style={Theme.dialog.header}>{this.props.name}</h4>

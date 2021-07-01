@@ -32,6 +32,7 @@ import cls from './style.module.scss';
 import clsx from 'clsx';
 import SmartDialogWidget from '../Dialogs/SmartDialogWidget';
 import CustomFab from '../States/components/CustomFab';
+import EchartIframe from '../basic-controls/react-echart/EchartIframe';
 
 
 const styles = {
@@ -393,6 +394,11 @@ class StatesList extends Component {
                         </div>,
                     name: I18n.t('Add custom URL'),
                     onClick: this.onAddCustomURL
+                },
+                {
+                    component: <EchartIframe />,
+                    name: I18n.t('Add custom e-chart'),
+                    onClick: this.onAddCustomEchart
                 }
             ]
             }
@@ -433,6 +439,7 @@ class StatesList extends Component {
 
         newState.customURLs.push({
             type: 'url',
+            name: 'URL',
             title: I18n.t('Custom URL'),
             id: '_custom_' + Date.now(),
             settingsId: this.state.enumID,
@@ -455,6 +462,7 @@ class StatesList extends Component {
 
         newState.customURLs.push({
             type: 'clock',
+            name: 'Clock',
             title: I18n.t('Custom Clock'),
             id: '_custom_' + Date.now(),
             settingsId: this.state.enumID,
@@ -470,6 +478,27 @@ class StatesList extends Component {
         const settings = Utils.getSettings(this.props.objects[this.props.enumID], { user: this.props.user });
         settings.URLs = newState.customURLs;
         this.props.onSaveSettings && this.props.onSaveSettings(this.props.enumID, settings, () => {
+            this.setState(newState);
+        });
+    }
+
+    onAddCustomEchart = () => {
+        const newState = { customURLs: JSON.parse(JSON.stringify(this.state.customURLs || [])) };
+
+        newState.customURLs.push({
+            type: 'e-chart',
+            name: 'Echart',
+            title: I18n.t('Custom e-chart'),
+            id: '_custom_' + Date.now(),
+            settingsId: this.state.enumID
+        });
+
+        this.order = null;
+
+        const settings = Utils.getSettings(this.props.objects[this.props.enumID], { user: this.props.user });
+        settings.URLs = newState.customURLs;
+        this.props.onSaveSettings && this.props.onSaveSettings(this.props.enumID, settings, () => {
+            debugger
             this.setState(newState);
         });
     }
@@ -659,7 +688,7 @@ class StatesList extends Component {
 
                     if (this.state.customURLs && this.state.customURLs.length) {
                         this.state.customURLs.forEach(e => {
-                            column.push({ id: e.id, settingsId: this.state.enumID, name: 'URL', type: e.type });
+                            column.push({ id: e.id, settingsId: this.state.enumID, name: e.name, type: e.type });
                         });
                     }
 
@@ -667,7 +696,7 @@ class StatesList extends Component {
                         columns.push({ id: 'others', items: column });
                     }
                 }
-                if (!this.state.visible) {
+                if (!this.state.visible && !column.length) {
                     columns.push({ id: 'nothing' });
                 }
             } else {

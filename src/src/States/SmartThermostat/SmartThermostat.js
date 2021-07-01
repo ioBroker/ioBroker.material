@@ -122,6 +122,19 @@ class SmartThermostat extends SmartGeneric {
         this.componentReady();
     }
 
+    getDialogSettings() {
+        const settings = super.getDialogSettings();
+
+        settings.unshift({
+            name: 'chartId',
+            value: this.state?.settings?.chartId || this.actualId,
+            options: [...this.getIdHistorys(this.getAllIds(true)), I18n.t('none')],
+            type: 'select'
+        });
+
+        return settings;
+    }
+
     updateState(id, state) {
         let newState = {};
         if (!state) {
@@ -255,9 +268,9 @@ class SmartThermostat extends SmartGeneric {
             this.getSecondaryDiv(),
             this.getSecondaryDivActual(),
             this.getSecondaryDivTop(),
-            this.getCharts(this.actualId),
+            this.getCharts(this.state?.settings?.chartId || this.actualId),
             this.state.showDialogBottom ?
-                dialogChartCallBack(this.onDialogCloseBottom, this.actualId, this.props.socket, this.props.themeType, this.props.systemConfig, this.props.allObjects, this.getIdHistorys(this.getAllIds())) : null,
+                dialogChartCallBack(this.onDialogCloseBottom, this.state?.settings?.chartId || this.actualId, this.props.socket, this.props.themeType, this.props.systemConfig, this.props.allObjects, this.getIdHistorys(this.getAllIds())) : null,
             this.state.showDialog ?
                 <Dialog
                     key={this.key + 'dialog'}

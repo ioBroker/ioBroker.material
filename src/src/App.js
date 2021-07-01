@@ -1423,7 +1423,6 @@ class App extends GenericApp {
     getAppBar() {
         const toolbarBackground = this.state.settings ? this.state.settings.color : undefined;
         const useBright = !toolbarBackground || Utils.isUseBright(toolbarBackground);
-        console.log(11223344, toolbarBackground)
         return (<AppBar
             position="fixed"
             className={cls.colorBar}
@@ -1566,10 +1565,9 @@ class App extends GenericApp {
         const useBright = background && Utils.isUseBright(background);
 
         return (
-            <div className={this.props.classes.loadingBackground} style={{ background: window.materialBackground }}>
+            <div className={cls.backgroundLoading}>
                 <LoadingIndicator
                     variant={this.gotObjects ? 'indeterminate' : 'determinate'}
-                    color={useBright ? 'white' : 'black'}
                     value={100 * this.state.loadingProgress / App.LOADING_TOTAL}
                     label={I18n.t(this.state.loadingStep)}
                 />
@@ -1577,7 +1575,9 @@ class App extends GenericApp {
         );
     }
 
-    render() {
+    render() { 
+        console.log(11223344,'server',this.socket.props.protocol,'//',this.socket.props.host,':',this.socket.props.port,)
+
         if (this.state.loading) {
             return this.getLoadingScreen();
         } else {

@@ -9,19 +9,17 @@
 
 - Make translation for icon selector work
 
-- Option to select the chart via drop down menus:
+<!-- - Option to select the chart via drop down menus:
     - default
     - none
     - IDs from type-detector
-    - custom => show ID selector
-- Or try to find firts ID with history and show it    
+    - custom => show ID selector -->
+<!-- - Or try to find firts ID with history and show it     -->
 
 <!-- - Collect all IDs and give it in "objs" as array -->
 - Show chart in the corner if any state of the device has "history"//////////
 
-- history check alias
-
-- if some objects exists, do not show nothing here, but progress bar
+<!-- - if some objects exists, do not show nothing here, but progress bar -->
 
 ## Control by state
 - Change page
@@ -29,7 +27,7 @@
 - Open dialog
 
 ## Loading 
-- In dark mode make background dark
+<!-- - In dark mode make background dark -->
 ## Dimmer
 - Add tooltips for all 4 buttons (on, off, ? , close)
 
@@ -66,8 +64,8 @@
 
 ## Vacuum
 <!-- - Water + Waste  -->
-- Show filter, sensors,  main, side brush
-- Map border raidus 15
+<!-- - Show filter, sensors,  main, side brush -->
+<!-- - Map border raidus 15 -->
 
 ## Motion
 <!-- - Show brightness chart in tile -->
@@ -76,6 +74,7 @@
 ## Icons url
 
 ## Custom e-chart
+<!-- - render -->
 - or typedetector or rooms
 - Name
 

@@ -35,6 +35,7 @@ import * as echarts from 'echarts/core';
 import { LineChart } from 'echarts/charts';
 import { GridComponent } from 'echarts/components';
 import { SVGRenderer } from 'echarts/renderers';
+import CustomButton from '../States/components/CustomButton';
 
 echarts.use([GridComponent, LineChart, SVGRenderer]);
 class SmartDialogGeneric extends Component {
@@ -367,7 +368,7 @@ class SmartDialogGeneric extends Component {
             fullWidth
             scroll="paper"
             classes={{
-                paper: clsx('dialog-paper', this.props.classes?.dialogPaper, this.props.transparent && cls.paper),
+                paper: clsx('dialog-paper', this.props.classes?.dialogPaper, this.props.transparent ? cls.paper:cls.backgroundDialog),
                 root: cls.rootDialog
             }}
             open={true}
@@ -385,9 +386,9 @@ class SmartDialogGeneric extends Component {
             <DialogActions>
                 {this.getButtons ? this.getButtons() : null}
                 {this.getButtons ?
-                    <Button onClick={() => this.onClose(true)} variant="contained" autoFocus>
+                    <CustomButton onClick={() => this.onClose(true)} variant="contained" autoFocus>
                         <CloseIcon style={{ marginRight: 8 }} />{I18n.t('Close')}
-                    </Button> :
+                    </CustomButton> :
                     <CustomFab onClick={() => this.onClose(true)} size="small" autoFocus>
                         <CloseIcon />{/*I18n.t('Close')*/}
                     </CustomFab>}

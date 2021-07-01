@@ -396,7 +396,7 @@ class SmartGeneric extends Component {
             val = typeof state.val === 'number' ? !!state.val : state.val === true || state.val === 'true' || state.val === '1' || state.val === 'on' || state.val === 'ON';
         }
 
-        this.setState({[id]: val});
+        this.setState({ [id]: val });
     }
 
     // default handler
@@ -563,6 +563,14 @@ class SmartGeneric extends Component {
         settings.enabled = !settings.enabled;
 
         this.saveSettings(settings, () => this.setState({ settings }));
+    }
+
+    saveCurrentSetting = (name, value) => {
+        if (name && value) {
+            let settings = JSON.parse(JSON.stringify(this.state.settings));
+            settings[name] = value;
+            this.saveSettings(settings, () => this.setState({ settings }));
+        }
     }
 
     static getDerivedStateFromProps(props, state) {

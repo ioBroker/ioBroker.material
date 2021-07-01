@@ -76,7 +76,20 @@ class SmartVacuumCleaner extends SmartGeneric {
 
             state = this.channelInfo.states.find(state => state.id && state.name === 'MAP_URL');//
             this.mapUrlId = state?.id || `${parts}.MAP_URL`;
+            
+            //Indicators
+            state = this.channelInfo.states.find(state => state.id && state.name === 'FILTER');//
+            this.filterId = state?.id || `${parts}.FILTER`;
 
+            state = this.channelInfo.states.find(state => state.id && state.name === 'SENSORS');//
+            this.sensorId = state?.id || `${parts}.SENSORS`;
+
+            state = this.channelInfo.states.find(state => state.id && state.name === 'BRUSH');//
+            this.brushId = state?.id || `${parts}.BRUSH`;
+
+            state = this.channelInfo.states.find(state => state.id && state.name === 'SIDE_BRUSH');//
+            this.sideBrushId = state?.id || `${parts}.SIDE_BRUSH`;
+            //
             this.imageId = `${parts}.IMAGE`;
         }
 
@@ -93,6 +106,23 @@ class SmartVacuumCleaner extends SmartGeneric {
         if (this.batteryId) {
             const common = this.props.objects[this.batteryId] && this.props.objects[this.batteryId].common;
             this.batteryUnit = common?.unit || '%';
+        }
+        //Indicators
+        if (this.filterId) {
+            const common = this.props.objects[this.filterId] && this.props.objects[this.filterId].common;
+            this.filterUnit = common?.unit || '%';
+        }
+        if (this.sensorId) {
+            const common = this.props.objects[this.sensorId] && this.props.objects[this.sensorId].common;
+            this.sensorUnit = common?.unit || '%';
+        }
+        if (this.brushId) {
+            const common = this.props.objects[this.brushId] && this.props.objects[this.brushId].common;
+            this.brushUnit = common?.unit || '%';
+        }
+        if (this.sideBrushId) {
+            const common = this.props.objects[this.sideBrushId] && this.props.objects[this.sideBrushId].common;
+            this.sideBrushUnit = common?.unit || '%';
         }
 
         this.stateRx.showDialog = false;
@@ -228,6 +258,10 @@ class SmartVacuumCleaner extends SmartGeneric {
             this.workModeId === id || 
             this.powerId === id || 
             this.id === id || 
+            this.filterId === id || 
+            this.sensorId === id || 
+            this.brushId === id || 
+            this.sideBrushId === id || 
             this.humidityId === id || 
             this.modeId === id
         ) {
@@ -262,10 +296,20 @@ class SmartVacuumCleaner extends SmartGeneric {
                     startValue={this.state[this.id] === null || this.state[this.id] === undefined ? this.min : this.state[this.id]}
                     windowWidth={this.props.windowWidth}
                     actualValue={this.state[this.actualId] === null || this.state[this.actualId] === undefined ? this.min : this.state[this.actualId]}
-                    //checkHistory
-                    // checkHistory={this.checkHistory}
                     //state
                     stateVacuum={this.stateId ? this.state[this.stateId] : null}
+                    //FILTER
+                    filterVacuum={this.filterId ? this.state[this.filterId] : null}
+                    filterUnit={this.filterUnit}
+                    //SENSORS
+                    sensorVacuum={this.sensorId ? this.state[this.sensorId] : null}
+                    sensorUnit={this.sensorUnit}
+                    //SIDE_BRUSH
+                    brushVacuum={this.brushId ? this.state[this.brushId] : null}
+                    brushUnit={this.brushUnit}
+                    //battery
+                    sideBrushVacuum={this.sideBrushId ? this.state[this.sideBrushId] : null}
+                    sideBrushUnit={this.sideBrushUnit}
                     //battery
                     batteryVacuum={this.batteryId ? this.state[this.batteryId] : null}
                     batteryUnit={this.batteryUnit}

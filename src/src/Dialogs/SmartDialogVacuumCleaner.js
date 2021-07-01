@@ -22,7 +22,7 @@ import I18n from '@iobroker/adapter-react/i18n';
 
 import SmartDialogGeneric from './SmartDialogGeneric';
 import cls from './style.module.scss';
-import { ButtonGroup, FormControl, FormLabel } from '@material-ui/core';
+import { ButtonGroup, FormControl, FormLabel, Tooltip } from '@material-ui/core';
 import CustomButton from '../States/components/CustomButton';
 import StateIcon from '../States/components/StateIcon';
 import Icon from '../icons/RobotVacuum';
@@ -177,16 +177,63 @@ class SmartDialogVacuumCleaner extends SmartDialogGeneric {
                         </ButtonGroup>
                     </FormControl> : null}
                 <div className={cls.wrapperState}>
-                    {this.props.batteryVacuum !== null && this.props.batteryVacuum !== undefined && <div className={cls.batteryVacuumTop}>
-                        <IoMdBatteryCharging />{this.props.batteryVacuum}{this.props.batteryUnit}
-                    </div>}
-                    {this.props.wasteVacuum !== null && this.props.wasteVacuum !== undefined && <div className={cls.waterVacuumTop}>
-                        <StateIcon type="WATER" />{this.props.wasteVacuum}{this.props.wasteUnit}
-                    </div>}
-                    {this.props.waterVacuum !== null && this.props.waterVacuum !== undefined && <div className={cls.wasteVacuumTop}>
-                        <StateIcon type="WASTE" />{this.props.waterVacuum}{this.props.waterUnit}
-                    </div>}
+                    {this.props.batteryVacuum !== null && this.props.batteryVacuum !== undefined &&
+                        <Tooltip title={I18n.t('Battery level')}>
+                            <div className={cls.batteryVacuumTop}>
+                                <IoMdBatteryCharging />{this.props.batteryVacuum}{this.props.batteryUnit}
+                            </div>
+                        </Tooltip>
+                    }
+                    {this.props.wasteVacuum !== null && this.props.wasteVacuum !== undefined &&
+                        <Tooltip title={I18n.t('Water level')}>
+                            <div className={cls.waterVacuumTop}>
+                                <StateIcon type="WATER" />{this.props.wasteVacuum}{this.props.wasteUnit}
+                            </div>
+                        </Tooltip>
+                    }
+                    {this.props.waterVacuum !== null && this.props.waterVacuum !== undefined &&
+                        <Tooltip title={I18n.t('Waste level')}>
+                            <div className={cls.wasteVacuumTop}>
+                                <StateIcon type="WASTE" />{this.props.waterVacuum}{this.props.waterUnit}
+                            </div>
+                        </Tooltip>
+                    }
                 </div>
+                {
+                    ((this.props.filterVacuum !== null && this.props.filterVacuum !== undefined) ||
+                        (this.props.sideBrushVacuum !== null && this.props.sideBrushVacuum !== undefined) ||
+                        (this.props.brushVacuum !== null && this.props.brushVacuum !== undefined) ||
+                        (this.props.sensorVacuum !== null && this.props.sensorVacuum !== undefined)) &&
+                    <div className={cls.infoBlockVacuum}>
+                        {this.props.filterVacuum !== null && this.props.filterVacuum !== undefined &&
+                            <Tooltip title={I18n.t('Filter')}>
+                                <div className={cls.currentItemInfo}>
+                                    <StateIcon type="FILTER" />{this.props.filterVacuum}{this.props.filterUnit}
+                                </div>
+                            </Tooltip>
+                        }
+                        {this.props.sideBrushVacuum !== null && this.props.sideBrushVacuum !== undefined &&
+                            <Tooltip title={I18n.t('Side brush')}>
+                                <div className={cls.currentItemInfo}>
+                                    <StateIcon type="SIDE_BRUSH" />{this.props.sideBrushVacuum}{this.props.sideBrushUnit}
+                                </div>
+                            </Tooltip>
+                        }
+                        {this.props.brushVacuum !== null && this.props.brushVacuum !== undefined &&
+                            <Tooltip title={I18n.t('Main brush')}>
+                                <div className={cls.currentItemInfo}>
+                                    <StateIcon type="BRUSH" />{this.props.brushVacuum}{this.props.brushUnit}
+                                </div>
+                            </Tooltip>
+                        }
+                        {this.props.sensorVacuum !== null && this.props.sensorVacuum !== undefined &&
+                            <Tooltip title={I18n.t('Sensors')}>
+                                <div className={cls.currentItemInfo}>
+                                    <StateIcon type="SENSORS" />{this.props.sensorVacuum}{this.props.sensorUnit}
+                                </div>
+                            </Tooltip>
+                        }
+                    </div>}
                 <div className={cls.wrapperControl}>
                     {this.props.imageVacuum !== null && this.props.imageVacuum !== undefined && this.props.powerValue ?
                         <IconAdapter className={cls.styleImageState} src={this.props.imageVacuum} />

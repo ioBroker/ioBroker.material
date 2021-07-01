@@ -1,0 +1,26 @@
+.echartWrapper {
+    // background: #c0c0c094;
+    // margin: 10px;
+    padding: 5px;
+    border-radius: 7px;
+    width: 100%;
+    flex-direction: column;
+    display: flex;
+    justify-content: center;
+    pointer-events: none;
+}
+.iframe{
+    width: calc(100% - 2px);
+    height: 100%;
+    border-radius: 10px;
+}
+.name{
+    position: absolute;
+    z-index: 1111;
+    top: 4px;
+    color: var(--editBackground);
+    background: var(--editIconColor);
+    padding: 3px;
+    border-radius: 10px 0 4px 0;
+    font-size: 15px;
+}

@@ -17,7 +17,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import NativeSelect from '@material-ui/core/NativeSelect';
 import InputLabel from '@material-ui/core/InputLabel';
-import {withStyles} from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import Input from '@material-ui/core/Input';
 import Theme from '../../theme';
 
@@ -57,13 +57,13 @@ function getOptions(options, root, path) {
     }
 }
 
-const SelectControl = ({classes, label, value, onChange, options}) => {
+const SelectControl = ({ classes, label, value, onChange, options }) => {
     if (typeof value === 'object' && value.value !== undefined) {
         value = value.value;
     }
 
     return <div className={classes.line}>
-        <InputLabel htmlFor="selection" className={classes.subTitle}>{label}</InputLabel>
+        <InputLabel htmlFor="selection">{label}</InputLabel>
         <NativeSelect
             className={classes.line}
             value={value}
@@ -76,11 +76,11 @@ const SelectControl = ({classes, label, value, onChange, options}) => {
 };
 
 SelectControl.propTypes = {
-    classes:    PropTypes.object.isRequired,
-    label:      PropTypes.string.isRequired,
-    value:      PropTypes.string.isRequired,
-    options:    PropTypes.array.isRequired,
-    onChange:   PropTypes.func // if no onChange => readOnly
+    classes: PropTypes.object.isRequired,
+    label: PropTypes.string.isRequired,
+    value: PropTypes.string.isRequired,
+    options: PropTypes.array.isRequired,
+    onChange: PropTypes.func // if no onChange => readOnly
 };
 
 export default withStyles(styles)(SelectControl);

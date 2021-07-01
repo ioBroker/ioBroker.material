@@ -46,6 +46,7 @@ import cls from './style.module.scss';
 import SmartDimmer from '../States/SmartDimmer/SmartDimmer';
 import SmartVacuumCleaner from '../States/SmartVacuumCleaner/SmartVacuumCleaner';
 import SmartLocation from '../States/SmartLocation/SmartLocation';
+import SmartEchart from '../States/SmartEchart/SmartEchart';
 
 class SmartTile extends Component {
     static propTypes = {
@@ -332,9 +333,9 @@ class SmartTile extends Component {
                 case 'clock'://Types.clock:
                     Control = SmartClock;
                     break;
-                    // case 'whether'://Types.whether:
-                    //     Control = SmartWhether;
-                    // break;
+                    case 'e-chart':
+                        Control = SmartEchart;
+                    break;
                 default:
                     break;
             }

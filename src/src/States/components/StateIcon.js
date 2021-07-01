@@ -34,6 +34,10 @@ import { GiTreeSwing } from 'react-icons/gi';
 import { GiSpeedometer } from 'react-icons/gi';
 // import WindowTilted from './icons/WindowTilted';
 import { FiPower, HiOutlineLightBulb } from "react-icons/all";
+import { IoColorFilter } from "react-icons/io5";
+import { RiBrush2Fill } from "react-icons/ri";
+import { RiBrush3Fill } from "react-icons/ri";
+import { GiMovementSensor } from "react-icons/gi";
 import { Component } from 'react';
 
 const STATES_NAME_ICONS = {
@@ -84,6 +88,10 @@ const STATES_NAME_ICONS = {
     'DIMMER': HiOutlineLightBulb,
     'ON': FiPower,
     'COLOR_TEMP': FaSun,
+    'FILTER':IoColorFilter,
+    'SIDE_BRUSH':RiBrush2Fill,
+    'BRUSH':RiBrush3Fill,
+    'SENSORS':GiMovementSensor,
 }
 
 class StateIcon extends Component {

@@ -204,6 +204,12 @@ class SmartURL extends SmartGeneric {
         });
 
         settings.unshift({
+            name: 'url',
+            value: (this.state.settings.url === undefined) ? '' : this.state.settings.url,
+            type: 'text'
+        });
+
+        settings.unshift({
             name: 'isImage',
             value: this.state.settings.isImage || false,
             type: 'boolean'
@@ -319,7 +325,7 @@ class SmartURL extends SmartGeneric {
                         enumNames={this.props.enumNames}
                         settings={this.state.settings}
                         objects={this.props.objects}
-                        image={this.image}
+                        image={this.image || this.state.settings.url}
                         onCollectIds={this.props.onCollectIds}
                         ids={this.ids}
                         windowWidth={this.props.windowWidth}

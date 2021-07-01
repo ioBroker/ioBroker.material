@@ -183,6 +183,10 @@ class SmartDialogURL extends SmartDialogGeneric  {
             return <Paper key="image"  style={style} onClick={() => this.onOpenNewWindow()} className={this.props.classes['iframe-div']}>
                 <img className={this.props.classes['image-img']} alt="" src={this.state.url}/>
             </Paper>;
+        }else if(this.props.settings.url){
+            return <Paper key="image"  style={style} onClick={() => this.onOpenNewWindow()} className={this.props.classes['iframe-div']}>
+                <img className={this.props.classes['image-img']} alt="" src={this.props.settings.url}/>
+            </Paper>;
         }
     }
 
