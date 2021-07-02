@@ -18,12 +18,14 @@ import ReactEchartsCore from 'echarts-for-react/lib/core';
 
 import * as echarts from 'echarts/core';
 import { LineChart } from 'echarts/charts';
+
 import {
     GridComponent,
     ToolboxComponent,
     TooltipComponent,
     TitleComponent,
     TimelineComponent,
+    LegendComponent
 } from 'echarts/components';
 import {SVGRenderer} from 'echarts/renderers';
 
@@ -40,13 +42,25 @@ import brLocale from 'date-fns/locale/pt-BR';
 import deLocale from 'date-fns/locale/de';
 import nlLocale from 'date-fns/locale/nl';
 
+import moment from 'moment';
+import 'moment/locale/en-gb';
+import 'moment/locale/es';
+import 'moment/locale/fr';
+import 'moment/locale/pl';
+import 'moment/locale/pt';
+import 'moment/locale/it';
+import 'moment/locale/nl';
+import 'moment/locale/ru';
+import 'moment/locale/zh-cn';
+import 'moment/locale/de';
+
 import Utils from '@iobroker/adapter-react/Components/Utils';
 
 // icons
 import {FaChartLine as SplitLineIcon} from 'react-icons/fa';
 // import EchartsIcon from '../../assets/echarts.png';
 
-echarts.use([TimelineComponent, ToolboxComponent, TitleComponent, TooltipComponent, GridComponent, LineChart, SVGRenderer]);
+echarts.use([LegendComponent, TimelineComponent, ToolboxComponent, TitleComponent, TooltipComponent, GridComponent, LineChart, SVGRenderer]);
 
 const localeMap = {
     en: enLocale,
@@ -151,6 +165,40 @@ const styles = theme => ({
 const GRID_PADDING_LEFT = 80;
 const GRID_PADDING_RIGHT = 25;
 
+const THEMES = [
+    '#2ec7c9',
+    '#b6a2de',
+    '#5ab1ef',
+    '#ffb980',
+    '#d87a80',
+    '#8d98b3',
+    '#e5cf0d',
+    '#97b552',
+    '#95706d',
+    '#dc69aa',
+    '#07a2a4',
+    '#9a7fd1',
+    '#588dd5',
+    '#f5994e',
+    '#c05050',
+    '#59678c',
+    '#c9ab00',
+    '#7eb00a',
+    '#6f5553',
+    '#c14089'
+];
+
+
+let canvasCalcTextWidth = null;
+function calcTextWidth(text, fontSize, fontFamily) {
+    // canvas for better performance
+    const canvas = canvasCalcTextWidth || (canvasCalcTextWidth = document.createElement('canvas'));
+    const context = canvas.getContext('2d');
+    context.font = `${fontSize || 12}px ${fontFamily || 'Microsoft YaHei'}`;
+    const metrics = context.measureText(text);
+    return Math.ceil(metrics.width);
+}
+
 class ObjectChart extends Component {
     constructor(props) {
         super(props);
@@ -179,6 +227,8 @@ class ObjectChart extends Component {
             relativeRange = 'absolute';
         }
 
+        const maxYLen = {};
+
         this.state = {
             loaded: false,
             historyInstance: this.props.historyInstance || '',
@@ -191,30 +241,52 @@ class ObjectChart extends Component {
             dateFormat: 'dd.MM.yyyy',
             min,
             max,
-            maxYLen: 0,
+            maxYLen,
         };
 
         this.echartsReact = createRef();
         this.rangeRef     = createRef();
         this.readTimeout  = null;
+
         this.chartValues  = null;
         this.rangeValues  = null;
-
-        this.unit         = this.props.obj.common && this.props.obj.common.unit ? ' ' + this.props.obj.common.unit : '';
 
         this.divRef       = createRef();
 
         this.chart        = {};
 
+        this.lastFormattedTime = null;
+
         this.onChange = this.onChange.bind(this);
         this.onResize = this.onResize.bind(this);
+
+        this.objectList = this.props.objs;
+        if (!this.objectList) {
+            this.objectList = [this.props.obj];
+        }
+
+        this.units        = {};
+        this.names        = {};
+
+        this.objectList.forEach(obj => {
+            maxYLen[obj._id] = 0;
+            this.units[obj._id] = obj.common?.unit ? ' ' + obj.common.unit : '';
+            this.names[obj._id] = Utils.getObjectNameFromObj(obj, this.props.lang);
+        });
+
+        moment.locale(props.lang);
+        this.selected = {};
+        this.actualValues = null;
     }
 
     componentDidMount() {
-        this.props.socket.subscribeState(this.props.obj._id, this.onChange);
+        this.objectList.forEach(obj =>
+            this.props.socket.subscribeState(obj._id, this.onChange));
+
         window.addEventListener('resize', this.onResize);
+
         this.prepareData()
-            .then(() => !this.props.noToolbar && this.readHistoryRange())
+            .then(() => !this.props.noToolbar && this.readHistoryRanges())
             .then(() => this.setRelativeInterval(this.state.relativeRange, true, () =>
                 this.forceUpdate()));
     }
@@ -229,7 +301,9 @@ class ObjectChart extends Component {
         this.maxYLenTimeout && clearTimeout(this.maxYLenTimeout);
         this.maxYLenTimeout = null;
 
-        this.props.socket.unsubscribeState(this.props.obj._id, this.onChange);
+        this.objectList.forEach(obj =>
+            this.props.socket.unsubscribeState(obj._id, this.onChange));
+
         window.removeEventListener('resize', this.onResize);
     }
 
@@ -242,13 +316,18 @@ class ObjectChart extends Component {
     }
 
     onChange = (id, state) => {
-        if (id === this.props.obj._id &&
+        if (state) {
+            this.actualValues = this.actualValues || {};
+            this.actualValues[id] = state.val
+        }
+        if (this.objectList.find(obj => obj._id === id) &&
             state &&
-            this.rangeValues &&
-            (!this.rangeValues.length || this.rangeValues[this.rangeValues.length - 1].ts < state.ts)) {
+            this.rangeValues && this.rangeValues[id] &&
+            (!this.rangeValues[id].length || this.rangeValues[id][this.rangeValues[id].length - 1].ts < state.ts)
+        ) {
 
-            this.chartValues && this.chartValues.push({val: state.val, ts: state.ts});
-            this.rangeValues.push({val: state.val, ts: state.ts});
+            this.chartValues && this.chartValues[id] && this.chartValues[id].push({val: state.val, ts: state.ts});
+            this.rangeValues[id].push({val: state.val, ts: state.ts});
 
             // update only if end is near to now
             if (state.ts >= this.chart.min && state.ts <= this.chart.max + 300000) {
@@ -275,7 +354,7 @@ class ObjectChart extends Component {
                     return this.props.socket.getCompactSystemConfig();
                 })
                 .then(config => {
-                    return !this.props.showJumpToEchart ? Promise.resolve([]) : this.props.socket.getAdapterInstances('echarts')
+                    return (!this.props.showJumpToEchart ? Promise.resolve([]) : this.props.socket.getAdapterInstances('echarts'))
                         .then(instances => {
                             // collect all echarts instances
                             const echartsJump = !!instances.find(item => item._id.startsWith('system.adapter.echarts.'));
@@ -310,7 +389,6 @@ class ObjectChart extends Component {
                             });
                         });
                 });
-
         }
     }
 
@@ -347,31 +425,42 @@ class ObjectChart extends Component {
         }
     }
 
-    readHistoryRange() {
+    readHistoryRanges() {
+        return Promise.all(this.objectList.map(obj => this.readHistoryRange(obj._id)));
+    }
+
+    readHistoryRange(id) {
         const now = new Date();
         const oldest = new Date(2000, 0, 1);
 
-        return this.props.socket.getHistory(this.props.obj._id, {
+        return this.props.socket.getHistory(id, {
             instance:  this.state.historyInstance,
             start:     oldest.getTime(),
             end:       now.getTime(),
-            step:      3600000, // hourly
+            step:      3600000 * 24, // hourly
             from:      false,
             ack:       false,
             q:         false,
             addID:     false,
-            aggregate: 'minmax'
+            aggregate: 'minmax',
+            range:     true // if supported => get oldest and newest value
         })
             .then(values => {
                 // remove interpolated first value
                 if (values && values[0]?.val === null) {
                     values.shift();
                 }
-                this.rangeValues = values;
+                this.rangeValues = this.rangeValues || {};
+                this.rangeValues[id] = values;
             });
     }
 
-    readHistory(start, end) {
+    readHistories(start, end) {
+        return Promise.all(this.objectList.map(obj => this.readHistory(obj._id, start, end)))
+            .then(() => this.chartValues);
+    }
+
+    readHistory(id, start, end) {
         /*interface GetHistoryOptions {
             instance?: string;
             start?: number;
@@ -403,12 +492,12 @@ class ObjectChart extends Component {
             //options.step = 60000;
         }
 
-        return this.props.socket.getHistory(this.props.obj._id, options)
+        return this.props.socket.getHistory(id, options)
             .then(values => {
                 // merge range and chart
                 let chart = [];
                 let r     = 0;
-                let range = this.rangeValues;
+                let range = this.rangeValues[id];
                 let minY  = null;
                 let maxY  = null;
 
@@ -446,28 +535,32 @@ class ObjectChart extends Component {
                 // sort
                 chart.sort((a, b) => a.ts > b.ts ? 1 : (a.ts < b.ts ? -1 : 0));
 
-                this.chartValues = chart;
-                this.minY = minY;
-                this.maxY = maxY;
+                this.chartValues = this.chartValues || {};
+                this.chartValues[id] = chart;
+                this.minY = this.minY || {};
+                this.maxY = this.maxY || {};
 
-                if (this.minY < 10) {
-                    this.minY = Math.round(this.minY * 10) / 10;
+                this.minY[id] = minY;
+                this.maxY[id] = maxY;
+
+                if (this.minY[id] < 10) {
+                    this.minY[id] = Math.round(this.minY[id] * 10) / 10;
                 } else {
-                    this.minY = Math.ceil(this.minY);
+                    this.minY[id] = Math.ceil(this.minY[id]);
                 }
-                if (this.maxY < 10) {
-                    this.maxY = Math.round(this.maxY * 10) / 10;
+                if (this.maxY[id] < 10) {
+                    this.maxY[id] = Math.round(this.maxY[id] * 10) / 10;
                 } else {
-                    this.maxY = Math.ceil(this.maxY);
+                    this.maxY[id] = Math.ceil(this.maxY[id]);
                 }
                 return chart;
             });
     }
 
-    convertData(values) {
-        values = values || this.chartValues;
+    convertData(id, values) {
+        values = values || this.chartValues[id];
         const data = [];
-        if (!values.length) {
+        if (!values || !values.length) {
             return data;
         }
         for (let i = 0; i < values.length; i++) {
@@ -481,60 +574,63 @@ class ObjectChart extends Component {
         return data;
     }
 
-    getOption() {
-        let widthAxis;
-        if (this.minY !== null && this.minY !== undefined) {
-            widthAxis = (this.minY.toString() + this.unit).length * 9 + 12;
-        }
-        if (this.maxY !== null && this.maxY !== undefined) {
-            const w = (this.maxY.toString() + this.unit).length * 9 + 12;
-            if (w > widthAxis) {
-                widthAxis = w;
+    xFormatter(value, _index) {
+        const date = new Date(value);
+        let dateTxt = '';
+        const dateInMonth = date.getDate();
+        if (this.withSeconds || this.withTime) {
+            let showDate = false;
+            if (_index < 2 || this.lastFormattedTime === null || value < this.lastFormattedTime) {
+                showDate = true;
+            } else
+            if (!showDate && new Date(this.lastFormattedTime).getDate() !== dateInMonth) {
+                showDate = true;
             }
-        }
-
-        if (this.state.maxYLen) {
-            const w = this.state.maxYLen * 9 + 12;
-            if (w > widthAxis) {
-                widthAxis = w;
+            if (showDate) {
+                dateTxt = `{b|..}\n{a|${padding2(dateInMonth)}.${padding2(date.getMonth() + 1)}.}`;
             }
+            this.lastFormattedTime = value;
+            if (this.withSeconds) {
+                return padding2(date.getHours()) + ':' + padding2(date.getMinutes()) + ':' + padding2(date.getSeconds()) + dateTxt;
+            } else if (this.withTime) {
+                return padding2(date.getHours()) + ':' + padding2(date.getMinutes()) + dateTxt;
+            }
+        } else {
+            return padding2(dateInMonth) + '.' + padding2(date.getMonth() + 1) + '\n' + date.getFullYear();
         }
+    }
 
-        const serie = {
-            xAxisIndex: 0,
-            type: 'line',
-            showSymbol: false,
-            hoverAnimation: true,
-            animation: false,
-            data: this.convertData(),
-            lineStyle: {
-                color: '#4dabf5',
-            },
-            areaStyle: {}
-        };
-
-        const yAxis = {
+    getYAxis(obj) {
+        return {
             type: 'value',
+            _boolean: true,
+            _unit: this.units[obj._id],
             boundaryGap: [0, '100%'],
+            position: 'left',
             splitLine: {
                 show: this.props.noToolbar || !!this.state.splitLine
             },
             splitNumber: Math.round(this.state.chartHeight / 50),
             axisLabel: {
-                formatter: (value, index) => {
+                formatter: (value, index) => this.yFormatter(value, obj, true)/* => {
                     let text;
                     if (this.props.isFloatComma) {
-                        text = value.toString().replace(',', '.') + this.unit;
+                        text = value.toString().replace(',', '.') + this.units[id];
                     } else {
-                        text = value + this.unit;
+                        text = value + this.units[id];
                     }
 
-                    if (this.state.maxYLen < text.length) {
+                    if (this.state.maxYLen[id] < text.length) {
                         this.maxYLenTimeout && clearTimeout(this.maxYLenTimeout);
-                        this.maxYLenTimeout = setTimeout(maxYLen => this.setState({maxYLen}), 200, text.length);
+                        this.maxYLenTimeout = setTimeout(_maxYLen => {
+                            this.maxYLenTimeout = null;
+                            const maxYLen = JSON.parse(JSON.stringify(this.state.maxYLen));
+                            maxYLen[id] = _maxYLen;
+                            this.setState({maxYLen});
+                        }, 200, text.length);
                     }
                     return text;
-                },
+                }*/,
                 showMaxLabel: true,
                 showMinLabel: true,
             },
@@ -542,44 +638,274 @@ class ObjectChart extends Component {
                 alignWithLabel: true,
             }
         };
+    }
 
-        if (this.props.obj.common.type === 'boolean') {
-            serie.step = 'end';
-            yAxis.axisLabel.showMaxLabel = false;
-            yAxis.axisLabel.formatter = value => value === 1 ? 'TRUE' : 'FALSE';
-            yAxis.max = 1.5;
-            yAxis.interval = 1;
-            widthAxis = 50;
+    // result.val === null => start and end are null
+    // result === null => no start or no end
+    getInterpolatedValue(i, ts, type, hoverNoNulls) {
+        const data = this.option.series[i].data;
+        if (!data || !data[0] || data[0].value[0] > ts || data[data.length - 1].value[0] < ts) {
+            return null;
         }
 
-        return {
+        for (let k = 0; k < data.length - 1; k++) {
+            if (data[k].value[0] === ts) {
+                // Calculate
+                return {exact: true, val: data[k].value[1]};
+            } else if (data[k].value[0] < ts && ts < data[k + 1].value[0]) {
+                const y1 = data[k].value[1];
+                const y2 = data[k + 1].value[1];
+                if (y2 === null || y2 === undefined || y1 === null || y1 === undefined) {
+                    return hoverNoNulls ? null : {exact: false, val: null};
+                }
+                if (type === 'boolean') {
+                    return {exact: false, val: y1};
+                }
+
+                // interpolate
+                const diff = data[k + 1].value[0] - data[k].value[0];
+                const kk = (data[k + 1].value[0] - ts) / diff;
+                return {exact: false, val: (1 - kk) * (y2 - y1) + y1};
+            }
+        }
+        return hoverNoNulls ? null : {exact: false, val: null};
+    }
+
+    yFormatter(val, obj, withUnit, interpolated, ignoreWidth) {
+        if (obj.common.type === 'boolean') {
+            return val ? 'TRUE' : 'FALSE';
+        }
+
+        if (val === null || val === undefined) {
+            return '';
+        }
+
+        /*const afterComma = null;
+        if (afterComma !== undefined && afterComma !== null) {
+            val = parseFloat(val);
+            if (this.props.isFloatComma) {
+                return val.toFixed(afterComma).replace('.', ',') + (withUnit ? this.config.l[line].unit : '');
+            } else {
+                return val.toFixed(afterComma) + (withUnit ? this.config.l[line].unit : '');
+            }
+        } else {*/
+            if (interpolated) {
+                val = Math.round(val * 10000) / 10000;
+            }
+            let text;
+            if (this.props.isFloatComma) {
+                val = parseFloat(val) || 0;
+                text = val.toString().replace('.', ',') + (withUnit ? this.units[obj._id] : '');
+            } else {
+                text = val.toString() + (withUnit ? this.units[obj._id] : '');
+            }
+            if (!ignoreWidth && this.state.maxYLen[obj._id] < text.length) {
+                this.maxYLenTimeout && clearTimeout(this.maxYLenTimeout);
+                this.maxYLenTimeout = setTimeout((_maxYLen, id) => {
+                    this.maxYLenTimeout = null;
+                    const maxYLen = JSON.parse(JSON.stringify(this.state.maxYLen));
+                    maxYLen[id] = _maxYLen;
+                    this.setState({maxYLen});
+                }, 200, text.length, obj._id);
+            }
+        //}
+        return text;
+    }
+
+    renderTooltip(params) {
+        const ts = params[0].value[0];
+        const date = new Date(ts);
+
+        const values = this.objectList.map((obj, i) => {
+            const p = params.find(param => param.seriesIndex === i);
+            let interpolated;
+            if (p) {
+                interpolated = {exact: p.data.exact !== undefined ? p.data.exact : true, val: p.value[1]};
+            }
+
+            interpolated = interpolated || this.getInterpolatedValue(i, ts, obj.common.type, false);
+            if (!interpolated) {
+                return '';
+            }
+            /*if (!interpolated.exact && this.config.hoverNoInterpolate) {
+                return '';
+            }*/
+
+            const val = interpolated.val === null ?
+                'null' :
+                this.yFormatter(interpolated.val, obj, false, true || !interpolated.exact, true);
+
+            return `<div style="width: 100%; display: inline-flex; justify-content: space-around; color: ${THEMES[i]}">` +
+                `<div style="display: flex;margin-right: 4px">${this.names[obj._id]}:</div>` +
+                `<div style="display: flex; flex-grow: 1"></div>` +
+                `<div style="display: flex;">${interpolated.exact ? '' : 'i '}<b>${val}</b>${interpolated.val !== null ? this.units[obj._id] : ''}</div>` +
+                `</div>`;
+        });
+
+        const format = 'dd, MM Do YYYY, HH:mm:ss.SSS';
+        return `<b>${moment(date).format(format)}</b><br/>${values.filter(t => t).join('<br/>')}`;
+    }
+
+    getOption() {
+        let widthAxisLeft = 0;
+        let widthAxisRight = 0;
+
+        const diff = this.state.max - this.state.min;
+        this.withTime    = diff < 3600000 * 24 * 7;
+        this.withSeconds = diff < 60000 * 30;
+
+        const yAxis = [];
+
+        const series = this.objectList.map((obj, i) => {
+            let _yAxis = null;
+            const id = obj._id;
+            let yAxisIndex = i;
+
+            if (obj.common.type === 'boolean') {
+                // find boolean axis
+                const axis = yAxis.find(axis => axis && axis._boolean);
+                if (axis) {
+                    yAxisIndex = yAxis.indexOf(axis);
+                } else {
+                    _yAxis = this.getYAxis(obj);
+                    if (yAxis.filter(axis => axis).length) {
+                        _yAxis.position = 'right';
+                    }
+                    _yAxis.axisLabel.showMaxLabel = false;
+                    _yAxis.axisLabel.formatter = value => value === 1 ? 'TRUE' : 'FALSE';
+                    _yAxis.max = 1.5;
+                    _yAxis.interval = 1;
+                    if (_yAxis.position === 'left') {
+                        if (widthAxisLeft < 50) {
+                            widthAxisLeft = 50;
+                        }
+                    } else {
+                        if (widthAxisRight < 50) {
+                            widthAxisRight = 50;
+                        }
+                    }
+                }
+            } else {
+                const axis = yAxis.find(axis => axis && axis._unit === this.units[id]);
+                if (axis) {
+                    yAxisIndex = yAxis.indexOf(axis);
+                } else {
+                    _yAxis = this.getYAxis(obj);
+                    if (yAxis.filter(axis => axis).length) {
+                        _yAxis.position = 'right';
+                    }
+
+                    if (_yAxis.position === 'left') {
+                        if (this.minY[id] !== null && this.minY[id] !== undefined) {
+                            const w = calcTextWidth(this.minY[id].toString() + this.units[id]);
+                            if (w > widthAxisLeft) {
+                                widthAxisLeft = w;
+                            }
+                        }
+                        if (this.maxY[id] !== null && this.maxY[id] !== undefined) {
+                            const w = calcTextWidth(this.maxY[id].toString() + this.units[id]);
+                            if (w > widthAxisLeft) {
+                                widthAxisLeft = w;
+                            }
+                        }
+                        if (this.state.maxYLen[id]) {
+                            const w = calcTextWidth(''.padStart(this.state.maxYLen[id], '0'));
+                            if (w > widthAxisLeft) {
+                                widthAxisLeft = w;
+                            }
+                        }
+                    } else {
+                        if (this.minY[id] !== null && this.minY[id] !== undefined) {
+                            const w = calcTextWidth(this.minY[id].toString() + this.units[id]);
+                            if (w > widthAxisRight) {
+                                widthAxisRight = w;
+                            }
+                        }
+                        if (this.maxY[id] !== null && this.maxY[id] !== undefined) {
+                            const w = calcTextWidth(this.maxY[id].toString() + this.units[id]);
+                            if (w > widthAxisRight) {
+                                widthAxisRight = w;
+                            }
+                        }
+                        if (this.state.maxYLen[id]) {
+                            const w = calcTextWidth(''.padStart(this.state.maxYLen[id], '0'));
+                            if (w > widthAxisRight) {
+                                widthAxisRight = w;
+                            }
+                        }
+                    }
+                }
+            }
+
+            yAxis.push(_yAxis);
+
+            return {
+                name: this.names[obj._id],
+                yAxisIndex: yAxisIndex,
+                type: 'line',
+                step: obj.common.type === 'boolean' ? 'end' : undefined,
+                showSymbol: false,
+                hoverAnimation: true,
+                animation: false,
+                data: this.convertData(obj._id),
+                itemStyle: {color: THEMES[i]},
+                lineStyle: {
+                    color: THEMES[i],
+                    width: 2,
+                },
+                emphasis:{
+                    scale: false,
+                    focus: 'none',
+                    blurScope: 'none',
+                    lineStyle: {
+                        color: THEMES[i],
+                        width: 2,
+                    },
+                },
+                areaStyle: this.objectList.length === 1 ? {} : undefined
+            };
+        });
+
+        this.option = {
+            legend: {
+                data: this.objectList.map(obj => this.names[obj._id]),
+                show: this.objectList.length > 1,
+                backgroundColor: this.props.themeType === 'dark' ? '#FFFFFF10' : '#00000010',
+                selected: {},
+                orient: 'vertical',
+                left: (widthAxisLeft ? widthAxisLeft + 5 : GRID_PADDING_LEFT) + 10,
+                formatter: (name, arg) => {
+                    if (this.actualValues) {
+                        const id = Object.keys(this.names).find(id => this.names[id] === name);
+                        if (id && this.actualValues[id] !== undefined) {
+                            const obj = this.objectList.find(obj => obj._id === id);
+                            return `${name} [${this.yFormatter(this.actualValues[id], obj, true, true, true)}]`;
+                        }
+                    }
+                    return name;
+                },
+            },
             backgroundColor: 'transparent',
             title: {
-                text: this.props.noToolbar ? '' : Utils.getObjectNameFromObj(this.props.obj, this.props.lang),
+                show: this.objectList.length === 1,
+                text: this.props.noToolbar ? '' : this.names[this.objectList[0]._id],
                 padding: [
                     10, // up
                     0,  // right
                     0,  // down
-                    widthAxis ? widthAxis + 10 : GRID_PADDING_LEFT + 10, // left
+                    widthAxisLeft ? widthAxisLeft + 10 : GRID_PADDING_LEFT + 10, // left
                 ]
             },
             grid: {
-                left: widthAxis || GRID_PADDING_LEFT,
+                left: widthAxisLeft ? widthAxisLeft + 5 : GRID_PADDING_LEFT,
                 top: 8,
-                right: this.props.noToolbar ? 5: GRID_PADDING_RIGHT,
+                right: (widthAxisRight ? widthAxisRight + 5 : 0) + (this.props.noToolbar ? 5: GRID_PADDING_RIGHT),
                 bottom: 40,
             },
             tooltip: {
                 trigger: 'axis',
-                formatter: params => {
-                    params = params[0];
-                    const date = new Date(params.value[0]);
-                    let value = params.value[1];
-                    if (value !== null && this.props.isFloatComma) {
-                        value = value.toString().replace('.', ',');
-                    }
-                    return `${date.toLocaleString()}.${padding3(date.getMilliseconds())}: ${value}${this.unit}`;
-                },
+                hoverAnimation: true,
+                formatter: params => this.renderTooltip(params),
                 axisPointer: {
                     animation: true
                 }
@@ -589,12 +915,12 @@ class ObjectChart extends Component {
                 splitLine: {
                     show: false
                 },
-                splitNumber: Math.round((this.state.chartWidth - GRID_PADDING_RIGHT - GRID_PADDING_LEFT) / 50),
+                splitNumber: this.withSeconds ? Math.round((this.state.chartWidth - GRID_PADDING_RIGHT - GRID_PADDING_LEFT) / 60) : Math.round((this.state.chartWidth - GRID_PADDING_RIGHT - GRID_PADDING_LEFT) / 50),
                 min: this.chart.min,
                 max: this.chart.max,
                 axisTick: {alignWithLabel: true,},
                 axisLabel: {
-                    formatter: (value, index) => {
+                    formatter: this.xFormatter.bind(this),/*(value, index) => {
                         const date = new Date(value);
                         if (this.chart.withSeconds) {
                             return padding2(date.getHours()) + ':' + padding2(date.getMinutes()) + ':' + padding2(date.getSeconds());
@@ -603,6 +929,14 @@ class ObjectChart extends Component {
                         } else {
                             return padding2(date.getDate()) + '.' + padding2(date.getMonth() + 1) + '\n' + date.getFullYear();
                         }
+                    }*/
+                    rich: {
+                        a: {
+                            fontWeight: 'bold',
+                        },
+                        b: {
+                            opacity: 0,
+                        },
                     }
                 }
             },
@@ -616,8 +950,10 @@ class ObjectChart extends Component {
                     }
                 }
             },
-            series: [serie]
+            series
         };
+
+        return this.option;
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -647,10 +983,10 @@ class ObjectChart extends Component {
             }
 
             if (withReadData) {
-                this.readHistory(start, end)
+                this.readHistories(start, end)
                     .then(values => {
                         typeof this.echartsReact.getEchartsInstance === 'function' && this.echartsReact.getEchartsInstance().setOption({
-                            series: [{data: this.convertData(values)}],
+                            series: this.objectList.map(obj => ({data: this.convertData(obj._id, values[obj._id])})),
                             xAxis: {
                                 min: this.chart.min,
                                 max: this.chart.max,
@@ -660,7 +996,7 @@ class ObjectChart extends Component {
                     });
             } else {
                 typeof this.echartsReact.getEchartsInstance === 'function' && this.echartsReact.getEchartsInstance().setOption({
-                    series: [{data: this.convertData()}],
+                    series: this.objectList.map(obj => ({data: this.convertData(obj._id)})),
                     xAxis: {
                         min: this.chart.min,
                         max: this.chart.max,
@@ -861,14 +1197,19 @@ class ObjectChart extends Component {
         if (!zr._iobInstalled) {
             zr._iobInstalled = true;
             zr.on('mousedown', e => {
-                console.log('mouse down');
-                this.mouseDown = true;
-                this.chart.lastX = e.offsetX;
+                this.mouseTimer = setTimeout(() => {
+                    console.log('mouse down');
+                    this.mouseTimer = null;
+                    this.mouseDown = true;
+                    this.chart.lastX = e.offsetX;
+                }, 50);
             });
             zr.on('mouseup', () => {
-                console.log('mouse up');
-                this.mouseDown = false;
-                this.setNewRange(true);
+                console.log(`mouse up ${Date.now() - this.lastSelectTime}`);
+                if (this.mouseDown && !this.lastSelectTime || Date.now() - this.lastSelectTime > 300) {
+                    this.mouseDown = false;
+                    this.setNewRange(true);
+                }
             });
             zr.on('mousewheel', e => {
                 let diff = this.chart.max - this.chart.min;
@@ -967,12 +1308,22 @@ class ObjectChart extends Component {
         }
     }
 
+    applySelected() {
+        // merge selected
+        if (this.selected && this.option.legend) {
+            Object.keys(this.selected).forEach(name => this.option.legend.selected[name] = this.selected[name]);
+        }
+    }
+
     renderChart() {
         if (this.chartValues) {
+            this.getOption();
+            this.applySelected();
+
             return <ReactEchartsCore
                 ref={e => this.echartsReact = e}
                 echarts={ echarts }
-                option={ this.getOption() }
+                option={ this.option }
                 notMerge={ true }
                 lazyUpdate={ true }
                 theme={ this.props.themeType === 'dark' ? 'dark' : '' }
@@ -980,8 +1331,15 @@ class ObjectChart extends Component {
                 opts={{ renderer: 'svg' }}
                 onEvents={ {
                     rendered: e => {
-                        this.installEventHandlers();
-                    }
+                        this.objectList.length === 1 && this.installEventHandlers();
+                    },
+                    legendselectchanged: e => {
+                        this.lastSelectTime = Date.now();
+                        console.log('Legend select');
+                        this.mouseTimer && clearTimeout(this.mouseTimer);
+                        this.mouseTimer = null;
+                        this.selected = JSON.parse(JSON.stringify(e.selected));
+                    },
                 }}
             />;
         } else {
@@ -1184,6 +1542,7 @@ ObjectChart.propTypes = {
     expertMode: PropTypes.bool,
     socket: PropTypes.object,
     obj: PropTypes.object,
+    objs: PropTypes.array,
     customsInstances: PropTypes.array,
     themeType: PropTypes.string,
     objects: PropTypes.object,

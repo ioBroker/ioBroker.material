@@ -319,17 +319,19 @@ class SmartURL extends SmartGeneric {
             this.getIconDiv(),
             this.getTitleDiv(),
             this.state.showDialog ?
-                <Dialog dialogKey={this.key + 'dialog'}
-                        key={this.key + 'dialog'}
-                        name={this.state.settings ? this.state.settings.name || '' : ''}
-                        enumNames={this.props.enumNames}
-                        settings={this.state.settings}
-                        objects={this.props.objects}
-                        image={this.image || this.state.settings.url}
-                        onCollectIds={this.props.onCollectIds}
-                        ids={this.ids}
-                        windowWidth={this.props.windowWidth}
-                        onClose={this.onDialogClose}
+                <Dialog
+                    dialogKey={this.key + 'dialog'}
+                    open={true}
+                    key={this.key + 'dialog'}
+                    name={this.state.settings ? this.state.settings.name || '' : ''}
+                    enumNames={this.props.enumNames}
+                    settings={this.state.settings}
+                    objects={this.props.objects}
+                    image={this.image || this.state.settings.url}
+                    onCollectIds={this.props.onCollectIds}
+                    ids={this.ids}
+                    windowWidth={this.props.windowWidth}
+                    onClose={this.onDialogClose}
                 /> : null
         ]);
     }

@@ -240,16 +240,18 @@ class SmartWeatherForecast extends SmartGeneric {
             this.getTitleDiv(),
             this.getInfoDiv(),
             this.state.showDialog ?
-                <Dialog dialogKey={this.key + 'dialog'}
-                        key={this.key + 'dialog'}
-                        name={this.state.settings.name}
-                        enumNames={this.props.enumNames}
-                        settings={this.state.settings}
-                        objects={this.props.objects}
-                        onCollectIds={this.props.onCollectIds}
-                        ids={this.ids}
-                        windowWidth={this.props.windowWidth}
-                        onClose={this.onDialogClose}
+                <Dialog
+                    dialogKey={this.key + 'dialog'}
+                    open={true}
+                    key={this.key + 'dialog'}
+                    name={this.state.settings.name}
+                    enumNames={this.props.enumNames}
+                    settings={this.state.settings}
+                    objects={this.props.objects}
+                    onCollectIds={this.props.onCollectIds}
+                    ids={this.ids}
+                    windowWidth={this.props.windowWidth}
+                    onClose={this.onDialogClose}
                 /> : null
         ]);
     }

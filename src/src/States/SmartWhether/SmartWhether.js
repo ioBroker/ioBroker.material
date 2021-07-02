@@ -116,7 +116,7 @@ class SmartWhether extends SmartGeneric {
         .then(data => {
             this.setState({charts:data});
         });
-        
+
     }
 
     async componentDidMount() {
@@ -233,7 +233,9 @@ class SmartWhether extends SmartGeneric {
             this.getWeather(),
             this.getCharts(this.state.charts),
             this.state.showDialog ?
-                <Dialog dialogKey={this.key + 'dialog'}
+                <Dialog
+                    dialogKey={this.key + 'dialog'}
+                    open={true}
                     key={this.key + 'dialog'}
                     name={this.state.settings ? this.state.settings.name || '' : ''}
                     enumNames={this.props.enumNames}

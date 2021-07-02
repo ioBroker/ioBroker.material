@@ -26,13 +26,13 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import Toolbar from '@material-ui/core/Toolbar';
 import Paper from '@material-ui/core/Paper';
-import Fab from '@material-ui/core/Fab';
-import IconButton from '@material-ui/core/IconButton';
 
 import { MdSave as OkIcon } from 'react-icons/md';
 import { MdContentCopy as CopyIcon } from 'react-icons/md';
+import { MdCancel as IconCancel } from 'react-icons/md';
+
+import Utils from '@iobroker/adapter-react/Components/Utils';
 
 import ColorPicker from '../basic-controls/react-color-picker/ColorPicker';
 import ImageSelector from '../basic-controls/react-image-selector/ImageSelector';
@@ -41,7 +41,6 @@ import SelectControl from '../basic-controls/react-info-controls/SelectControl';
 import BoolControl from '../basic-controls/react-info-controls/BoolControl';
 
 import SmartDialogGeneric from './SmartDialogGeneric';
-import Utils from '@iobroker/adapter-react/Components/Utils';
 import Theme from '../theme';
 import I18n from '@iobroker/adapter-react/i18n';
 import UploadImage from '../basic-controls/UploadImage';
@@ -368,7 +367,7 @@ class SmartDialogSettings extends SmartDialogGeneric {
             </DialogContent>
             <DialogActions>
                 <Button onClick={this.handleWarningCancel} color="primary" autoFocus>{I18n.t('Stay edit')}</Button>
-                <Button onClick={this.handleWarningIgnore}>{I18n.t('Discard changes')}</Button>
+                <Button onClick={this.handleWarningIgnore} startIcon={<IconCancel/>}>{I18n.t('Discard changes')}</Button>
             </DialogActions>
         </Dialog>;
     }

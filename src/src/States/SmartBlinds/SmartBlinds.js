@@ -235,6 +235,7 @@ class SmartBlinds extends SmartGeneric {
             this.state.showDialog ?
                 <Dialog key={this.key + 'dialog'}
                     transparent
+                    open={true}
                     startValue={this.realValueToPercent()}
                     onValueChange={this.setValue}
                     windowWidth={this.props.windowWidth}

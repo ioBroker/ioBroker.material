@@ -424,8 +424,8 @@ class ImageSelector extends React.Component {
                     </div>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => this.onCropEnd(true)} color="primary" autoFocus>{I18n.t('Crop')}</Button>
-                    <Button onClick={() => this.setState({cropOpened: false})} autoFocus>{I18n.t('Cancel')}</Button>
+                    <Button variant="contained" onClick={() => this.onCropEnd(true)} color="primary" autoFocus>{I18n.t('Crop')}</Button>
+                    <Button variant="contained" onClick={() => this.setState({cropOpened: false})} autoFocus>{I18n.t('Cancel')}</Button>
                 </DialogActions>
             </Dialog>): null}
         </div>);

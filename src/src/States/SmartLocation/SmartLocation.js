@@ -313,8 +313,9 @@ class SmartLocation extends SmartGeneric {
         return this.wrapContent([
             this.getLocation(),
             this.state.showDialog ?
-                <Dialog 
+                <Dialog
                     dialogKey={this.key + 'dialog'}
+                    open={true}
                     key={this.key + 'dialog'}
                     transparent
                     name={this.state.settings.name}

@@ -128,7 +128,7 @@ class SmartInfo extends SmartGeneric {
             }
         } else if (role.match(/temperature/i)) {
             return {
-                id: id,
+                id,
                 icon: IconThermometer,
                 iconStyle: { color: '#e54100' },
                 unit: unit ? ' ' + unit : '°',
@@ -138,7 +138,7 @@ class SmartInfo extends SmartGeneric {
             }
         } else {
             return {
-                id: id,
+                id,
                 unit: unit ? ' ' + unit : '',
                 icon: Utils.getObjectIcon(id, objects[id]),
                 name: title,
@@ -165,13 +165,13 @@ class SmartInfo extends SmartGeneric {
     getIcon() {
         let customIcon;
         if (this.state.settings.useDefaultIcon) {
-            customIcon = (<IconAdapter src={this.getDefaultIcon()} alt=" " style={{ height: '100%', zIndex: 1 }} />);
+            customIcon = <IconAdapter src={this.getDefaultIcon()} alt=" " style={{ height: '100%', zIndex: 1 }} />;
         } else {
             if (this.state.settings.icon) {
-                customIcon = (<IconAdapter src={this.state.settings.icon} alt=" " style={{ height: '100%', zIndex: 1 }} />);
+                customIcon = <IconAdapter src={this.state.settings.icon} alt=" " style={{ height: '100%', zIndex: 1 }} />;
             } else {
                 const Icon = this.infos[0].icon || IconInfo;
-                customIcon = (<Icon className={clsGeneric.iconStyle} />);
+                customIcon = <Icon className={clsGeneric.iconStyle} />;
             }
         }
 
@@ -193,27 +193,27 @@ class SmartInfo extends SmartGeneric {
         if (icon) {
             if (typeof icon === 'object') {
                 Icon = icon;
-                Icon = (<Icon style={Object.assign({}, Theme.tile.secondary.icon, this.infos[1].iconStyle || {})} />);
+                Icon = <Icon style={Object.assign({}, Theme.tile.secondary.icon, this.infos[1].iconStyle || {})} />;
             } else {
-                Icon = (<img alt={' '} src={icon} style={Object.assign({}, Theme.tile.secondary.icon, this.infos[1].iconStyle || {})} />)
+                Icon = <img alt={' '} src={icon} style={Object.assign({}, Theme.tile.secondary.icon, this.infos[1].iconStyle || {})} />;
             }
         }
 
-        return (<div key={this.key + 'tile-secondary'} className="tile-text-second" style={Theme.tile.secondary.div} title={this.infos[1].name}>
+        return <div key={this.key + 'tile-secondary'} className="tile-text-second" style={Theme.tile.secondary.div} title={this.infos[1].name}>
             {Icon}
             <span style={Theme.tile.secondary.text}>{val + this.infos[1].unit}</span>
-        </div>);
+        </div>;
     }
 
     getNumberOfValuesIndicator() {
         if (this.infos.length <= 2) return null;
-        return (<div key={this.key + 'tile-number'} style={Theme.tile.tileNumber} title={I18n.t('Show %s values', this.infos.length)}>{this.infos.length}</div>);
+        return <div key={this.key + 'tile-number'} style={Theme.tile.tileNumber} title={I18n.t('Show %s values', this.infos.length)}>{this.infos.length}</div>;
     }
 
     getFirstName() {
         this.firstName = this.firstName || I18n.t(Utils.CapitalWords(this.id.split('.').pop()));
 
-        return [(<span key={this.key + 'tile-name'}>{this.state.settings.name} </span>), (<span key={this.key + 'tile-first-name'} style={Theme.tile.tileNameSmall}>{this.firstName}</span>)];
+        return [<span key={this.key + 'tile-name'}>{this.state.settings.name} </span>, <span key={this.key + 'tile-first-name'} style={Theme.tile.tileNameSmall}>{this.firstName}</span>];
     }
 
     setValue = (id, value) => {
@@ -228,7 +228,9 @@ class SmartInfo extends SmartGeneric {
             this.getCharts(),
             this.getNumberOfValuesIndicator(),
             this.state.showDialog ?
-                <Dialog key={this.key + 'dialog'}
+                <Dialog
+                    key={this.key + 'dialog'}
+                    open={true}
                     dialogKey={this.key + 'dialog'}
                     windowWidth={this.props.windowWidth}
                     points={this.infos}

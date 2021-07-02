@@ -15,6 +15,8 @@ import theme from '@iobroker/adapter-react/Theme';
 import Utils from '@iobroker/adapter-react/Components/Utils';
 import ObjectChart from '../States/components/ObjectChart';
 
+
+
 let node = null;
 
 const useStyles = makeStyles((theme) => ({
@@ -41,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
         margin: 0
     },
     showDialog: {
-        marginTop: 10,
+        // marginTop: 10,
         width: '100%',
         height: '100%',
         display: 'flex',
@@ -133,10 +135,12 @@ const DialogChart = ({ cb, id, socket, themeType, systemConfig, allObjects, ids 
             </DialogContent>
             <DialogActions>
                 <Button
+                    autoFocus
                     variant="contained"
                     onClick={() => onClose()}
                     startIcon={<IconClose />}
-                    color="default">
+                    color="default"
+                >
                     {I18n.t('Close')}
                 </Button>
             </DialogActions>

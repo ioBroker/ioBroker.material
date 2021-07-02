@@ -357,16 +357,18 @@ class SmartMedia extends SmartGeneric {
             this.getInfoDiv(),
             this.getControlsDiv(),
             this.state.showDialog ?
-                <Dialog dialogKey={this.key + 'dialog'}
-                        key={this.key + 'dialog'}
-                        name={this.state.settings.name}
-                        enumNames={this.props.enumNames}
-                        settings={this.state.settings}
-                        onCollectIds={this.props.onCollectIds}
-                        ids={this.ids}
-                        windowWidth={this.props.windowWidth}
-                        onControl={this.props.onControl}
-                        onClose={this.onDialogClose}
+                <Dialog
+                    dialogKey={this.key + 'dialog'}
+                    open={true}
+                    key={this.key + 'dialog'}
+                    name={this.state.settings.name}
+                    enumNames={this.props.enumNames}
+                    settings={this.state.settings}
+                    onCollectIds={this.props.onCollectIds}
+                    ids={this.ids}
+                    windowWidth={this.props.windowWidth}
+                    onControl={this.props.onControl}
+                    onClose={this.onDialogClose}
                 /> : null
         ]);
     }

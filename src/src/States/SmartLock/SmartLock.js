@@ -166,12 +166,11 @@ class SmartLock extends SmartGeneric {
             <DialogTitle id="alert-dialog-title" style={{textAlign: 'center'}}>
                 {I18n.t('Select action')}
                 <Button style={style.icon} onClick={() => this.onAction('close')}><IconClose/></Button>
-                </DialogTitle>
-
+            </DialogTitle>
             <DialogActions>
                 <Button style={style.icon} title={I18n.t('Open lock')} onClick={() => this.onAction('openLock')}  color="primary"><IconLockOpened/></Button>
                 <Button style={style.icon} title={I18n.t('Close lock')}  onClick={() => this.onAction('closeLock')} color="secondary" autoFocus><IconLockClosed/></Button>
-                {this.openId ? (<Button style={style.icon} title={I18n.t('Open door')}  onClick={() => this.onAction('openDoor')}  color="secondary"><IconDoorOpened width={32} height={32}/></Button>) : null}
+                {this.openId ? <Button style={style.icon} title={I18n.t('Open door')}  onClick={() => this.onAction('openDoor')}  color="secondary"><IconDoorOpened width={32} height={32}/></Button> : null}
             </DialogActions>
         </Dialog>);
     }

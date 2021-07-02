@@ -16,6 +16,9 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
+
+import cls from './style.module.scss';
+
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -23,17 +26,19 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
+import { MdClose as IconClose } from 'react-icons/md';
+
 import Utils from '@iobroker/adapter-react/Components/Utils';
-import SmartDialogGeneric from './SmartDialogGeneric';
 import I18n from '@iobroker/adapter-react/i18n';
+import IconAdapter from '@iobroker/adapter-react/Components/Icon';
+
+import SmartDialogGeneric from './SmartDialogGeneric';
 import { getIcon } from '../basic-controls/react-weather/Weather';
-import cls from './style.module.scss';
 import IconHydro from '../icons/Humidity';
 import iconPrecipitation from '../icons/precipitation.svg';
 import iconPressure from '../icons/pressure.svg';
 import iconWind from '../icons/wind.svg';
 import iconWindChill from '../icons/windChill.svg';
-import IconAdapter from '@iobroker/adapter-react/Components/Icon';
 
 const HEIGHT_HEADER = 64;
 const HEIGHT_CURRENT = 200;
@@ -895,7 +900,13 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric {
                     <DialogContent className={this.props.classes['chart-dialog-content']}
                         style={{ backgroundImage: 'url(' + chart + ')' }} />
                     <DialogActions>
-                        <Button onClick={() => this.setState({ chartOpened: false })} color="primary" autoFocus>{I18n.t('Close')}</Button>
+                        <Button
+                            onClick={() => this.setState({ chartOpened: false })}
+                            color="primary"
+                            autoFocus
+                            variant="contained"
+                            startIcon={<IconClose />}
+                        >{I18n.t('Close')}</Button>
                     </DialogActions>
                 </Dialog>) : null];
         } else {

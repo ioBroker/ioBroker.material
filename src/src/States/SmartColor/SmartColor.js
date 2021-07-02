@@ -561,7 +561,7 @@ class SmartColor extends SmartGeneric {
                     windowWidth={this.props.windowWidth}
                     ids={this.ids}
                     transparent
-
+                    open={true}
                     modeRGB={modeRGB}
                     modeTemperature={modeTemperature}
 

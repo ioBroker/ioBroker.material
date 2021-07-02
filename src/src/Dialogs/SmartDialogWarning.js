@@ -16,6 +16,7 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
+
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -23,8 +24,12 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-import SmartDialogGeneric from './SmartDialogGeneric';
+import { MdClose as IconClose } from 'react-icons/md';
+
 import I18n from '@iobroker/adapter-react/i18n';
+
+
+import SmartDialogGeneric from './SmartDialogGeneric';
 
 const HEIGHT_HEADER  = 64;
 const HEIGHT_ICON    = 300;
@@ -257,7 +262,13 @@ class SmartDialogWarning extends SmartDialogGeneric  {
                 >
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => this.setState({chartOpened: false})} color="primary" autoFocus>{I18n.t('Close')}</Button>
+                    <Button
+                        onClick={() => this.setState({chartOpened: false})}
+                        color="primary"
+                        autoFocus
+                        variant="contained"
+                        startIcon={<IconClose/>}
+                    >{I18n.t('Close')}</Button>
                 </DialogActions>
             </Dialog> : null];
     }

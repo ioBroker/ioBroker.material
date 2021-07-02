@@ -16,8 +16,12 @@
 import React from 'react';
 import { MuiThemeProvider, withStyles } from '@material-ui/core/styles';
 import 'typeface-roboto'
+import clsx from 'clsx';
+import { withSnackbar } from 'notistack';
 
 import './App.css';
+import './helpers/stylesVariables.scss';
+import cls from './style.module.scss';
 
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -29,8 +33,10 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import { Tooltip } from '@material-ui/core';
 
 import { MdClose as IconClose } from 'react-icons/md';
+import { MdCheck as IconCheck } from 'react-icons/md';
 import { MdModeEdit as IconSettings } from 'react-icons/md';
 import { MdSettings as IconEdit } from 'react-icons/md';
 import { MdSignalWifiOff as IconSignalOff } from 'react-icons/md';
@@ -43,26 +49,21 @@ import { MdRefresh as IconRefresh } from 'react-icons/md';
 import { FaSignOutAlt as IconLogout } from 'react-icons/fa';
 import { GiResize } from 'react-icons/gi';
 
-import Theme from './theme';
+import IconAdapter from '@iobroker/adapter-react/Components/Icon';
 import I18n from '@iobroker/adapter-react/i18n';
-import VERSION from './version';
 import Utils from '@iobroker/adapter-react/Components/Utils';
+import GenericApp from '@iobroker/adapter-react/GenericApp';
+
+import Theme from './theme';
+import VERSION from './version';
 import MenuList from './MenuList';
 import StatesList from './StatesList/StatesList';
 import SpeechDialog from './SpeechDialog';
 import DialogSettings from './Dialogs/SmartDialogSettings';
 import LoadingIndicator from './basic-controls/react-loading-screen/LoadingIndicator';
-import GenericApp from '@iobroker/adapter-react/GenericApp';
 import ToggleThemeMenu from './Components/ToggleThemeMenu';
-import cls from './style.module.scss';
-import { withSnackbar } from 'notistack';
-import './helpers/stylesVariables.scss';
-import clsx from 'clsx';
-import { Tooltip } from '@material-ui/core';
 
-import IconAdapter from '@iobroker/adapter-react/Components/Icon';
-
-const isKeyboardAvailableOnFullScreen = (typeof Element !== 'undefined' && 'ALLOW_KEYBOARD_INPUT' in Element) && Element.ALLOW_KEYBOARD_INPUT;
+const isKeyboardAvailableOnFullScreen = typeof Element !== 'undefined' && 'ALLOW_KEYBOARD_INPUT' in Element && Element.ALLOW_KEYBOARD_INPUT;
 
 const appConfigID = 'system.adapter.material.0';
 
@@ -1412,18 +1413,18 @@ class App extends GenericApp {
     }
 
     getButtonSignal(useBright) {
-        if (this.state.connected) return null;
-        return (
-            <IconButton disabled={true} style={{ color: useBright ? Theme.palette.textColorBright : Theme.palette.textColorDark }}>
-                <IconSignalOff width={Theme.iconSize} height={Theme.iconSize} />
-            </IconButton>
-        );
+        if (this.state.connected) {
+            return null;
+        }
+        return <IconButton disabled={true} style={{ color: useBright ? Theme.palette.textColorBright : Theme.palette.textColorDark }}>
+            <IconSignalOff width={Theme.iconSize} height={Theme.iconSize} />
+        </IconButton>;
     }
 
     getAppBar() {
         const toolbarBackground = this.state.settings ? this.state.settings.color : undefined;
         const useBright = !toolbarBackground || Utils.isUseBright(toolbarBackground);
-        return (<AppBar
+        return <AppBar
             position="fixed"
             className={cls.colorBar}
             style={{
@@ -1433,11 +1434,11 @@ class App extends GenericApp {
             }}
         >
             <Toolbar className={cls.wrapperToolBar} >
-                {toolbarBackground && <div style={{ borderColor: toolbarBackground }} className={cls.toolbarBackgroundOpacity}></div>}
+                {toolbarBackground && <div style={{ borderColor: toolbarBackground }} className={cls.toolbarBackgroundOpacity}/>}
                 {!this.state.menuFixed &&
-                    (<IconButton color="inherit" aria-label="Menu" onClick={this.onToggleMenu} >
+                    <IconButton color="inherit" aria-label="Menu" onClick={this.onToggleMenu} >
                         <IconMenu />
-                    </IconButton>)}
+                    </IconButton>}
                 <IconAdapter style={Theme.appBarIcon} src={this.state?.settings?.icon} />
                 <h3 color="inherit" style={{ flex: 1 }}>
                     {this.getTitle()}
@@ -1473,7 +1474,7 @@ class App extends GenericApp {
                     {this.getButtonLogout(useBright)}
                     {this.getButtonFullScreen(useBright)}
                 </div>
-                {this.state.editEnumSettings ? (<DialogSettings key={'enum-settings'}
+                {this.state.editEnumSettings ? <DialogSettings key={'enum-settings'}
                     name={this.getTitle()}
                     windowWidth={parseFloat(this.state.width)}
                     getImages={this.readImageNames}
@@ -1482,8 +1483,8 @@ class App extends GenericApp {
                     onSave={this.saveDialogSettings}
                     onClose={this.editEnumSettingsClose}
 
-                />) : null}
-                {this.state.editAppSettings ? (<DialogSettings key={'app-settings'}
+                /> : null}
+                {this.state.editAppSettings ? <DialogSettings key={'app-settings'}
                     windowWidth={parseFloat(this.state.width)}
                     name={I18n.t('App settings')}
                     dialogKey={'app-settings'}
@@ -1491,12 +1492,15 @@ class App extends GenericApp {
                     onSave={this.saveAppSettings}
                     onClose={this.editAppSettingsClose}
 
-                />) : null}
+                /> : null}
             </Toolbar>
-        </AppBar>);
+        </AppBar>;
     }
 
     getStateList() {
+        if (!this.state.viewEnum) {
+            return null;
+        }
         return <StatesList
             objects={this.state.viewEnum === Utils.INSTANCES ? this.instances : this.objects}
             user={this.user}
@@ -1540,21 +1544,26 @@ class App extends GenericApp {
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button onClick={() => this.setState({ errorShow: false })} color="primary">OK</Button>
+                <Button
+                    autoFocus
+                    onClick={() => this.setState({ errorShow: false })}
+                    color="primary"
+                    startIcon={<IconCheck/>}
+                >OK</Button>
             </DialogActions>
         </Dialog>;
     }
 
     getSpeechDialog() {
         if (this.state.appSettings && (this.state.appSettings.text2command || this.state.appSettings.text2command === 0)) {
-            return (SpeechDialog.isSpeechRecognitionSupported() ?
+            return SpeechDialog.isSpeechRecognitionSupported() ?
                 <SpeechDialog
                     objects={this.objects}
                     isShow={this.state.isListening}
                     locale={this.getLocale()}
                     onSpeech={this.onSpeechRec}
                     onFinished={() => this.onSpeech(false)}
-                /> : null);
+                /> : null;
         } else {
             return null;
         }
@@ -1564,41 +1573,35 @@ class App extends GenericApp {
         const background = window.materialBackground;
         const useBright = background && Utils.isUseBright(background);
 
-        return (
-            <div className={cls.backgroundLoading}>
-                <LoadingIndicator
-                    variant={this.gotObjects ? 'indeterminate' : 'determinate'}
-                    value={100 * this.state.loadingProgress / App.LOADING_TOTAL}
-                    label={I18n.t(this.state.loadingStep)}
-                />
-            </div>
-        );
+        return <div className={cls.backgroundLoading}>
+            <LoadingIndicator
+                variant={this.gotObjects ? 'indeterminate' : 'determinate'}
+                value={100 * this.state.loadingProgress / App.LOADING_TOTAL}
+                label={I18n.t(this.state.loadingStep)}
+            />
+        </div>;
     }
 
-    render() { 
-        console.log(11223344,'server',this.socket.props.protocol,'//',this.socket.props.host,':',this.socket.props.port,)
-
+    render() {
         if (this.state.loading) {
             return this.getLoadingScreen();
         } else {
             const useBright = this.state.appSettings && this.state.appSettings.menuBackground && Utils.isUseBright(this.state.appSettings.menuBackground);
-            return (
-                <MuiThemeProvider theme={this.state.theme}>
-                    <div className={cls.wrapperApp}>
-                        {this.getAppBar(useBright)}
-                        {this.getMenu(useBright)}
-                        {!this.state.bigMessage ? this.getStateList(useBright) : <div style={{
-                            position: 'absolute',
-                            fontSize: 36,
-                            top: '50%',
-                            width: '100%',
-                            textAlign: 'center'
-                        }}>{this.state.bigMessage}</div>}
-                        {this.getErrorDialog(useBright)}
-                        {this.getSpeechDialog(useBright)}
-                    </div>
-                </MuiThemeProvider>
-            );
+            return <MuiThemeProvider theme={this.state.theme}>
+                <div className={cls.wrapperApp}>
+                    {this.getAppBar(useBright)}
+                    {this.getMenu(useBright)}
+                    {!this.state.bigMessage ? this.getStateList(useBright) : <div style={{
+                        position: 'absolute',
+                        fontSize: 36,
+                        top: '50%',
+                        width: '100%',
+                        textAlign: 'center'
+                    }}>{this.state.bigMessage}</div>}
+                    {this.getErrorDialog(useBright)}
+                    {this.getSpeechDialog(useBright)}
+                </div>
+            </MuiThemeProvider>;
         }
     }
 }

@@ -207,6 +207,7 @@ class SmartClock extends SmartGeneric {
             this.state.showDialog ?
                 <Dialog dialogKey={this.key + 'dialog'}
                     key={this.key + 'dialog'}
+                    open={true}
                     name={this.state.settings ? this.state.settings.name || '' : ''}
                     enumNames={this.props.enumNames}
                     settings={this.state.settings}

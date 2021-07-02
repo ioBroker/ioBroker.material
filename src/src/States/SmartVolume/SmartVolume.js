@@ -233,7 +233,9 @@ class SmartVolume extends SmartGeneric {
             this.getStandardContent(null, true),
             this.muteId && this.getSecondaryDiv(),
             this.state.showDialog ?
-                <Dialog key={this.key + 'dialog'}
+                <Dialog
+                    key={this.key + 'dialog'}
+                    open={true}
                     transparent
                     startValue={this.state[this.id]}
                     startMuteValue={this.muteId ? this.state[this.muteId] : false}

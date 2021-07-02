@@ -224,6 +224,7 @@ class SmartDimmer extends SmartGeneric {
             this.getStandardContent(this.id, true),
             this.state.showDialog ?
                 <Dialog key={this.key + 'dialog'}
+                    open={true}
                     transparent
                     windowWidth={this.props.windowWidth}
                     startValue={this.realValueToPercent()}

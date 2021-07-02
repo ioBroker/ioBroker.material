@@ -882,6 +882,7 @@ class SmartGeneric extends Component {
                 </div>,
                 this.state.showSettings ?
                     <Dialog key={this.key + 'settings'}
+                        open={true}
                         windowWidth={this.props.windowWidth}
                         name={this.state.settings.name}
                         dialogKey={this.key + 'settings'}

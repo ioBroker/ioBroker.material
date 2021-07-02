@@ -269,7 +269,7 @@ class StatesList extends Component {
 
     wrapItem(id, items, isUseBright, index) {
         if (!this.state.subDragging && this.props.editMode && id !== 'nothing' && id !== Utils.INSTANCES) {
-            return (<Draggable
+            return <Draggable
                 key={this.state.enumID + '_' + id + '-list1'}
                 draggableId={this.state.enumID + '_' + id + '-list'} index={index}>
                 {(provided, snapshot) => (
@@ -314,9 +314,9 @@ class StatesList extends Component {
                         />
                     </div>
                 )}
-            </Draggable>);
+            </Draggable>;
         } else {
-            const control = (<StatesSubList
+            const control = <StatesSubList
                 key={this.state.enumID + '_' + id + '-list'}
                 objects={this.props.objects}
                 user={this.props.user}
@@ -345,13 +345,13 @@ class StatesList extends Component {
                 onControl={this.props.onControl}
                 onCollectIds={this.props.onCollectIds}
                 subDragging={true}
-            />);
+            />;
             if (this.props.editMode) {
-                return (<div
+                return <div
                     key={this.state.enumID + '_' + id + '-list2'}
                     className={this.props.classes['drag-item']}
                     style={{ display: 'inline-block' }}
-                >{control}</div>);
+                >{control}</div>;
             } else {
                 return control;
             }
@@ -400,35 +400,33 @@ class StatesList extends Component {
                     name: I18n.t('Add custom e-chart'),
                     onClick: this.onAddCustomEchart
                 }
-            ]
-            }
-        />
+            ]}
+        />;
     }
     wrapAllItems(columns, provided, snapshot, style) {
         style = Object.assign({ marginLeft: this.props.marginLeft, width: 'calc(100% - ' + this.props.marginLeft + 'px)' }, style);
 
-        return (
-            <div style={style} ref={provided.innerRef} {...provided.droppableProps}>
-                {columns}
-                {provided.placeholder}
-                {this.getToggleDragButton()}
-                {/* {this.getAddButton()} */}
-                {this.getAddButtonWidgets()}
-                {this.getDialogWidget()}
-                {/* {this.getAddButtonWhether()} */}
-            </div>);
+        return <div style={style} ref={provided.innerRef} {...provided.droppableProps}>
+            {columns}
+            {provided.placeholder}
+            {this.getToggleDragButton()}
+            {/* {this.getAddButton()} */}
+            {this.getAddButtonWidgets()}
+            {this.getDialogWidget()}
+            {/* {this.getAddButtonWhether()} */}
+        </div>;
     }
 
     getToggleDragButton() {
         if (this.props.editMode && this.props.enumID !== Utils.INSTANCES) {
-            return (<CustomFab key={this.props.dialogKey + '-drag-button'}
+            return <CustomFab key={this.props.dialogKey + '-drag-button'}
                 size="small"
                 title={I18n.t('Drag direction')}
                 style={{ fontSize: 24 }}
                 onClick={() => this.setState({ subDragging: !this.state.subDragging })}
                 className={this.props.classes['drag-button']}>
                 {this.state.subDragging ? <IconHorizontal /> : <IconVertical />}
-            </CustomFab>);
+            </CustomFab>;
         } else {
             return null;
         }
@@ -469,7 +467,7 @@ class StatesList extends Component {
             doubleSize: true,
             enabled: true,
             seconds: false,
-            "12/24": false,
+            '12/24': false,
             dayOfWeek: true
         });
 
@@ -514,7 +512,7 @@ class StatesList extends Component {
             doubleSize: true,
             enabled: true,
             seconds: false,
-            "12/24": false,
+            '12/24': false,
             dayOfWeek: true
         });
 
@@ -522,9 +520,8 @@ class StatesList extends Component {
 
         const settings = Utils.getSettings(this.props.objects[this.props.enumID], { user: this.props.user });
         settings.URLs = newState.customURLs;
-        this.props.onSaveSettings && this.props.onSaveSettings(this.props.enumID, settings, () => {
-            this.setState(newState);
-        });
+        this.props.onSaveSettings && this.props.onSaveSettings(this.props.enumID, settings, () =>
+            this.setState(newState));
     }
 
     // getAddButton() {
@@ -544,17 +541,16 @@ class StatesList extends Component {
 
     getAddButtonWidgets() {
         if (this.props.editMode && this.props.enumID !== Utils.INSTANCES) {
-            return (
-                <Tooltip title={I18n.t('Widgets')}>
-                    <CustomFab
-                        size="small"
-                        title={I18n.t('Widgets')}
-                        style={{ fontSize: 24 }}
-                        onClick={this.onDialogOpen}
-                        className={cls.buttonClock}>
-                        <IconAdd />
-                    </CustomFab>
-                </Tooltip>);
+            return <Tooltip title={I18n.t('Widgets')}>
+                <CustomFab
+                    size="small"
+                    title={I18n.t('Widgets')}
+                    style={{ fontSize: 24 }}
+                    onClick={this.onDialogOpen}
+                    className={cls.buttonClock}>
+                    <IconAdd />
+                </CustomFab>
+            </Tooltip>;
         } else {
             return null;
         }
@@ -604,16 +600,15 @@ class StatesList extends Component {
         }
 
         if (!this.state.subDragging && this.props.editMode && this.props.enumID !== Utils.INSTANCES && !isNothing) {
-            return (<div className={cls.droppableList}>
+            return <div className={cls.droppableList}>
                 <DragDropContext onDragEnd={result => this.onDragEnd(result)} onDragStart={() => this.setState({ dragging: true })}>
                     <Droppable droppableId="mainList" direction="vertical">
                         {(provided, snapshot) => this.wrapAllItems(columns, provided, snapshot, style)}
                     </Droppable>
                 </DragDropContext>
-            </div>
-            );
+            </div>;
         } else {
-            return (<div className={cls.wrapperBlock} style={Object.assign({ marginLeft: this.props.marginLeft }, style)}>
+            return <div className={cls.wrapperBlock} style={Object.assign({ marginLeft: this.props.marginLeft }, style)}>
                 <div className={cls.block}>
                     {columns}
                     {this.getToggleDragButton()}
@@ -622,7 +617,7 @@ class StatesList extends Component {
                     {this.getDialogWidget()}
                     {/* {this.getAddButtonWhether()} */}
                 </div>
-            </div>);
+            </div>;
         }
     }
 

@@ -8,11 +8,11 @@ const CustomSwitch = ({ value, onChange, customValue }) => {
     return <div className={cls.wrapperSwitch}>
         <div className={cls.switch}
             onClick={e => {
-                if (!customValue) setSwitchChecked(!switchChecked);
+                !customValue && setSwitchChecked(!switchChecked);
                 onChange(!value);
             }}>
-            <input type="checkbox" checked={customValue ? value : switchChecked} />
-            <span className={clsx(cls.slider, cls.round, value || switchChecked && cls.active)}></span>
+            <input type="checkbox" checked={!!(customValue ? value : switchChecked)} onChange={() => {}}/>
+            <span className={clsx(cls.slider, cls.round, value || switchChecked && cls.active)}/>
         </div>
     </div>;
 }
