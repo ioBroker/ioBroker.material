@@ -30,7 +30,6 @@ import { Paper } from '@material-ui/core';
 class SmartDialogWidget extends SmartDialogGeneric {
     constructor(props) {
         super(props);
-        console.log(11223344, props)
         this.componentReady();
     }
 

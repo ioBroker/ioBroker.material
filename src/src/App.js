@@ -1576,8 +1576,6 @@ class App extends GenericApp {
     }
 
     render() { 
-        console.log(11223344,'server',this.socket.props.protocol,'//',this.socket.props.host,':',this.socket.props.port,)
-
         if (this.state.loading) {
             return this.getLoadingScreen();
         } else {

@@ -35,6 +35,8 @@ window.adapterName = 'material';
 console.log('iobroker.' + window.adapterName + '@' + version);
 let themeName = Utils.getThemeName();
 
+document.write('abc');
+
 function build() {
     const notistackRef = React.createRef();
     const onClickDismiss = key => () =>

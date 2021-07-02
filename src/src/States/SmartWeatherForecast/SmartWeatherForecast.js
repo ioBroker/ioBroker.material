@@ -356,7 +356,7 @@ class SmartWeatherForecast extends SmartGeneric {
 
         this.stateRx.showDialogBottom = false;
         this.stateRx.showDialog = false; // support dialog in this tile used in generic class)
-
+        this.stateRx.showChartBottom = false;
         this.componentReady();
     }
 

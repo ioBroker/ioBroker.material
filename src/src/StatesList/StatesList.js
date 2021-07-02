@@ -498,7 +498,6 @@ class StatesList extends Component {
         const settings = Utils.getSettings(this.props.objects[this.props.enumID], { user: this.props.user });
         settings.URLs = newState.customURLs;
         this.props.onSaveSettings && this.props.onSaveSettings(this.props.enumID, settings, () => {
-            debugger
             this.setState(newState);
         });
     }

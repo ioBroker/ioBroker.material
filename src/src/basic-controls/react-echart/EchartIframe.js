@@ -16,7 +16,7 @@ const EchartIframe = ({
 
     return <div className={cls.echartWrapper}>
         {name && <div className={cls.name}>{name}</div>}
-        <iframe className={cls.iframe} src={`http://localhost:8082/echarts/index.html?preset=${'echarts.0.MyChar'}t&noBG=true`} />
+        <iframe className={cls.iframe} src={`${window.location.port === '3000' ? window.location.protocol + '//' + window.location.hostname + ':8082' : ''}/echarts/index.html?preset=${'echarts.0.MyChar'}t&noBG=true&compact=true`} />
     </div>
 }
 

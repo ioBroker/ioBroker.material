@@ -163,7 +163,6 @@ class SmartDialogSlider extends SmartDialogGeneric {
     }
 
     localValue2externalValue(value) {
-        debugger
         if (this.props.min !== undefined && this.props.max !== undefined) {
             return value * (this.props.max - this.props.min) / 100 + this.props.min;
         } else {

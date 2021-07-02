@@ -82,7 +82,7 @@ class SmartThermometer extends SmartGeneric {
         this.props.tile.setState({ isPointer: false });
 
         this.key = 'smart-thermometer-' + this.id + '-';
-
+        this.stateRx.chartSettingsId = this.settingsId;
         //this.props.tile.registerHandler('onClick', this.onTileClick.bind(this));
         this.componentReady();
     }
@@ -156,10 +156,7 @@ class SmartThermometer extends SmartGeneric {
         return this.wrapContent([
             this.getStandardContent(this.actualId),
             this.getSecondaryDiv(),
-            this.getSecondaryDivTop(),
-            this.getCharts(),
-            this.state.showDialogBottom ?
-                dialogChartCallBack(this.onDialogCloseBottom, this.settingsId, this.props.socket, this.props.themeType, this.props.systemConfig, this.props.allObjects, this.getIdHistorys(this.getAllIds())) : null
+            this.getSecondaryDivTop()
         ]);
     }
 }

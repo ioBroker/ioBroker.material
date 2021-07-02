@@ -37,6 +37,7 @@ import * as echarts from 'echarts/core';
 import { LineChart } from 'echarts/charts';
 import { GridComponent } from 'echarts/components';
 import { SVGRenderer } from 'echarts/renderers';
+import { dialogChartCallBack } from '../Dialogs/DialogChart';
 
 echarts.use([GridComponent, LineChart, SVGRenderer]);
 
@@ -81,6 +82,10 @@ class SmartGeneric extends Component {
         this.doubleState = false; // has on/off or only info
 
         this.showCorner = false; // set it to true to show the corner
+        //show chart
+        this.showChartBottom = false;
+        this.chartSettingsId = 'none';
+        //
         this.stateRx = {
             executing: false,
             settings: {},
@@ -215,6 +220,14 @@ class SmartGeneric extends Component {
         if (this.stateRx.showDialog !== undefined) {
             this.showCorner = true;
             this.props.tile.registerHandler('onMouseDown', this.onTileMouseDown);
+        }
+
+        if (this.stateRx.showChartBottom !== false) {
+            this.showChartBottom = true;
+        }
+
+        if (this.showChartBottom && this.stateRx.chartSettingsId) {
+            this.chartSettingsId = this.stateRx.chartSettingsId;
         }
 
         if (this.stateRx.showDialogBottom !== undefined) {
@@ -754,6 +767,16 @@ class SmartGeneric extends Component {
                 });
             }
         }
+        const optionsArray = this.getIdHistorys(this.getAllIds(true));
+
+        if (optionsArray.length && this.chartSettingsId && this.showChartBottom) {
+            settings.unshift({
+                name: 'chartId',
+                value: this.state?.settings?.chartId || this.chartSettingsId,
+                options: [...this.getIdHistorys(this.getAllIds(true)), 'none'],
+                type: 'select'
+            });
+        }
 
         return settings;
     }
@@ -906,6 +929,9 @@ class SmartGeneric extends Component {
                         className={cls.cornerBottom}
                     />) : null}
                     {this.getIndicators()}
+                    {this.showChartBottom && this.getCharts(this.state?.settings?.chartId || this.chartSettingsId)}
+                    {this.showChartBottom && this.state.showDialogBottom ?
+                        dialogChartCallBack(this.onDialogCloseBottom, this.state?.settings?.chartId || this.chartSettingsId, this.props.socket, this.props.themeType, this.props.systemConfig, this.props.allObjects, this.getIdHistorys(this.getAllIds(true))) : null}
                     {content}
                 </div>
             ];
@@ -936,7 +962,7 @@ class SmartGeneric extends Component {
             ack: false,
             q: false,
             addID: false,
-            aggregate: 'minmax'
+            aggregate: this.props.objects[id]?.common?.type === 'number' ? 'minmax' : 'none'
         };
 
         return this.props.socket.getHistory(id || this.id, options)
@@ -972,7 +998,7 @@ class SmartGeneric extends Component {
                 }
 
                 // sort
-                chart.sort((a, b) => a.ts > b.ts ? 1 : (a.ts < b.ts ? -1 : 0));
+                chart.sort((a, b) => a.ts > b.ts ? 1 : (a.ts < b.ts ? -1 : 0)).filter(e => e.val !== null);
                 this.echartsReact.current?.getEchartsInstance().setOption({
                     series: [{
                         data: this.convertData(chart)
@@ -988,7 +1014,18 @@ class SmartGeneric extends Component {
     }
 
     convertData = (values) => {
-        return values.map(e => e.val !== null ? e.val : 0);
+        return values.map(e => {
+            if (e.val !== null) {
+                if (typeof e.val === 'boolean') {
+                    if (e.val) {
+                        return 1;
+                    }
+                    return 0;
+                }
+                return e.val;
+            }
+            return 0;
+        });
     }
 
     checkHistory = (idOrData, showCornerBottom = false) => {
@@ -1027,7 +1064,7 @@ class SmartGeneric extends Component {
     getAllIds = (all = false) => {
         if (this.channelInfo.states.length && !all) {
             return this.channelInfo.states.filter(el => el.id).map(el => el.id);
-        } else if (this.subscribes.length && all) {
+        } else if (this.subscribes?.length && all) {
             return this.subscribes;
         }
         return [];
@@ -1075,7 +1112,7 @@ class SmartGeneric extends Component {
             ack: false,
             q: false,
             addID: false,
-            aggregate: 'minmax'
+            aggregate: this.props.objects[id]?.common?.type === 'number' ? 'minmax' : 'none'
         };
 
         return this.props.socket.getHistory(id || this.id, options)
@@ -1151,7 +1188,6 @@ class SmartGeneric extends Component {
             style.color = '#020202';
             style.areaStyle = '#0202026b';
         }
-
         const option = {
             animation: true,
             legend: {
@@ -1178,8 +1214,9 @@ class SmartGeneric extends Component {
                 {
                     silent: true,
                     type: 'line',
-                    smooth: true,
+                    smooth: this.props.objects[idOrData]?.common?.type === 'number' || typeof idOrData !== 'string' ? true : false,
                     showSymbol: false,
+                    step: typeof idOrData === 'string' && this.props.objects[idOrData]?.common?.type === 'number' || typeof idOrData !== 'string' ? false : true,
                     color: style.color,
                     areaStyle: { color: style.areaStyle },
                     data: typeof idOrData === 'string' ? [] : idOrData

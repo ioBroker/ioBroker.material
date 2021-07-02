@@ -19,8 +19,6 @@
 <!-- - Collect all IDs and give it in "objs" as array -->
 - Show chart in the corner if any state of the device has "history"//////////
 
-<!-- - if some objects exists, do not show nothing here, but progress bar -->
-
 ## Control by state
 - Change page
 - Change thema
@@ -55,6 +53,7 @@
 
 ## RGB
 - Tooltip of power, Color type
+- Place cursor by dialog open 
 
 ## Weather
 - (BF) Type detector to detect current temperature get from current and day 0

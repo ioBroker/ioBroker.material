@@ -132,6 +132,7 @@ class SmartVacuumCleaner extends SmartGeneric {
         this.step = this.step || 0.5;
         this.stateRx.checkAllStates = true;
 
+        this.stateRx.chartSettingsId = this.actualId;
         this.componentReady();
     }
 
@@ -281,9 +282,6 @@ class SmartVacuumCleaner extends SmartGeneric {
             // this.getSecondaryDiv(),
             this.getSecondaryDivActual(),
             this.getSecondaryDivTop(),
-            this.getCharts(this.actualId, null, false),
-            this.state.showDialogBottom ?
-                dialogChartCallBack(this.onDialogCloseBottom, this.batteryId, this.props.socket, this.props.themeType, this.props.systemConfig, this.props.allObjects, this.getIdHistorys(this.getAllIds(true))) : null,
             this.state.showDialog ?
                 <Dialog
                     key={this.key + 'dialog'}

@@ -97,6 +97,7 @@ class SmartWhether extends SmartGeneric {
         this.props.tile.setVisibility(!!this.stateRx.settings);
         // this.stateRx.showDialog = false; // support dialog in this tile used in generic class)
 
+        this.stateRx.showChartBottom = false;
         this.interval = null;
 
         this.componentReady();
