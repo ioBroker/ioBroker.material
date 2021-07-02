@@ -108,28 +108,28 @@ class SmartGeneric extends Component {
                 let idActual = this.channelInfo.states.find(el => el.id);
                 idActual = idActual.id.split('.');
                 idActual.pop();
-                this.channelInfo.states.forEach(function (state) {
+                this.channelInfo.states.forEach(state => {
                     if (!state.id) {
                         let newId = `${idActual.join('.')}.${state.name}`;
                         ids.push(newId);
-                        return
-                    };
+                        return;
+                    }
 
                     if (state.id.startsWith('system.adapter.')) {
                         ids.push(state.id);
                     } else
-                        if (!state.noSubscribe &&
-                            this.props.objects[state.id] &&
-                            this.props.objects[state.id].type === 'state' &&
-                            ids.indexOf(state.id) === -1) {
-                            const pos = state.id.lastIndexOf('.');
-                            if (pos !== -1 && this.stateRx.ignoreIndicators.indexOf(state.id.substring(pos + 1)) !== -1) {
-                                return;
-                            }
-
-                            ids.push(state.id);
+                    if (!state.noSubscribe &&
+                        this.props.objects[state.id] &&
+                        this.props.objects[state.id].type === 'state' &&
+                        !ids.includes(state.id)) {
+                        const pos = state.id.lastIndexOf('.');
+                        if (pos !== -1 && this.stateRx.ignoreIndicators.includes(state.id.substring(pos + 1))) {
+                            return;
                         }
-                }.bind(this));
+
+                        ids.push(state.id);
+                    }
+                });
 
                 if (ids.length) {
                     this.subscribes = ids;
@@ -138,6 +138,19 @@ class SmartGeneric extends Component {
                     ids.forEach(id => this.stateRx[id] = this.props.states[id] ? this.props.states[id].val : null);
                 }
             }
+        }
+
+        // detect if some IDs have history
+        this.charts = []
+        if (this.channelInfo.states) {
+            const defaultHistory = this.props.systemConfig?.common?.defaultHistory || 'history.0';
+            this.channelInfo.states.forEach(state => {
+                if (state.id && this.props.allObjects[state.id]?.common?.custom) {
+                    if (this.props.allObjects[state.id]?.common?.custom[defaultHistory]) {
+                        this.charts.push(state.id);
+                    }
+                }
+            });
         }
 
         if (this.channelInfo && this.channelInfo.states) {
@@ -205,9 +218,7 @@ class SmartGeneric extends Component {
             const newState = Object.keys(this.props.allObjects).filter(name => name !== parts && name.startsWith(parts) && !this.channelInfo.states.find(state => state.id === name));
             const newObj = {};
             this.subscribes = this.subscribes.concat(newState);
-            newState.forEach(name => {
-                newObj[name] = null;
-            })
+            newState.forEach(name => newObj[name] = null);
             this.stateRx = Object.assign(this.stateRx, newObj);
         }
         if (this.id && this.props.objects[this.id]) {
@@ -226,8 +237,8 @@ class SmartGeneric extends Component {
             this.showChartBottom = true;
         }
 
-        if (this.showChartBottom && this.stateRx.chartSettingsId) {
-            this.chartSettingsId = this.stateRx.chartSettingsId;
+        if (this.showChartBottom && (this.stateRx.chartSettingsId || this.charts.length)) {
+            this.chartSettingsId = this.stateRx.chartSettingsId || this.charts[0];
         }
 
         if (this.stateRx.showDialogBottom !== undefined) {
@@ -1041,7 +1052,8 @@ class SmartGeneric extends Component {
             if (!this.props.allObjects[idOrData]?.common?.custom) {
                 bool = false;
             }
-            if (this.props.allObjects[idOrData]?.common?.custom && !this.props.allObjects[idOrData]?.common?.custom[this.props.systemConfig?.common?.defaultHistory || 'history.0']) {
+            if (this.props.allObjects[idOrData]?.common?.custom &&
+                !this.props.allObjects[idOrData]?.common?.custom[this.props.systemConfig?.common?.defaultHistory || 'history.0']) {
                 bool = false;
             }
         }
