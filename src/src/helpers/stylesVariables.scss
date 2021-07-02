@@ -1,4 +1,4 @@
-// $themeStandard: (
+// $themeBlue: (
 //     --backgroundApp: linear-gradient(45deg, #2f2230 0%, #413d4c 35%, #595270 100%),
 //     --backgroundHeader: #474255,
 //     --borderBottomHeader: #34393e,
@@ -25,7 +25,7 @@
 //     --gradientAddDefault: linear-gradient(231deg, #312433 17%, #3f354c 74%, #4e4760 100%),
 //     --colorTextOff: #515151,
 // );
-$themeStandard: (
+$themeBlue: (
     --backgroundApp: linear-gradient(45deg, #164477 0%, #20548e 35%, #1f5da2 100%),
     --backgroundHeader: #164177,
     --borderBottomHeader: #032142,
@@ -52,7 +52,7 @@ $themeStandard: (
     --gradientAddDefault: linear-gradient(231deg, #03182f 17%, #083569 74%, #0a3f7f 100%),
     --colorTextOff: #515151,
 );
-$themeGreen: (
+$themeColored: (
     --backgroundApp: linear-gradient(45deg, #008a98 0%, #77b1cc 35%, #c4fffc 100%),
     --backgroundHeader: #329cad,
     --borderBottomHeader: #1badce,
@@ -79,7 +79,7 @@ $themeGreen: (
     --gradientAddDefault: linear-gradient(231deg, #2fb8d1 17%, #309dc0 74%, #32a3b2 100%),
     --colorTextOff: #87c0d2,
 );
-$themeSilver: (
+$themeDark: (
     --backgroundApp: linear-gradient(45deg, rgba(18, 20, 22, 1) 0%, rgba(49, 49, 51, 1) 35%, rgba(48, 52, 57, 1) 100%),
     --backgroundHeader: #252628,
     --borderBottomHeader: #34393e,
@@ -151,17 +151,18 @@ $single: (
     }
 }
 :root.blue {
-    @include spread-map($themeStandard);
+    @include spread-map($themeBlue);
 }
 :root.colored {
-    @include spread-map($themeGreen);
+    @include spread-map($themeColored);
 }
 :root.dark {
-    @include spread-map($themeSilver);
+    @include spread-map($themeDark);
 }
 :root.light {
     @include spread-map($themeLight);
 }
+//size
 :root.double {
     @include spread-map($double);
 }

@@ -38,6 +38,23 @@
     <link href="favicon.ico" rel="shortcut icon">
     <script type="text/javascript" src="_socket/info.js"></script>
     <script>
+        const themeName = window.localStorage.getItem('App.themeName') || 'dark';
+        switch (themeName) {
+            case 'dark':
+                document.documentElement.style.background = 'linear-gradient(45deg, rgba(18, 20, 22, 1) 0%, rgba(49, 49, 51, 1) 35%, rgba(48, 52, 57, 1) 100%)';
+                break
+            case 'blue':
+                document.documentElement.style.background = 'linear-gradient(45deg, #164477 0%, #20548e 35%, #1f5da2 100%)';
+                break
+            case 'colored':
+                document.documentElement.style.background = 'linear-gradient(45deg, #008a98 0%, #77b1cc 35%, #c4fffc 100%)';
+                break
+            case 'light':
+                document.documentElement.style.background = 'linear-gradient(45deg, #6e7171 0%, #a6acaf 35%, #f7f7f7 100%)';
+                break
+        }
+    </script>
+    <script>
         var script = document.createElement('script');
         window.registerSocketOnLoad = function (cb) {
             window.socketLoadedHandler = cb;

@@ -1523,7 +1523,7 @@ class ObjectChart extends Component {
     }
 
     render() {
-        if (!this.state.historyInstances && !this.state.defaultHistory) {
+        if (!this.state.historyInstance && !this.state.defaultHistory) {
             return <LinearProgress/>;
         }
 

@@ -189,7 +189,7 @@ class SmartLocation extends SmartGeneric {
         this.props.tile.setState({ isPointer: false });
         this.props.tile.setState({ state: true });
         this.key = `smart-location-${this.id}-`;
-
+        this.stateRx.showChartBottom = false;
         // this.stateRx.showDialogBottom = false;
         this.stateRx.showDialog = false; // support dialog in this tile used in generic class)
 

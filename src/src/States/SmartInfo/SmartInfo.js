@@ -93,7 +93,7 @@ class SmartInfo extends SmartGeneric {
         });
 
         this.key = `smart-info-${this.id}-`;
-
+        this.stateRx.chartSettingsId = this.actualId;
         this.componentReady();
     }
 
@@ -225,7 +225,6 @@ class SmartInfo extends SmartGeneric {
         return this.wrapContent([
             this.getStandardContent(this.actualId),
             this.getSecondaryDiv(),
-            this.getCharts(),
             this.getNumberOfValuesIndicator(),
             this.state.showDialog ?
                 <Dialog
