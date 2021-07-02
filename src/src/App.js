@@ -1535,7 +1535,7 @@ class App extends GenericApp {
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
             onClose={() => this.setState({ errorShow: false })}
-            open={this.state.errorShow}
+            open={!!this.state.errorShow}
         >
             <DialogTitle id="alert-dialog-title">{I18n.t('Error')}</DialogTitle>
             <DialogContent>

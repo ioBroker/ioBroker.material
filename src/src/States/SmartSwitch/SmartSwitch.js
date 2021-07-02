@@ -29,7 +29,7 @@ import IconAdapter from '@iobroker/adapter-react/Components/Icon';
 import cls from './style.module.scss';
 import clsGeneric from '../style.module.scss';
 import clsx from 'clsx/dist/clsx';
-import CustomSwitch from '../../Components/CustomSwitch'; 
+import CustomSwitch from '../../Components/CustomSwitch';
 class SmartSwitch extends SmartGeneric {
     constructor(props) {
         super(props);
@@ -145,7 +145,7 @@ class SmartSwitch extends SmartGeneric {
     }
 
     getSecondaryDiv() {
-        return <div className={cls.wrapperSwitch}><CustomSwitch customValue onChange={this.toggle} value={this.state[this.id]}/></div>
+        return <div key="secondary" className={cls.wrapperSwitch}><CustomSwitch customValue onChange={this.toggle} value={this.state[this.id]}/></div>
     }
 
     render() {

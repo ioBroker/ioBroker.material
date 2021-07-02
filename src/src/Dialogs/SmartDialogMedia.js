@@ -502,7 +502,7 @@ class SmartDialogMedia extends SmartDialogGeneric  {
         }
 
         return <Fab
-            mini
+            size="small"
             title={title}
             onClick={this.onToggleMute}
             style={Object.assign({}, styles.volume.mute, {background, color})}
@@ -638,8 +638,8 @@ class SmartDialogMedia extends SmartDialogGeneric  {
             const style = Object.assign({}, this.divs.cover.style, {backgroundImage: 'url(' + this.state[this.ids.info.cover] + ')'});
             return <div key={this.key + 'icon'} style={style}/>;
         } else {
-            return <div style={this.divs.cover.style}>
-                <div key={this.key + 'icon'} style={styles.cover.img}>
+            return <div style={this.divs.cover.style} key={this.key + 'icon'}>
+                <div style={styles.cover.img}>
                     <IconNote width={Theme.tile.tileIconSvg.size} height={Theme.tile.tileIconSvg.size} style={{height: Theme.tile.tileIconSvg.size, width: Theme.tile.tileIconSvg.size}}/>
                 </div>
             </div>;

@@ -531,7 +531,9 @@ class SmartColor extends SmartGeneric {
 
     colorBlock = (color) => {
         if (color) {
-            return <div className={cls.colorBlock} style={{ background: color }}></div>
+            return <div key="color" className={cls.colorBlock} style={{ background: color }}/>;
+        } else {
+            return null;
         }
     }
 
@@ -557,7 +559,8 @@ class SmartColor extends SmartGeneric {
             this.colorBlock(this.getColor()),
             this.getStandardContent(this.id, false),
             this.state.showDialog ?
-                <Dialog key={this.key + 'dialog'}
+                <Dialog
+                    key={this.key + 'dialog'}
                     windowWidth={this.props.windowWidth}
                     ids={this.ids}
                     transparent

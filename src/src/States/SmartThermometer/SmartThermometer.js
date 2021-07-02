@@ -149,7 +149,7 @@ class SmartThermometer extends SmartGeneric {
                 val = val + this.unit;
             }
         }
-        return <div className={cls.temperature}>{val}</div>
+        return <div key="top" className={cls.temperature}>{val}</div>;
     }
 
     render() {

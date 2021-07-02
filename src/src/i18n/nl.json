@@ -1,5 +1,4 @@
 {
-  "": "",
   "-": "-",
   "Add custom URL": "Aangepaste URL toevoegen",
   "Adjusting Command": "Commando aanpassen",
@@ -165,5 +164,15 @@
   "wind_SW": "SW",
   "wind_W": "SSW",
   "wind_WNW": "WNW",
-  "wind_WSW": "WSW"
+  "wind_WSW": "WSW",
+  "muted": "gedempt",
+  "unmuted": "niet gedempt",
+  "Shuffle mode": "Shuffle modus",
+  "No repeat": "Geen herhaling",
+  "Repeat mode: all": "Herhaalmodus: alles",
+  "Repeat mode: one": "Herhaal modus: een",
+  "Actual Temperature Status": "Werkelijke temperatuurstatus",
+  "Error Code": "Foutcode",
+  "Current Illumination": "Huidige verlichting",
+  "Process": "Werkwijze"
 }

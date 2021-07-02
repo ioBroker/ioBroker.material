@@ -255,7 +255,7 @@ class MenuList extends Component {
                                 className={clsx(cls.buttonStyle, item.id === this.props.root && cls.buttonActive)}
                                 tooltip={name}
                                 onClick={() => this.onRootChanged('enum.rooms')}>
-                                <IconRooms name="rooms" width={Theme.iconSize} height={Theme.iconSize} />
+                                <IconRooms name="rooms" width={Theme.iconSize} height={Theme.iconSize} isOn={item.id === this.props.root}/>
                                 {visibilityButton}
                             </IconButton>;
                         } else if (item.id === 'enum.functions') {
@@ -437,7 +437,7 @@ class MenuList extends Component {
                 </ListItem>
             );
 
-            return <SortableItem content={content} index={i} collection={parent} style={style} className={className} id={id} />;
+            return <SortableItem key={`item1-${id}`} content={content} index={i} collection={parent} style={style} className={className} id={id} />;
         } else {
             return <ListItem
                 style={style}
@@ -481,6 +481,7 @@ class MenuList extends Component {
         if (this.props.editMode) {
             const SortableContainer = sortableContainer(({ children, style, key }) =>
                 <List component="div" disablePadding key={key}>{children}</List>);
+
             return <SortableContainer
                 onSortEnd={e => this.onSortEnd(e)}
                 key={key}

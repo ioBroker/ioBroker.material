@@ -163,14 +163,14 @@ class SpeechDialog extends Component {
             />
         ];
 
-        return (<Dialog
+        return <Dialog
             title={I18n.t('Speech recognition running...')}
             actions={actions}
             modal={true}
             open={this.props.isShow}
         >
             {this.state.finalTranscript ? <span style={{color: '#333333', fontWeight: 'bold'}}>{this.state.finalTranscript}</span> : (this.state.interimTranscript || I18n.t('Listening...'))}
-        </Dialog>);
+        </Dialog>;
     }
 
 }

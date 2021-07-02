@@ -123,7 +123,7 @@ class KnobControl extends Component {
         this.unit = this.props.unit ? ' ' + this.props.unit : '';
 
         this.state = {
-            value: value,
+            value,
             activeTick: this.calcActiveTick(value),
             ticksNumber: this.props.ticks || 28
         };
@@ -284,9 +284,9 @@ class KnobControl extends Component {
 
     drawValue() {
         if (this.props.hideValue) return null;
-        return (<div className={this.props.classes.value}>{
+        return <div className={this.props.classes.value}>{
             Math.round(this.localValue2externalValue(this.state.value)) + this.unit
-        }</div>);
+        }</div>;
     }
 
     eventToValue(e) {
@@ -349,7 +349,9 @@ class KnobControl extends Component {
     }
 
     drawMinMax() {
-        if (!this.minPos) return;
+        if (!this.minPos) {
+            return;
+        }
 
         let styleMin = Object.assign({}, !this.state.value        ? activeTitleMin : {}, {left: this.minPos.x, top: this.minPos.y});
         let styleMax = Object.assign({}, this.state.value === 100 ? activeTitleMax : {}, {left: this.maxPos.x, top: this.maxPos.y});
@@ -383,7 +385,7 @@ class KnobControl extends Component {
 KnobControl.propTypes = {
     classes:        PropTypes.object.isRequired,
     unit:           PropTypes.string,
-    value:          PropTypes.string.isRequired,
+    value:          PropTypes.number.isRequired,
     onChange:       PropTypes.func.isRequired,
     min:            PropTypes.number,
     max:            PropTypes.number,

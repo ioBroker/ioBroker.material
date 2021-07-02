@@ -857,18 +857,18 @@ class SmartGeneric extends Component {
         }
 
         if (noStyle) {
-            return ({
+            return {
                 name: this.getFirstName ? this.getFirstName() : this.state.settings.name,
                 state: this.getStateText ? this.getStateText() : null
-            });
+            };
         }
 
         return [
-            this.getIcon ? (<div key={this.key + 'tile-icon'} style={noPointerEvents ? { pointerEvents: 'none' } : {}}>{this.getIcon()}</div>) : null,
-            (<div key={this.key + 'tile-text'} style={styleText}>
+            this.getIcon ? <div key={this.key + 'tile-icon'} style={noPointerEvents ? { pointerEvents: 'none' } : {}}>{this.getIcon()}</div> : null,
+            <div key={this.key + 'tile-text'} style={styleText}>
                 <div style={styleName}>{this.getFirstName ? this.getFirstName() : this.state.settings.name}{this.getAdditionalName()}</div>
                 {this.getStateText ? (<div style={styleState}>{this.getStateText()}</div>) : null}
-            </div>)
+            </div>
         ];
     }
 

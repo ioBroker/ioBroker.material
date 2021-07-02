@@ -1,5 +1,4 @@
 {
-  "": "",
   "-": "-",
   "Add custom URL": "Dodaj niestandardowy adres URL",
   "Adjusting Command": "Dostosowywanie polecenia",
@@ -165,5 +164,15 @@
   "wind_SW": "SW",
   "wind_W": "W",
   "wind_WNW": "WNW",
-  "wind_WSW": "WSW"
+  "wind_WSW": "WSW",
+  "muted": "wyciszony",
+  "unmuted": "nie wyciszony",
+  "Shuffle mode": "Tryb tasowania",
+  "No repeat": "Bez powtórzeń",
+  "Repeat mode: all": "Tryb powtarzania: wszystko",
+  "Repeat mode: one": "Tryb powtarzania: jeden",
+  "Actual Temperature Status": "Rzeczywisty stan temperatury",
+  "Error Code": "Kod błędu",
+  "Current Illumination": "Aktualne oświetlenie",
+  "Process": "Proces"
 }

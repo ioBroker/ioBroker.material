@@ -6,11 +6,10 @@ import clsx from 'clsx';
 
 const CustomFab = ({ fullWidth, size, onClick, style, className, children, active, title }) => {
     return <Fab
-        variant="outlined"
         color="primary"
         title={title}
         onClick={onClick}
-        fullWidth={fullWidth}
+        //fullWidth={fullWidth}
         style={style}
         className={clsx(cls.root, className && className, active && cls.active)}
         margin="normal"

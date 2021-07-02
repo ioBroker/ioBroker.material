@@ -1,5 +1,4 @@
 {
-  "": "",
   "-": "-",
   "Add custom URL": "Добавить пользовательский URL",
   "Adjusting Command": "Команда настройки",
@@ -165,5 +164,15 @@
   "wind_SW": "ЮЗ",
   "wind_W": "З",
   "wind_WNW": "ЗСЗ",
-  "wind_WSW": "ЗЮЗ"
+  "wind_WSW": "ЗЮЗ",
+  "muted": "приглушенный",
+  "unmuted": "без звука",
+  "Shuffle mode": "В случайном порядке",
+  "No repeat": "Нет повтора",
+  "Repeat mode: all": "Режим повтора: все",
+  "Repeat mode: one": "Режим повтора: один",
+  "Actual Temperature Status": "Фактический температурный статус",
+  "Error Code": "Код ошибки",
+  "Current Illumination": "Текущее освещение",
+  "Process": "Процесс"
 }

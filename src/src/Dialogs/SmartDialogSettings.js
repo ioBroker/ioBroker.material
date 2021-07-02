@@ -216,7 +216,7 @@ class SmartDialogSettings extends SmartDialogGeneric {
 
     generateObjectInfo() {
         if (this.props.settingsId) {
-            return (<div key={'object-info'} style={{ margin: 5, padding: 5, position: 'relative' }} elevation={1}>
+            return <div key={'object-info'} style={{ margin: 5, padding: 5, position: 'relative' }}>
                 <CopyToClipboard
                     text={this.props.settingsId}>
                     <CustomFab
@@ -227,11 +227,11 @@ class SmartDialogSettings extends SmartDialogGeneric {
                         <CopyIcon width={Theme.iconSize} height={Theme.iconSize} />
                     </CustomFab>
                 </CopyToClipboard>
-                {this.state.anchorEl ? (<Button variant="outlined" disabled style={styles.descCopied}>{I18n.t('Copied')}</Button>) : null}
+                {this.state.anchorEl ? <Button variant="outlined" disabled style={styles.descCopied}>{I18n.t('Copied')}</Button> : null}
                 <div><span style={styles.descTitle}>{I18n.t('Name')}: </span>{Utils.getObjectName(this.props.objects, this.props.settingsId)}</div>
                 <div style={styles.descDivId}><span style={styles.descTitle}>{I18n.t('Description')}: </span>{Utils.getObjectName(this.props.objects, this.props.settingsId, null, null, true)}</div>
                 <div style={styles.descDivId}><span style={styles.descTitle}>ID: </span>{this.props.settingsId}</div>
-            </div>);
+            </div>;
         } else {
             return null;
         }
