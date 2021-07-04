@@ -25,7 +25,8 @@ import {
     TooltipComponent,
     TitleComponent,
     TimelineComponent,
-    LegendComponent
+    LegendComponent,
+    SingleAxisComponent,
 } from 'echarts/components';
 import {SVGRenderer} from 'echarts/renderers';
 
@@ -60,7 +61,7 @@ import Utils from '@iobroker/adapter-react/Components/Utils';
 import {FaChartLine as SplitLineIcon} from 'react-icons/fa';
 // import EchartsIcon from '../../assets/echarts.png';
 
-echarts.use([LegendComponent, TimelineComponent, ToolboxComponent, TitleComponent, TooltipComponent, GridComponent, LineChart, SVGRenderer]);
+echarts.use([SingleAxisComponent, LegendComponent, TimelineComponent, ToolboxComponent, TitleComponent, TooltipComponent, GridComponent, LineChart, SVGRenderer]);
 
 const localeMap = {
     en: enLocale,
@@ -249,7 +250,6 @@ class ObjectChart extends Component {
         this.readTimeout  = null;
 
         this.chartValues  = null;
-        this.rangeValues  = null;
 
         this.divRef       = createRef();
 
@@ -277,6 +277,7 @@ class ObjectChart extends Component {
         moment.locale(props.lang);
         this.selected = {};
         this.actualValues = null;
+        this.isFloatComma = true;
     }
 
     componentDidMount() {
@@ -286,7 +287,9 @@ class ObjectChart extends Component {
         window.addEventListener('resize', this.onResize);
 
         this.prepareData()
-            .then(() => !this.props.noToolbar && this.readHistoryRanges())
+            .then(() => {
+                return new Promise(resolve => this.updateChart(null, null, true, true, () => resolve()))
+            })
             .then(() => this.setRelativeInterval(this.state.relativeRange, true, () =>
                 this.forceUpdate()));
     }
@@ -322,12 +325,10 @@ class ObjectChart extends Component {
         }
         if (this.objectList.find(obj => obj._id === id) &&
             state &&
-            this.rangeValues && this.rangeValues[id] &&
-            (!this.rangeValues[id].length || this.rangeValues[id][this.rangeValues[id].length - 1].ts < state.ts)
+            this.chartValues && this.chartValues[id] &&
+            (!this.chartValues[id].length || this.chartValues[id][this.chartValues[id].length - 1].ts < state.ts)
         ) {
-
-            this.chartValues && this.chartValues[id] && this.chartValues[id].push({val: state.val, ts: state.ts});
-            this.rangeValues[id].push({val: state.val, ts: state.ts});
+            this.chartValues[id] && this.chartValues[id].push({val: state.val, ts: state.ts});
 
             // update only if end is near to now
             if (state.ts >= this.chart.min && state.ts <= this.chart.max + 300000) {
@@ -359,7 +360,8 @@ class ObjectChart extends Component {
                             // collect all echarts instances
                             const echartsJump = !!instances.find(item => item._id.startsWith('system.adapter.echarts.'));
 
-                            const defaultHistory = config && config.common && config.common.defaultHistory;
+                            const defaultHistory = config?.common?.defaultHistory;
+                            this.isFloatComma = config?.common?.isFloatComma || true;
 
                             // find current history
                             // first read from localstorage
@@ -425,36 +427,6 @@ class ObjectChart extends Component {
         }
     }
 
-    readHistoryRanges() {
-        return Promise.all(this.objectList.map(obj => this.readHistoryRange(obj._id)));
-    }
-
-    readHistoryRange(id) {
-        const now = new Date();
-        const oldest = new Date(2000, 0, 1);
-
-        return this.props.socket.getHistory(id, {
-            instance:  this.state.historyInstance,
-            start:     oldest.getTime(),
-            end:       now.getTime(),
-            step:      3600000 * 24, // hourly
-            from:      false,
-            ack:       false,
-            q:         false,
-            addID:     false,
-            aggregate: 'minmax',
-            range:     true // if supported => get oldest and newest value
-        })
-            .then(values => {
-                // remove interpolated first value
-                if (values && values[0]?.val === null) {
-                    values.shift();
-                }
-                this.rangeValues = this.rangeValues || {};
-                this.rangeValues[id] = values;
-            });
-    }
-
     readHistories(start, end) {
         return Promise.all(this.objectList.map(obj => this.readHistory(obj._id, start, end)))
             .then(() => this.chartValues);
@@ -494,21 +466,12 @@ class ObjectChart extends Component {
 
         return this.props.socket.getHistory(id, options)
             .then(values => {
-                // merge range and chart
                 let chart = [];
                 let r     = 0;
-                let range = this.rangeValues[id];
                 let minY  = null;
                 let maxY  = null;
 
                 for (let t = 0; t < values.length; t++) {
-                    if (range) {
-                        while (r < range.length && range[r].ts < values[t].ts) {
-                            chart.push(range[r]);
-                            //console.log(`add ${new Date(range[r].ts).toISOString()}: ${range[r].val}`);
-                            r++;
-                        }
-                    }
                     // if range and details are not equal
                     if (!chart.length || chart[chart.length - 1].ts < values[t].ts) {
                         chart.push(values[t]);
@@ -521,14 +484,6 @@ class ObjectChart extends Component {
                     }
                     if (maxY === null || values[t].val > maxY) {
                         maxY = values[t].val;
-                    }
-                }
-
-                if (range) {
-                    while (r < range.length) {
-                        chart.push(range[r]);
-                        console.log(`add range ${new Date(range[r].ts).toISOString()}: ${range[r].val}`);
-                        r++;
                     }
                 }
 
@@ -600,7 +555,7 @@ class ObjectChart extends Component {
         }
     }
 
-    getYAxis(obj) {
+    getYAxis(obj, i) {
         return {
             type: 'value',
             _boolean: true,
@@ -612,31 +567,21 @@ class ObjectChart extends Component {
             },
             splitNumber: Math.round(this.state.chartHeight / 50),
             axisLabel: {
-                formatter: (value, index) => this.yFormatter(value, obj, true)/* => {
-                    let text;
-                    if (this.props.isFloatComma) {
-                        text = value.toString().replace(',', '.') + this.units[id];
-                    } else {
-                        text = value + this.units[id];
-                    }
-
-                    if (this.state.maxYLen[id] < text.length) {
-                        this.maxYLenTimeout && clearTimeout(this.maxYLenTimeout);
-                        this.maxYLenTimeout = setTimeout(_maxYLen => {
-                            this.maxYLenTimeout = null;
-                            const maxYLen = JSON.parse(JSON.stringify(this.state.maxYLen));
-                            maxYLen[id] = _maxYLen;
-                            this.setState({maxYLen});
-                        }, 200, text.length);
-                    }
-                    return text;
-                }*/,
+                formatter: value => this.yFormatter(value, obj, true),
                 showMaxLabel: true,
                 showMinLabel: true,
+                color: THEMES[i]
             },
             axisTick: {
                 alignWithLabel: true,
-            }
+                show: true,
+            },
+            axisLine: {
+                show: true,
+                lineStyle: {
+                    color: THEMES[i]
+                }
+            },
         };
     }
 
@@ -683,7 +628,7 @@ class ObjectChart extends Component {
         /*const afterComma = null;
         if (afterComma !== undefined && afterComma !== null) {
             val = parseFloat(val);
-            if (this.props.isFloatComma) {
+            if (this.isFloatComma) {
                 return val.toFixed(afterComma).replace('.', ',') + (withUnit ? this.config.l[line].unit : '');
             } else {
                 return val.toFixed(afterComma) + (withUnit ? this.config.l[line].unit : '');
@@ -693,20 +638,22 @@ class ObjectChart extends Component {
                 val = Math.round(val * 10000) / 10000;
             }
             let text;
-            if (this.props.isFloatComma) {
+            if (this.isFloatComma) {
                 val = parseFloat(val) || 0;
-                text = val.toString().replace('.', ',') + (withUnit ? this.units[obj._id] : '');
+                val = val.toString().replace('.', ',');
+                text = val + (withUnit ? this.units[obj._id] : '');
             } else {
-                text = val.toString() + (withUnit ? this.units[obj._id] : '');
+                val = val.toString();
+                text = val + (withUnit ? this.units[obj._id] : '');
             }
-            if (!ignoreWidth && this.state.maxYLen[obj._id] < text.length) {
+            if (!ignoreWidth && this.state.maxYLen[obj._id] < val.length) {
                 this.maxYLenTimeout && clearTimeout(this.maxYLenTimeout);
                 this.maxYLenTimeout = setTimeout((_maxYLen, id) => {
                     this.maxYLenTimeout = null;
                     const maxYLen = JSON.parse(JSON.stringify(this.state.maxYLen));
                     maxYLen[id] = _maxYLen;
                     this.setState({maxYLen});
-                }, 200, text.length, obj._id);
+                }, 200, val.length, obj._id);
             }
         //}
         return text;
@@ -748,7 +695,7 @@ class ObjectChart extends Component {
 
     getOption() {
         let widthAxisLeft = 0;
-        let widthAxisRight = 0;
+        let widthAxisRight = [];
 
         const diff = this.state.max - this.state.min;
         this.withTime    = diff < 3600000 * 24 * 7;
@@ -760,14 +707,16 @@ class ObjectChart extends Component {
             let _yAxis = null;
             const id = obj._id;
             let yAxisIndex = i;
+            let position;
 
             if (obj.common.type === 'boolean') {
                 // find boolean axis
                 const axis = yAxis.find(axis => axis && axis._boolean);
                 if (axis) {
                     yAxisIndex = yAxis.indexOf(axis);
+                    position = axis.position;
                 } else {
-                    _yAxis = this.getYAxis(obj);
+                    _yAxis = this.getYAxis(obj, i);
                     if (yAxis.filter(axis => axis).length) {
                         _yAxis.position = 'right';
                     }
@@ -775,63 +724,66 @@ class ObjectChart extends Component {
                     _yAxis.axisLabel.formatter = value => value === 1 ? 'TRUE' : 'FALSE';
                     _yAxis.max = 1.5;
                     _yAxis.interval = 1;
-                    if (_yAxis.position === 'left') {
-                        if (widthAxisLeft < 50) {
-                            widthAxisLeft = 50;
-                        }
-                    } else {
-                        if (widthAxisRight < 50) {
-                            widthAxisRight = 50;
-                        }
+                    position = _yAxis.position;
+
+                }
+                if (position === 'left') {
+                    if (widthAxisLeft < 50) {
+                        widthAxisLeft = 50;
+                    }
+                } else {
+                    if (!widthAxisRight[i] || widthAxisRight[i] < 50) {
+                        widthAxisRight[i] = 50;
                     }
                 }
             } else {
                 const axis = yAxis.find(axis => axis && axis._unit === this.units[id]);
                 if (axis) {
                     yAxisIndex = yAxis.indexOf(axis);
+                    position = axis.position;
                 } else {
-                    _yAxis = this.getYAxis(obj);
+                    _yAxis = this.getYAxis(obj, i);
                     if (yAxis.filter(axis => axis).length) {
                         _yAxis.position = 'right';
                     }
-
-                    if (_yAxis.position === 'left') {
-                        if (this.minY[id] !== null && this.minY[id] !== undefined) {
-                            const w = calcTextWidth(this.minY[id].toString() + this.units[id]);
-                            if (w > widthAxisLeft) {
-                                widthAxisLeft = w;
-                            }
+                    position = _yAxis.position;
+                }
+                if (position === 'left') {
+                    if (this.minY[id] !== null && this.minY[id] !== undefined) {
+                        const w = calcTextWidth(this.minY[id].toString() + this.units[id]);
+                        if (w > widthAxisLeft) {
+                            widthAxisLeft = w;
                         }
-                        if (this.maxY[id] !== null && this.maxY[id] !== undefined) {
-                            const w = calcTextWidth(this.maxY[id].toString() + this.units[id]);
-                            if (w > widthAxisLeft) {
-                                widthAxisLeft = w;
-                            }
+                    }
+                    if (this.maxY[id] !== null && this.maxY[id] !== undefined) {
+                        const w = calcTextWidth(this.maxY[id].toString() + this.units[id]);
+                        if (w > widthAxisLeft) {
+                            widthAxisLeft = w;
                         }
-                        if (this.state.maxYLen[id]) {
-                            const w = calcTextWidth(''.padStart(this.state.maxYLen[id], '0'));
-                            if (w > widthAxisLeft) {
-                                widthAxisLeft = w;
-                            }
+                    }
+                    if (this.state.maxYLen[id]) {
+                        const w = calcTextWidth(''.padStart(this.state.maxYLen[id], '2') + this.units[id]);
+                        if (w > widthAxisLeft) {
+                            widthAxisLeft = w;
                         }
-                    } else {
-                        if (this.minY[id] !== null && this.minY[id] !== undefined) {
-                            const w = calcTextWidth(this.minY[id].toString() + this.units[id]);
-                            if (w > widthAxisRight) {
-                                widthAxisRight = w;
-                            }
+                    }
+                } else {
+                    if (this.minY[id] !== null && this.minY[id] !== undefined) {
+                        const w = calcTextWidth(this.minY[id].toString() + this.units[id]);
+                        if (!widthAxisRight[i] || w > widthAxisRight[i]) {
+                            widthAxisRight[i] = w;
                         }
-                        if (this.maxY[id] !== null && this.maxY[id] !== undefined) {
-                            const w = calcTextWidth(this.maxY[id].toString() + this.units[id]);
-                            if (w > widthAxisRight) {
-                                widthAxisRight = w;
-                            }
+                    }
+                    if (this.maxY[id] !== null && this.maxY[id] !== undefined) {
+                        const w = calcTextWidth(this.maxY[id].toString() + this.units[id]);
+                        if (!widthAxisRight[i] || w > widthAxisRight[i]) {
+                            widthAxisRight[i] = w;
                         }
-                        if (this.state.maxYLen[id]) {
-                            const w = calcTextWidth(''.padStart(this.state.maxYLen[id], '0'));
-                            if (w > widthAxisRight) {
-                                widthAxisRight = w;
-                            }
+                    }
+                    if (this.state.maxYLen[id]) {
+                        const w = calcTextWidth(''.padStart(this.state.maxYLen[id], '0'));
+                        if (!widthAxisRight[i] || w > widthAxisRight[i]) {
+                            widthAxisRight[i] = w;
                         }
                     }
                 }
@@ -866,6 +818,14 @@ class ObjectChart extends Component {
             };
         });
 
+        let rightOffset = 0;
+        yAxis.forEach((axis, i) => {
+            if (axis && axis.position === 'right') {
+                axis.offset = rightOffset;
+                rightOffset += widthAxisRight[i] + 20;
+            }
+        });
+
         this.option = {
             legend: {
                 data: this.objectList.map(obj => this.names[obj._id]),
@@ -897,9 +857,9 @@ class ObjectChart extends Component {
                 ]
             },
             grid: {
-                left: widthAxisLeft ? widthAxisLeft + 5 : GRID_PADDING_LEFT,
+                left: widthAxisLeft ? widthAxisLeft + 10 : GRID_PADDING_LEFT,
                 top: 8,
-                right: (widthAxisRight ? widthAxisRight + 5 : 0) + (this.props.noToolbar ? 5: GRID_PADDING_RIGHT),
+                right: (rightOffset ? rightOffset + 10 : 0) + (this.props.noToolbar ? 5: GRID_PADDING_RIGHT),
                 bottom: 40,
             },
             tooltip: {
@@ -960,7 +920,7 @@ class ObjectChart extends Component {
         return null;
     }
 
-    updateChart(start, end, withReadData, cb) {
+    updateChart(start, end, withReadData, noWait, cb) {
         if (start) {
             this.start = start;
         }
@@ -982,10 +942,10 @@ class ObjectChart extends Component {
                 this.chart.withSeconds = this.chart.diff < 60000 * 30;
             }
 
-            if (withReadData) {
+            if (withReadData || !this.chartValues) {
                 this.readHistories(start, end)
                     .then(values => {
-                        typeof this.echartsReact.getEchartsInstance === 'function' && this.echartsReact.getEchartsInstance().setOption({
+                        this.echartsReact && typeof this.echartsReact.getEchartsInstance === 'function' && this.echartsReact.getEchartsInstance().setOption({
                             series: this.objectList.map(obj => ({data: this.convertData(obj._id, values[obj._id])})),
                             xAxis: {
                                 min: this.chart.min,
@@ -995,7 +955,7 @@ class ObjectChart extends Component {
                         cb && cb();
                     });
             } else {
-                typeof this.echartsReact.getEchartsInstance === 'function' && this.echartsReact.getEchartsInstance().setOption({
+                this.echartsReact && typeof this.echartsReact.getEchartsInstance === 'function' && this.echartsReact.getEchartsInstance().setOption({
                     series: this.objectList.map(obj => ({data: this.convertData(obj._id)})),
                     xAxis: {
                         min: this.chart.min,
@@ -1004,7 +964,7 @@ class ObjectChart extends Component {
                 });
                 cb && cb();
             }
-        }, 400);
+        }, noWait ? 0 : 400);
     }
 
     setNewRange(readData) {
@@ -1189,7 +1149,7 @@ class ObjectChart extends Component {
         }
 
         this.setState({min: this.chart.min, max: this.chart.max}, () =>
-            this.updateChart(this.chart.min, this.chart.max, true, cb));
+            this.updateChart(this.chart.min, this.chart.max, true, false, cb));
     }
 
     installEventHandlers() {
@@ -1552,7 +1512,6 @@ ObjectChart.propTypes = {
     defaultHistory: PropTypes.string,
     historyInstance: PropTypes.string,
     showJumpToEchart: PropTypes.bool,
-    isFloatComma: PropTypes.bool,
 };
 
 export default withWidth()(withStyles(styles)(ObjectChart));

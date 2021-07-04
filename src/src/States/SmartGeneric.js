@@ -143,12 +143,10 @@ class SmartGeneric extends Component {
         // detect if some IDs have history
         this.charts = []
         if (this.channelInfo.states) {
-            const defaultHistory = this.props.systemConfig?.common?.defaultHistory || 'history.0';
-            this.channelInfo.states.forEach(state => {
-                if (state.id && this.props.allObjects[state.id]?.common?.custom) {
-                    if (this.props.allObjects[state.id]?.common?.custom[defaultHistory]) {
-                        this.charts.push(state.id);
-                    }
+            this.channelInfo.states.forEach((state, i) => {
+                const id = this.checkHistory(state.id);
+                if (id) {
+                    this.charts[i] = id;
                 }
             });
         }
@@ -237,12 +235,12 @@ class SmartGeneric extends Component {
             this.showChartBottom = true;
         }
 
-        if (this.showChartBottom && (this.stateRx.chartSettingsId || this.charts.length)) {
-            this.chartSettingsId = this.stateRx.chartSettingsId || this.charts[0];
+        if (this.showChartBottom && (this.stateRx.chartSettingsId || this.charts.filter(i => i).length)) {
+            this.chartSettingsId = this.stateRx.chartSettingsId || this.charts.find(i => i);
         }
 
         if (this.stateRx.showDialogBottom !== undefined) {
-            if (this.getIdHistorys(this.getAllIds(true)).length) {
+            if (this.getIdHistories(this.getAllIds(true)).length) {
                 this.showCornerBottom = true;
             }
             this.props.tile.registerHandler('onMouseDown', this.onTileMouseDownBottom);
@@ -672,7 +670,7 @@ class SmartGeneric extends Component {
             if (this.errorText) {
                 titles.push(this.errorText)
             }
-            return (<div key={this.key + 'indicators'} style={Theme.tile.tileIndicators} title={titles.join(', ')}>{result}</div>);
+            return <div key={this.key + 'indicators'} style={Theme.tile.tileIndicators} title={titles.join(', ')}>{result}</div>;
         } else {
             return null;
         }
@@ -778,13 +776,13 @@ class SmartGeneric extends Component {
                 });
             }
         }
-        const optionsArray = this.getIdHistorys(this.getAllIds(true));
+        const optionsArray = this.getIdHistories(this.getAllIds(true));
 
         if (optionsArray.length && this.chartSettingsId && this.showChartBottom) {
             settings.unshift({
                 name: 'chartId',
                 value: this.state?.settings?.chartId || this.chartSettingsId,
-                options: [...this.getIdHistorys(this.getAllIds(true)), 'none'],
+                options: [...this.getIdHistories(this.getAllIds(true)), 'none'],
                 type: 'select'
             });
         }
@@ -867,7 +865,7 @@ class SmartGeneric extends Component {
             this.getIcon ? <div key={this.key + 'tile-icon'} style={noPointerEvents ? { pointerEvents: 'none' } : {}}>{this.getIcon()}</div> : null,
             <div key={this.key + 'tile-text'} style={styleText}>
                 <div style={styleName}>{this.getFirstName ? this.getFirstName() : this.state.settings.name}{this.getAdditionalName()}</div>
-                {this.getStateText ? (<div style={styleState}>{this.getStateText()}</div>) : null}
+                {this.getStateText ? <div style={styleState}>{this.getStateText()}</div> : null}
             </div>
         ];
     }
@@ -878,7 +876,7 @@ class SmartGeneric extends Component {
             <div className={clsx(cls.styleIcon, loading && cls.styleIconLoading, active && cls.styleIconActive)}>
                 {icon}
             </div>
-        </div>
+        </div>;
     }
 
     wrapContent(content) {
@@ -930,20 +928,20 @@ class SmartGeneric extends Component {
             return [
                 <div key={this.key + 'type'} style={{ display: 'none' }}>{this.channelInfo.type}</div>,
                 <div key={this.key + 'wrapper'} className={cls.displayFlex}>
-                    {this.showCorner ? (<div
+                    {this.showCorner ? <div
                         key={this.key + 'corner'}
                         onMouseDown={this.onLongClick}
                         className={cls.corner}
-                    />) : null}
-                    {this.showCornerBottom ? (<div
+                    /> : null}
+                    {this.showCornerBottom ? <div
                         key={this.key + 'corner'}
                         onMouseDown={this.onLongClickBottom}
                         className={cls.cornerBottom}
-                    />) : null}
+                    /> : null}
                     {this.getIndicators()}
                     {this.showChartBottom && this.getCharts(this.state?.settings?.chartId || this.chartSettingsId)}
                     {this.showChartBottom && this.state.showDialogBottom ?
-                        dialogChartCallBack(this.onDialogCloseBottom, this.state?.settings?.chartId || this.chartSettingsId, this.props.socket, this.props.themeType, this.props.systemConfig, this.props.allObjects, this.getIdHistorys(this.getAllIds(true))) : null}
+                        dialogChartCallBack(this.onDialogCloseBottom, this.state?.settings?.chartId || this.chartSettingsId, this.props.socket, this.props.themeType, this.props.systemConfig, this.props.allObjects, this.getIdHistories(this.getAllIds(true))) : null}
                     {content}
                 </div>
             ];
@@ -1041,26 +1039,41 @@ class SmartGeneric extends Component {
     }
 
     checkHistory = (idOrData, showCornerBottom = false) => {
-        let bool = true;
+        let hasHistory = true;
         if (!idOrData) {
-            bool = false;
+            hasHistory = false;
         }
         if (typeof idOrData === 'string') {
+            const defaultHistory = this.props.systemConfig?.common?.defaultHistory || 'history.0';
+
             if (!this.props.allObjects[idOrData]) {
-                bool = false;
-            }
+                hasHistory = false;
+            } else
             if (!this.props.allObjects[idOrData]?.common?.custom) {
-                bool = false;
-            }
+                hasHistory = false;
+            } else
             if (this.props.allObjects[idOrData]?.common?.custom &&
-                !this.props.allObjects[idOrData]?.common?.custom[this.props.systemConfig?.common?.defaultHistory || 'history.0']) {
-                bool = false;
+                !this.props.allObjects[idOrData]?.common?.custom[defaultHistory]) {
+                hasHistory = false;
+            }
+            if (!hasHistory && this.props.allObjects[idOrData]?.common?.alias?.id) {
+                const alias = this.props.allObjects[idOrData].common.alias.id;
+                if (typeof alias === 'object') {
+                    if (alias && alias.read && this.props.allObjects[alias.read]?.common?.custom[defaultHistory]) {
+                        return alias.read;
+                    }
+                } else if (alias && this.props.allObjects[alias] &&
+                    this.props.allObjects[alias].common &&
+                    this.props.allObjects[alias].common.custom &&
+                    this.props.allObjects[alias].common.custom[defaultHistory]) {
+                    return alias;
+                }
             }
         }
         if (showCornerBottom) {
-            this.showCornerBottom = bool;
+            this.showCornerBottom = hasHistory;
         }
-        return bool;
+        return hasHistory && idOrData;
     }
 
     checkCornerTop = (condition, showCorner = false) => {
@@ -1083,15 +1096,14 @@ class SmartGeneric extends Component {
         return [];
     }
 
-    getIdHistorys = (ids, showCornerBottom) => {
+    getIdHistories = (ids, showCornerBottom) => {
         if (!ids || !ids.length) {
             return [];
         }
         let array = [];
         ids.forEach(id => {
-            if (this.checkHistory(id)) {
-                array.push(id);
-            }
+            const _id = this.checkHistory(id);
+            _id && array.push(_id);
         });
         if (showCornerBottom && !array.length) {
             this.showCornerBottom = false;
@@ -1100,11 +1112,13 @@ class SmartGeneric extends Component {
     }
 
     getReadHistoryData = (idOrData, callBack) => {
-        if (!this.checkHistory(idOrData)) {
+        const _id = this.checkHistory(idOrData);
+        if (!_id) {
             callBack([]);
             return null;
+        } else {
+            this.readHistoryData(_id, callBack);
         }
-        this.readHistoryData(idOrData, callBack);
     }
 
     readHistoryData = async (id, callBack = () => { }) => {
@@ -1168,18 +1182,19 @@ class SmartGeneric extends Component {
     }
 
     getCharts = (idOrData = this.getChartId(), className, showCornerBottom = true) => {
-        if (!this.checkHistory(idOrData, showCornerBottom)) {
+        const id = this.checkHistory(idOrData, showCornerBottom);
+        if (!id) {
             return null;
         }
         if (!this.firstGetCharts) {
             this.firstGetCharts = true;
-            if (typeof idOrData === 'string') {
-                this.readHistory(idOrData);
+            if (typeof id === 'string') {
+                this.readHistory(id);
             }
         }
-        if (!this.expireInSecInterval && typeof idOrData === 'string') {
+        if (!this.expireInSecInterval && typeof id === 'string') {
             this.expireInSecInterval = setInterval(() => {
-                this.readHistory(idOrData);
+                this.readHistory(id);
                 this.expireInSecInterval = null;
             }, 60000);
         }
@@ -1217,7 +1232,7 @@ class SmartGeneric extends Component {
             {
                 show: false,
                 boundaryGap: false,
-                data: typeof idOrData === 'string' ? [] : idOrData
+                data: typeof id === 'string' ? [] : id
             },
             yAxis: {
                 show: false,
@@ -1227,12 +1242,12 @@ class SmartGeneric extends Component {
                 {
                     silent: true,
                     type: 'line',
-                    smooth: this.props.objects[idOrData]?.common?.type === 'number' || typeof idOrData !== 'string' ? true : false,
+                    smooth: this.props.objects[id]?.common?.type === 'number' || typeof id !== 'string',
                     showSymbol: false,
-                    step: typeof idOrData === 'string' && this.props.objects[idOrData]?.common?.type === 'number' || typeof idOrData !== 'string' ? false : true,
+                    step: typeof id !== 'string' || this.props.objects[id]?.common?.type !== 'number',
                     color: style.color,
                     areaStyle: { color: style.areaStyle },
-                    data: typeof idOrData === 'string' ? [] : idOrData
+                    data: typeof id === 'string' ? [] : id
                 }
             ]
         };
