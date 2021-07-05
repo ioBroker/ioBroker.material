@@ -30,6 +30,8 @@ import cls from './style.module.scss';
 import clsGeneric from '../style.module.scss';
 import clsx from 'clsx/dist/clsx';
 import CustomSwitch from '../../Components/CustomSwitch';
+import Dialog from '../../Dialogs/SmartDialogInfo';
+import SmartInfo from '../SmartInfo/SmartInfo';
 class SmartSwitch extends SmartGeneric {
     constructor(props) {
         super(props);
@@ -41,8 +43,33 @@ class SmartSwitch extends SmartGeneric {
                 this.id = '';
             }
 
+            let parts = this.id.split('.');
+            parts.pop();
+            parts = parts.join('.');
+
             state = this.channelInfo.states.find(state => state.id && state.name === 'ACTUAL');
             this.actualId = state ? state.id : this.id;
+
+            let infoIDs = this.channelInfo.states.filter(state => state.name !== 'ACTUAL' && state.name !== 'SET').map(state => state?.id || `${parts}.${state.name}`).filter(id => !!this.props.objects[id]);
+            // place numbers first
+            if (infoIDs.length > 1) {
+                infoIDs.sort((a, b) => {
+                    const objA = this.props.objects[a];
+                    const objB = this.props.objects[b];
+                    const typeA = objA && objA.common && objA.common.type;
+                    const typeB = objB && objB.common && objB.common.type;
+                    if (typeA && !typeB) return 1;
+                    if (!typeA && typeB) return -1;
+                    if (typeA === 'number' && typeB !== 'number') return -1;
+                    if (typeA !== 'number' && typeB === 'number') return 1;
+                    return 0;
+                });
+            }
+            const name = this.getObjectNameCh();
+            this.infos = infoIDs.map(id => SmartInfo.getObjectAttributes(this.props.objects, id, name));
+            if (this.infos.length) {
+                this.stateRx.showDialog = false;
+            }
         }
         if (this.channelInfo) {
             switch (this.channelInfo.type) {
@@ -79,6 +106,9 @@ class SmartSwitch extends SmartGeneric {
         this.doubleState = true; // used in generic
         this.noAck = true;  // used in generic
 
+        this.stateRx.showChartBottom = true;
+        this.stateRx.chartSettingsId = this.id;
+
         this.props.tile.registerHandler('onClick', this.onTileClick.bind(this));
         this.componentReady();
     }
@@ -110,9 +140,9 @@ class SmartSwitch extends SmartGeneric {
 
     toggle = () => {
         if (this.actualId !== this.id) {
-            this.setState({ executing: this.state.settings.noAck ? false : true });
+            this.setState({ executing: !this.state.settings.noAck });
         }
-        this.props.onControl(this.id, !this.state[this.actualId]);
+        this.props.onControl(this.id, !this.state[this.id], null, () => this.setState({ executing: false }));
     }
 
     onTileClick() {
@@ -145,14 +175,28 @@ class SmartSwitch extends SmartGeneric {
     }
 
     getSecondaryDiv() {
-        return <div key="secondary" className={cls.wrapperSwitch}><CustomSwitch customValue onChange={this.toggle} value={this.state[this.id]}/></div>
+        return <div key="secondary" className={cls.wrapperSwitch}><CustomSwitch customValue onChange={this.toggle} value={this.state[this.id]} /></div>
     }
 
     render() {
         return this.wrapContent(
             [
                 this.getStandardContent(this.actualId),
-                this.getSecondaryDiv()
+                this.getSecondaryDiv(),
+                this.state.showDialog ?
+                    <Dialog
+                        key={this.key + 'dialog'}
+                        open={true}
+                        dialogKey={this.key + 'dialog'}
+                        windowWidth={this.props.windowWidth}
+                        points={this.infos}
+                        onCollectIds={this.props.onCollectIds}
+                        name={this.state.settings.name}
+                        onValueChange={this.setValue}
+                        onClose={this.onDialogClose}
+                        objects={this.props.objects}
+                        states={this.props.states}
+                    /> : null
             ]);
     }
 }

@@ -1,31 +1,28 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import cls from './style.module.scss';
 import I18n from '@iobroker/adapter-react/i18n';
-import { IconButton, Tooltip } from '@material-ui/core';
-import { MdAvTimer } from 'react-icons/md';
-import { FaRegCalendarTimes } from "react-icons/fa";
-import clsx from 'clsx/dist/clsx';
+import echartsImg from '../../assets/echarts.png';
 
 const EchartIframe = ({
-    name
+    name,
+    id,
+    renderImg
 }) => {
-    let subscribeTime = null;
-
-    // const [showSeconds, setShowSeconds] = useState(!!secondsParams);
-    // const [hour12, setHour12] = useState(!!hour12Params);
-
     return <div className={cls.echartWrapper}>
         {name && <div className={cls.name}>{name}</div>}
-        <iframe className={cls.iframe} src={`${window.location.port === '3000' ? window.location.protocol + '//' + window.location.hostname + ':8082' : ''}/echarts/index.html?preset=${'echarts.0.MyChar'}t&noBG=true&compact=true`} />
+        {renderImg && <img className={cls.renderImg} src={echartsImg} alt='img'/>}
+        {id && id !== 'none'?<iframe className={cls.iframe} src={`${window.location.port === '3000' ? window.location.protocol + '//' + window.location.hostname + ':8082' : ''}/echarts/index.html?preset=${id}&noBG=true&compact=true`} />:
+        !renderImg && <div>{I18n.t('select id in settings')}</div>}
     </div>
 }
 
 EchartIframe.defaultProps = {
-    secondsParams: false,
-    hour12Params: false,
-    dayOfWeekParams: false,
-    date: false,
-    doubleSize: false
+};
+
+EchartIframe.propTypes = {
+    name: PropTypes.string,
+    id: PropTypes.string,
 };
 
 export default EchartIframe;

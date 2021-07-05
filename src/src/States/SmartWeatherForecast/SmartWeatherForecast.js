@@ -629,7 +629,7 @@ class SmartWeatherForecast extends SmartGeneric {
             // this.getTodayWindDiv(),
             // this.getTodayTempDiv(),
             this.checkHistory(this.ids.current.temperature, true) && this.state.showDialogBottom ?
-                dialogChartCallBack(this.onDialogCloseBottom, this.ids.current.temperature, this.props.socket, this.props.themeType, this.props.systemConfig, this.props.allObjects, this.getIdHistorys(this.getAllIds())) : null,
+                dialogChartCallBack(this.onDialogCloseBottom, this.ids.current.temperature, this.props.socket, this.props.themeType, this.props.systemConfig, this.props.allObjects, this.getIdHistories(this.getAllIds())) : null,
             this.checkCornerTop(this.ids.days.length, true) && this.state.showDialog ?
                 <Dialog
                     dialogKey={this.key + 'dialog'}

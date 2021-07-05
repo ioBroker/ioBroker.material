@@ -184,7 +184,7 @@ class SmartDialogInfo extends SmartDialogGeneric  {
             }
         });
 
-        return <List key={this.props.points[0].id + '_info_list'}   style={Theme.dialog.list}>{result}</List>;
+        return <List key={this.props.points[0]?.id + '_info_list'}   style={Theme.dialog.list}>{result}</List>;
     }
 }
 

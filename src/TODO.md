@@ -49,11 +49,11 @@
 - Tooltips: Temperature / Humidity
 
 ## Switch
-- Show charts for switch: ON/OFF, voltage, current, frequency, consumption, power
+<!-- - Show charts for switch: ON/OFF, voltage, current, frequency, consumption, power -->
 
 ## RGB
 - Tooltip of power, Color type
-- Place cursor by dialog open 
+<!-- - Place cursor by dialog open  -->
 
 ## Weather
 - (BF) Type detector to detect current temperature get from current and day 0
@@ -74,8 +74,8 @@
 
 ## Custom e-chart
 <!-- - render -->
-- or typedetector or rooms
-- Name
+- or typedetector or rooms//
+<!-- - Name -->
 
 ## Camera
-- Auto detect and add widget
+- Auto detect and add widget//

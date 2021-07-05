@@ -1,0 +1,38 @@
+.root {
+    background: var(--editBackground) !important;
+    border-radius: 5px;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    * {
+        color: var(--generalColor) !important;
+    }
+    [class*="MuiInputLabel-shrink"] {
+        color: var(--generalColor) !important;
+    }
+    [class*="MuiInput-underline"] {
+        :after {
+            border-bottom-color: var(--generalColor) !important;
+        }
+    }
+    &:hover {
+        [class*="MuiOutlinedInput-notchedOutline"] {
+            border-color: var(--generalColor) !important;
+        }
+    }
+    [class*="MuiOutlinedInput-notchedOutline"] {
+        border-color: var(--generalColor) !important;
+        &:hover {
+            border-color: var(--generalColor) !important;
+        }
+        [class*="Mui-focused"] {
+            border-color: var(--generalColor) !important;
+        }
+        [class*="Mui-disabled"] {
+            border-color: var(--generalColor) !important;
+        }
+    }
+}
+
+.icon {
+
+}

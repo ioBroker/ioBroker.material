@@ -47,6 +47,7 @@ import SmartDimmer from '../States/SmartDimmer/SmartDimmer';
 import SmartVacuumCleaner from '../States/SmartVacuumCleaner/SmartVacuumCleaner';
 import SmartLocation from '../States/SmartLocation/SmartLocation';
 import SmartEchart from '../States/SmartEchart/SmartEchart';
+import SmartCamera from '../States/SmartCamera/SmartCamera';
 
 class SmartTile extends Component {
     static propTypes = {
@@ -326,6 +327,8 @@ class SmartTile extends Component {
                     break;
                 case Types.url:
                     Control = SmartURL;
+                case Types.camera:
+                    Control = SmartCamera;
                     break;
                 case Types.location:
                     Control = SmartLocation;
@@ -333,8 +336,9 @@ class SmartTile extends Component {
                 case 'clock'://Types.clock:
                     Control = SmartClock;
                     break;
-                    case 'e-chart':
-                        Control = SmartEchart;
+                case 'e-chart':
+                case 'chart':
+                    Control = SmartEchart;
                     break;
                 default:
                     break;

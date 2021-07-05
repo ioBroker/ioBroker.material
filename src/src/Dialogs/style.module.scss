@@ -7,7 +7,12 @@
     margin: 0 !important;
     max-width: 700px !important;
 }
-.backgroundDialog{
+
+.displayNone {
+    display: none !important;
+}
+
+.backgroundDialog {
     background-color: var(--editActiveBackground) !important;
     box-shadow: none !important;
     border: 1px solid var(--editIconColor) !important;
@@ -904,6 +909,70 @@
     height: 100%;
     border-radius: 10px;
     opacity: 0.9;
+    border: 2px solid var(--editIconColor);
+    background: var(--generalColorOpacity);
+}
+.iframeName {
+    position: absolute;
+    z-index: 1111;
+    top: 0;
+    left: 32px;
+    color: var(--editBackground);
+    background: var(--editIconColor);
+    padding: 2px 10px 0px 10px;
+    border-radius: 5px 5px 0px 0px;
+    font-size: 15px;
+    opacity: 0.7;
+}
+//camera
+.wrapperModalContentCamera {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    .cameraAutoFocus {
+        position: absolute;
+        top: 20px;
+        left: 10px;
+    }
+    .cameraAutoWhiteBalance {
+        position: absolute;
+        right: 10px;
+        top: 20px;
+    }
+    .cameraBrightness {
+        position: absolute;
+        left: 10px;
+    }
+    .cameraNightMode {
+        position: absolute;
+        right: 10px;
+    }
+    .cameraPTZ {
+        position: absolute;
+        bottom: 0;
+        width: 200px !important;
+    }
+}
+.wrapCamera {
+    max-width: 300px;
+    max-height: 300px;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--editIconColor);
+    background: var(--borderBottomHeader);
+    padding: 4px;
+}
+.camera {
+    object-fit: contain;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
 }
 @media screen and (max-width: 600px) {
     .paper {

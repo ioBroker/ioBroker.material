@@ -1293,10 +1293,10 @@
   resolved "https://registry.yarnpkg.com/@icons/material/-/material-0.2.4.tgz"
   integrity sha512-QPcGmICAPbGLGb6F/yNf/KzKqvFx8z5qx3D1yFqVAjoFmXK35EgyW+cJ57Te3CNsmzblwtzakLGFqHPqrfb4Tw==
 
-"@iobroker/adapter-react@^1.6.29":
-  version "1.6.29"
-  resolved "https://registry.yarnpkg.com/@iobroker/adapter-react/-/adapter-react-1.6.29.tgz#2158e2c9136b684c93c1180bd7e0d3700724b56a"
-  integrity sha512-ZCc6Zngm16tsF9ZxCeHlOYARKkS5jR49c1H/X47/BbkLvA0FrHptd2tN6v/ZTbMyqmkBmpCv2dHGGFXlkUqsxw==
+"@iobroker/adapter-react@^1.6.30":
+  version "1.6.30"
+  resolved "https://registry.yarnpkg.com/@iobroker/adapter-react/-/adapter-react-1.6.30.tgz#4ae36372450d533ec5714d552da81b58ecc8b44e"
+  integrity sha512-+QdN0VIwkoQMM7qUY44or6SH1GFwgKjYiYtDo9xjHr6tdkWK0SWxazLF2oqu6d3e/PbfJy/4viRZtkXVHrJKNw==
   dependencies:
     "@material-ui/core" "^4.11.4"
     "@material-ui/icons" "^4.11.2"
@@ -6150,10 +6150,10 @@ invariant@^2.2.4:
   dependencies:
     loose-envify "^1.0.0"
 
-iobroker.type-detector@^1.0.13:
-  version "1.0.13"
-  resolved "https://registry.yarnpkg.com/iobroker.type-detector/-/iobroker.type-detector-1.0.13.tgz#f89112b50b532be735d8b68d03d68afb8c22514a"
-  integrity sha512-SqM0RL37hoqtGKAw8L95qIiugP3/1CdI9fDjVXVksa/0uxc2J9+1Ql8cI3DzRl0FfzI0PjvEn82E25/P7JIYsQ==
+iobroker.type-detector@^1.0.14:
+  version "1.0.14"
+  resolved "https://registry.yarnpkg.com/iobroker.type-detector/-/iobroker.type-detector-1.0.14.tgz#ed3183ca837838399a6d6416caa280151aec8e93"
+  integrity sha512-RCfAeuHGx0zAf7LlRiDGWIyE2p6eEqisrkkcaV+zk47ScxH8QtV1X1yHUi33L62gcU3MNkmxMswGD29HHdDsnQ==
 
 ip-regex@^2.1.0:
   version "2.1.0"

@@ -1,55 +1,67 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import { TiCogOutline as IconWorking } from 'react-icons/ti';
-import { MdPermScanWifi as IconUnreach } from 'react-icons/md';
-import { MdPriorityHigh as IconMaintain } from 'react-icons/md';
-import { MdBatteryAlert as IconLowbat } from 'react-icons/md';
-import { MdError as IconError } from 'react-icons/md';
-import { MdDirections } from 'react-icons/md';
-import { AiOutlineAppstoreAdd } from 'react-icons/ai';
+import {
+    MdGpsFixed,
+    MdCenterFocusWeak,
+    MdDirections,
+    MdWork,
+    MdDeveloperMode,
+    MdError,
+    MdBatteryAlert,
+    MdPriorityHigh,
+    MdPermScanWifi,
+} from 'react-icons/md';
+import {
+    AiOutlineAppstoreAdd,
+    AiOutlineRadiusBottomleft,
+    AiOutlineColumnHeight,
+    AiOutlineColumnWidth,
+    AiOutlineSwap,
+    AiFillPauseCircle,
+    AiOutlinePoweroff,
+    AiOutlineZoomIn
+} from 'react-icons/ai';
 import { BiLastPage } from 'react-icons/bi';
-import { FaCompressArrowsAlt, FaRunning, FaSun } from 'react-icons/fa';
-import { FaCompress } from 'react-icons/fa';
-import { FaVolumeMute } from 'react-icons/fa';
-import { GiLaserPrecision } from 'react-icons/gi';
-import { AiOutlineRadiusBottomleft } from 'react-icons/ai';
-import { AiOutlineColumnHeight } from 'react-icons/ai';
-import { AiOutlineColumnWidth } from 'react-icons/ai';
-import { AiOutlineSwap } from 'react-icons/ai';
-import { FaToggleOn } from 'react-icons/fa';
-import { FaDoorOpen } from 'react-icons/fa';
-import { MdGpsFixed } from 'react-icons/md';
-import { GiStopSign } from 'react-icons/gi';
+import {
+    FaCompressArrowsAlt,
+    FaRunning,
+    FaSun,
+    FaCompress,
+    FaVolumeMute,
+    FaToggleOn,
+    FaDoorOpen
+} from 'react-icons/fa';
+import {
+    GiLaserPrecision,
+    GiStopSign,
+    GiNuclearWaste,
+    GiMatterStates,
+    GiTreeSwing,
+    GiSpeedometer,
+    GiMovementSensor,
+    GiRadialBalance
+} from 'react-icons/gi';
 import { IoIosWater } from 'react-icons/io';
-import { GiNuclearWaste } from 'react-icons/gi';
-import { AiFillPauseCircle } from 'react-icons/ai';
-import { GiMatterStates } from 'react-icons/gi';
-import { MdWork } from 'react-icons/md';
-import { MdDeveloperMode } from 'react-icons/md';
-import { AiOutlinePoweroff } from 'react-icons/ai';
 import { SiBoost } from 'react-icons/si';
 import { WiDaySunny, WiFire, WiHumidity, WiSmoke, WiThermometer } from 'react-icons/wi';
-import { GiTreeSwing } from 'react-icons/gi';
-import { GiSpeedometer } from 'react-icons/gi';
-// import WindowTilted from './icons/WindowTilted';
-import { FiPower, HiOutlineLightBulb } from "react-icons/all";
-import { IoColorFilter } from "react-icons/io5";
-import { RiBrush2Fill } from "react-icons/ri";
-import { RiBrush3Fill } from "react-icons/ri";
-import { GiMovementSensor } from "react-icons/gi";
-import { Component } from 'react';
+import { FiPower, HiOutlineLightBulb } from 'react-icons/all';
+import { IoColorFilter } from 'react-icons/io5';
+import { RiBrush2Fill, RiBrush3Fill } from 'react-icons/ri';
+import { TiWeatherNight } from 'react-icons/ti';
+
 
 const STATES_NAME_ICONS = {
     'SET': AiOutlineAppstoreAdd,
     'WORKING': MdWork,
     'PARTY': MdWork,
-    'UNREACH': IconUnreach,
-    'LOWBAT': IconLowbat,
-    'MAINTAIN': IconMaintain,
-    'ERROR': IconError,
+    'UNREACH': MdPermScanWifi,
+    'LOWBAT': MdBatteryAlert,
+    'MAINTAIN': MdPriorityHigh,
+    'ERROR': MdError,
     'DIRECTION': MdDirections,
-    'CONNECTED': IconUnreach,
+    'CONNECTED': MdPermScanWifi,
     'ACTUAL': IconWorking,
     'SECOND': BiLastPage,
     'PRESS_LONG': FaCompressArrowsAlt,
@@ -69,7 +81,7 @@ const STATES_NAME_ICONS = {
     'WASTE_ALARM': GiNuclearWaste,
     'PAUSE': AiFillPauseCircle,
     'STATE': GiMatterStates,
-    'BATTERY': IconLowbat,
+    'BATTERY': MdBatteryAlert,
     'WASTE': GiNuclearWaste,
     'WATER': IoIosWater,
     'WORK_MODE': MdWork,
@@ -88,10 +100,14 @@ const STATES_NAME_ICONS = {
     'DIMMER': HiOutlineLightBulb,
     'ON': FiPower,
     'COLOR_TEMP': FaSun,
-    'FILTER':IoColorFilter,
-    'SIDE_BRUSH':RiBrush2Fill,
-    'BRUSH':RiBrush3Fill,
-    'SENSORS':GiMovementSensor,
+    'FILTER': IoColorFilter,
+    'SIDE_BRUSH': RiBrush2Fill,
+    'BRUSH': RiBrush3Fill,
+    'SENSORS': GiMovementSensor,
+    'AUTOFOCUS': MdCenterFocusWeak,
+    'AUTOWHITEBALANCE': GiRadialBalance,
+    'NIGHTMODE': TiWeatherNight,
+    'PTZ': AiOutlineZoomIn
 }
 
 class StateIcon extends Component {

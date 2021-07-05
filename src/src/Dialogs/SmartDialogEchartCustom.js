@@ -19,13 +19,6 @@ import SmartDialogGeneric from './SmartDialogGeneric';
 import cls from './style.module.scss';
 
 class SmartDialogEchartCustom extends SmartDialogGeneric {
-    // expected:
-    // center
-    // data
-    // getReadHistoryData
-    // radius
-    // iconSetting
-    // states
     constructor(props) {
         super(props);
         this.componentReady();
@@ -33,32 +26,21 @@ class SmartDialogEchartCustom extends SmartDialogGeneric {
 
     generateContent() {
         return <div className={cls.wrapperModalContent}>
-            <iframe className={cls.iframeModal} src={`http://localhost:8082/echarts/index.html?preset=${'echarts.0.MyChar'}t&noBG=true`} />
+            {this.props.name && <div className={cls.iframeName}>{this.props.name}</div>}
+            <iframe className={cls.iframeModal} src={`http://localhost:8082/echarts/index.html?preset=${this.props.id}&noBG=true`} />
         </div>;
     }
 }
 
 SmartDialogEchartCustom.propTypes = {
-    name: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.object
-    ]),
+    name: PropTypes.string,
     dialogKey: PropTypes.string.isRequired,
     windowWidth: PropTypes.number,
     onClose: PropTypes.func.isRequired,
     transparent: PropTypes.string,
-    enumNames: PropTypes.number,
     settings: PropTypes.bool,
-    iconSetting: PropTypes.bool,
-    center: PropTypes.string,
-    data: PropTypes.object,
-    radius: PropTypes.number,
-    getReadHistoryData: PropTypes.func,
 
-    objects: PropTypes.object,
-    ids: PropTypes.object,
-    onValueChange: PropTypes.func,
-    actualValue: PropTypes.number,
+    id: PropTypes.string,
 };
 
 export default SmartDialogEchartCustom;

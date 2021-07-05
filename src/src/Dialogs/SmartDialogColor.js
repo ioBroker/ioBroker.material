@@ -342,24 +342,44 @@ class SmartDialogColor extends SmartDialogGeneric {
 
     componentDidUpdate() {
         if (!this.colorWidth && !this.state.tempMode) {
-            /*const h = this.refColor.current.offsetHeight - 6 * 16;
-            if (h < this.refColor.current.offsetWidth) {
-                this.colorWidth = h;
-                this.refColor.current.style.width = this.colorWidth + 'px';.
-                this.refColor.current.style.left = 'calc(50% - ' + (this.colorWidth / 2) + 'px)';
-            }*/
-            this.colorWidth = this.refColorImage.current.offsetWidth;
-            this.colorLeft = this.refColorImage.current.offsetLeft;
-            this.colorTop = this.refColorImage.current.offsetTop;
-            let pos = this.state.tempMode ? this.tempToPos(this.state.temperature, this.colorWidth - HANDLER_SIZE) : SmartDialogColor.colorToPos(this.state.color, this.colorWidth - HANDLER_SIZE);
-            this.refColorCursor.current.style.top = pos.y + (pos.y > 0 ? 0 : -HANDLER_SIZE) + 'px';
-            this.refColorCursor.current.style.left = pos.x + (pos.x > 0 ? 0 : -HANDLER_SIZE) + 'px';
-            this.rect = this.refColorImage.current.getBoundingClientRect();
+            this.updateCursor();
         }
     }
 
+    componentDidMount() {
+        document.getElementById('root').className = `blurDialogOpen`;
+        if (this.subscribes && !this.subscribed) {
+            this.subscribed = true;
+            this.props.onCollectIds(this, this.subscribes, true);
+        }
+        if (this.props.modeRGB) {
+            this.renderGenerateContent();
+        }
+    }
+
+    renderGenerateContent() {
+        if (this.refColorImage.current && !this.checkRef) {
+            this.checkRef = true;
+            this.updateCursor();
+        } else if (!this.refColorImage.current && !this.checkRef) {
+            setTimeout(() => {
+                this.renderGenerateContent();
+            }, 100);
+        }
+    }
+
+    updateCursor = () => {
+        this.colorWidth = this.refColorImage.current.offsetWidth;
+        this.colorLeft = this.refColorImage.current.offsetLeft;
+        this.colorTop = this.refColorImage.current.offsetTop;
+        let pos = SmartDialogColor.colorToPos(this.state.color, this.colorWidth - HANDLER_SIZE);
+        this.refColorCursor.current.style.top = pos.y + (pos.y > 0 ? 0 : -HANDLER_SIZE) + 'px';
+        this.refColorCursor.current.style.left = pos.x + (pos.x > 0 ? 0 : -HANDLER_SIZE) + 'px';
+        this.rect = this.refColorImage.current.getBoundingClientRect();
+    }
+
     dragCursor = () => {
-        let pos = this.state.tempMode ? this.tempToPos(this.state.temperature, this.colorWidth - HANDLER_SIZE) : SmartDialogColor.colorToPos(this.state.color, this.colorWidth - HANDLER_SIZE);
+        let pos = SmartDialogColor.colorToPos(this.state.color, this.colorWidth - HANDLER_SIZE);
         this.refColorCursor.current.style.top = !isNaN(pos.y) ? pos.y + (pos.y > 0 ? 0 : -HANDLER_SIZE) + 'px' : 0;//
         this.refColorCursor.current.style.left = !isNaN(pos.x) ? pos.x + (pos.x > 0 ? 0 : -HANDLER_SIZE) + 'px' : `calc(50% - ${HANDLER_SIZE}px)`;
     }
@@ -389,13 +409,19 @@ class SmartDialogColor extends SmartDialogGeneric {
             // Temperature mode
             const rgb = UtilsColors.hex2array(this.state.color);
             newState.temperature = UtilsColors.rgb2temperature(rgb[0], rgb[1], rgb[2]);
+            newState.color = UtilsColors.rgb2string(UtilsColors.temperatureToRGB(this.state.temperature));
             this.setDialogStyle({ background: 'rgba(154, 154, 154, 0.8)', maxHeight: this.dialogStyle.maxHeight });
         } else {
             // Color mode
-            newState.color = UtilsColors.rgb2string(UtilsColors.temperatureToRGB(this.state.temperature));
+            newState.color = this.props.startRGB;
             this.setDialogStyle({ maxHeight: this.dialogStyle.maxHeight });
         }
-        this.setState(newState);
+
+        this.setState(newState, _ => {
+            if (!this.state.tempMode) {
+                this.updateCursor();
+            }
+        });
     }
 
     eventToValue(e) {
@@ -422,7 +448,7 @@ class SmartDialogColor extends SmartDialogGeneric {
             this.changeTimer = setTimeout(() => {
                 this.changeTimer = null;
                 this.sendRGB();
-            }, 1000);
+            }, 300);
         }
     }
 
@@ -500,7 +526,7 @@ class SmartDialogColor extends SmartDialogGeneric {
                     this.setState({ on: true });
                     this.props.onToggle(true);
                 }
-            }, 1000, dimmer);
+            }, 300, dimmer);
         }
     }
 
@@ -510,26 +536,18 @@ class SmartDialogColor extends SmartDialogGeneric {
         this.changeTimerTemperature = setTimeout(value => {
             this.changeTimerTemperature = null;
             this.props.onRgbChange(UtilsColors.rgb2string(UtilsColors.temperatureToRGB(this.state.temperature)), Math.round(this.state.temperature), SmartDialogColor.COLOR_MODES.TEMPERATURE);
-        }, 1000, value);
+        }, 300, value);
     }
 
     getOnOffButton() {
         if (!this.props.useOn) {
             return null;
         }
-
-        // const style = Object.assign(
-        //     {},
-        //     styles.buttonOnOff,
-        //     this.state.on ? styles.buttonOn : styles.buttonOff);
         return <CustomFab key="onoff-button"
             variant="round"
             color="primary"
-            aria-label="mute"
-            className={this.props.classes.button}
             title={this.state.on ? I18n.t('Off') : I18n.t('On')}
             active={!this.state.on}
-            // style={style}
             onClick={this.onToggle}
             className={cls.buttonUseOn}
         >
@@ -539,17 +557,10 @@ class SmartDialogColor extends SmartDialogGeneric {
 
     getColorModeButton() {
         if (!this.props.modeTemperature || !this.props.modeRGB) return null;
-        // const style = Object.assign(
-        //     {},
-        //     styles.buttonColor,
-        //     this.state.tempMode ? styles.buttonRgb : styles.buttonTemp);
         return <CustomFab key="color-mode-button"
             variant="round"
-            className={this.props.classes.button}
             color="primary"
-            aria-label="mute"
             title={this.state.tempMode ? I18n.t('HUE') : I18n.t('Color temperature')}
-            // style={style}
             className={cls.buttonMode}
             onClick={this.onSwitchColorMode}
         >
@@ -564,8 +575,7 @@ class SmartDialogColor extends SmartDialogGeneric {
     }
 
     generateContent() {
-        let pos = this.state.tempMode ?
-            this.tempToPos(this.state.temperature, this.refColorImage.current?.offsetWidth - HANDLER_SIZE) :
+        let pos =
             SmartDialogColor.colorToPos(this.state.color, this.refColorImage.current?.offsetWidth - HANDLER_SIZE);
 
         if (this.state.tempMode) {
@@ -574,9 +584,9 @@ class SmartDialogColor extends SmartDialogGeneric {
         return <div className={cls.wrapperModalContentColor}>
             <div className={cls.marginAuto}>
                 <div className={cls.wrapperDiv}>
-                    {!this.state.tempMode ? <div key="color-dialog"
+                    <div key="color-dialog"
                         ref={this.refColor}
-                        className={cls.div}
+                        className={clsx(cls.div, this.state.tempMode && cls.displayNone)}
                     >
                         <div
                             ref={this.refColorImage}
@@ -584,44 +594,45 @@ class SmartDialogColor extends SmartDialogGeneric {
                             id='color'
                             onMouseDown={this.onMouseDown}
                             onTouchStart={this.onMouseDown}
-                            className={clsx(cls.colorCircle)}
+                            className={clsx(cls.colorCircle, this.state.tempMode && cls.displayNone)}
                         >
-                            <div className={this.state.tempMode ? cls.rotateCT : cls.rotate}>
-                                <div className={clsx(this.state.tempMode ? cls.colorBackgroundCT : cls.colorBackground)} />
+                            <div className={clsx(cls.rotate, this.state.tempMode && cls.displayNone)}>
+                                <div className={cls.colorBackground} />
                             </div>
                         </div>
                         <div ref={this.refColorCursor}
-                            className={clsx(this.props.classes.cursor, cls.cursor)}
+                            className={clsx(this.props.classes.cursor, cls.cursor, this.state.tempMode && cls.displayNone)}
                             style={{
-                                background: this.state.tempMode ? UtilsColors.rgb2string(UtilsColors.temperatureToRGB(this.state.temperature)) : this.state.color,
+                                background: this.state.color,
                                 top: isNaN(pos.y) ? 0 : pos.y + (pos.y > 0 ? 0 : -HANDLER_SIZE),
                                 left: isNaN(pos.x) ? `calc(50% - ${HANDLER_SIZE / 2}px)` : pos.x + (pos.x > 0 ? 0 : -HANDLER_SIZE),
                                 opacity: 0.9
                             }}>
                         </div>
-                    </div> : <div className={clsx(cls.div, cls.wrapperTemperature)}>
+                    </div>
+                    {this.state.tempMode && <div className={clsx(cls.div, cls.wrapperTemperature)}>
                         <div className={cls.wrapperSlider}>
                             <div className={cls.textSlider}>{I18n.t('Temperature')}</div>
-                        <CustomSlider
-                            hue={this.state.temperature}
-                            value={100 * (this.state.temperature - this.tMin) / (this.tMax - this.tMin)}
-                            onChange={this.onTemperatureChanged}
-                            className={cls.width300}
-                            orientation
-                            temperature
-                            tMin={this.tMin}
-                            tMax={this.tMax}
-                        />
+                            <CustomSlider
+                                hue={this.state.temperature}
+                                value={100 * (this.state.temperature - this.tMin) / (this.tMax - this.tMin)}
+                                onChange={this.onTemperatureChanged}
+                                className={cls.width300}
+                                orientation
+                                temperature
+                                tMin={this.tMin}
+                                tMax={this.tMax}
+                            />
                         </div>
                         <div className={cls.wrapperSlider}>
                             <div className={cls.textSlider}>{I18n.t('Brightness')}</div>
-                        <CustomSlider
-                            hue={this.getHue()}
-                            value={this.state.dimmer}
-                            onChange={this.onDimmerChanged}
-                            className={cls.width300}
-                            orientation
-                        />
+                            <CustomSlider
+                                hue={this.getHue()}
+                                value={this.state.dimmer}
+                                onChange={this.onDimmerChanged}
+                                className={cls.width300}
+                                orientation
+                            />
                         </div>
                     </div>}
                 </div>

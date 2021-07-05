@@ -396,7 +396,7 @@ class StatesList extends Component {
                     onClick: this.onAddCustomURL
                 },
                 {
-                    component: <EchartIframe />,
+                    component: <EchartIframe renderImg/>,
                     name: I18n.t('Add custom e-chart'),
                     onClick: this.onAddCustomEchart
                 }
@@ -685,7 +685,14 @@ class StatesList extends Component {
                             column.push({ id: e.id, settingsId: this.state.enumID, name: e.name, type: e.type });
                         });
                     }
-
+                    if (column.length && column.find(e=>typeof e === 'string' && e.startsWith('echarts.'))) {
+                        column = column.map(element => {
+                        if(typeof element === 'string' && element?.startsWith('echarts.')){
+                            return ({ id: element, settingsId: this.state.enumID, name: 'Echart', type: 'e-chart' });
+                        }
+                        return element;
+                    });
+                    }
                     if (column.length) {
                         columns.push({ id: 'others', items: column });
                     }

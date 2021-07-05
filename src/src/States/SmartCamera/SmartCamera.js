@@ -16,11 +16,11 @@
 import React from 'react';
 
 import SmartGeneric from '../SmartGeneric';
-import Dialog from '../../Dialogs/SmartDialogMap';
-import I18n from '@iobroker/adapter-react/i18n';
-import Location from '../../basic-controls/react-location/Location';
-import Moment from 'react-moment';
-class SmartLocation extends SmartGeneric {
+import Dialog from '../../Dialogs/SmartDialogCamera';
+import IconAdapter from '@iobroker/adapter-react/Components/Icon';
+import cls from './style.module.scss';
+
+class SmartCamera extends SmartGeneric {
     constructor(props) {
         super(props);
 
@@ -29,10 +29,9 @@ class SmartLocation extends SmartGeneric {
 
         if (this.channelInfo.states) {
             // GPS
-            let state = this.channelInfo.states.find(state => state.id && state.name === 'GPS');
+            let state = this.channelInfo.states.find(state => state.id && state.name === 'FILE');
             if (state) {
                 this.id = state.id;
-                this.gps = state.id;
             } else {
                 this.id = '';
             }
@@ -40,21 +39,28 @@ class SmartLocation extends SmartGeneric {
             parts.pop();
             parts = parts.join('.');
 
-            state = this.channelInfo.states.find(state => state.id && state.name === 'ELEVATION');
-            this.elevation = state?.id || `${parts}.ELEVATION`;
+            state = this.channelInfo.states.find(state => state.id && state.name === 'AUTOFOCUS');
+            this.autoFocusId = state?.id || `${parts}.AUTOFOCUS`;
 
-            state = this.channelInfo.states.find(state => state.id && state.name === 'RADIUS');
-            this.radius = state?.id || `${parts}.RADIUS`;
+            state = this.channelInfo.states.find(state => state.id && state.name === 'AUTOWHITEBALANCE');
+            this.autoWhiteBalanceId = state?.id || `${parts}.AUTOWHITEBALANCE`;
 
-            state = this.channelInfo.states.find(state => state.id && state.name === 'ACCURACY');
-            this.accuracy = state?.id || `${parts}.ACCURACY`;
+            state = this.channelInfo.states.find(state => state.id && state.name === 'BRIGHTNESS');
+            this.brightnessId = state?.id || `${parts}.BRIGHTNESS`;
+
+            state = this.channelInfo.states.find(state => state.id && state.name === 'NIGHTMODE');
+            this.nightModeId = state?.id || `${parts}.NIGHTMODE`;
+
+            state = this.channelInfo.states.find(state => state.id && state.name === 'PTZ');
+            this.ptzId = state?.id || `${parts}.PTZ`;
         }
 
         this.width = 2;
         this.props.tile.setState({ isPointer: false });
         this.props.tile.setState({ state: true });
-        this.key = `smart-location-${this.id}-`;
-        this.stateRx.showChartBottom = false;
+        this.key = `smart-camera-${this.id}-`;
+        this.stateRx.showChartBottom = true;
+        this.stateRx.chartSettingsId = this.id;
         // this.stateRx.showDialogBottom = false;
         this.stateRx.showDialog = false; // support dialog in this tile used in generic class)
 
@@ -80,7 +86,12 @@ class SmartLocation extends SmartGeneric {
         if (!state) {
             return;
         }
-        if (this.accuracy === id || id === this.id || id === this.radius || id === this.elevation) {
+        if (id === this.id ||
+            id === this.autoFocusId ||
+            id === this.autoWhiteBalanceId ||
+            id === this.brightnessId ||
+            id === this.nightModeId ||
+            id === this.ptzId) {
             newState[id] = typeof state.val !== 'number' ? state.val : parseFloat(state.val);
             if (typeof state.val === 'number' && isNaN(newState[id])) {
                 newState[id] = null;
@@ -100,23 +111,11 @@ class SmartLocation extends SmartGeneric {
 
     getDialogSettings() {
         let settings = super.getDialogSettings();
-        settings.push({
-            name: 'zoomMiniMap',
-            value: this.state.settings.zoomMiniMap || 12,
-            max: 18,
-            type: 'number'
-        });
-        settings.push({
-            name: 'zoomDialogMap',
-            value: this.state.settings.zoomDialogMap || 15,
-            max: 18,
-            type: 'number'
-        });
         // remove doubleSize from list
         settings = settings.filter((e, i) => {
             if (e && (e.name === 'noAck'
                 || e.name === 'colorOn'
-                // || e.name === 'icon'
+                || e.name === 'icon'
                 || e.name === 'background'
             )) {
                 return false;
@@ -125,46 +124,61 @@ class SmartLocation extends SmartGeneric {
         });
         return settings;
     }
-    getStateText = () => {
-        const state = this.state[this.id];
-        if (state === undefined || state === null || !this.lastChange) {
-            return null;
-        } else {
-            return <Moment style={{ fontSize: 12 }} date={this.lastChange} interval={15} fromNow locale={I18n.getLanguage()} />;
-        }
+
+    getDataCamera() {
+        return <>
+            <div className={cls.name}>{this.state.settings.name}</div>
+            <div className={cls.wrapCamera}>
+                <IconAdapter className={cls.camera} src={this.state[this.id]} />
+            </div>
+        </>;
     }
-    getLocation() {
-        return <Location
-            iconSetting={this.state.settings.icon || null}
-            center={this.state[this.id]}
-            data={this.getStandardContent(this.id, false, true)}
-        />;
+
+    onToggle = (id = this.id) => {
+        this.setState({ executing: true });
+        this.props.onControl(id, !this.state[id], null, () => this.setState({ executing: false }));
+    }
+
+    onPtzChange=(value)=>{
+        this.setState({ executing: true });
+        this.props.onControl(this.ptzId, value, null, () => this.setState({ executing: false }));
     }
 
     render() {
         return this.wrapContent([
-            this.getLocation(),
+            this.getDataCamera(),
             this.state.showDialog ?
                 <Dialog
                     dialogKey={this.key + 'dialog'}
                     open={true}
                     key={this.key + 'dialog'}
                     transparent
+
+                    file={this.id ? this.state[this.id] : null}
+
+                    autoFocus={this.autoFocusId ? this.state[this.autoFocusId] : null}
+                    onAutoFocusToggle={()=>this.onToggle(this.autoFocusId)}
+
+                    autoWhiteBalance={this.autoWhiteBalanceId ? this.state[this.autoWhiteBalanceId] : null}
+                    onAutoWhiteBalanceToggle={()=>this.onToggle(this.autoWhiteBalanceId)}
+
+                    brightness={this.brightnessId ? this.state[this.brightnessId] : null}
+                    onBrightnessToggle={()=>this.onToggle(this.brightnessId)}
+
+                    nightMode={this.nightModeId ? this.state[this.nightModeId] : null}
+                    onNightModeToggle={()=>this.onToggle(this.nightModeId)}
+
+                    ptz={this.ptzId ? this.state[this.ptzId] : null}
+                    onPtzChange={this.onPtzChange}
+
                     name={this.state.settings.name}
                     enumNames={this.props.enumNames}
                     settings={this.state.settings}
-                    objects={this.props.objects}
-                    ids={this.ids}
                     windowWidth={this.props.windowWidth}
                     onClose={this.onDialogClose}
-                    iconSetting={this.state.settings.icon || null}
-                    center={this.state[this.id]}
-                    data={this.getStandardContent(this.id, false, true)}
-                    radius={this.state[this.radius]}
-                    getReadHistoryData={callback => this.getReadHistoryData(this.id, callback)}
                 /> : null
         ]);
     }
 }
 
-export default SmartLocation;
+export default SmartCamera;

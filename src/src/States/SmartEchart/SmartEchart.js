@@ -78,7 +78,7 @@ class SmartEchart extends SmartGeneric {
         if (!state) {
             return;
         }
-        if (this.accuracy === id || id === this.id || id === this.radius || id === this.elevation) {
+        if (id === this.id) {
             newState[id] = typeof state.val !== 'number' ? state.val : parseFloat(state.val);
             if (typeof state.val === 'number' && isNaN(newState[id])) {
                 newState[id] = null;
@@ -96,68 +96,46 @@ class SmartEchart extends SmartGeneric {
         }
     }
 
+    getEchartIds(){
+        return Object.keys(this.props.objects).filter(key=>key.startsWith('echarts.0') && key !== 'echarts.0');
+    }
+
     getDialogSettings() {
         let settings = super.getDialogSettings();
-        // settings.push({
-        //     name: 'chartLast',
-        //     value: this.state.settings.chartLast || false,
-        //     type: 'boolean'
-        // });
-        // settings.push({
-        //     name: 'tempID',
-        //     value: this.state.settings.tempID || '',
-        //     type: 'string'
-        // });
-        // settings.push({
-        //     name: 'humidityID',
-        //     value: this.state.settings.humidityID || '',
-        //     type: 'string'
-        // });
-        // settings.push({
-        //     name: 'locationText',
-        //     value: this.state.settings.locationText || '',
-        //     type: 'string'
-        // });
-        // settings.push({
-        //     name: 'hideFirstDay',
-        //     value: this.state.settings.hideFirstDay || false,
-        //     type: 'boolean'
-        // });
-        settings.push({
-            name: 'zoomMiniMap',
-            value: this.state.settings.zoomMiniMap || 12,
-            max: 18,
-            type: 'number'
-        });
-        settings.push({
-            name: 'zoomDialogMap',
-            value: this.state.settings.zoomDialogMap || 15,
-            max: 18,
-            type: 'number'
-        });
         // remove doubleSize from list
         settings = settings.filter((e, i) => {
             if (e && (e.name === 'noAck'
                 || e.name === 'colorOn'
-                // || e.name === 'icon'
+                || e.name === 'icon'
                 || e.name === 'background'
             )) {
                 return false;
             }
             return true;
         });
-        settings.unshift({
-            type: 'delete'
-        });
+        if(!this.id.startsWith('echarts.')){
+            settings.unshift({
+                name: 'echartId',
+                value: this.state?.settings?.echartId || 'none',
+                options: [...this.getEchartIds(true), 'none'],
+                type: 'select'
+            });
+            settings.unshift({
+                type: 'delete'
+            });
+        }
         return settings;
     }
     getLocation() {
         return <EchartIframe
             name={this.state.settings.name}
+            id={!this.id.startsWith('echarts.')?this.state?.settings?.echartId:this.id}
         />;
     }
 
     render() {
+        this.checkCornerTop(!this.id.startsWith('echarts.')?this.state?.settings?.echartId && this.state?.settings?.echartId !== 'none':this.id,true);
+
         return this.wrapContent([
             this.getLocation(),
             this.state.showDialog ?
@@ -166,17 +144,10 @@ class SmartEchart extends SmartGeneric {
                     key={this.key + 'dialog'}
                     transparent
                     name={this.state.settings.name}
-                    enumNames={this.props.enumNames}
                     settings={this.state.settings}
-                    objects={this.props.objects}
-                    ids={this.ids}
+                    id={!this.id.startsWith('echarts.')?this.state?.settings?.echartId:this.id}
                     windowWidth={this.props.windowWidth}
                     onClose={this.onDialogClose}
-                    iconSetting={this.state.settings.icon || null}
-                    center={this.state[this.id]}
-                    data={this.getStandardContent(this.id, false, true)}
-                    radius={this.state[this.radius]}
-                    getReadHistoryData={callback => this.getReadHistoryData(this.id, callback)}
                 /> : null
         ]);
     }

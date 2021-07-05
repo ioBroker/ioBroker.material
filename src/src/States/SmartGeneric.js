@@ -118,17 +118,17 @@ class SmartGeneric extends Component {
                     if (state.id.startsWith('system.adapter.')) {
                         ids.push(state.id);
                     } else
-                    if (!state.noSubscribe &&
-                        this.props.objects[state.id] &&
-                        this.props.objects[state.id].type === 'state' &&
-                        !ids.includes(state.id)) {
-                        const pos = state.id.lastIndexOf('.');
-                        if (pos !== -1 && this.stateRx.ignoreIndicators.includes(state.id.substring(pos + 1))) {
-                            return;
-                        }
+                        if (!state.noSubscribe &&
+                            this.props.objects[state.id] &&
+                            this.props.objects[state.id].type === 'state' &&
+                            !ids.includes(state.id)) {
+                            const pos = state.id.lastIndexOf('.');
+                            if (pos !== -1 && this.stateRx.ignoreIndicators.includes(state.id.substring(pos + 1))) {
+                                return;
+                            }
 
-                        ids.push(state.id);
-                    }
+                            ids.push(state.id);
+                        }
                 });
 
                 if (ids.length) {
@@ -1049,13 +1049,13 @@ class SmartGeneric extends Component {
             if (!this.props.allObjects[idOrData]) {
                 hasHistory = false;
             } else
-            if (!this.props.allObjects[idOrData]?.common?.custom) {
-                hasHistory = false;
-            } else
-            if (this.props.allObjects[idOrData]?.common?.custom &&
-                !this.props.allObjects[idOrData]?.common?.custom[defaultHistory]) {
-                hasHistory = false;
-            }
+                if (!this.props.allObjects[idOrData]?.common?.custom) {
+                    hasHistory = false;
+                } else
+                    if (this.props.allObjects[idOrData]?.common?.custom &&
+                        !this.props.allObjects[idOrData]?.common?.custom[defaultHistory]) {
+                        hasHistory = false;
+                    }
             if (!hasHistory && this.props.allObjects[idOrData]?.common?.alias?.id) {
                 const alias = this.props.allObjects[idOrData].common.alias.id;
                 if (typeof alias === 'object') {
@@ -1242,9 +1242,9 @@ class SmartGeneric extends Component {
                 {
                     silent: true,
                     type: 'line',
-                    smooth: this.props.objects[id]?.common?.type === 'number' || typeof id !== 'string',
+                    smooth: (this.props.objects[id]?.common?.type === 'number' || typeof id !== 'string'),
                     showSymbol: false,
-                    step: typeof id !== 'string' || this.props.objects[id]?.common?.type !== 'number',
+                    step: !(typeof id === 'string' && this.props.objects[id]?.common?.type === 'number' || typeof id !== 'string'),
                     color: style.color,
                     areaStyle: { color: style.areaStyle },
                     data: typeof id === 'string' ? [] : id
