@@ -681,17 +681,16 @@ class StatesList extends Component {
                     this.props.debug && console.log('Add to others: ' + column.join(', '));
 
                     if (this.state.customURLs && this.state.customURLs.length) {
-                        this.state.customURLs.forEach(e => {
-                            column.push({ id: e.id, settingsId: this.state.enumID, name: e.name, type: e.type });
-                        });
+                        this.state.customURLs.forEach(e =>
+                            column.push({ id: e.id, settingsId: this.state.enumID, name: e.name, type: e.type }));
                     }
-                    if (column.length && column.find(e=>typeof e === 'string' && e.startsWith('echarts.'))) {
+                    if (column.length && column.find(e => typeof e === 'string' && e.startsWith('echarts.'))) {
                         column = column.map(element => {
-                        if(typeof element === 'string' && element?.startsWith('echarts.')){
-                            return ({ id: element, settingsId: this.state.enumID, name: 'Echart', type: 'e-chart' });
-                        }
-                        return element;
-                    });
+                            if(typeof element === 'string' && element?.startsWith('echarts.')){
+                                return { id: element, settingsId: this.state.enumID, name: 'Echart', type: 'e-chart' };
+                            }
+                            return element;
+                        });
                     }
                     if (column.length) {
                         columns.push({ id: 'others', items: column });

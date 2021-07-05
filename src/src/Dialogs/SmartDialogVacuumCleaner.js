@@ -204,7 +204,7 @@ class SmartDialogVacuumCleaner extends SmartDialogGeneric {
                         (this.props.sideBrushVacuum !== null && this.props.sideBrushVacuum !== undefined) ||
                         (this.props.brushVacuum !== null && this.props.brushVacuum !== undefined) ||
                         (this.props.sensorVacuum !== null && this.props.sensorVacuum !== undefined)) &&
-                    <div className={cls.infoBlockVacuum}>
+                    <div className={clsx(cls.infoBlockVacuum, this.props.stateVacuum === null || this.props.stateVacuum === undefined ? cls.infoBlockVacuumMiddle : '')}>
                         {this.props.filterVacuum !== null && this.props.filterVacuum !== undefined &&
                             <Tooltip title={I18n.t('Filter')}>
                                 <div className={cls.currentItemInfo}>
@@ -233,7 +233,8 @@ class SmartDialogVacuumCleaner extends SmartDialogGeneric {
                                 </div>
                             </Tooltip>
                         }
-                    </div>}
+                    </div>
+                }
                 <div className={cls.wrapperControl}>
                     {this.props.imageVacuum !== null && this.props.imageVacuum !== undefined && this.props.powerValue ?
                         <IconAdapter className={cls.styleImageState} src={this.props.imageVacuum} />

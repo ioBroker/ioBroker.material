@@ -9,15 +9,15 @@
 
 - Make translation for icon selector work
 
-<!-- - Option to select the chart via drop down menus:
-    - default
-    - none
-    - IDs from type-detector
-    - custom => show ID selector -->
-<!-- - Or try to find firts ID with history and show it     -->
-
-<!-- - Collect all IDs and give it in "objs" as array -->
 - Show chart in the corner if any state of the device has "history"//////////
+- Remove all WARNINGS
+- Layout of dialogs: Thermostat, ...
+
+## Info dialog
+- Show device icon in the title
+- Show for known state types the icon: humidity, temperature, voltage, power, frequency, ...
+- Show small chart (if available), like in thermostat
+- Update dialog like in charts
 
 ## Control by state
 - Change page
@@ -25,7 +25,6 @@
 - Open dialog
 
 ## Loading 
-<!-- - In dark mode make background dark -->
 ## Dimmer
 - Add tooltips for all 4 buttons (on, off, ? , close)
 
@@ -41,6 +40,7 @@
 ## Volume
 
 ## Blinds
+
 ## Thermostat
 - On mobile devices hide controls in chart-dialog and make it maximal big
 - ? Tooltips for values: actual temperature / target temperature
@@ -49,33 +49,26 @@
 - Tooltips: Temperature / Humidity
 
 ## Switch
-<!-- - Show charts for switch: ON/OFF, voltage, current, frequency, consumption, power -->
 
 ## RGB
 - Tooltip of power, Color type
-<!-- - Place cursor by dialog open  -->
 
 ## Weather
 - (BF) Type detector to detect current temperature get from current and day 0
-- Link to icons
+- test widget with all weather adapters
 
 ## Weather current (as type detector)
 
 ## Vacuum
-<!-- - Water + Waste  -->
-<!-- - Show filter, sensors,  main, side brush -->
-<!-- - Map border raidus 15 -->
 
 ## Motion
-<!-- - Show brightness chart in tile -->
 - Show motion chart in dialog together with brightness//
 
 ## Icons url
 
 ## Custom e-chart
-<!-- - render -->
 - or typedetector or rooms//
-<!-- - Name -->
 
 ## Camera
 - Auto detect and add widget//
+- PTZ => slider from min to max or 0=>100
