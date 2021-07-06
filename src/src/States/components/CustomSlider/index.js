@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Fab, Slider } from '@material-ui/core';
+import { Slider } from '@material-ui/core';
 import cls from './style.module.scss';
 import clsx from 'clsx';
 import UtilsColor from '../../../UtilsColors';
 
-const CustomSlider = ({ fullWidth, size, onClick, value, className, onChange, hue, orientation, temperature }) => {
+const CustomSlider = ({ value, className, onChange, hue, orientation, temperature, tMin, tMax, minMax }) => {
 
     const rgb = hue === '#FFFFFF' ?
         '#FFFFFF' :
@@ -15,11 +15,11 @@ const CustomSlider = ({ fullWidth, size, onClick, value, className, onChange, hu
     const colorGenerate = value || value === 0 ? 255 - 256 / 24 * value || 1 : 255;
     return <Slider
         className={clsx(orientation ? cls.rootVertical : cls.root, className)}
-        onChange={(e, v) => onChange(v)}
-        value={value}
+        onChange={(e, v) => onChange(minMax ? Math.ceil((((tMax - tMin) / 100) * v) + tMin) : v)}
+        value={minMax ? 100 * (value - tMin) / (tMax - tMin) : value}
         orientation={orientation ? 'vertical' : 'horizontal'}
-        scale={(x) => <div className={clsx(cls.scale, temperature && cls.scaleFont)} style={{ color: `rgb(${colorGenerate}, ${colorGenerate}, ${colorGenerate})`, background: temperature ? rgb : UtilsColor.hexToRgbA(rgb, value || value === 0 ? value / 100 : 1) }} >{temperature?hue:x}</div>}
-        style={{ background: color }}
+        scale={(x) => <div className={clsx(cls.scale, temperature && cls.scaleFont)} style={hue === undefined ? null : { color: `rgb(${colorGenerate}, ${colorGenerate}, ${colorGenerate})`, background: temperature ? rgb : UtilsColor.hexToRgbA(rgb, value || value === 0 ? value / 100 : 1) }} >{temperature ? hue : minMax ? Math.ceil((((tMax - tMin) / 100) * x) + tMin) : x}</div>}
+        style={hue === undefined ? null : { background: color }}
         classes={{
             track: orientation ? cls.trackVertical : cls.track,
             rail: orientation ? cls.railVertical : cls.rail,
@@ -40,6 +40,9 @@ CustomSlider.defaultProps = {
     active: false,
     orientation: false,
     temperature: false,
+    tMax: 100,
+    tMin: 0,
+    minMax: false,
     onChange: () => { }
 };
 

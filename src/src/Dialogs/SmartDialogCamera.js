@@ -21,13 +21,24 @@ import I18n from '@iobroker/adapter-react/i18n';
 import cls from './style.module.scss';
 import StateIcon from '../States/components/StateIcon';
 import CustomButton from '../States/components/CustomButton';
-import { TextField } from '@material-ui/core';
-import CustomInput from '../States/components/CustomInput';
+import CustomSlider from '../States/components/CustomSlider';
 
 class SmartDialogCamera extends SmartDialogGeneric {
     constructor(props) {
         super(props);
         this.componentReady();
+        this.state = {
+            ptz: this.props.ptz
+        }
+    }
+
+    onPtzChange = (value) => {
+        this.typingTimer && clearTimeout(this.typingTimer);
+        this.setState({ ptz: value });
+        this.typingTimer = setTimeout(valueSet => {
+            this.typingTimer = null;
+            this.props.onPtzChange(valueSet);
+        }, 100, value);
     }
 
     generateContent() {
@@ -73,25 +84,20 @@ class SmartDialogCamera extends SmartDialogGeneric {
                     className={cls.cameraNightMode}>
                     {I18n.t('Night')}
                 </CustomButton> : null}
-
-            {this.props.ptz !== undefined ?
-                <CustomInput
-                    label={I18n.t('PTZ')}
-                    icon={ <StateIcon type={'PTZ'} />}
-                    type="number"
-                    variant="outlined"
-                    value={this.props.ptz}
-                    onChange={value => {
-                        this.typingTimer && clearTimeout(this.typingTimer);
-
-                        this.typingTimer = setTimeout(valueSet => {
-                            this.typingTimer = null;
-                            this.props.onPtzChange(valueSet);
-                        }, 100, value.replace(/[^\d]/g, ''));
-                    }}
-                    className={cls.cameraPTZ}
-                    margin="normal"
-                /> : null}
+            {this.props.ptz !== null && this.props.ptz !== undefined &&
+                <div className={cls.cameraPTZ}>
+                    <div className={cls.textSliderPtz}><StateIcon type={'PTZ'} />{I18n.t('PTZ')}</div>
+                    <CustomSlider
+                        value={this.state.ptz}
+                        onChange={value => {
+                            this.onPtzChange(value);
+                        }}
+                        tMin={10}
+                        tMax={20}
+                        minMax
+                    />
+                </div>
+            }
         </div>;
     }
 }

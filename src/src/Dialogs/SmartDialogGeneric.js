@@ -378,12 +378,13 @@ class SmartDialogGeneric extends Component {
         >
             {this.getHeader ? <DialogTitle>{this.getHeader()}</DialogTitle> : null}
             <DialogContent
+                className={cls.dialogContent}
                 classes={{
                     root: this.props.overflowHidden ? cls.overflowHidden : null,
-                }} style={{ position: 'relative' }}>
+                }}>
                 {this.generateContent()}
             </DialogContent>
-            <DialogActions>
+            <DialogActions className={cls.dialogActions}>
                 {this.getButtons ? this.getButtons() : null}
                 {this.getButtons ?
                     <CustomButton onClick={() => this.onClose(true)} variant="contained" autoFocus>

@@ -88,6 +88,8 @@ class SmartDialogVacuumCleaner extends SmartDialogGeneric {
         }
 
         this.refPanel = React.createRef();
+        this.refVacuum = React.createRef();
+        this.refVacuumAnimation = React.createRef();
         this.svgControl = null;
         this.componentReady();
 
@@ -113,6 +115,51 @@ class SmartDialogVacuumCleaner extends SmartDialogGeneric {
         }
     }
 
+    componentDidMount() {
+        document.getElementById('root').className = `blurDialogOpen`;
+        if (this.subscribes && !this.subscribed) {
+            this.subscribed = true;
+            this.props.onCollectIds(this, this.subscribes, true);
+        }
+        if(this.props.batteryVacuum !== null && this.props.batteryVacuum !== undefined){
+            this.renderGenerateContent();
+        }
+    }
+
+    renderGenerateContent = () => {
+        if (this.refVacuum.current && !this.checkRef) {
+            this.checkRef = true;
+            this.subscribeWAddEvent();
+            this.resizeThrottler();
+        } else if (!this.refVacuum.current && !this.checkRef) {
+            setTimeout(() => {
+                this.renderGenerateContent();
+            }, 100);
+        }
+    }
+
+    subscribeWAddEvent = () => {
+        window.addEventListener("resize", this.resizeThrottler);
+    }
+
+    resizeThrottler = () => {
+        if (this.refVacuum.current && this.refVacuumAnimation.current) {
+            const { clientHeight, clientWidth } = this.refVacuum.current;
+            const widthOrHeight = clientHeight >= clientWidth ? clientWidth : clientHeight;
+            this.refVacuumAnimation.current.style.width = `${widthOrHeight}px`;
+            this.refVacuumAnimation.current.style.height = `${widthOrHeight}px`;
+        }
+    }
+
+    componentWillUnmount() {
+        document.getElementById('root').className = ``;
+        if (this.props.onCollectIds && this.subscribed) {
+            this.props.onCollectIds(this, this.subscribes, false);
+            this.subscribed = null;
+        }
+        window.removeEventListener("resize", this.resizeThrottler);
+    }
+
     onBoostMode = () => {
         this.props.onBoostToggle && this.props.onBoostToggle(!this.state.boostValue);
         this.setState({ boostValue: !this.state.boostValue });
@@ -120,7 +167,7 @@ class SmartDialogVacuumCleaner extends SmartDialogGeneric {
 
     generateContent() {
         return <div className={cls.wrapperModalContent}>
-            <div className={cls.wrapperThermostat}>
+            <div className={cls.wrapperVacuum}>
                 {this.props.pauseValue !== null && this.props.pauseValue !== undefined ?
                     <CustomButton
                         startIcon={<StateIcon type={'Pause'} />}
@@ -236,18 +283,22 @@ class SmartDialogVacuumCleaner extends SmartDialogGeneric {
                     </div>
                 }
                 <div className={cls.wrapperControl}>
-                    {this.props.imageVacuum !== null && this.props.imageVacuum !== undefined && this.props.powerValue ?
+                    <div className={clsx(cls.wrapperVacuumCleaner, !(this.props.imageVacuum !== null && this.props.imageVacuum !== undefined && this.props.powerValue) && cls.displayNone)}>
                         <IconAdapter className={cls.styleImageState} src={this.props.imageVacuum} />
-                        : <div className={cls.wrapperVacuumCleaner}>
-                            <Icon d={"M0,100 C150,200 350,0 500,100 L500,00 L0,0 Z"} className={clsx(cls.vacuumCleaner, this.props.powerValue && !this.props.pauseValue && cls.vacuumCleanerWork, this.props.powerValue && this.props.pauseValue && cls.vacuumCleanerPause)} />
-                            {this.props.batteryVacuum !== null && this.props.batteryVacuum !== undefined && <div className={clsx(cls.batteryAnimation, this.props.powerValue && !this.props.pauseValue && cls.vacuumCleanerWork, this.props.powerValue && this.props.pauseValue && cls.vacuumCleanerPause)}>
-                                <Circle2 style={{ top: `${this.props.batteryVacuum ? 100 - this.props.batteryVacuum : 0}%` }} className={cls.circle1} />
-                                <Circle2 style={{ top: `calc(5px + ${this.props.batteryVacuum ? 100 - this.props.batteryVacuum : 0}%)` }} className={cls.circle2} />
+                    </div>
+                    <div className={clsx(cls.wrapperVacuumCleaner, (this.props.imageVacuum !== null && this.props.imageVacuum !== undefined && this.props.powerValue) && cls.displayNone)}>
+                        <Icon d={"M0,100 C150,200 350,0 500,100 L500,00 L0,0 Z"} className={clsx(cls.vacuumCleaner, this.props.powerValue && !this.props.pauseValue && cls.vacuumCleanerWork, this.props.powerValue && this.props.pauseValue && cls.vacuumCleanerPause)} />
+                        {this.props.batteryVacuum !== null && this.props.batteryVacuum !== undefined &&
+                            <div ref={this.refVacuum} className={clsx(cls.batteryAnimation, this.props.powerValue && !this.props.pauseValue && cls.vacuumCleanerWork, this.props.powerValue && this.props.pauseValue && cls.vacuumCleanerPause)}>
+                                <div className={cls.refVacuumAnimation} ref={this.refVacuumAnimation} style={{ width: '100%', height: '100%' }}>
+                                    <Circle2 style={{ top: `${this.props.batteryVacuum ? 100 - this.props.batteryVacuum : 0}%` }} className={cls.circle1} />
+                                    <Circle2 style={{ top: `calc(5px + ${this.props.batteryVacuum ? 100 - this.props.batteryVacuum : 0}%)` }} className={cls.circle2} />
+                                </div>
                                 <div className={cls.batteryVacuum}>
                                     <IoMdBatteryCharging />{this.props.batteryVacuum}{this.props.batteryUnit}
                                 </div>
                             </div>}
-                        </div>}
+                    </div>
                 </div>
             </div>
         </div>;

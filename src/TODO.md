@@ -60,9 +60,9 @@
 ## Weather current (as type detector)
 
 ## Vacuum
+- If (80 * states_count + 30) > screen_width => show select of states
 
 ## Motion
-- Show motion chart in dialog together with brightness//
 
 ## Icons url
 
@@ -71,4 +71,3 @@
 
 ## Camera
 - Auto detect and add widget//
-- PTZ => slider from min to max or 0=>100

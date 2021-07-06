@@ -7,13 +7,15 @@
     margin: 0 !important;
     max-width: 700px !important;
 }
-
+.dialogContent {
+    position: relative;
+}
 .displayNone {
     display: none !important;
 }
 
 .backgroundDialog {
-    background-color: var(--editActiveBackground) !important;
+    background-color: var(--generalColorOpacity) !important;
     box-shadow: none !important;
     border: 1px solid var(--editIconColor) !important;
 }
@@ -93,6 +95,15 @@
     }
 }
 .wrapperThermostat {
+    max-width: 500px;
+    max-height: 500px;
+    position: relative;
+    margin: auto;
+    padding: 50px;
+    width: 100%;
+    height: calc(100% - 100px);
+}
+.wrapperVacuum {
     max-width: 500px;
     max-height: 500px;
     position: relative;
@@ -500,8 +511,12 @@
     align-items: center;
     justify-content: center;
     // overflow: hidden;
+    min-width: 170px;
+    min-height: 170px;
     pointer-events: none;
     .vacuumCleaner {
+        min-width: 170px;
+        min-height: 170px;
         display: flex;
         width: 64%;
         height: 64%;
@@ -606,6 +621,13 @@
             stroke: var(--editBorder);
         }
     }
+
+    .refVacuumAnimation {
+        border-radius: 65%;
+        overflow: hidden;
+        position: relative;
+    }
+
     .batteryAnimation {
         display: flex;
         width: 64%;
@@ -621,6 +643,10 @@
         overflow: hidden;
         position: absolute;
         stroke: none !important;
+        justify-content: center;
+        align-items: center;
+        min-width: 170px;
+        min-height: 170px;
     }
     .circle1 {
         width: 550px;
@@ -705,18 +731,20 @@
     }
 }
 .styleImageState {
-    max-width: 300px;
-    max-height: 300px;
+    display: flex;
+    width: 64%;
+    height: 64%;
     position: absolute;
-    top: 0;
+    border-radius: 15px;
     bottom: 0;
     left: 0;
     right: 0;
-    margin: auto;
-    width: 40vmin;
-    height: 40vmin;
-    border-radius: 15px;
-    object-fit: cover;
+    top: 0;
+    z-index: -1;
+    margin: auto !important;
+    object-fit: contain;
+    min-width: 170px;
+    min-height: 170px;
 }
 .infoBlockVacuum {
     display: flex;
@@ -956,8 +984,15 @@
     }
     .cameraPTZ {
         position: absolute;
-        bottom: 0;
+        bottom: 5px;
         width: 200px !important;
+    }
+    .textSliderPtz {
+        margin-bottom: 10px;
+        color: var(--generalColor);
+        svg{
+            margin-right: 5px;
+        }
     }
 }
 .wrapCamera {
@@ -979,8 +1014,110 @@
     height: 100%;
     border-radius: 10px;
 }
-@media screen and (max-width: 600px) {
+//dialog info 
+.wrapperList{
+
+}
+.devider{
+    opacity: 0.4;
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+    height: 1px;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgb(255, 255, 255) 13%, rgb(255, 255, 255) 83%, rgba(255, 255, 255, 0) 100%);
+}
+
+@mixin media($maxNumber) {
+    $resolution: $maxNumber;
+    @media screen and (max-width: $resolution) {
+        @content;
+    }
+    @media screen and (max-height: $resolution) {
+        @content;
+    }
+}
+@include media(600px) {
     .paper {
         max-height: 100% !important;
+    }
+    .dialogContent {
+        padding: 6px !important;
+    }
+}
+@include media(400px) {
+    .paper {
+        max-height: calc(100% - 0px) !important;
+    }
+    .dialogActions {
+        height: 0px;
+        padding: 2px !important;
+        position: absolute;
+        bottom: 28px;
+        right: 8px;
+        z-index: 1;
+        opacity: 0.7;
+    }
+}
+
+@include media(600px) {
+    .wrapperVacuum {
+        font-size: 2.2vmin !important;
+        * {
+            font-size: 2.2vmin !important;
+        }
+        .powerButton {
+            top: 0;
+            left: 0;
+        }
+        .infoBlockVacuum {
+            left: 0;
+            right: 0;
+            width: fit-content;
+            margin: auto;
+            bottom: 40px;
+        }
+        .stateVacuum {
+            left: 0;
+            right: 0;
+            width: fit-content;
+            margin: auto;
+            margin-left: 0 !important;
+            bottom: 66px;
+        }
+    }
+    .wrapperModalContentCamera {
+        font-size: 2.2vmin !important;
+        * {
+            font-size: 2.2vmin !important;
+        }
+        .cameraBrightness,
+        .cameraNightMode {
+            top: 60px;
+        }
+        .wrapCamera {
+            width: 65vmin;
+            height: 65vmin;
+            min-width: 200px;
+            min-height: 200px;
+        }
+    }
+}
+
+@include media(400px) {
+    .wrapperVacuum {
+        font-size: 10px !important;
+        * {
+            font-size: 10px !important;
+        }
+        .wrapperState {
+            left: 0;
+            top: 44px;
+        }
+    }
+
+    .wrapperModalContentCamera {
+        font-size: 10px !important;
+        * {
+            font-size: 10px !important;
+        }
     }
 }

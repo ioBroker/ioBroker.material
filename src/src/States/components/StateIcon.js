@@ -107,7 +107,12 @@ const STATES_NAME_ICONS = {
     'AUTOFOCUS': MdCenterFocusWeak,
     'AUTOWHITEBALANCE': GiRadialBalance,
     'NIGHTMODE': TiWeatherNight,
-    'PTZ': AiOutlineZoomIn
+    'PTZ': AiOutlineZoomIn,
+    'ELECTRIC_POWER': AiOutlineZoomIn,
+    'CURRENT': AiOutlineZoomIn,
+    'VOLTAGE': AiOutlineZoomIn,
+    'CONSUMPTION': AiOutlineZoomIn,
+    'FREQUENCY': AiOutlineZoomIn
 }
 
 class StateIcon extends Component {
