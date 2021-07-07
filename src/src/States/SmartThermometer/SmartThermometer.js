@@ -109,12 +109,12 @@ class SmartThermometer extends SmartGeneric {
         let customIcon;
 
         if (this.state.settings.useDefaultIcon) {
-            customIcon = (<IconAdapter className={clsGeneric.iconStyle} alt="icon" src={this.getDefaultIcon()} style={{ height: '100%', zIndex: 1 }} />);
+            customIcon = <IconAdapter className={clsGeneric.iconStyle} alt="icon" src={this.getDefaultIcon()} style={{ height: '100%', zIndex: 1 }} />;
         } else {
             if (this.state.settings.icon) {
-                customIcon = (<IconAdapter className={clsGeneric.iconStyle} alt="icon" src={this.state.settings.icon} style={{ height: '100%', zIndex: 1 }} />);
+                customIcon = <IconAdapter className={clsGeneric.iconStyle} alt="icon" src={this.state.settings.icon} style={{ height: '100%', zIndex: 1 }} />;
             } else {
-                customIcon = (<IconThermometer className={clsGeneric.iconStyle} />);
+                customIcon = <IconThermometer className={clsGeneric.iconStyle} />;
             }
         }
 
@@ -131,7 +131,7 @@ class SmartThermometer extends SmartGeneric {
             val = Math.round(val * 100) / 100;
         }
         return <div key={this.key + 'tile-secondary'} className={cls.tileTextSecond} title={this.secondary.title}>
-            {Icon ? (<Icon className={cls.iconSecondary} />) : null}
+            {Icon ? <Icon className={cls.iconSecondary} /> : null}
             <span className={cls.textSecondary}>{val + this.secondary.unit}</span>
         </div>;
     }

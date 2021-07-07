@@ -99,7 +99,7 @@ class SmartDialogInfo extends SmartDialogGeneric {
 
     generateContent() {
         const result = this.props.points.map((e, i) => {
-            const divider = i !== this.props.points.length - 1 ? (<ListItem key={e.id + '_div'} className={cls.devider} />) : null;
+            const divider = i !== this.props.points.length - 1 ? <ListItem key={e.id + '_div'} className={cls.devider} /> : null;
 
             let item;
 
@@ -107,26 +107,26 @@ class SmartDialogInfo extends SmartDialogGeneric {
                 if (e.common.type === 'boolean') {
                     // switch
                     if (e.common.read !== false) {
-                        item = (<BoolControl
+                        item = <BoolControl
                             key={this.props.dialogKey + '-' + e.id + '-control'}
                             label={e.name}
                             value={this.state[e.id]}
                             language={I18n.getLanguage()}
                             icon={e.icon}
                             onChange={() => this.handleToggle(e.id)}
-                        />);
+                        />;
                     } else { // button: read = false, write = true
-                        item = (<div key={this.props.dialogKey + '-' + e.id + '-control'}
+                        item = <div key={this.props.dialogKey + '-' + e.id + '-control'}
                             style={{ width: '100%', textAlign: 'center' }}>
                             <Button variant="contained" style={{ minWidth: '50%' }} onClick={event => this.handleButton(event, e.id)}>{e.name}</Button>
-                        </div>);
+                        </div>;
                     }
                 } else
                     if (e.common.type === 'number' && e.common.min !== undefined && e.common.max !== undefined && e.common.max - e.common.min < 5000) {
                         // slider
                         item = [
-                            (<Typography key={this.props.dialogKey + '-' + e.id + '-title'}>{e.name} - {this.state[e.id] ? this.state[e.id].val : '?'}{e.unit}</Typography>),
-                            (<Slider
+                            <Typography key={this.props.dialogKey + '-' + e.id + '-title'}>{e.name} - {this.state[e.id] ? this.state[e.id].val : '?'}{e.unit}</Typography>,
+                            <Slider
                                 classes={{}}
                                 key={this.props.dialogKey + '-' + e.id + '-control'}
                                 valueLabelDisplay="auto"
@@ -144,10 +144,10 @@ class SmartDialogInfo extends SmartDialogGeneric {
                                     </div>
                                 </div>
                             }*/
-                            />)];
+                            />];
                     } else {
                         // input field
-                        item = (<InputControl
+                        item = <InputControl
                             key={this.props.dialogKey + '-' + e.id + '-title'}
                             type={e.common && e.common.type === 'number' ? 'number' : 'text'}
                             icon={e.icon}
@@ -156,30 +156,28 @@ class SmartDialogInfo extends SmartDialogGeneric {
                             max={e.common.max}
                             value={this.state[e.id]}
                             onChange={value => this.handleValue(e.id, value)}
-                        />);
+                        />;
                     }
             } else {
                 if (e.common && e.common.type === 'boolean') {
-                    item = (<BoolControl
+                    item = <BoolControl
                         key={this.props.dialogKey + '-' + e.id + '-control'}
                         label={e.name}
                         value={this.state[e.id]}
                         language={I18n.getLanguage()}
-                    />);
+                    />;
                 } else {
                     let parts = e.id.split('.');
                     parts = parts.pop();
-                    item = (
-                        <InfoControl
-                            key={this.props.dialogKey + '-' + e.id + '-control'}
-                            label={e.name}
-                            unit={e.unit || ''}
-                            value={this.state[e.id]}
-                            icon={<StateIcon type={parts} />}
-                            chart={this.props.checkHistory(e.id) ? this.getCharts(e.id, React.createRef()) : null}
-                            language={I18n.getLanguage()}
-                        />
-                    );
+                    item = <InfoControl
+                        key={this.props.dialogKey + '-' + e.id + '-control'}
+                        label={e.name}
+                        unit={e.unit || ''}
+                        value={this.state[e.id]}
+                        icon={<StateIcon type={parts} />}
+                        chart={this.props.checkHistory(e.id) ? this.getCharts(e.id, React.createRef()) : null}
+                        language={I18n.getLanguage()}
+                    />;
                 }
             }
 

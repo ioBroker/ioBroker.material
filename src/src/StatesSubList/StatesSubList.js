@@ -303,40 +303,42 @@ class StatesSubList extends Component {
                         'blind',
                         'button',
                         'camera',
-                        'url',
-                        'image',
+                        'chart',
+                        'ct',
                         'dimmer',
                         'door',
                         'fireAlarm',
                         'floodAlarm',
                         'gate',
+                        'hue',
                         'humidity',
+                        'image',
                         'info',
-                        'vacuumCleaner',
                         'instance',
                         'light',
-                        'lock',
                         'location',
+                        'lock',
                         'media',
                         'motion',
                         'rgb',
-                        'ct',
                         'rgbSingle',
-                        'hue',
                         'slider',
                         'socket',
                         'temperature',
                         'thermostat',
+                        'url',
+                        'vacuumCleaner',
                         'valve',
                         'volume',
                         'volumeGroup',
-                        'window',
-                        'windowTilt',
+                        'warning',
                         'weatherCurrent',
                         'weatherForecast',
-                        'warning'
+                        'window',
+                        'windowTilt',
                     ]
                 };
+
                 let controls = this.detector.detect(options);
                 if (controls) {
                     // this is not lambda function because debug. control is undefined if used in lambda function
@@ -431,7 +433,7 @@ class StatesSubList extends Component {
                 )}
             </Draggable>;
         } else {
-            return (<div key={'item-' + item.id}>{item.control}</div>);
+            return <div key={'item-' + item.id}>{item.control}</div>;
         }
     }
 

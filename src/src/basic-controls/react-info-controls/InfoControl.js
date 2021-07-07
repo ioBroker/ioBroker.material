@@ -29,7 +29,7 @@ const InfoControl = ({ classes, label, value, onChange, language, icon, unit, ch
         if (typeof icon === 'object') {
             Icon = icon;
         } else {
-            Icon = (<img alt={label} src={icon} className={classes.icon} />);
+            Icon = <img alt={label} src={icon} className={classes.icon} />;
         }
     }
 
@@ -40,9 +40,9 @@ const InfoControl = ({ classes, label, value, onChange, language, icon, unit, ch
             {chart && <div>{chart}</div>}
             <span className={classes.valueUnit}>
                 <span className={classes.value}>{value && value.val !== undefined && value.val !== null ? value.val.toString() : '?'}</span>
-                {unit && (<span className={classes.unit}>{unit}</span>)}
+                {unit && <span className={classes.unit}>{unit}</span>}
             </span>
-            {value && value.lc && (<Moment className={classes.lc} date={value.lc} interval={15} fromNow locale={language} />)}
+            {value && value.lc && <Moment className={classes.lc} date={value.lc} interval={15} fromNow locale={language} />}
         </Typography>
     </div>;
 };

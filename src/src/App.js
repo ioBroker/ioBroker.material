@@ -896,19 +896,19 @@ class App extends GenericApp {
 
     getTitle() {
         if (!this.state.viewEnum || !this.objects) {
-            return (<span>ioBroker</span>);
+            return <span>ioBroker</span>;
         }
 
         if (this.state.viewEnum === Utils.INSTANCES) {
-            return (<span>{I18n.t('Menu ' + Utils.INSTANCES)}</span>);
+            return <span>{I18n.t('Menu ' + Utils.INSTANCES)}</span>;
         }
 
         if (this.state.width < 500) {
-            return (<span>{this.state.settings && this.state.settings.name}</span>);
+            return <span>{this.state.settings && this.state.settings.name}</span>;
         } else if (this.state.width < 1000) {
-            return (<span>{Utils.getObjectName(this.objects, this.state.masterPath, null, { language: I18n.getLanguage() })} / {this.state.settings && this.state.settings.name}</span>);
+            return <span>{Utils.getObjectName(this.objects, this.state.masterPath, null, { language: I18n.getLanguage() })} / {this.state.settings && this.state.settings.name}</span>;
         } else {
-            return (<span>{Utils.getObjectName(this.objects, this.state.masterPath, null, { language: I18n.getLanguage() })} / {this.state.settings && this.state.settings.name}</span>);
+            return <span>{Utils.getObjectName(this.objects, this.state.masterPath, null, { language: I18n.getLanguage() })} / {this.state.settings && this.state.settings.name}</span>;
         }
     }
 
@@ -1244,11 +1244,11 @@ class App extends GenericApp {
     getVersionControl() {
         if (!this.state.editMode) return null;
         if (this.state.actualVersion && (this.state.actualVersion !== VERSION || (this.urlVersion && this.state.actualVersion !== this.urlVersion))) {
-            return (<Button className={cls.iconSettings} onClick={() => this.onUpdateVersion()} variant="contained" size="small" title={I18n.t('Update to') + ' ' + this.state.actualVersion} color="secondary">
+            return <Button className={cls.iconSettings} onClick={() => this.onUpdateVersion()} variant="contained" size="small" title={I18n.t('Update to') + ' ' + this.state.actualVersion} color="secondary">
                 <IconRefresh style={{ marginRight: 5 }} /> {parseFloat(this.state.width) > 500 ? I18n.t('Update to') + ' ' + this.state.actualVersion : ''}
-            </Button>);
+            </Button>;
         } else {
-            return (<span className={cls.iconSettings} onClick={() => this.onUpdateVersion()}>{VERSION}</span>);
+            return <span className={cls.iconSettings} onClick={() => this.onUpdateVersion()}>{VERSION}</span>;
         }
     }
 
@@ -1289,7 +1289,7 @@ class App extends GenericApp {
     }
 
     getMenu(useBright) {
-        return (<Drawer
+        return <Drawer
             variant={this.state.menuFixed ? 'permanent' : 'temporary'}
             open={this.state.open}
             onClose={() => this.onMenuClose()}
@@ -1305,18 +1305,18 @@ class App extends GenericApp {
                     <IconClose width={Theme.iconSize} height={Theme.iconSize} />
                 </IconButton>
                 {this.state.connected && this.state.editMode ?
-                    (<IconButton onClick={this.editAppSettingsOpen}
+                    <IconButton onClick={this.editAppSettingsOpen}
                         className={cls.buttonMenu}
                     >
                         <IconSettings width={Theme.iconSize} height={Theme.iconSize} />
-                    </IconButton>) : null}
+                    </IconButton> : null}
                 <div style={{ flexGrow: 1 }} />
                 {this.state.width > 500 && !this.state.menuFixed ?
-                    (<IconButton onClick={this.onToggleLock}
+                    <IconButton onClick={this.onToggleLock}
                         className={cls.buttonMenu}
                     >
                         <IconLock width={Theme.iconSize} height={Theme.iconSize} />
-                    </IconButton>)
+                    </IconButton>
                     : null
                 }
             </Toolbar>
@@ -1335,7 +1335,7 @@ class App extends GenericApp {
                 onRootChanged={this.onRootChanged}
                 onSelectedItemChanged={this.onItemSelected}
             />
-        </Drawer>);
+        </Drawer>;
     }
 
     getButtonFullScreen(useBright) {

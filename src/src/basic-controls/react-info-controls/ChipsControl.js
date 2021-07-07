@@ -95,12 +95,12 @@ class ChipsControl extends Component {
             <div className={classes.label}>{label}</div>
             <div className={classes.chips}>
                 {
-                    this.state.chips.map(word => (<Chip
+                    this.state.chips.map(word => <Chip
                         key={word}
                         label={word}
                         onDelete={() => this.handleDelete(word)}
                         className={classes.chip}
-                    />))
+                    />)
                 }
             </div>
             <div className={classes.inputLine}>

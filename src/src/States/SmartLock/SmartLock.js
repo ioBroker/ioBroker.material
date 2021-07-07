@@ -104,13 +104,13 @@ class SmartLock extends SmartGeneric {
         let customIcon;
 
         if (this.state.settings.useDefaultIcon) {
-            customIcon = (<IconAdapter src={this.getDefaultIcon()} alt="icon" style={{height: '100%', zIndex: 1}}/>);
+            customIcon = <IconAdapter src={this.getDefaultIcon()} alt="icon" style={{height: '100%', zIndex: 1}}/>;
         } else {
             if (this.state.settings.icon) {
-                customIcon = (<IconAdapter alt="icon" src={isOn ? this.state.settings.icon : this.state.settings.iconOff || this.state.settings.icon} style={{height: '100%', zIndex: 1}}/>);
+                customIcon = <IconAdapter alt="icon" src={isOn ? this.state.settings.icon : this.state.settings.iconOff || this.state.settings.icon} style={{height: '100%', zIndex: 1}}/>;
             } else {
                 const Icon = isOn ? IconLockOpened : IconLockClosed;
-                customIcon = (<Icon className={clsGeneric.iconStyle}/>);
+                customIcon = <Icon className={clsGeneric.iconStyle}/>;
             }
         }
 
@@ -123,7 +123,7 @@ class SmartLock extends SmartGeneric {
             const isOn = this.state[this.id] === '1' || this.state[this.id] === 1 || this.state[this.id] === true || this.state[this.id] === 'true' || this.state[this.id] === 'on' || this.state[this.id] === 'ON';
             return isOn ? I18n.t(this.textOn) : I18n.t(this.textOff);
         } else {
-            return (<Moment style={{fontSize: 12}} date={this.lastChange} interval={15} fromNow locale={I18n.getLanguage()}/>);
+            return <Moment style={{fontSize: 12}} date={this.lastChange} interval={15} fromNow locale={I18n.getLanguage()}/>;
         }
     }
 
@@ -155,7 +155,7 @@ class SmartLock extends SmartGeneric {
     }
 
     getDialog() {
-        return (<Dialog
+        return <Dialog
             key={this.key + 'tile-dialog'}
             style={{zIndex: 2101}}
             open={this.state.dialog}
@@ -172,7 +172,7 @@ class SmartLock extends SmartGeneric {
                 <Button style={style.icon} title={I18n.t('Close lock')}  onClick={() => this.onAction('closeLock')} color="secondary" autoFocus><IconLockClosed/></Button>
                 {this.openId ? <Button style={style.icon} title={I18n.t('Open door')}  onClick={() => this.onAction('openDoor')}  color="secondary"><IconDoorOpened width={32} height={32}/></Button> : null}
             </DialogActions>
-        </Dialog>);
+        </Dialog>;
     }
 
     render() {

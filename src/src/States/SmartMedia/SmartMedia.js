@@ -295,9 +295,9 @@ class SmartMedia extends SmartGeneric {
             let customIcon;
 
             if (this.state.settings.useDefaultIcon) {
-                customIcon = (<IconAdapter alt="icon" src={this.getDefaultIcon()} style={{height: '100%'}}/>);
+                customIcon = <IconAdapter alt="icon" src={this.getDefaultIcon()} style={{height: '100%'}}/>;
             } else {
-                customIcon = (<IconNote className={clsGeneric.iconStyle}/>);
+                customIcon = <IconNote className={clsGeneric.iconStyle}/>;
             }
             return SmartGeneric.renderIcon(customIcon);
         }
@@ -329,7 +329,7 @@ class SmartMedia extends SmartGeneric {
     }
 
     getControlsDiv() {
-        return (<div key={this.key + 'tile-control'} style={style.control.div}>
+        return <div key={this.key + 'tile-control'} style={style.control.div}>
             <div style={style.control.name} title={this.state.settings.name}>{this.state.settings.name}</div>
            {this.ids.buttons.prev ? <Fab size="small" onClick={() => this.onButton(this.ids.buttons.prev)} style={style.control.prev} aria-label="prev"><IconPrev/></Fab> : null}
             <Fab
@@ -340,7 +340,7 @@ class SmartMedia extends SmartGeneric {
             </Fab>
             {this.state.settings.showStop && this.ids.buttons.stop ? <Fab size="small" onClick={() => this.onButton(this.ids.buttons.stop)} style={style.control.stop} aria-label="stop"><IconStop/></Fab> : null}
             {this.ids.buttons.next ? <Fab size="small" onClick={() => this.onButton(this.ids.buttons.next)} style={style.control.prev} aria-label="next"><IconNext/></Fab> : null}
-        </div>);
+        </div>;
     }
 
     getInfoDiv() {
@@ -353,7 +353,7 @@ class SmartMedia extends SmartGeneric {
 
     render() {
         return this.wrapContent([
-            (<div key={this.key + 'tile-icon'} className="tile-icon">{this.getIcon()}</div>),
+            <div key={this.key + 'tile-icon'} className="tile-icon">{this.getIcon()}</div>,
             this.getInfoDiv(),
             this.getControlsDiv(),
             this.state.showDialog ?

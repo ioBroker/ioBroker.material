@@ -334,31 +334,31 @@ class ImageSelector extends React.Component {
         //const _style = Object.assign({}, style.dropzone, this.state.imageStatus === 'accepted' ? style.dropzoneAccepted : (this.state.imageStatus === 'rejected' ? style.dropzoneRejected : {}));
         const className = this.props.classes.dropzone + ' ' + (this.state.imageStatus === 'accepted' ? this.props.classes.dropzoneAccepted : (this.state.imageStatus === 'rejected' ? this.props.classes.dropzoneRejected : ''));
 
-        return (<div style={{position: 'relative'}}>
+        return <div style={{position: 'relative'}}>
             <div key={'image-label'} style={style.label}>{this.props.label}</div>
             {this.state.image ? [
-                (<img key={'image-preview'}
+                <img key={'image-preview'}
                       onError={() => this.setState({errored: true})}
                       src={this.state.errored ? NoImage : (typeof this.state.image === 'object' ? this.state.image.preview : this.state.image)}
-                      alt={this.props.label || ''} style={{width: this.props.height || '100%', height: 'auto'}}/>),
-                (<Fab key={'image-delete'} onClick={this.removeImage} style={style.deleteIcon} size="small" aria-label="delete">
+                      alt={this.props.label || ''} style={{width: this.props.height || '100%', height: 'auto'}}/>,
+                <Fab key={'image-delete'} onClick={this.removeImage} style={style.deleteIcon} size="small" aria-label="delete">
                     <IconDelete />
-                </Fab>),
-                (<Fab key={'image-open'} onClick={() => this.setState({opened: !this.state.opened})}
+                </Fab>,
+                <Fab key={'image-open'} onClick={() => this.setState({opened: !this.state.opened})}
                          style={!this.state.opened ? Object.assign({}, style.openIcon, {bottom: -5}) : Object.assign({}, style.openIcon, {bottom: 120})}  aria-label="delete">
-                    {this.state.opened ? (<IconClose />) : (<IconOpen/>)}
-                </Fab>)
+                    {this.state.opened ? <IconClose /> : <IconOpen/>}
+                </Fab>
             ] : null}
             {this.state.opened &&
                 [
-                    ((this.state.images && this.state.images.length) || this.icons) && (<ImageList key={'image-list'} images={this.state.images || this.icons} onSelect={this.handleSelectImage}/>),
+                    ((this.state.images && this.state.images.length) || this.icons) && <ImageList key={'image-list'} images={this.state.images || this.icons} onSelect={this.handleSelectImage}/>,
                     ImageSelector.isMobile() && !this.props.icons ?
-                        (<Fab key={'image-camera'} onClick={() => this.onCamera()}
+                        <Fab key={'image-camera'} onClick={() => this.onCamera()}
                                   style={Object.assign({}, style.camIcon)} size="small" aria-label="camera">
                             <IconCam />
                             <input ref={this.inputRef} type="file" accept="image/*" onChange={files => this.handleDropImage(files)} capture style={{display: 'none'}}/>
-                        </Fab>) : null,
-                    (<Dropzone key={'image-drop'}
+                        </Fab> : null,
+                    <Dropzone key={'image-drop'}
                            maxSize={this.props.maxSize}
                            onDrop={files => this.handleDropImage(files)}
                            accept={this.props.accept || 'image/jpeg, image/png'}
@@ -399,10 +399,10 @@ class ImageSelector extends React.Component {
                                 }
                             }
                         }
-                    </Dropzone>)
+                    </Dropzone>
                 ]
             }
-            {this.state.cropOpened ? (<Dialog
+            {this.state.cropOpened ? <Dialog
                 key="crop-dialog"
                 open={true}
                 classes={{paper: this.props.classes['chart-dialog-paper']}}
@@ -427,8 +427,8 @@ class ImageSelector extends React.Component {
                     <Button variant="contained" onClick={() => this.onCropEnd(true)} color="primary" autoFocus>{I18n.t('Crop')}</Button>
                     <Button variant="contained" onClick={() => this.setState({cropOpened: false})} autoFocus>{I18n.t('Cancel')}</Button>
                 </DialogActions>
-            </Dialog>): null}
-        </div>);
+            </Dialog>: null}
+        </div>;
     }
 }
 

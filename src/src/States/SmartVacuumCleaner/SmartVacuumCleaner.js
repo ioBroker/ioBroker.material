@@ -76,7 +76,7 @@ class SmartVacuumCleaner extends SmartGeneric {
 
             state = this.channelInfo.states.find(state => state.id && state.name === 'MAP_URL');//
             this.mapUrlId = state?.id || `${parts}.MAP_URL`;
-            
+
             //Indicators
             state = this.channelInfo.states.find(state => state.id && state.name === 'FILTER');//
             this.filterId = state?.id || `${parts}.FILTER`;
@@ -147,12 +147,12 @@ class SmartVacuumCleaner extends SmartGeneric {
     getIcon() {
         let customIcon;
         if (this.state.settings.useDefaultIcon) {
-            customIcon = (<IconAdapter className={clsx(clsGeneric.iconStyle, this.state[this.powerId] && clsGeneric.activeIconStyle)} alt="icon" src={this.getDefaultIcon()} style={{ height: '100%', zIndex: 1 }} />);
+            customIcon = <IconAdapter className={clsx(clsGeneric.iconStyle, this.state[this.powerId] && clsGeneric.activeIconStyle)} alt="icon" src={this.getDefaultIcon()} style={{ height: '100%', zIndex: 1 }} />;
         } else {
             if (this.state.settings.icon) {
-                customIcon = (<IconAdapter className={clsx(clsGeneric.iconStyle, this.state[this.powerId] && clsGeneric.activeIconStyle)} alt="icon" src={this.state.settings.icon} style={{ height: '100%', zIndex: 1 }} />);
+                customIcon = <IconAdapter className={clsx(clsGeneric.iconStyle, this.state[this.powerId] && clsGeneric.activeIconStyle)} alt="icon" src={this.state.settings.icon} style={{ height: '100%', zIndex: 1 }} />;
             } else {
-                customIcon = (<Icon className={clsx(clsGeneric.iconStyle, this.state[this.powerId] && clsGeneric.activeIconStyle)} />);
+                customIcon = <Icon className={clsx(clsGeneric.iconStyle, this.state[this.powerId] && clsGeneric.activeIconStyle)} />;
             }
         }
         return SmartGeneric.renderIcon(customIcon, this.state.executing, this.state[this.powerId], this.onPowerToggle.bind(this));
@@ -247,23 +247,23 @@ class SmartVacuumCleaner extends SmartGeneric {
             }
         }
 
-        if (this.mapBase64Id === id || 
-            this.mapUrlId === id || 
-            this.waterId === id || 
-            this.wasteId === id || 
-            //this.filterId === id || 
-            this.imageId === id || 
-            this.batteryId === id || 
-            this.stateId === id || 
-            this.pauseId === id || 
-            this.workModeId === id || 
-            this.powerId === id || 
-            this.id === id || 
-            this.filterId === id || 
-            this.sensorId === id || 
-            this.brushId === id || 
-            this.sideBrushId === id || 
-            this.humidityId === id || 
+        if (this.mapBase64Id === id ||
+            this.mapUrlId === id ||
+            this.waterId === id ||
+            this.wasteId === id ||
+            //this.filterId === id ||
+            this.imageId === id ||
+            this.batteryId === id ||
+            this.stateId === id ||
+            this.pauseId === id ||
+            this.workModeId === id ||
+            this.powerId === id ||
+            this.id === id ||
+            this.filterId === id ||
+            this.sensorId === id ||
+            this.brushId === id ||
+            this.sideBrushId === id ||
+            this.humidityId === id ||
             this.modeId === id
         ) {
             newState[id] = typeof state.val !== 'number' ? state.val : parseFloat(state.val);

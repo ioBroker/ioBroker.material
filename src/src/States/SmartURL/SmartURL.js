@@ -268,16 +268,16 @@ class SmartURL extends SmartGeneric {
         if (this.state.settings.hideIcon) return null;
 
         if (this.state.settings.icon) {
-            customIcon = (<IconAdapter src={this.state.settings.icon} alt="icon" style={{height: '100%', zIndex: 1, color: 'white'}}/>);
+            customIcon = <IconAdapter src={this.state.settings.icon} alt="icon" style={{height: '100%', zIndex: 1, color: 'white'}}/>;
         } else {
-            customIcon = (<IconCam className={clsGeneric.iconStyle}/>);
+            customIcon = <IconCam className={clsGeneric.iconStyle}/>;
         }
         return SmartGeneric.renderIcon(customIcon);
     }
 
     getIFrameDiv() {
         if (!this.image && this.state.settings.background) {
-            return (<iframe key="iframe" title={this.state.settings ? this.state.settings.name || '' : ''} className={this.props.classes['iframe']} src={this.state.settings.background}/>)
+            return <iframe key="iframe" title={this.state.settings ? this.state.settings.name || '' : ''} className={this.props.classes['iframe']} src={this.state.settings.background}/>;
         } else {
             return null;
         }
@@ -289,9 +289,9 @@ class SmartURL extends SmartGeneric {
         let title = this.state.settings.title;
 
         if (title) {
-            return (<div key="title" className={classes['title-div']}>
+            return <div key="title" className={classes['title-div']}>
                 <div className={classes['title-text']}>{title}</div>
-            </div>);
+            </div>;
         } else {
             return null;
         }

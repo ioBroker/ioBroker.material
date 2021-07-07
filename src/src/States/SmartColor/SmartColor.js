@@ -426,12 +426,12 @@ class SmartColor extends SmartGeneric {
         let customIcon;
         const color = this.getColor();
         if (this.state.settings.useDefaultIcon) {
-            customIcon = (<IconAdapter style={color && this.state[this.ids.on?.id] ? { color } : null} className={clsx(clsGeneric.iconStyle, this.state[this.ids.on?.id] && clsGeneric.activeIconStyle)} src={this.getDefaultIcon()} alt="icon" style={{ height: '100%' }} />);
+            customIcon = <IconAdapter style={Object.assign({height: '100%'}, color && this.state[this.ids.on?.id] ? { color } : {})} className={clsx(clsGeneric.iconStyle, this.state[this.ids.on?.id] && clsGeneric.activeIconStyle)} src={this.getDefaultIcon()} alt="icon" />;
         } else {
             if (this.state.settings.icon) {
-                customIcon = (<IconAdapter style={color && this.state[this.ids.on?.id] ? { color } : null} className={clsx(clsGeneric.iconStyle, this.state[this.ids.on?.id] && clsGeneric.activeIconStyle)} src={this.state.settings.icon} alt="icon" style={{ height: '100%' }} />);
+                customIcon = <IconAdapter style={Object.assign({height: '100%'}, color && this.state[this.ids.on?.id] ? { color } : {})} className={clsx(clsGeneric.iconStyle, this.state[this.ids.on?.id] && clsGeneric.activeIconStyle)} src={this.state.settings.icon} alt="icon" />;
             } else {
-                customIcon = (<Icon style={color && this.state[this.ids.on?.id] ? { color } : null} className={clsx(clsGeneric.iconStyle, this.state[this.ids.on?.id] && clsGeneric.activeIconStyle)} />);
+                customIcon = <Icon style={color && this.state[this.ids.on?.id] ? { color } : null} className={clsx(clsGeneric.iconStyle, this.state[this.ids.on?.id] && clsGeneric.activeIconStyle)} />;
             }
         }
 

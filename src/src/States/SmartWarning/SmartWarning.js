@@ -199,9 +199,9 @@ class SmartWeatherForecast extends SmartGeneric {
         const classes = this.props.classes;
         if (!this.ids.icon || !this.state[this.ids.icon]) return null;
 
-        return (<div key="icon" className={classes['icon-div']} style={{
-            backgroundImage: 'url(' + this.state[this.ids.icon] + ')'
-        }} />);
+        return <div key="icon" className={classes['icon-div']} style={{
+            backgroundImage: `url(${this.state[this.ids.icon]})`
+        }} />;
     }
 
     getDateDiv() {
@@ -209,28 +209,28 @@ class SmartWeatherForecast extends SmartGeneric {
         let start = this.ids.start && this.state[this.ids.start];
         let end = this.ids.end && this.state[this.ids.end];
 
-        return (<div key="date" className={classes['date-div']}>
+        return <div key="date" className={classes['date-div']}>
             <div className={classes['date-start']}>{start}</div>
-            {end ? (<div className={classes['date-end']}>-{end}</div>) : null}
-        </div>);
+            {end ? <div className={classes['date-end']}>-{end}</div> : null}
+        </div>;
     }
 
     getTitleDiv() {
         const classes = this.props.classes;
         let title = this.ids.title && this.state[this.ids.title];
 
-        return (<div key="title" className={classes['title-div']}>
+        return <div key="title" className={classes['title-div']}>
             <div className={classes['title-text']}>{title}</div>
-        </div>);
+        </div>;
     }
 
     getInfoDiv() {
         const classes = this.props.classes;
         let info = this.ids.info && this.state[this.ids.info];
 
-        return (<div key="info" className={classes['info-div']}>
+        return <div key="info" className={classes['info-div']}>
             <div className={classes['info-text']}>{info}</div>
-        </div>);
+        </div>;
     }
 
     render() {

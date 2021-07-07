@@ -564,7 +564,7 @@ class SmartDialogColor extends SmartDialogGeneric {
             className={cls.buttonMode}
             onClick={this.onSwitchColorMode}
         >
-            {this.state.tempMode ? (<IconRGB />) : (<IconTemp />)}
+            {this.state.tempMode ? <IconRGB /> : <IconTemp />}
         </CustomFab>;
     }
 

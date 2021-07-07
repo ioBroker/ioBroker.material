@@ -224,13 +224,13 @@ class SmartState extends SmartGeneric {
         let customIcon;
 
         if (this.state.settings.useDefaultIcon) {
-            customIcon = (<IconAdapter src={this.getDefaultIcon()} alt="icon" style={{ height: '100%', zIndex: 1 }} />);
+            customIcon = <IconAdapter src={this.getDefaultIcon()} alt="icon" style={{ height: '100%', zIndex: 1 }} />;
         } else {
             if (this.state.settings.icon) {
-                customIcon = (<IconAdapter alt="icon" src={isOn ? this.state.settings.icon : this.state.settings.iconOff || this.state.settings.icon} style={{ height: '100%', zIndex: 1 }} />);
+                customIcon = <IconAdapter alt="icon" src={isOn ? this.state.settings.icon : this.state.settings.iconOff || this.state.settings.icon} style={{ height: '100%', zIndex: 1 }} />;
             } else {
                 const Icon = isOn ? this.iconOn : this.iconOff;
-                customIcon = (<Icon className={clsGeneric.iconStyle} />);
+                customIcon = <Icon className={clsGeneric.iconStyle} />;
             }
         }
         return SmartGeneric.renderIcon(customIcon);
@@ -242,7 +242,7 @@ class SmartState extends SmartGeneric {
             const isOn = this.state[this.id] === '1' || this.state[this.id] === 1 || this.state[this.id] === true || this.state[this.id] === 'true' || this.state[this.id] === 'on' || this.state[this.id] === 'ON';
             return <div className={clsx(isOn ? cls.textOn : cls.textOff)}>{isOn ? I18n.t(this.textOn) : I18n.t(this.textOff)}</div>;
         } else {
-            return (<Moment style={{ fontSize: 12 }} date={this.lastChange} interval={15} fromNow locale={I18n.getLanguage()} />);
+            return <Moment style={{ fontSize: 12 }} date={this.lastChange} interval={15} fromNow locale={I18n.getLanguage()} />;
         }
     }
 
@@ -255,10 +255,10 @@ class SmartState extends SmartGeneric {
         if (typeof val === 'number') {
             val = Math.round(val * 100) / 100;
         }
-        return (<div key={this.key + 'tile-secondary'} className="tile-text-second" style={Theme.tile.secondary.div} title={this.secondary.title}>
-            {Icon ? (<Icon style={Object.assign({}, Theme.tile.secondary.icon, this.secondary.iconStyle)} />) : null}
+        return <div key={this.key + 'tile-secondary'} className="tile-text-second" style={Theme.tile.secondary.div} title={this.secondary.title}>
+            {Icon ? <Icon style={Object.assign({}, Theme.tile.secondary.icon, this.secondary.iconStyle)} /> : null}
             <span style={Theme.tile.secondary.text}>{val + (this.secondary.unit ? ' ' + this.secondary.unit : '')}</span>
-        </div>);
+        </div>;
 
     }
 

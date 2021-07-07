@@ -242,10 +242,10 @@ class KnobControl extends Component {
         for (let i = 0; i < this.ticksNumber; i++) {
             const style = {transform: 'rotate(' + (this.angleStep * i + this.angleStart) + 'deg)'};
 
-            result.push((<div  key={'tickDiv' + i} className={this.props.classes.knob} style={style}>
+            result.push(<div  key={'tickDiv' + i} className={this.props.classes.knob} style={style}>
                 <div key={'tick' + i} className={this.props.classes.tick}
                      style={(i <= this.state.activeTick) ? activeTick : {}}/>
-            </div>));
+            </div>);
         }
         return result;
     }

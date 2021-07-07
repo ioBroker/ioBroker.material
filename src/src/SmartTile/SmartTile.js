@@ -344,7 +344,7 @@ class SmartTile extends Component {
                     break;
             }
         } else {
-            return this.wrapContent((<span className={cls.emptyBlock}>{I18n.t('Nothing here')}</span>));
+            return this.wrapContent(<span className={cls.emptyBlock}>{I18n.t('Nothing here')}</span>);
         }
 
         if (!Control) {

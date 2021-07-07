@@ -66,6 +66,7 @@
 
 ## Custom e-chart
 - or typedetector or rooms//
+- Add screenshot to Add-Widget dialog
 
 ## Camera
 - Auto detect and add widget//

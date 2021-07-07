@@ -617,9 +617,9 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric {
         if (tempMin !== null && tempMin !== undefined &&
             tempMax !== null && tempMax !== undefined && tempMin !== tempMax) {
             temp = [
-                (<span key="max" className={classes['dayTemp-temperatureMax']}>{tempMax}°</span>),
-                (<span key="mid"> / </span>),
-                (<span key="min" className={classes['dayTemp-temperatureMin']}>{tempMin}°</span>)
+                <span key="max" className={classes['dayTemp-temperatureMax']}>{tempMax}°</span>,
+                <span key="mid"> / </span>,
+                <span key="min" className={classes['dayTemp-temperatureMin']}>{tempMin}°</span>
             ];
         } else if (
             (tempMin !== null && tempMin !== undefined) ||
@@ -627,7 +627,7 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric {
             if (tempMin === null || tempMin === undefined) {
                 tempMin = tempMax;
             }
-            temp = (<span key="max" className={classes['dayTemp-temperatureMax']}>{tempMin}°</span>);
+            temp = <span key="max" className={classes['dayTemp-temperatureMax']}>{tempMin}°</span>;
         }
         let humidity = this.ids.days[d].humidity && this.state[this.ids.days[d].humidity];
 
@@ -644,17 +644,17 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric {
         if (!temp && !icon &&
             !humidity && humidity !== 0) return null;
         ///delete
-        return (<div key={'dayIcon' + d} className={cls.dayIconDiv}>
-            {icon ? (<img className={clsx(cls.dayIconWeather, classes['dayIcon-icon'])} src={getIcon(icon, true) || icon} alt={this.state[this.ids.days[d].state] || ''} />) : null}
+        return <div key={'dayIcon' + d} className={cls.dayIconDiv}>
+            {icon ? <img className={clsx(cls.dayIconWeather, classes['dayIcon-icon'])} src={getIcon(icon, true) || icon} alt={this.state[this.ids.days[d].state] || ''} /> : null}
             {/* <div className={cls.dayIconTemperature}>{22}°</div> */}
-            {temp !== null && temp !== undefined ? (<div className={cls.dayIconTemperature}>{temp}</div>) : null}
+            {temp !== null && temp !== undefined ? <div className={cls.dayIconTemperature}>{temp}</div> : null}
             {humidity !== null && humidity !== undefined ?
-                (<div key={'humidity' + d} className={cls.wrapperSpecialIcon}>
+                <div key={'humidity' + d} className={cls.wrapperSpecialIcon}>
                     <IconHydro className={cls.specialIcon} />
                     <span >{humidity}%</span>
-                </div>)
+                </div>
                 : null}
-        </div>);
+        </div>;
     }
 
     getDayDateDiv(d) {
@@ -666,9 +666,9 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric {
             date = Utils.date2string(now);
         }
 
-        return (<div key={'location' + d} className={cls.dayDateDiv}>
+        return <div key={'location' + d} className={cls.dayDateDiv}>
             <div className={cls.dayDateDate}>{date}</div>
-        </div>);
+        </div>;
     }
 
     getDayWindDiv(d) {
@@ -687,33 +687,32 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric {
             return null;
         }
 
-        return (<div key={'dayWind' + d} className={cls.dayStateDiv}>
-
+        return <div key={'dayWind' + d} className={cls.dayStateDiv}>
             {windChill !== null && windChill !== undefined ?
-                (<div key={'windChill' + d} className={cls.wrapperSpecialIcon}>
+                <div key={'windChill' + d} className={cls.wrapperSpecialIcon}>
                     {/* <span className={cls.todayStateName}>{I18n.t('Windchill')}: </span> */}
                     <IconAdapter src={iconWindChill} className={cls.specialIcon} />
                     <span className={classes['dayState-windChillValue']}>
                         {/* {windChill} */}
                         {windSpeed}{this.props.windUnit}
                     </span>
-                </div>)
+                </div>
                 : null}
 
             {(windDir !== null && windDir !== undefined) || (windSpeed !== null && windSpeed !== undefined) ?
-                (<div key={'wind' + d} className={cls.wrapperSpecialIcon}>
+                <div key={'wind' + d} className={cls.wrapperSpecialIcon}>
                     {/* <span key={'windTitle' + d} className={cls.todayStateName}>{I18n.t('Wind')}:</span> */}
                     <IconAdapter src={iconWind} className={cls.specialIcon} />
                     <div>
-                        {windIcon ? (<img className={classes['dayState-windIcon']} src={getIcon(windIcon, true) || windIcon} alt="state" />) : null}
-                        {windDir ? (<span className={classes['dayState-windDir']}>{windDir}</span>) : null}
-                        {windSpeed !== null && windSpeed !== undefined && !isNaN(windSpeed) ? (<span key={'daySpeed' + d} className={classes['dayState-windSpeed']}>{windSpeed}{this.props.windUnit}</span>) : null}
+                        {windIcon ? <img className={classes['dayState-windIcon']} src={getIcon(windIcon, true) || windIcon} alt="state" /> : null}
+                        {windDir ? <span className={classes['dayState-windDir']}>{windDir}</span> : null}
+                        {windSpeed !== null && windSpeed !== undefined && !isNaN(windSpeed) ? <span key={'daySpeed' + d} className={classes['dayState-windSpeed']}>{windSpeed}{this.props.windUnit}</span> : null}
                     </div>
-                </div>)
+                </div>
                 : null}
 
-            {/* {state ? (<div key={'state' + d} className={classes['dayState-state']}>{state}</div>) : null} */}
-        </div>);
+            {/* {state ? <div key={'state' + d} className={classes['dayState-state']}>{state}</div> : null} */}
+        </div>;
     }
 
     getDayTempDiv(d) {
@@ -727,22 +726,22 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric {
             return null;
         }
 
-        return (<div key={'dayTemp' + d} className={cls.dayTempDiv}>
+        return <div key={'dayTemp' + d} className={cls.dayTempDiv}>
             {precipitation !== null && precipitation !== undefined ?
-                (<div key={'precipitation' + d} className={cls.wrapperSpecialIcon}>
+                <div key={'precipitation' + d} className={cls.wrapperSpecialIcon}>
                     <IconAdapter src={iconPrecipitation} className={cls.specialIcon} />
                     <span className={classes['dayTemp-precipitationValue']}>
                         {precipitation}%</span>
-                </div>)
+                </div>
                 : null}
             {pressure !== null && pressure !== undefined ?
-                (<div key={'pressure' + d} className={cls.wrapperSpecialIcon}>
+                <div key={'pressure' + d} className={cls.wrapperSpecialIcon}>
                     <IconAdapter src={iconPressure} className={cls.specialIcon} />
                     <span className={classes['dayTemp-pressureValue']}>
                         {pressure}{this.props.pressureUnit}</span>
-                </div>)
+                </div>
                 : null}
-        </div>);
+        </div>;
     }
 
     getDayDiv(d) {
@@ -757,7 +756,7 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric {
             return null;
         }
 
-        return (<Paper key={'day' + d} className={cls.dayDiv}>{parts}</Paper>);
+        return <Paper key={'day' + d} className={cls.dayDiv}>{parts}</Paper>;
     }
 
     getCurrentIconDiv() {
@@ -768,24 +767,23 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric {
             temp = this.ids.current.temperature && this.state[this.ids.current.temperature];
         }
 
-        return (<div key="todayIcon" className={cls.currentIconDiv}>
+        return <div key="todayIcon" className={cls.currentIconDiv}>
             <img className={cls.currentIconIcon} src={getIcon(this.state[this.ids.current.icon], true) || this.state[this.ids.current.icon]} alt={this.state[this.ids.current.state] || ''} />
-            {temp !== null && temp !== undefined ? (<div className={cls.currentIconTemperature}>{temp}°</div>) : null}
-        </div>);
+            {temp !== null && temp !== undefined ? <div className={cls.currentIconTemperature}>{temp}°</div> : null}
+        </div>;
     }
 
     getCurrentDateLocationDiv() {
-        const classes = this.props.classes;
         let date = this.ids.current.date && this.state[this.ids.current.date];
         let location = this.props.settings.locationText;
         location = location || this.state.location;
         location = location || I18n.t('Weather');
         date = date || Utils.date2string(new Date());
 
-        return (<div key="location" className={cls.currentDateDiv}>
+        return <div key="location" className={cls.currentDateDiv}>
             <div className={cls.currentDateDate}>{date}</div>
             <div className={cls.currentDateLocation}>{location}</div>
-        </div>);
+        </div>;
     }
 
     getTodayWindDiv() {
@@ -803,33 +801,33 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric {
         }
 
         let state = this.ids.current.state && this.state[this.ids.current.state];
-        return (<div key="todayWind" className={cls.todayStateDiv}>
+        return <div key="todayWind" className={cls.todayStateDiv}>
 
             {windChill !== null && windChill !== undefined ?
-                (<div key="windChill" className={classes['todayState-windChill']}>
+                <div key="windChill" className={classes['todayState-windChill']}>
                     <span className={cls.todayStateName}>{I18n.t('Windchill')}: </span>
                     <span className={classes['todayState-windChillValue']}>{windChill}</span>
-                </div>)
+                </div>
                 : null}
 
             {(windDir !== null && windDir !== undefined) || (windSpeed !== null && windSpeed !== undefined) ?
-                (<div key="wind" className={classes['todayState-wind']}>
+                <div key="wind" className={classes['todayState-wind']}>
                     <span key="windTitle" className={cls.todayStateName}>{I18n.t('Wind')}:</span>
-                    {windIcon ? (<img className={classes['todayState-windIcon']} src={getIcon(windIcon, true) || windIcon} alt="state" />) : null}
-                    {windDir ? (<span className={classes['todayState-windDir']}>{windDir}</span>) : null}
-                    {windSpeed !== null && windSpeed !== undefined && !isNaN(windSpeed) ? (<span key="windSpeed" className={classes['todayState-windSpeed']}>{windSpeed}{this.props.windUnit}</span>) : null}
-                </div>)
+                    {windIcon ? <img className={classes['todayState-windIcon']} src={getIcon(windIcon, true) || windIcon} alt="state" /> : null}
+                    {windDir ? <span className={classes['todayState-windDir']}>{windDir}</span> : null}
+                    {windSpeed !== null && windSpeed !== undefined && !isNaN(windSpeed) ? <span key="windSpeed" className={classes['todayState-windSpeed']}>{windSpeed}{this.props.windUnit}</span> : null}
+                </div>
                 : null}
 
             {humidity || humidity === 0 ?
-                (<div key="humidity" className={classes['todayState-humidity']}>
+                <div key="humidity" className={classes['todayState-humidity']}>
                     <span className={cls.todayStateName}>{I18n.t('Humidity')}: </span>
                     <span className={classes['todayState-humidityValue']}>{humidity}%</span>
-                </div>)
+                </div>
                 : null}
 
-            {state ? (<div key="state" className={classes['todayState-state']}>{state}</div>) : null}
-        </div>);
+            {state ? <div key="state" className={classes['todayState-state']}>{state}</div> : null}
+        </div>;
     }
 
     getTodayTempDiv() {
@@ -843,33 +841,33 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric {
         if (tempMin !== null && tempMin !== undefined &&
             tempMax !== null && tempMax !== undefined) {
             temp = [
-                (<span key="max" className={cls.tempMax}>{tempMax}°</span>),
-                (<span key="mid"> / </span>),
-                (<span key="min" >{tempMin}°</span>)
+                <span key="max" className={cls.tempMax}>{tempMax}°</span>,
+                <span key="mid"> / </span>,
+                <span key="min" >{tempMin}°</span>
             ];
         }
 
-        return (<div key="todayTemp" className={cls.todayTempDiv}>
+        return <div key="todayTemp" className={cls.todayTempDiv}>
             {temp !== null && temp !== undefined ?
-                (<div key="temp" className={classes['todayTemp-temperature']}>
+                <div key="temp" className={classes['todayTemp-temperature']}>
                     <span className={classes['todayTemp-temperatureValue']}>{temp}</span>
-                </div>)
+                </div>
                 : null}
 
             {precipitation !== null && precipitation !== undefined ?
-                (<div key="precipitation" className={classes['todayTemp-precipitation']}>
+                <div key="precipitation" className={classes['todayTemp-precipitation']}>
                     <span key="windTitle" className={cls.todayStateName}>{I18n.t('Precip.')}:</span>
                     <span className={classes['todayTemp-precipitationValue']}>{precipitation}%</span>
-                </div>)
+                </div>
                 : null}
 
             {pressure !== null && pressure !== undefined ?
-                (<div key="pressure" className={classes['todayTemp-pressure']}>
+                <div key="pressure" className={classes['todayTemp-pressure']}>
                     <span key="windTitle" className={cls.todayStateName}>{I18n.t('Pressure')}:</span>
                     <span className={classes['todayTemp-pressureValue']}>{pressure}{this.props.pressureUnit}</span>
-                </div>)
+                </div>
                 : null}
-        </div>);
+        </div>;
     }
 
     getChartDiv() {
@@ -882,13 +880,13 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric {
                 chart += '&ts=' + Date.now();
             }
             return [
-                (<Paper key="chart" className={this.props.classes['chart-div']} onClick={() => this.setState({ chartOpened: true })}>
+                <Paper key="chart" className={this.props.classes['chart-div']} onClick={() => this.setState({ chartOpened: true })}>
                     <div className={classes['chart-header']}>{I18n.t('Chart')}</div>
                     <div className={classes['chart-img']} style={{
                         backgroundImage: 'url(' + this.state[this.ids.current.chart] + ')'
                     }} />
-                </Paper>),
-                this.state.chartOpened ? (<Dialog
+                </Paper>,
+                this.state.chartOpened ? <Dialog
                     key="chart-dialog"
                     open={true}
                     classes={{ paper: this.props.classes['chart-dialog-paper'] }}
@@ -909,7 +907,7 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric {
                             startIcon={<IconClose />}
                         >{I18n.t('Close')}</Button>
                     </DialogActions>
-                </Dialog>) : null];
+                </Dialog> : null];
         } else {
             return null;
         }
@@ -927,7 +925,7 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric {
         }
         days = days.filter(day => day);
         if (days.length) {
-            return (<div key="allDays" className={cls.daysDiv}>{days}</div>);
+            return <div key="allDays" className={cls.daysDiv}>{days}</div>;
         } else {
             return null;
         }

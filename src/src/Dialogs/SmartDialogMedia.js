@@ -550,9 +550,9 @@ class SmartDialogMedia extends SmartDialogGeneric  {
             return null;
         }
         return <div key={this.key + 'tile-time'} style={this.divs.time.style}>
-            {this.ids.control.elapsed ? (<div style={styles.time.elapsed}>{Utils.getTimeString(this.state[this.ids.control.elapsed])}</div>) : null}
+            {this.ids.control.elapsed ? <div style={styles.time.elapsed}>{Utils.getTimeString(this.state[this.ids.control.elapsed])}</div> : null}
             {this.getSlider()}
-            {this.ids.control.duration  ? (<div style={styles.time.duration}>{Utils.getTimeString(this.state[this.ids.control.duration])}</div>) : null}
+            {this.ids.control.duration ? <div style={styles.time.duration}>{Utils.getTimeString(this.state[this.ids.control.duration])}</div> : null}
         </div>;
     }
 

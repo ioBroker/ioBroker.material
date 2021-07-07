@@ -15,25 +15,26 @@
  **/
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import SmartTile from '../SmartTile/SmartTile';
-import { withStyles } from '@material-ui/core/styles';
+import clsx from 'clsx';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
+
+import { withStyles } from '@material-ui/core/styles';
+import Tooltip from '@material-ui/core/Tooltip';
+
 import { FaArrowsAltV as IconVertical } from 'react-icons/fa'
 import { MdAdd as IconAdd } from 'react-icons/md'
 import { FaArrowsAltH as IconHorizontal } from 'react-icons/fa'
-import Tooltip from '@material-ui/core/Tooltip';
 
-import Theme from '../theme';
 import Utils from '@iobroker/adapter-react/Components/Utils';
 import I18n from '@iobroker/adapter-react/i18n';
+
 import StatesSubList from '../StatesSubList/StatesSubList';
 import Clock from '../basic-controls/react-clock/Clock';
-import cls from './style.module.scss';
-import clsx from 'clsx';
 import SmartDialogWidget from '../Dialogs/SmartDialogWidget';
 import CustomFab from '../States/components/CustomFab';
 import EchartIframe from '../basic-controls/react-echart/EchartIframe';
-
+import SmartTile from '../SmartTile/SmartTile';
+import cls from './style.module.scss';
 
 const styles = {
     'drag-item': {
@@ -491,9 +492,8 @@ class StatesList extends Component {
 
         const settings = Utils.getSettings(this.props.objects[this.props.enumID], { user: this.props.user });
         settings.URLs = newState.customURLs;
-        this.props.onSaveSettings && this.props.onSaveSettings(this.props.enumID, settings, () => {
-            this.setState(newState);
-        });
+        this.props.onSaveSettings && this.props.onSaveSettings(this.props.enumID, settings, () =>
+            this.setState(newState));
     }
 
     onAddCustomWhether() {
@@ -521,14 +521,14 @@ class StatesList extends Component {
 
     // getAddButton() {
     //     if (this.props.editMode && this.props.enumID !== Utils.INSTANCES) {
-    //         return (<CustomFab key={this.props.dialogKey + '-add-button'}
+    //         return <CustomFab key={this.props.dialogKey + '-add-button'}
     //             size="small"
     //             title={I18n.t('Add custom URL')}
     //             style={{ fontSize: 24 }}
     //             onClick={() => this.onAddCustomURL()}
     //             className={this.props.classes['add-button']}>
     //             <IconAdd />
-    //         </CustomFab>);
+    //         </CustomFab>;
     //     } else {
     //         return null;
     //     }
@@ -553,14 +553,14 @@ class StatesList extends Component {
 
     // getAddButtonWhether() {
     //     if (this.props.editMode && this.props.enumID !== Utils.INSTANCES) {
-    //         return (<Fab
+    //         return <Fab
     //             size="small"
     //             title={I18n.t('Add custom Clock')}
     //             style={{ fontSize: 24 }}
     //             onClick={() => this.onAddCustomWhether()}
     //             className={cls.buttonWhether}>
     //             <IconAdd />
-    //         </Fab>);
+    //         </Fab>;
     //     } else {
     //         return null;
     //     }
@@ -732,7 +732,7 @@ class StatesList extends Component {
             const elem = columns.find(c => c.id === id);
             if (elem) {
                 if (elem.id === 'nothing') {
-                    return (<SmartTile
+                    return <SmartTile
                         key="nothing"
                         editMode={this.props.editMode}
                         user={this.props.user}
@@ -744,7 +744,7 @@ class StatesList extends Component {
                         objects={this.props.objects}
                         themeType={this.props.themeType}
                         themeName={this.props.themeName}
-                        id="" />);
+                        id="" />;
                 } else {
                     return this.wrapItem(elem.id, elem.items, isUseBright, i);
                 }

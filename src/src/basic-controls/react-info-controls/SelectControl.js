@@ -40,13 +40,13 @@ function getOptions(options, root, path) {
         if (typeof opt === 'object' && opt.hasOwnProperty('children')) {
             const subItems = getOptions(opt.children, root, path + opt.label + '-');
             if (subItems && subItems.length) {
-                root.push((<optgroup key={path + opt.label} label={opt.label}>{subItems}</optgroup>));
+                root.push(<optgroup key={path + opt.label} label={opt.label}>{subItems}</optgroup>);
             }
             return null;
         } else if (typeof opt === 'object') {
-            return (<option key={path + opt.value} value={opt.value}>{opt.label}</option>);
+            return <option key={path + opt.value} value={opt.value}>{opt.label}</option>;
         } else {
-            return (<option key={path + opt} value={opt}>{opt}</option>);
+            return <option key={path + opt} value={opt}>{opt}</option>;
         }
     });
     if (!path) {

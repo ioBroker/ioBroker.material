@@ -46,7 +46,7 @@ const BoolControl = ({classes, label, value, onChange, language, icon}) => {
             disabled={!onChange}
             onChange={() => onChange && onChange()}
         />
-        {value && value.lc ? (<Moment className={classes.lc} date={value.lc} interval={15} fromNow locale={language}/>) : null}
+        {value && value.lc ? <Moment className={classes.lc} date={value.lc} interval={15} fromNow locale={language}/> : null}
     </div>;
 };
 

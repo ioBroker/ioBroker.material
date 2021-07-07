@@ -12,9 +12,9 @@ const EchartIframe = ({
     return <div className={cls.echartWrapper}>
         {name && <div className={cls.name}>{name}</div>}
         {renderImg && <img className={cls.renderImg} src={echartsImg} alt='img'/>}
-        {id && id !== 'none'?<iframe className={cls.iframe} src={`${window.location.port === '3000' ? window.location.protocol + '//' + window.location.hostname + ':8082' : ''}/echarts/index.html?preset=${id}&noBG=true&compact=true`} />:
+        {id && id !== 'none' ? <iframe className={cls.iframe} src={`${window.location.port === '3000' ? window.location.protocol + '//' + window.location.hostname + ':8082' : ''}/echarts/index.html?preset=${id}&noBG=true&compact=true`} />:
         !renderImg && <div>{I18n.t('select id in settings')}</div>}
-    </div>
+    </div>;
 }
 
 EchartIframe.defaultProps = {

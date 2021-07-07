@@ -29,7 +29,7 @@ class SmartEchart extends SmartGeneric {
         if (this.channelInfo.states) {
             // debugger
             // GPS
-            let state = this.channelInfo.states.find(state => state && state.id && state.name === 'URL');
+            let state = this.channelInfo.states.find(state => state && state.id && (state.name === 'CHART' || state.name === 'URL'));
             if (state) {
                 this.id = state.id;
                 const settingsId = state.settingsId;
@@ -62,11 +62,11 @@ class SmartEchart extends SmartGeneric {
     applySettings(settings) {
         settings = settings || (this.state && this.state.settings);
         if (settings) {
-            if (settings.tempID && (!this.subscribes || this.subscribes.indexOf(settings.tempID) === -1)) {
+            if (settings.tempID && (!this.subscribes || !this.subscribes.includes(settings.tempID))) {
                 this.subscribes = this.subscribes || [];
                 this.subscribes.push(settings.tempID);
             }
-            if (settings.humidityID && (!this.subscribes || this.subscribes.indexOf(settings.humidityID) === -1)) {
+            if (settings.humidityID && (!this.subscribes || !this.subscribes.includes(settings.humidityID))) {
                 this.subscribes = this.subscribes || [];
                 this.subscribes.push(settings.humidityID);
             }
@@ -104,16 +104,14 @@ class SmartEchart extends SmartGeneric {
         let settings = super.getDialogSettings();
         // remove doubleSize from list
         settings = settings.filter((e, i) => {
-            if (e && (e.name === 'noAck'
+            return !(e && (e.name === 'noAck'
                 || e.name === 'colorOn'
                 || e.name === 'icon'
                 || e.name === 'background'
-            )) {
-                return false;
-            }
-            return true;
+            ));
         });
-        if(!this.id.startsWith('echarts.')){
+
+        if (!this.id.startsWith('echarts.')) {
             settings.unshift({
                 name: 'echartId',
                 value: this.state?.settings?.echartId || 'none',

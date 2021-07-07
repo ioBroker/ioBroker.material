@@ -493,10 +493,10 @@ class SmartWeatherForecast extends SmartGeneric {
         if (!temp && temp !== 0) {
             temp = this.ids.current.temperature && this.state[this.ids.current.temperature];
         }
-        return (<div key="todayIcon" className={classes['currentIcon-div']}>
+        return <div key="todayIcon" className={classes['currentIcon-div']}>
             <img className={classes['currentIcon-icon']} src={this.state[this.ids.current.icon]} alt={this.state[this.ids.current.state] || ''} />
-            {temp !== null && temp !== undefined ? (<div className={classes['currentIcon-temperature']}>{temp}°</div>) : null}
-        </div>);
+            {temp !== null && temp !== undefined ? <div className={classes['currentIcon-temperature']}>{temp}°</div> : null}
+        </div>;
     }
 
     getCurrentDateLocationDiv() {
@@ -508,10 +508,10 @@ class SmartWeatherForecast extends SmartGeneric {
         location = location || I18n.t('Weather');
         date = date || Utils.date2string(new Date());
 
-        return (<div key="location" className={classes['currentDate-div']}>
+        return <div key="location" className={classes['currentDate-div']}>
             <div className={classes['currentDate-date']}>{date},</div>
             <div className={classes['currentDate-location']}>{location}</div>
-        </div>);
+        </div>;
     }
 
     getTodayWindDiv() {
@@ -525,26 +525,26 @@ class SmartWeatherForecast extends SmartGeneric {
         let windIcon = this.ids.current.windIcon && this.state[this.ids.current.windIcon];
 
         let state = this.ids.current.state && this.state[this.ids.current.state];
-        return (<div key="todayWind" className={classes['todayState-div']}>
+        return <div key="todayWind" className={classes['todayState-div']}>
 
             {windChill !== null && windChill !== undefined ?
-                (<div key="windChill" className={classes['todayState-windChill']}>
+                <div key="windChill" className={classes['todayState-windChill']}>
                     <span className={classes['todayState-windChillTitle']}>{I18n.t('Windchill')}: </span>
                     <span className={classes['todayState-windChillValue']}>{windChill}</span>
-                </div>)
+                </div>
                 : null}
 
             {(windDir !== null && windDir !== undefined) || (windSpeed !== null && windSpeed !== undefined) ?
-                (<div key="wind" className={classes['todayState-wind']}>
-                    {!windIcon ? (<span key="windTitle" className={classes['todayState-windTitle']}>{I18n.t('Wind')}:</span>) : null}
-                    {windIcon ? (<img className={classes['todayState-windIcon']} src={windIcon} alt="state" />) : null}
-                    {windDir ? (<span className={classes['todayState-windDir']}>{windDir}</span>) : null}
-                    {windSpeed !== null && windSpeed !== undefined && !isNaN(windSpeed) ? (<span key="windSpeed" className={classes['todayState-windSpeed']}>{windSpeed}{this.windUnit}</span>) : null}
-                </div>)
+                <div key="wind" className={classes['todayState-wind']}>
+                    {!windIcon ? <span key="windTitle" className={classes['todayState-windTitle']}>{I18n.t('Wind')}:</span> : null}
+                    {windIcon ? <img className={classes['todayState-windIcon']} src={windIcon} alt="state" /> : null}
+                    {windDir ? <span className={classes['todayState-windDir']}>{windDir}</span> : null}
+                    {windSpeed !== null && windSpeed !== undefined && !isNaN(windSpeed) ? <span key="windSpeed" className={classes['todayState-windSpeed']}>{windSpeed}{this.windUnit}</span> : null}
+                </div>
                 : null}
 
-            {state ? (<div key="state" className={classes['todayState-state']}>{state}</div>) : null}
-        </div>);
+            {state ? <div key="state" className={classes['todayState-state']}>{state}</div> : null}
+        </div>;
     }
 
     getTodayTempDiv() {
@@ -557,9 +557,9 @@ class SmartWeatherForecast extends SmartGeneric {
         if (tempMin !== null && tempMin !== undefined &&
             tempMax !== null && tempMax !== undefined && tempMin !== tempMax) {
             temp = [
-                (<span key="max" className={classes['todayTemp-temperatureMax']}>{tempMax}°</span>),
-                (<span key="mid"> / </span>),
-                (<span key="min" className={classes['todayTemp-temperatureMin']}>{tempMin}°</span>)
+                <span key="max" className={classes['todayTemp-temperatureMax']}>{tempMax}°</span>,
+                <span key="mid"> / </span>,
+                <span key="min" className={classes['todayTemp-temperatureMin']}>{tempMin}°</span>
             ];
         } else if (
             (tempMin !== null && tempMin !== undefined) ||
@@ -567,27 +567,27 @@ class SmartWeatherForecast extends SmartGeneric {
             if (tempMin === null || tempMin === undefined) {
                 tempMin = tempMax;
             }
-            temp = (<span key="max" className={classes['todayTemp-temperatureMax']}>{tempMin}°</span>);
+            temp = <span key="max" className={classes['todayTemp-temperatureMax']}>{tempMin}°</span>;
         }
 
         if (!temp && !precipitation && precipitation !== 0) {
             return null;
         }
 
-        return (<div key="todayTemp" className={classes['todayTemp-div']}>
+        return <div key="todayTemp" className={classes['todayTemp-div']}>
             {temp !== null && temp !== undefined ?
-                (<div key="temp" className={classes['todayTemp-temperature']}>
+                <div key="temp" className={classes['todayTemp-temperature']}>
                     <span className={classes['todayTemp-temperatureValue']}>{temp}</span>
-                </div>)
+                </div>
                 : null}
 
             {precipitation !== null && precipitation !== undefined ?
-                (<div key="precipitation" className={classes['todayTemp-precipitation']}>
+                <div key="precipitation" className={classes['todayTemp-precipitation']}>
                     <span key="windTitle" className={classes['todayTemp-precipitationTitle']}>{I18n.t('Precip.')}:</span>
                     <span className={classes['todayTemp-precipitationValue']}>{precipitation}%</span>
-                </div>)
+                </div>
                 : null}
-        </div>);
+        </div>;
     }
 
     getChartData() {

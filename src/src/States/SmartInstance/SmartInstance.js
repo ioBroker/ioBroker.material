@@ -137,12 +137,12 @@ class SmartInstance extends SmartGeneric {
             color = '#f99';
         }
 
-        return (<div key={this.key + 'tile-secondary'} className="tile-text-second"
+        return <div key={this.key + 'tile-secondary'} className="tile-text-second"
             style={Theme.tile.secondary.button} title={text}>
             <IconButton className={clsx(this.props.objects[this.instanceId].common.enabled ? cls.textOn : cls.buttonOff)} variant="round" size="small" onClick={this.toggle} aria-label={text}>
                 <Icon />
             </IconButton>
-        </div>);
+        </div>;
     }
 
     render() {
@@ -160,16 +160,15 @@ class SmartInstance extends SmartGeneric {
         );
 
         return this.wrapContent([
-            (<div key={this.key + 'tile-icon'} className="tile-icon">{this.getIcon()}</div>),
+            <div key={this.key + 'tile-icon'} className="tile-icon">{this.getIcon()}</div>,
             this.getSecondaryDiv(),
-            (<div key={this.key + 'tile-text'}
+            <div key={this.key + 'tile-text'}
                 className="tile-text"
                 style={Object.assign({}, Theme.tile.tileText, { minHeight: 56 })}>
                 <div className="tile-channel-name" style={Object.assign({}, Theme.tile.tileName, this.state.nameStyle)}>{this.state.settings.name}</div>
                 <div className="tile-state-text" className={clsx(this.state[this.id] ? cls.textOn : cls.textOff)} >{this.getStateText()}</div>
-            </div>)
-        ]
-        );
+            </div>
+        ]);
     }
 }
 

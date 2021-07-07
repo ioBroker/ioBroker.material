@@ -175,10 +175,10 @@ class SmartVolume extends SmartGeneric {
         let customIcon;
 
         if (this.state.settings.useDefaultIcon) {
-            customIcon = (<IconAdapter alt="icon" src={this.getDefaultIcon()} style={{ height: '100%' }} />);
+            customIcon = <IconAdapter alt="icon" src={this.getDefaultIcon()} style={{ height: '100%' }} />;
         } else {
             if (this.state.settings.icon) {
-                customIcon = (<IconAdapter alt="icon" src={this.state.settings.icon} style={{ height: '100%' }} />);
+                customIcon = <IconAdapter alt="icon" src={this.state.settings.icon} style={{ height: '100%' }} />;
             } else {
                 let IconCustom;
                 const val = Math.round((this.state[this.actualId] - this.min) / (this.max - this.min) * 100);
@@ -189,7 +189,7 @@ class SmartVolume extends SmartGeneric {
                 } else {
                     IconCustom = IconVolume100;
                 }
-                customIcon = (<IconCustom className={clsx(clsGeneric.iconStyle, this.state[this.actualId] !== this.min && clsGeneric.activeIconStyle)} />);
+                customIcon = <IconCustom className={clsx(clsGeneric.iconStyle, this.state[this.actualId] !== this.min && clsGeneric.activeIconStyle)} />;
             }
         }
         // return (
@@ -219,13 +219,13 @@ class SmartVolume extends SmartGeneric {
             }
         }
         if (this.muteId && this.state[this.muteId]) {
-            result = [(<span key="value">{result}</span>), (<span key="muted" style={style.mute}>({I18n.t('muted')})</span>)];
+            result = [<span key="value">{result}</span>, <span key="muted" style={style.mute}>({I18n.t('muted')})</span>];
         }
         return result;
     }
 
     getAdditionalName() {
-        return this.group ? (<span style={style.groupText}>{I18n.t('group')}</span>) : null;
+        return this.group ? <span style={style.groupText}>{I18n.t('group')}</span> : null;
     }
 
     render() {

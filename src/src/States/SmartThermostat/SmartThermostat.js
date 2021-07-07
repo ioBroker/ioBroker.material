@@ -150,12 +150,12 @@ class SmartThermostat extends SmartGeneric {
     getIcon() {
         let customIcon;
         if (this.state.settings.useDefaultIcon) {
-            customIcon = (<IconAdapter className={clsx(clsGeneric.iconStyle, this.state[this.powerId] && clsGeneric.activeIconStyle)} alt="icon" src={this.getDefaultIcon()} style={{ height: '100%', zIndex: 1 }} />);
+            customIcon = <IconAdapter className={clsx(clsGeneric.iconStyle, this.state[this.powerId] && clsGeneric.activeIconStyle)} alt="icon" src={this.getDefaultIcon()} style={{ height: '100%', zIndex: 1 }} />;
         } else {
             if (this.state.settings.icon) {
-                customIcon = (<IconAdapter className={clsx(clsGeneric.iconStyle, this.state[this.powerId] && clsGeneric.activeIconStyle)} alt="icon" src={this.state.settings.icon} style={{ height: '100%', zIndex: 1 }} />);
+                customIcon = <IconAdapter className={clsx(clsGeneric.iconStyle, this.state[this.powerId] && clsGeneric.activeIconStyle)} alt="icon" src={this.state.settings.icon} style={{ height: '100%', zIndex: 1 }} />;
             } else {
-                customIcon = (<Icon className={clsx(clsGeneric.iconStyle, this.state[this.powerId] && clsGeneric.activeIconStyle)} />);
+                customIcon = <Icon className={clsx(clsGeneric.iconStyle, this.state[this.powerId] && clsGeneric.activeIconStyle)} />;
             }
         }
         return SmartGeneric.renderIcon(customIcon, this.state.executing, this.state[this.powerId], this.onPowerToggle.bind(this));
@@ -193,8 +193,8 @@ class SmartThermostat extends SmartGeneric {
                 title={I18n.t('Environment values')}>
                 {this.humidityId ?
                     [
-                        (<IconHydro key={this.key + 'tile-secondary-icon-1'} style={Object.assign({}, Theme.tile.secondary.icon)} />),
-                        (<span key={this.key + 'tile-secondary-text-1'} style={Theme.tile.secondary.text}>{this.formatValue(this.state[this.humidityId], this.humUnit)}</span>)
+                        <IconHydro key={this.key + 'tile-secondary-icon-1'} style={Object.assign({}, Theme.tile.secondary.icon)} />,
+                        <span key={this.key + 'tile-secondary-text-1'} style={Theme.tile.secondary.text}>{this.formatValue(this.state[this.humidityId], this.humUnit)}</span>
                     ] : null}
             </div>);
     }
@@ -209,9 +209,9 @@ class SmartThermostat extends SmartGeneric {
                 title={I18n.t('Environment values')}>
                 {this.actualId !== this.id ?
                     [
-                        (<IconThermometer key={this.key + 'tile-secondary-icon-0'} style={Object.assign({}, Theme.tile.secondary.icon)} />),
-                        (<span key={this.key + 'tile-secondary-text-0'} style={Theme.tile.secondary.text}>{this.formatValue(this.state[this.actualId])}</span>),
-                        (<br key={this.key + 'tile-secondary-br-0'} />)
+                        <IconThermometer key={this.key + 'tile-secondary-icon-0'} style={Object.assign({}, Theme.tile.secondary.icon)} />,
+                        <span key={this.key + 'tile-secondary-text-0'} style={Theme.tile.secondary.text}>{this.formatValue(this.state[this.actualId])}</span>,
+                        <br key={this.key + 'tile-secondary-br-0'} />
                     ] : null}
             </div>);
     }
