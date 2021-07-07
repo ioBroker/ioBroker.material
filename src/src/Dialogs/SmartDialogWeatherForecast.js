@@ -392,11 +392,11 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric {
             }
         }
         if (this.props.settings) {
-            if (this.props.settings.tempID && this.subscribes.indexOf(this.props.settings.tempID) === -1) {
+            if (this.props.settings.tempID && !this.subscribes.includes(this.props.settings.tempID)) {
                 this.subscribes = this.subscribes || [];
                 this.subscribes.push(this.props.settings.tempID);
             }
-            if (this.props.settings.humidityID && this.subscribes.indexOf(this.props.settings.humidityID) === -1) {
+            if (this.props.settings.humidityID && !this.subscribes.includes(this.props.settings.humidityID)) {
                 this.subscribes = this.subscribes || [];
                 this.subscribes.push(this.props.settings.humidityID);
             }
@@ -407,8 +407,8 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric {
         this.setMaxHeight();
 
         const enums = [];
-        this.props.enumNames.forEach(e => (enums.indexOf(e) === -1) && enums.push(e));
-        if (enums.indexOf(this.props.name) === -1) {
+        this.props.enumNames.forEach(e => !enums.includes(e) && enums.push(e));
+        if (!enums.includes(this.props.name)) {
             enums.push(this.props.name);
         }
         this.name = enums.join(' / ');
@@ -550,7 +550,7 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric {
                 this.collectTimer && clearTimeout(this.collectTimer);
                 this.collectTimer = setTimeout(() => this.onUpdateTimer(), 200);
             } else
-                if (this.ids.current.location && this.ids.current.location.indexOf(id) !== -1) {
+                if (this.ids.current.location && this.ids.current.location.includes(id)) {
                     this.collectState = this.collectState || {};
                     if (state?.val && state?.val.replace(/[,.-]/g, '').trim()) {
                         this.collectState.location = state?.val || '';
@@ -599,7 +599,7 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric {
             if (obj &&
                 obj.common &&
                 obj.common.role &&
-                obj.common.role.indexOf('forecast.0') !== -1) {
+                obj.common.role.includes('forecast.0')) {
                 tempMin = this.state[this.ids.current.temperatureMin];
             }
         }
@@ -609,7 +609,7 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric {
             if (obj &&
                 obj.common &&
                 obj.common.role &&
-                obj.common.role.indexOf('forecast.0') !== -1) {
+                obj.common.role.includes('forecast.0')) {
                 tempMax = this.state[this.ids.current.temperatureMax];
             }
         }
@@ -636,7 +636,7 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric {
             this.props.objects[this.ids.current.humidity] &&
             this.props.objects[this.ids.current.humidity].common &&
             this.props.objects[this.ids.current.humidity].common.role &&
-            this.props.objects[this.ids.current.humidity].common.role.indexOf('forecast.0') !== -1) {
+            this.props.objects[this.ids.current.humidity].common.role.includes('forecast.0')) {
             humidity = this.state[this.ids.current.humidity];
         }
         const icon = this.ids.days[d].icon && this.state[this.ids.days[d].icon];
@@ -874,7 +874,7 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric {
         const classes = this.props.classes;
         let chart = this.ids.current.chart && this.state[this.ids.current.chart];
         if (chart && chart.toLowerCase().match(/\.svg$|\.jpg$|\.jpeg$|\.gif$|\.png$/)) {
-            if (chart.indexOf('?') === -1) {
+            if (!chart.includes('?')) {
                 chart += '?ts=' + Date.now();
             } else {
                 chart += '&ts=' + Date.now();

@@ -94,7 +94,7 @@ class SmartDialogURL extends SmartDialogGeneric  {
     getUrl(url) {
         let _url;
         if (this.props.image && url) {
-            if (url.indexOf('?') !== -1) {
+            if (url.includes('?')) {
                 _url = url + '&ts=' + Date.now();
             } else {
                 _url = url + '?ts=' + Date.now();

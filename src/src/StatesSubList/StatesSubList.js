@@ -398,7 +398,7 @@ class StatesSubList extends Component {
                 this.order = result.map(c => c.id);
             } else {
                 // add missing IDs
-                result.forEach(c => this.order.indexOf(c.id) === -1 && this.order.push(c.id));
+                result.forEach(c => !this.order.includes(c.id) && this.order.push(c.id));
 
                 // remove deleted IDs
                 for (let i = this.order.length - 1; i >= 0; i--) {
@@ -418,7 +418,7 @@ class StatesSubList extends Component {
 
     wrapItem(item, index) {
         if (this.state.visibleChildren[item.id]) {
-            const key = 'item-' + this.state.enumID + '-' + this.state.enumSubID + '-' + item.id;
+            const key = `item-${this.state.enumID}-${this.state.enumSubID}-${item.id}`;
             return <Draggable key={key} draggableId={key} index={index}>
                 {(provided, snapshot) => (
                     <div

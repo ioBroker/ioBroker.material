@@ -657,12 +657,12 @@ class StatesList extends Component {
                     let column = [];
                     if (obj && obj.common && obj.common.members && obj.common.members.length) {
                         column = obj.common.members.filter(item => {
-                            return used.indexOf(item) === -1 && items.indexOf(item) !== -1;
+                            return !used.includes(item) && items.includes(item);
                         });
                     }
 
                     if (column.length) {
-                        this.props.debug && console.log('Add to ' + this.state.enumID + '_' + id + ': ' + column.join(', '));
+                        this.props.debug && console.log(`Add to ${this.state.enumID}_${id}: ${column.join(', ')}`);
                         columns.push({ id, items: column });
                         column.forEach(id => used.push(id));
                     }
@@ -708,7 +708,7 @@ class StatesList extends Component {
                 this.order = columns.map(c => c.id);
             } else {
                 // add missing IDs
-                columns.forEach(c => this.order.indexOf(c.id) === -1 && this.order.push(c.id));
+                columns.forEach(c => !this.order.includes(c.id) && this.order.push(c.id));
 
                 // remove deleted IDs
                 for (let i = this.order.length - 1; i >= 0; i--) {

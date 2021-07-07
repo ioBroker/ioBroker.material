@@ -79,11 +79,11 @@ class SmartCamera extends SmartGeneric {
     applySettings(settings) {
         settings = settings || (this.state && this.state.settings);
         if (settings) {
-            if (settings.tempID && (!this.subscribes || this.subscribes.indexOf(settings.tempID) === -1)) {
+            if (settings.tempID && (!this.subscribes || !this.subscribes.includes(settings.tempID))) {
                 this.subscribes = this.subscribes || [];
                 this.subscribes.push(settings.tempID);
             }
-            if (settings.humidityID && (!this.subscribes || this.subscribes.indexOf(settings.humidityID) === -1)) {
+            if (settings.humidityID && (!this.subscribes || !this.subscribes.includes(settings.humidityID))) {
                 this.subscribes = this.subscribes || [];
                 this.subscribes.push(settings.humidityID);
             }

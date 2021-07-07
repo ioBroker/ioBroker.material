@@ -637,7 +637,7 @@ class SmartGeneric extends Component {
         this.channelInfo.states.forEach(state => {
             if (state.indicator && state.id) {
                 const pos = state.id.lastIndexOf('.');
-                if (pos !== -1 && this.state.ignoreIndicators.indexOf(state.id.substring(pos + 1)) !== -1) {
+                if (pos !== -1 && this.state.ignoreIndicators.includes(state.id.substring(pos + 1))) {
                     return;
                 }
                 let Icon = state.icon;

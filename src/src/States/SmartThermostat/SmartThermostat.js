@@ -295,7 +295,7 @@ class SmartThermostat extends SmartGeneric {
                     onClose={this.onDialogClose}
                     ///Charts ids
                     humidityId={this.props.objects[this.humidityId] ? this.humidityId : null}
-                    actualId={this.props.objects[this.actualId] && this.actualId.indexOf('ACTUAL') !== -1 ? this.actualId : null}
+                    actualId={this.props.objects[this.actualId] && this.actualId.includes('ACTUAL') ? this.actualId : null}
                     setId={this.props.objects[this.id] ? this.id : null}
                     ///Modal Charts
                     openModal={id => dialogChartCallBack(() => { }, id, this.props.socket, this.props.themeType, this.props.systemConfig, this.props.allObjects, [])}

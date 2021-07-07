@@ -155,8 +155,8 @@ class SmartDialogWarning extends SmartDialogGeneric  {
         }
 
         const enums = [];
-        this.props.enumNames.forEach(e => (enums.indexOf(e) === -1) && enums.push(e));
-        if (enums.indexOf(this.props.name) === -1) {
+        this.props.enumNames.forEach(e => !enums.includes(e) && enums.push(e));
+        if (!enums.includes(this.props.name)) {
             enums.push(this.props.name);
         }
         this.name = enums.join(' / ');

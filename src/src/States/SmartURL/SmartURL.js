@@ -129,7 +129,7 @@ class SmartURL extends SmartGeneric {
         if (!this.customSettings.background) return;
 
         if (this.image) {
-            if (this.customSettings.background.indexOf('?') !== -1) {
+            if (this.customSettings.background.includes('?')) {
                 this.props.tile.setBackgroundImage(this.customSettings.background + '&ts=' + Date.now(), true, true);
             } else {
                 this.props.tile.setBackgroundImage(this.customSettings.background + '?ts=' + Date.now(), true, true);

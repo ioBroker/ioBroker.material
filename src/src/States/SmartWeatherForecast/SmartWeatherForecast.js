@@ -363,11 +363,11 @@ class SmartWeatherForecast extends SmartGeneric {
     applySettings(settings) {
         settings = settings || (this.state && this.state.settings);
         if (settings) {
-            if (settings.tempID && (!this.subscribes || this.subscribes.indexOf(settings.tempID) === -1)) {
+            if (settings.tempID && (!this.subscribes || !this.subscribes.includes(settings.tempID))) {
                 this.subscribes = this.subscribes || [];
                 this.subscribes.push(settings.tempID);
             }
-            if (settings.humidityID && (!this.subscribes || this.subscribes.indexOf(settings.humidityID) === -1)) {
+            if (settings.humidityID && (!this.subscribes || !this.subscribes.includes(settings.humidityID))) {
                 this.subscribes = this.subscribes || [];
                 this.subscribes.push(settings.humidityID);
             }
@@ -413,7 +413,7 @@ class SmartWeatherForecast extends SmartGeneric {
                 this.collectTimer && clearTimeout(this.collectTimer);
                 this.collectTimer = setTimeout(() => this.onUpdateTimer(), 200);
             } else
-                if (this.ids.current.location && this.ids.current.location.indexOf(id) !== -1) {
+                if (this.ids.current.location && this.ids.current.location.includes(id)) {
                     this.collectState = this.collectState || {};
                     if (state.val && state.val.replace(/[,.-]/g, '').trim()) {
                         this.collectState.location = state.val || '';

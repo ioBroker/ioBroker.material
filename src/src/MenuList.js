@@ -129,7 +129,7 @@ class MenuList extends Component {
                 while (parts.length > 2) {
                     parts.pop();
                     const parentId = parts.join('.');
-                    if (enums.indexOf(parentId) === -1) {
+                    if (!enums.includes(parentId)) {
                         enums.splice(index, 0, parentId);
                     }
                 }
