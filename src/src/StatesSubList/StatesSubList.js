@@ -410,10 +410,10 @@ class StatesSubList extends Component {
             }
         }
 
-        return this.order.map(function (id, i) {
+        return this.order.map((id, i) => {
             const c = result.find(c => c.id === id);
             return { control: this.createControl(SmartTile, c.id, c.control, i), id: c.id };
-        }.bind(this));
+        });
     }
 
     wrapItem(item, index) {

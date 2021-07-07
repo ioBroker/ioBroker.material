@@ -35,7 +35,7 @@
   - number: slider from min to max
 
 ## Location
-- (BF) Add persion icons to adapter-react
+- (BF) Add persons icons to adapter-react
 ## Volume
 
 ## Blinds
@@ -65,7 +65,6 @@
 ## Icons url
 
 ## Custom e-chart
-- or typedetector or rooms//
 - Add screenshot to Add-Widget dialog
 
 ## Camera
