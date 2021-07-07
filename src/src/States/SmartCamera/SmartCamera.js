@@ -53,6 +53,15 @@ class SmartCamera extends SmartGeneric {
 
             state = this.channelInfo.states.find(state => state.id && state.name === 'PTZ');
             this.ptzId = state?.id || `${parts}.PTZ`;
+
+            this.zoomMin = 0;
+            this.zoomMax = 100;
+            if (this.props.objects[this.ptzId]?.common?.min !== undefined) {
+                this.zoomMin = parseFloat(this.props.objects[this.ptzId].common.min);
+            }
+            if (this.props.objects[this.ptzId]?.common?.max !== undefined) {
+                this.zoomMax = parseFloat(this.props.objects[this.ptzId].common.max);
+            }
         }
 
         this.width = 2;
@@ -139,7 +148,7 @@ class SmartCamera extends SmartGeneric {
         this.props.onControl(id, !this.state[id], null, () => this.setState({ executing: false }));
     }
 
-    onPtzChange=(value)=>{
+    onPtzChange = (value) => {
         this.setState({ executing: true });
         this.props.onControl(this.ptzId, value, null, () => this.setState({ executing: false }));
     }
@@ -157,18 +166,20 @@ class SmartCamera extends SmartGeneric {
                     file={this.id ? this.state[this.id] : null}
 
                     autoFocus={this.autoFocusId ? this.state[this.autoFocusId] : null}
-                    onAutoFocusToggle={()=>this.onToggle(this.autoFocusId)}
+                    onAutoFocusToggle={() => this.onToggle(this.autoFocusId)}
 
                     autoWhiteBalance={this.autoWhiteBalanceId ? this.state[this.autoWhiteBalanceId] : null}
-                    onAutoWhiteBalanceToggle={()=>this.onToggle(this.autoWhiteBalanceId)}
+                    onAutoWhiteBalanceToggle={() => this.onToggle(this.autoWhiteBalanceId)}
 
                     brightness={this.brightnessId ? this.state[this.brightnessId] : null}
-                    onBrightnessToggle={()=>this.onToggle(this.brightnessId)}
+                    onBrightnessToggle={() => this.onToggle(this.brightnessId)}
 
                     nightMode={this.nightModeId ? this.state[this.nightModeId] : null}
-                    onNightModeToggle={()=>this.onToggle(this.nightModeId)}
+                    onNightModeToggle={() => this.onToggle(this.nightModeId)}
 
                     ptz={this.ptzId ? this.state[this.ptzId] : null}
+                    zoomMin={this.zoomMin || 0}
+                    zoomMax={this.zoomMax || 100}
                     onPtzChange={this.onPtzChange}
 
                     name={this.state.settings.name}

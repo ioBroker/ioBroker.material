@@ -1,10 +1,5 @@
 # General
 - copy from root the package.json into src/src in gulpfile
-- Apply/Ok/Save always on the right, Cancel is on the left
-- All dialog buttons are contained
-- Think about autoFocus
-- Use startIcon in buttons
-
 - Don't forget about comma/point in floats
 
 - Make translation for icon selector work
@@ -18,11 +13,15 @@
 - Show for known state types the icon: humidity, temperature, voltage, power, frequency, ...
 - Show small chart (if available), like in thermostat
 - Update dialog like in charts
+- Padding in info dialog left and right
 
 ## Control by state
 - Change page
 - Change thema
 - Open dialog
+- Router for dialogs: 
+    - http://localhost:3000/#rooms.Starter/channelID/
+    - http://localhost:3000/#rooms.Starter/channelID/chart
 
 ## Loading 
 ## Dimmer
@@ -60,7 +59,6 @@
 ## Weather current (as type detector)
 
 ## Vacuum
-- If (80 * states_count + 30) > screen_width => show select of states
 
 ## Motion
 

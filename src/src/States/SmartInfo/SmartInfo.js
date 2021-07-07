@@ -230,6 +230,7 @@ class SmartInfo extends SmartGeneric {
                 <Dialog
                     key={this.key + 'dialog'}
                     open={true}
+                    transparent
                     dialogKey={this.key + 'dialog'}
                     windowWidth={this.props.windowWidth}
                     points={this.infos}
@@ -239,6 +240,7 @@ class SmartInfo extends SmartGeneric {
                     onClose={this.onDialogClose}
                     objects={this.props.objects}
                     states={this.props.states}
+                    checkHistory={this.checkHistory}
                 /> : null
         ]);
     }

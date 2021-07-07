@@ -1,0 +1,26 @@
+.root {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    max-width: 440px;
+    // background-color: var(--editBackground) !important;
+    // border-radius: 4px !important;
+    * {
+        color: var(--generalColor) !important;
+    }
+    [class*="MuiInputLabel-shrink"] {
+        color: var(--generalColor) !important;
+    }
+    [class*="MuiInput-underline"] {
+        &:after {
+            border-bottom-color: var(--generalColor) !important;
+        }
+        &:before {
+            border-bottom-color: var(--generalColor) !important;
+        }
+        &:hover {
+            &:before {
+                border-bottom-color: var(--generalColor) !important;
+            }
+        }
+    }
+}

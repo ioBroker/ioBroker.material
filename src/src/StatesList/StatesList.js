@@ -281,7 +281,8 @@ class StatesList extends Component {
                         ref={provided.innerRef}
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
-                    ><StatesSubList
+                    >
+                        <StatesSubList
                             key={this.state.enumID + '_' + id + '-list'}
                             objects={this.props.objects}
                             user={this.props.user}
@@ -396,7 +397,7 @@ class StatesList extends Component {
                     onClick: this.onAddCustomURL
                 },
                 {
-                    component: <EchartIframe renderImg/>,
+                    component: <EchartIframe renderImg />,
                     name: I18n.t('Add custom e-chart'),
                     onClick: this.onAddCustomEchart
                 }
@@ -409,11 +410,6 @@ class StatesList extends Component {
         return <div style={style} ref={provided.innerRef} {...provided.droppableProps}>
             {columns}
             {provided.placeholder}
-            {this.getToggleDragButton()}
-            {/* {this.getAddButton()} */}
-            {this.getAddButtonWidgets()}
-            {this.getDialogWidget()}
-            {/* {this.getAddButtonWhether()} */}
         </div>;
     }
 
@@ -605,6 +601,9 @@ class StatesList extends Component {
                         {(provided, snapshot) => this.wrapAllItems(columns, provided, snapshot, style)}
                     </Droppable>
                 </DragDropContext>
+                {this.getToggleDragButton()}
+                {this.getAddButtonWidgets()}
+                {this.getDialogWidget()}
             </div>;
         } else {
             return <div className={cls.wrapperBlock} style={Object.assign({ marginLeft: this.props.marginLeft }, style)}>
@@ -686,7 +685,7 @@ class StatesList extends Component {
                     }
                     if (column.length && column.find(e => typeof e === 'string' && e.startsWith('echarts.'))) {
                         column = column.map(element => {
-                            if(typeof element === 'string' && element?.startsWith('echarts.')){
+                            if (typeof element === 'string' && element?.startsWith('echarts.')) {
                                 return { id: element, settingsId: this.state.enumID, name: 'Echart', type: 'e-chart' };
                             }
                             return element;

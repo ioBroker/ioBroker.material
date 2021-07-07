@@ -331,8 +331,6 @@ class SmartDialogGeneric extends Component {
                 option={option}
                 notMerge={true}
                 lazyUpdate={true}
-                //theme={ this.props.themeType === 'dark' ? 'dark' : '' }
-                //style={{ height: this.state.chartHeight + 'px', width: '100%' }}
                 opts={{ renderer: 'svg' }}
             />
         </div>;

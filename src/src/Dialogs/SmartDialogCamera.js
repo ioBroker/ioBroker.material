@@ -30,6 +30,8 @@ class SmartDialogCamera extends SmartDialogGeneric {
         this.state = {
             ptz: this.props.ptz
         }
+        this.tMin = this.props.zoomMin || 0;
+        this.tMax = this.props.zoomMax || 100;
     }
 
     onPtzChange = (value) => {
@@ -92,8 +94,8 @@ class SmartDialogCamera extends SmartDialogGeneric {
                         onChange={value => {
                             this.onPtzChange(value);
                         }}
-                        tMin={10}
-                        tMax={20}
+                        tMin={this.tMin}
+                        tMax={this.tMax}
                         minMax
                     />
                 </div>

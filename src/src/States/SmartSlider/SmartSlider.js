@@ -166,6 +166,7 @@ class SmartSlider extends SmartGeneric {
             this.state.showDialog ?
                 <Dialog
                     dialogKey={this.key + 'dialog'}
+                    transparent
                     open={true}
                     key={this.key + 'dialog'}
                     startValue={this.state[this.id]}

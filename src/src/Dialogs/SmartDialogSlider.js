@@ -342,7 +342,7 @@ class SmartDialogSlider extends SmartDialogGeneric {
             key={this.props.dialogKey + '-toggle-button'}
             active={this.props.startToggleValue}
             onClick={this.props.onToggle}
-            className={clsx('dimmer-button', this.props.classes.buttonStopStyle)}
+            className={clsx('dimmer-button', cls.buttonToggleStyle)}
         >
             <IconLamp />
         </CustomFab>;
@@ -357,7 +357,7 @@ class SmartDialogSlider extends SmartDialogGeneric {
             key={this.props.dialogKey + '-stop-button'}
             color="secondary"
             onClick={this.props.onStop}
-            className={clsx('dimmer-button', this.props.classes.buttonStopStyle)}>
+            className={clsx('dimmer-button', cls.buttonStopStyle)}>
             <IconStop />
         </CustomFab>;
     }

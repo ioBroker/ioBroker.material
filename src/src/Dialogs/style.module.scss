@@ -990,7 +990,7 @@
     .textSliderPtz {
         margin-bottom: 10px;
         color: var(--generalColor);
-        svg{
+        svg {
             margin-right: 5px;
         }
     }
@@ -1014,25 +1014,64 @@
     height: 100%;
     border-radius: 10px;
 }
-//dialog info 
-.wrapperList{
-
+//dialog info
+.wrapperList {
+    background-color: var(--generalColorOpacity) !important;
+    box-shadow: none !important;
+    border: 1px solid var(--editIconColor) !important;
+    padding: 10px;
+    border-radius: 6px;
+    height: calc(100% - 22px);
+    overflow-y: auto;
 }
-.devider{
+.devider {
     opacity: 0.4;
     padding-top: 0px !important;
     padding-bottom: 0px !important;
     height: 1px;
-    background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgb(255, 255, 255) 13%, rgb(255, 255, 255) 83%, rgba(255, 255, 255, 0) 100%);
+    background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0) 0%,
+        rgb(255, 255, 255) 13%,
+        rgb(255, 255, 255) 83%,
+        rgba(255, 255, 255, 0) 100%
+    );
 }
-
-@mixin media($maxNumber) {
+.knobControl {
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 12em;
+    height: 12em;
+    position: absolute;
+    background: var(--gradientAddBorder) !important;
+    border: none !important;
+}
+.buttonStopStyle {
+    left: calc(50% + 10em);
+    width: 2.5em !important;
+    bottom: 4.5em;
+    height: 2em !important;
+    position: absolute !important;
+}
+.buttonToggleStyle {
+    right: calc(50% + 10em);
+    width: 2.5em !important;
+    bottom: 4.5em;
+    height: 2em !important;
+    position: absolute !important;
+}
+@mixin media($maxNumber, $heightMedia: true, $widthMedia: true) {
     $resolution: $maxNumber;
-    @media screen and (max-width: $resolution) {
-        @content;
+    @if $heightMedia {
+        @media screen and (max-height: $resolution) {
+            @content;
+        }
     }
-    @media screen and (max-height: $resolution) {
-        @content;
+    @if $widthMedia {
+        @media screen and (max-width: $resolution) {
+            @content;
+        }
     }
 }
 @include media(600px) {
@@ -1118,6 +1157,205 @@
         font-size: 10px !important;
         * {
             font-size: 10px !important;
+        }
+    }
+    .wrapperSlider {
+        .buttonStopStyle {
+            top: 10px;
+            right: 10px;
+            left: auto;
+        }
+        .buttonToggleStyle {
+            top: 10px;
+            left: 10px;
+        }
+    }
+}
+//media thermostat
+@include media(600px) {
+    .wrapperThermostat {
+        .boostButton,
+        .powerButton,
+        .partyButton,
+        .swingGroup,
+        .modeButton,
+        .swingButton {
+            * {
+                font-size: 2.2vmin !important;
+            }
+        }
+        .boostButton {
+            margin-right: 0 !important;
+        }
+        .powerButton {
+            top: 0;
+            left: 0;
+            right: 0;
+            width: fit-content;
+            margin: auto;
+        }
+        .partyButton {
+            top: 0;
+        }
+        .modeButton {
+        }
+        .swingGroup,
+        .swingButton {
+            top: 40px;
+        }
+        .charts {
+        }
+    }
+    .wrapperModalContent {
+        .iframeName {
+            left: 8px;
+            top: 8px;
+            border-radius: 5px 0px 5px 0px;
+            opacity: 0.9;
+        }
+        .iframeModal {
+            font-size: 2.2vmin !important;
+            * {
+                font-size: 2.2vmin !important;
+            }
+        }
+    }
+}
+
+@include media(400px) {
+    .wrapperThermostat {
+        .boostButton,
+        .powerButton,
+        .partyButton,
+        .swingGroup,
+        .modeButton,
+        .swingButton {
+            * {
+                font-size: 10px !important;
+            }
+        }
+    }
+}
+
+@include media(700px) {
+    .wrapperBlockWeather {
+        .dayIconTemperature {
+            font-size: 2.7vmin;
+            left: 73%;
+            right: auto;
+        }
+        .dayIconDiv {
+            .wrapperSpecialIcon {
+                left: 90%;
+                position: absolute;
+                font-size: 1.8vmin;
+            }
+        }
+        .dayStateDiv {
+            .wrapperSpecialIcon {
+                font-size: 1.8vmin;
+            }
+        }
+    }
+}
+
+@include media(600px) {
+    .wrapperBlockWeather {
+        .dayDateDate {
+            font-size: 2.2vmin;
+        }
+        .dayIconWeather {
+            position: relative;
+            top: 10px;
+            right: 10px;
+        }
+        .dayIconTemperature {
+            left: 63%;
+        }
+        .dayIconDiv {
+            .wrapperSpecialIcon {
+                left: 80%;
+            }
+        }
+        .dayStateDiv {
+            .wrapperSpecialIcon {
+                font-size: 1.8vmin;
+            }
+        }
+    }
+}
+
+@include media(500px) {
+    .wrapperBlockWeather {
+        padding: 0;
+        .dayIconTemperature {
+            left: 53%;
+        }
+        .dayIconDiv {
+            .wrapperSpecialIcon {
+                left: 70%;
+            }
+        }
+    }
+}
+@include media(450px) {
+    .wrapperBlockWeather {
+        .currentIconTemperature {
+            top: -33px;
+        }
+        .dayIconWeather {
+            position: relative;
+            top: 10px;
+            right: 5px;
+            width: 80%;
+            height: 80%;
+        }
+        .dayIconTemperature {
+            left: 43%;
+        }
+        .dayIconDiv {
+            .wrapperSpecialIcon {
+                left: 60%;
+            }
+        }
+    }
+}
+
+@include media(400px) {
+    .wrapperBlockWeather {
+        .dayDiv {
+            height: 115px;
+        }
+        .dayIconWeather {
+            position: relative;
+            top: 10px;
+            right: 5px;
+            width: 80%;
+            height: 80%;
+        }
+        .dayIconTemperature {
+            left: 43%;
+        }
+        .dayIconDiv {
+            .wrapperSpecialIcon {
+                left: 16px;
+                top: -10px;
+            }
+        }
+    }
+}
+@media screen and (max-height: 450px),screen and (max-width: 700px) {
+    .wrapperBlockWeather {
+        .dayDiv {
+            height: calc(100% - 18px);
+        }
+        .daysDiv{
+            height: 50%;
+            max-height: 130px;
+        }
+        .currentDiv{
+            height: 50%;
+            max-height: 200px;
         }
     }
 }

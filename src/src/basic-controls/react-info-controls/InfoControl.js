@@ -19,10 +19,11 @@ import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import Moment from 'react-moment';
 import Theme from '../../theme';
+import cls from './style.module.scss';
 
 const styles = () => (Theme.dialog.info);
 
-const InfoControl = ({ classes, label, value, onChange, language, icon, unit }) => {
+const InfoControl = ({ classes, label, value, onChange, language, icon, unit, chart }) => {
     let Icon;
     if (icon) {
         if (typeof icon === 'object') {
@@ -36,6 +37,7 @@ const InfoControl = ({ classes, label, value, onChange, language, icon, unit }) 
 
         <Typography>
             <span className={classes.label}><div style={{ marginRight: 3, display: 'inherit' }}>{Icon}</div>{label}</span>
+            {chart && <div>{chart}</div>}
             <span className={classes.valueUnit}>
                 <span className={classes.value}>{value && value.val !== undefined && value.val !== null ? value.val.toString() : '?'}</span>
                 {unit && (<span className={classes.unit}>{unit}</span>)}

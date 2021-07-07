@@ -28,6 +28,7 @@ import cls from './style.module.scss';
 import { ButtonGroup, FormControl, FormLabel } from '@material-ui/core';
 import CustomButton from '../States/components/CustomButton';
 import StateIcon from '../States/components/StateIcon';
+import CustomMode from '../States/components/CustomMode';
 
 const styles = themes => ({
     dialogPaper: {
@@ -247,31 +248,24 @@ class SmartDialogThermostat extends SmartDialogGeneric {
                         {I18n.t('Party')}
                     </CustomButton> : null}
                 {this.props.modeValue !== null && this.props.modeValue !== undefined ?
-                    <FormControl className={cls.modeButton} component="fieldset">
-                        <FormLabel component="legend">{I18n.t('Mode')}</FormLabel>
-                        <ButtonGroup color="primary">
-                            {this.props.modeArray && Object.keys(this.props.modeArray).map(name => <CustomButton
-                                onClick={() => this.props.onMode(name)}
-                                active={String(this.props.modeValue) === name}
-                                key={name}>
-                                {this.props.modeArray[name]}
-                            </CustomButton>)}
-                        </ButtonGroup>
-                    </FormControl>
+                    <CustomMode
+                        label={I18n.t('Mode')}
+                        objs={this.props.modeArray}
+                        value={this.props.modeValue}
+                        onChange={this.props.onMode}
+                        className={cls.modeButton}
+                    />
                     : null}
                 {this.props.swingValue !== null && this.props.swingValue !== undefined ?
                     typeof this.props.swingValue === 'number' ?
-                        <FormControl className={cls.swingGroup} component="fieldset">
-                            <FormLabel component="legend">{I18n.t('Swing')}</FormLabel>
-                            <ButtonGroup color="primary" orientation="vertical">
-                                {this.props.swingArray && Object.keys(this.props.swingArray).map(name => <CustomButton
-                                    onClick={() => this.props.onSwing(name)}
-                                    active={String(this.props.swingValue) === name}
-                                    key={name}>
-                                    {this.props.swingArray[name]}
-                                </CustomButton>)}
-                            </ButtonGroup>
-                        </FormControl> : <CustomButton
+                        <CustomMode
+                            label={I18n.t('Swing')}
+                            objs={this.props.swingArray}
+                            value={this.props.swingValue}
+                            onChange={this.props.onSwing}
+                            className={cls.swingGroup}
+                            orientation="vertical"
+                        /> : <CustomButton
                             startIcon={<StateIcon type={'Swing'} />}
                             active={this.props.swingValue}
                             onClick={this.props.onSwing}

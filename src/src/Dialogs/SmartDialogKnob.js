@@ -145,7 +145,7 @@ class SmartDialogKnob extends SmartDialogGeneric {
     generateContent() {
         return <div className={cls.wrapperKnob}>
             <KnobControl
-                className={this.props.classes.knobControl}
+                className={cls.knobControl}
                 value={this.localValue2externalValue(this.state.value)}
                 onChange={this.onValueChanged}
                 parent={this}

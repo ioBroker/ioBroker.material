@@ -22,14 +22,15 @@ import I18n from '@iobroker/adapter-react/i18n';
 
 import SmartDialogGeneric from './SmartDialogGeneric';
 import cls from './style.module.scss';
-import { ButtonGroup, FormControl, FormLabel, Tooltip } from '@material-ui/core';
+import { Tooltip } from '@material-ui/core';
 import CustomButton from '../States/components/CustomButton';
 import StateIcon from '../States/components/StateIcon';
 import Icon from '../icons/RobotVacuum';
-import Circle1 from '../icons/Circle1';
+// import Circle1 from '../icons/Circle1';
 import Circle2 from '../icons/Circle2';
 import { IoMdBatteryCharging } from "react-icons/io";
 import IconAdapter from '@iobroker/adapter-react/Components/Icon';
+import CustomMode from '../States/components/CustomMode';
 
 const styles = themes => ({
     dialogPaper: {
@@ -87,9 +88,9 @@ class SmartDialogVacuumCleaner extends SmartDialogGeneric {
             this.max = props.startValue;
         }
 
-        this.refPanel = React.createRef();
-        this.refVacuum = React.createRef();
-        this.refVacuumAnimation = React.createRef();
+        this.refPanel = createRef();
+        this.refVacuum = createRef();
+        this.refVacuumAnimation = createRef();
         this.svgControl = null;
         this.componentReady();
 
@@ -121,7 +122,7 @@ class SmartDialogVacuumCleaner extends SmartDialogGeneric {
             this.subscribed = true;
             this.props.onCollectIds(this, this.subscribes, true);
         }
-        if(this.props.batteryVacuum !== null && this.props.batteryVacuum !== undefined){
+        if (this.props.batteryVacuum !== null && this.props.batteryVacuum !== undefined) {
             this.renderGenerateContent();
         }
     }
@@ -192,17 +193,13 @@ class SmartDialogVacuumCleaner extends SmartDialogGeneric {
                         {I18n.t('Party')}
                     </CustomButton> : null}
                 {this.props.modeValue !== null && this.props.modeValue !== undefined ?
-                    <FormControl className={cls.modeButton} component="fieldset">
-                        <FormLabel component="legend">{I18n.t('Mode')}</FormLabel>
-                        <ButtonGroup color="primary">
-                            {this.modeArray && Object.keys(this.modeArray).map(name => <CustomButton
-                                onClick={() => this.props.onMode(name)}
-                                active={String(this.props.modeValue) === name}
-                                key={name}>
-                                {this.modeArray[name]}
-                            </CustomButton>)}
-                        </ButtonGroup>
-                    </FormControl>
+                    <CustomMode
+                        label={I18n.t('Mode')}
+                        objs={this.modeArray}
+                        value={this.props.modeValue}
+                        onChange={this.props.onMode}
+                        className={cls.modeButton}
+                    />
                     : null}
                 {this.props.stateVacuum !== null && this.props.stateVacuum !== undefined ?
                     <div className={cls.stateVacuum}>
@@ -210,19 +207,15 @@ class SmartDialogVacuumCleaner extends SmartDialogGeneric {
                         <span>{this.props.stateVacuum}</span>
                     </div>
                     : null}
-
                 {this.props.workModeValue !== null && this.props.workModeValue !== undefined ?
-                    <FormControl className={cls.swingGroup} component="fieldset">
-                        <FormLabel component="legend">{I18n.t('Work mode')}</FormLabel>
-                        <ButtonGroup color="primary" orientation="vertical">
-                            {this.workModeArray && Object.keys(this.workModeArray).map(name => <CustomButton
-                                onClick={() => this.props.onWorkMode(name)}
-                                active={String(this.props.workModeValue) === name}
-                                key={name}>
-                                {this.workModeArray[name]}
-                            </CustomButton>)}
-                        </ButtonGroup>
-                    </FormControl> : null}
+                    <CustomMode
+                        label={I18n.t('Work mode')}
+                        objs={this.workModeArray}
+                        value={this.props.workModeValue}
+                        onChange={this.props.onWorkMode}
+                        className={cls.swingGroup}
+                        orientation="vertical"
+                    /> : null}
                 <div className={cls.wrapperState}>
                     {this.props.batteryVacuum !== null && this.props.batteryVacuum !== undefined &&
                         <Tooltip title={I18n.t('Battery level')}>

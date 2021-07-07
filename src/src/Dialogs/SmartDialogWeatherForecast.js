@@ -39,6 +39,7 @@ import iconPrecipitation from '../icons/precipitation.svg';
 import iconPressure from '../icons/pressure.svg';
 import iconWind from '../icons/wind.svg';
 import iconWindChill from '../icons/windChill.svg';
+import clsx from 'clsx/dist/clsx';
 
 const HEIGHT_HEADER = 64;
 const HEIGHT_CURRENT = 200;
@@ -644,7 +645,7 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric {
             !humidity && humidity !== 0) return null;
         ///delete
         return (<div key={'dayIcon' + d} className={cls.dayIconDiv}>
-            {icon ? (<img className={classes['dayIcon-icon']} src={getIcon(icon, true) || icon} alt={this.state[this.ids.days[d].state] || ''} />) : null}
+            {icon ? (<img className={clsx(cls.dayIconWeather, classes['dayIcon-icon'])} src={getIcon(icon, true) || icon} alt={this.state[this.ids.days[d].state] || ''} />) : null}
             {/* <div className={cls.dayIconTemperature}>{22}°</div> */}
             {temp !== null && temp !== undefined ? (<div className={cls.dayIconTemperature}>{temp}</div>) : null}
             {humidity !== null && humidity !== undefined ?
@@ -695,7 +696,7 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric {
                     <span className={classes['dayState-windChillValue']}>
                         {/* {windChill} */}
                         {windSpeed}{this.props.windUnit}
-                        </span>
+                    </span>
                 </div>)
                 : null}
 
@@ -748,7 +749,7 @@ class SmartDialogWeatherForecast extends SmartDialogGeneric {
         if (!this.ids.days[d]) return null;
         let parts = [
             this.getDayDateDiv(d),
-            this.getDayIconDiv(d),
+            this.getDayIconDiv(d),//
             this.getDayWindDiv(d),
             this.getDayTempDiv(d),
         ];

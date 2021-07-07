@@ -169,7 +169,6 @@ class SmartDialogInfo extends SmartDialogGeneric {
                 } else {
                     let parts = e.id.split('.');
                     parts = parts.pop();
-                    console.log(11223344, e, parts)
                     item = (
                         <InfoControl
                             key={this.props.dialogKey + '-' + e.id + '-control'}
@@ -177,6 +176,7 @@ class SmartDialogInfo extends SmartDialogGeneric {
                             unit={e.unit || ''}
                             value={this.state[e.id]}
                             icon={<StateIcon type={parts} />}
+                            chart={this.props.checkHistory(e.id) ? this.getCharts(e.id, React.createRef()) : null}
                             language={I18n.getLanguage()}
                         />
                     );
@@ -190,7 +190,9 @@ class SmartDialogInfo extends SmartDialogGeneric {
             }
         });
 
-        return <List key={this.props.points[0]?.id + '_info_list'} className={cls.wrapperList}>{result}</List>;
+        return <List key={this.props.points[0]?.id + '_info_list'} className={cls.wrapperList}>
+            <div>{result}</div>
+        </List>;
     }
 }
 
