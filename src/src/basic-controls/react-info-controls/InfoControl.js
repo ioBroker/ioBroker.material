@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import React from 'react';
+import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
@@ -23,7 +23,7 @@ import cls from './style.module.scss';
 
 const styles = () => (Theme.dialog.info);
 
-const InfoControl = ({ classes, label, value, onChange, language, icon, unit, chart }) => {
+const InfoControl = ({ classes, label, value, onChange, language, icon, unit, chart, id }) => {
     let Icon;
     if (icon) {
         if (typeof icon === 'object') {
@@ -32,19 +32,27 @@ const InfoControl = ({ classes, label, value, onChange, language, icon, unit, ch
             Icon = <img alt={label} src={icon} className={classes.icon} />;
         }
     }
-
-    return <div className={classes.line}>
-
-        <Typography>
-            <span className={classes.label}><div style={{ marginRight: 3, display: 'inherit' }}>{Icon}</div>{label}</span>
-            {chart && <div>{chart}</div>}
-            <span className={classes.valueUnit}>
-                <span className={classes.value}>{value && value.val !== undefined && value.val !== null ? value.val.toString() : '?'}</span>
-                {unit && <span className={classes.unit}>{unit}</span>}
-            </span>
+    const ref = useRef();
+    return <Typography component="div" className={cls.line}>
+        <span className={cls.label}>
+            <div style={{ marginRight: 3, display: 'inherit' }}>
+                {Icon}
+            </div>
+            {label}
+        </span>
+        {chart && chart(id, ref, {
+            root: cls.rootChartStyle,
+            name: cls.nameChartStyle,
+            chart: cls.chartStyle,
+        })}
+        <span className={cls.displayFlex}>
+            <div className={cls.valueUnit}>
+            <span className={classes.value}>{value && value.val !== undefined && value.val !== null ? value.val.toString() : '?'}</span>
+            {unit && <span className={cls.unit}>{unit}</span>}
+            </div>
             {value && value.lc && <Moment className={classes.lc} date={value.lc} interval={15} fromNow locale={language} />}
-        </Typography>
-    </div>;
+        </span>
+    </Typography>;
 };
 
 InfoControl.propTypes = {

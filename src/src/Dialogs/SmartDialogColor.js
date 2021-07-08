@@ -347,7 +347,7 @@ class SmartDialogColor extends SmartDialogGeneric {
     }
 
     componentDidMount() {
-        document.getElementById('root').className = `blurDialogOpen`;
+        // document.getElementById('root').className = `blurDialogOpen`;
         if (this.subscribes && !this.subscribed) {
             this.subscribed = true;
             this.props.onCollectIds(this, this.subscribes, true);

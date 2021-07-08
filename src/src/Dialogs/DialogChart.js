@@ -9,11 +9,14 @@ import { makeStyles, ThemeProvider } from '@material-ui/core';
 import cls from './style.module.scss';
 
 import IconClose from '@material-ui/icons/Close';
+import { MdClose as CloseIcon } from 'react-icons/md';
 
 import I18n from '@iobroker/adapter-react/i18n';
 import theme from '@iobroker/adapter-react/Theme';
 import Utils from '@iobroker/adapter-react/Components/Utils';
 import ObjectChart from '../States/components/ObjectChart';
+import CustomFab from '../States/components/CustomFab';
+import clsx from 'clsx/dist/clsx';
 
 
 
@@ -27,8 +30,6 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex'
     },
     paper: {
-        // maxWidth: 960,
-        width: 'calc(100% - 64px)',
         height: '100%'
     },
     overflowHidden: {
@@ -83,7 +84,7 @@ const DialogChart = ({ cb, id, socket, themeType, systemConfig, allObjects, ids 
     const [open, setOpen] = useState(true);
     const [arrayObjects, setArrayObjects] = useState([]);
     useEffect(() => {
-        document.getElementById('root').className = `blurDialogOpen`;
+        // document.getElementById('root').className = `blurDialogOpen`;
     }, [])
     useEffect(() => {
         if (ids.length) {
@@ -95,7 +96,7 @@ const DialogChart = ({ cb, id, socket, themeType, systemConfig, allObjects, ids 
     const onClose = () => {
         cb()
         setOpen(false);
-        document.getElementById('root').className = ``;
+        // document.getElementById('root').className = ``;
         if (node) {
             document.body.removeChild(node);
             node = null;
@@ -107,15 +108,26 @@ const DialogChart = ({ cb, id, socket, themeType, systemConfig, allObjects, ids 
             maxWidth="lg"
             fullWidth
             // fullScreen
-            onClose={onClose}
-            open={open}
             classes={{
-                paper: classes.paper,
+                paper: clsx(cls.backgroundDialog, classes.paper, cls.chartPaper),
                 root: cls.rootDialog
             }}
+            BackdropProps={{
+                classes: {
+                    root: cls.filterBlur,
+                },
+            }}
+            onClose={onClose}
+            open={open}
         >
             {/* <DialogTitle>{I18n.t('Add state %s', `sssss`)}</DialogTitle> */}
-            <DialogContent className={classes.overflowHidden} dividers>
+            <DialogContent
+                className={clsx(cls.dialogContent,cls.dialogContentChart)}
+                classes={{
+                    root: cls.overflowHidden,
+                }}
+                // className={classes.overflowHidden} 
+                dividers>
                 <div className={classes.showDialog}>
                     {allObjects[id] && <ObjectChart
                         t={I18n.t}
@@ -133,16 +145,10 @@ const DialogChart = ({ cb, id, socket, themeType, systemConfig, allObjects, ids 
                     />}
                 </div>
             </DialogContent>
-            <DialogActions>
-                <Button
-                    autoFocus
-                    variant="contained"
-                    onClick={() => onClose()}
-                    startIcon={<IconClose />}
-                    color="default"
-                >
-                    {I18n.t('Close')}
-                </Button>
+            <DialogActions className={cls.dialogActions}>
+                <CustomFab onClick={() => onClose()} size="small" autoFocus>
+                    <CloseIcon />{/*I18n.t('Close')*/}
+                </CustomFab>
             </DialogActions>
         </Dialog>
     </ThemeProvider>;

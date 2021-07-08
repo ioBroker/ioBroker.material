@@ -2,8 +2,8 @@
     margin: 8px;
     padding: 12x;
     transition: all 0.2s ease 0s;
-    width: 128px;
-    height: 128px;
+    width: var(--widthBlockPX);
+    height: var(--widthBlockPX);
     font-size: 16px;
     font-weight: bold;
     box-sizing: border-box;
@@ -14,6 +14,9 @@
     // box-shadow: rgb(0 0 0 / 20%) 0px 3px 5px -1px, rgb(0 0 0 / 14%) 0px 6px 10px 0px, rgb(0 0 0 / 12%) 0px 1px 18px 0px;
     background: var(--itemBlockBorder);
     border-radius: 16px !important;
+}
+.doubleSmartTitle{
+    width: calc(var(--widthBlockPX) * 2 + 16px);
 }
 .wrapperContent {
     color: var(--silverColor);

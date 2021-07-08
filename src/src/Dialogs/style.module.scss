@@ -7,6 +7,10 @@
     margin: 0 !important;
     max-width: 700px !important;
 }
+.filterBlur{
+    backdrop-filter: blur(8px);
+    transition: backdrop-filter 0.5s;
+}
 .dialogContent {
     position: relative;
 }
@@ -21,6 +25,21 @@
 }
 .rootDialog {
     background-color: rgb(0 0 0 / 30%);
+    * {
+        &::-webkit-scrollbar-thumb {
+            background: var(--generalColor);
+        }
+
+        &::-webkit-scrollbar-track {
+            background: var(--borderBottomHeader);
+        }
+
+        // For Internet Explorer
+        & {
+            scrollbar-face-color: var(--generalColor);
+            scrollbar-track-color: var(--borderBottomHeader);
+        }
+    }
     // filter: blur(50px);
 }
 .displayFlex {
@@ -1019,7 +1038,7 @@
     background-color: var(--generalColorOpacity) !important;
     box-shadow: none !important;
     border: 1px solid var(--editIconColor) !important;
-    padding: 10px;
+    padding: 10px !important;
     border-radius: 6px;
     height: calc(100% - 22px);
     overflow-y: auto;
@@ -1078,6 +1097,11 @@
     .paper {
         max-height: 100% !important;
     }
+    .backgroundDialog{
+        max-height: calc(100% - 4px) !important;
+        width: 100% !important;
+        margin: 0 !important;
+    }
     .dialogContent {
         padding: 6px !important;
     }
@@ -1094,6 +1118,12 @@
         right: 8px;
         z-index: 1;
         opacity: 0.7;
+    }
+    .widgetWrapperItem{
+        margin: 10px 0;
+    }
+    .wrapperWidgets{
+        padding: 9px;
     }
 }
 
@@ -1357,5 +1387,16 @@
             height: 50%;
             max-height: 200px;
         }
+    }
+}
+
+@include media(950px,false) {
+    .chartPaper {
+        max-height: calc(100% - 4px) !important;
+        margin: 0 !important;
+        width: 100% !important;
+    }
+    .dialogContentChart {
+        padding: 6px !important;
     }
 }

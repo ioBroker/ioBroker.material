@@ -39,7 +39,8 @@ const Clock = ({
     hour12Params,
     dayOfWeekParams,
     date,
-    doubleSize
+    doubleSize,
+    noBigClock
 }) => {
     let subscribeTime = null;
 
@@ -71,8 +72,8 @@ const Clock = ({
         }
     }, [hour12Params, secondsParams]);
 
-    return <div className={cls.clockWrapper}>
-        <div className={clsx(cls.clock, !secondsParams && cls.noWidth, !doubleSize && cls.clockSmall )}>
+    return <div className={clsx(cls.clockWrapper, noBigClock && cls.noBigClock)}>
+        <div className={clsx(cls.clock, !secondsParams && cls.noWidth, !doubleSize && cls.clockSmall)}>
             <div className={clsx(cls.timeWrapper, !doubleSize && cls.timeWrapperSmall, !secondsParams && !doubleSize && cls.clockBigSmall)}>
                 {time}{hour12Params && <span>pm</span>}
             </div>
@@ -88,7 +89,8 @@ Clock.defaultProps = {
     hour12Params: false,
     dayOfWeekParams: false,
     date: false,
-    doubleSize: false
+    doubleSize: false,
+    noBigClock: false
 };
 
 export default Clock;

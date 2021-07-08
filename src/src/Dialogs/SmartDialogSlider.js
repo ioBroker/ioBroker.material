@@ -195,7 +195,7 @@ class SmartDialogSlider extends SmartDialogGeneric {
     }
 
     componentWillUnmount(){
-        document.getElementById('root').className = ``;
+        // document.getElementById('root').className = ``;
         document.getElementById('dimmerId')?.removeEventListener('mousemove', this.onMouseMove, { passive: false, capture: true });
         document.getElementById('dimmerId')?.removeEventListener('mouseup', this.onMouseUp, { passive: false, capture: true });
         document.removeEventListener('mouseup', this.onMouseUp, { passive: false, capture: true });

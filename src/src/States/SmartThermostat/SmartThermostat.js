@@ -289,6 +289,7 @@ class SmartThermostat extends SmartGeneric {
                     //........
                     min={this.min}
                     max={this.max}
+                    objects={this.props.objects}
                     themeName={this.props.themeName}
                     socket={this.props.socket}
                     onValueChange={this.setValue}
@@ -298,7 +299,7 @@ class SmartThermostat extends SmartGeneric {
                     actualId={this.props.objects[this.actualId] && this.actualId.includes('ACTUAL') ? this.actualId : null}
                     setId={this.props.objects[this.id] ? this.id : null}
                     ///Modal Charts
-                    openModal={id => dialogChartCallBack(() => { }, id, this.props.socket, this.props.themeType, this.props.systemConfig, this.props.allObjects, [])}
+                    openModal={id => dialogChartCallBack(() => { }, id, this.props.socket, this.props.themeType, this.props.systemConfig, this.props.allObjects, [id])}
                 /> : null
         ]);
     }

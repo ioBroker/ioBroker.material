@@ -133,7 +133,7 @@ class SmartDialogURL extends SmartDialogGeneric  {
     }
 
     componentDidMount () {
-        document.getElementById('root').className = `blurDialogOpen`;
+        // document.getElementById('root').className = `blurDialogOpen`;
         if (this.interval) {
             clearInterval(this.interval);
             this.interval = null;
@@ -144,7 +144,7 @@ class SmartDialogURL extends SmartDialogGeneric  {
     }
 
     componentWillUnmount() {
-        document.getElementById('root').className = ``;
+        // document.getElementById('root').className = ``;
         if (this.interval) {
             clearInterval(this.interval);
             this.interval = null;

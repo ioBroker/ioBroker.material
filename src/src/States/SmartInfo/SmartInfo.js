@@ -28,6 +28,7 @@ import IconAdapter from '@iobroker/adapter-react/Components/Icon';
 import cls from './style.module.scss';
 import clsGeneric from '../style.module.scss';
 import clsx from 'clsx/dist/clsx';
+import { dialogChartCallBack } from '../../Dialogs/DialogChart';
 
 const invisibleDefaultRoles = [
     /^timer.off$/,
@@ -70,7 +71,7 @@ class SmartInfo extends SmartGeneric {
             }
 
             if (infoIDs[1]) {
-                this.secondary = {id: infoIDs[1]};
+                this.secondary = { id: infoIDs[1] };
             }
             const name = this.getObjectNameCh();
             this.infos = infoIDs.map(id => SmartInfo.getObjectAttributes(this.props.objects, id, name));
@@ -238,9 +239,13 @@ class SmartInfo extends SmartGeneric {
                     name={this.state.settings.name}
                     onValueChange={this.setValue}
                     onClose={this.onDialogClose}
-                    objects={this.props.objects}
                     states={this.props.states}
                     checkHistory={this.checkHistory}
+                    ///Modal Charts
+                    objects={this.props.objects}
+                    themeName={this.props.themeName}
+                    socket={this.props.socket}
+                    openModal={id => dialogChartCallBack(() => { }, id, this.props.socket, this.props.themeType, this.props.systemConfig, this.props.allObjects, [id])}
                 /> : null
         ]);
     }

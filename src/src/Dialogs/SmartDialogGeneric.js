@@ -99,7 +99,7 @@ class SmartDialogGeneric extends Component {
     }
 
     componentDidMount() {
-        document.getElementById('root').className = `blurDialogOpen`;
+        // document.getElementById('root').className = `blurDialogOpen`;
         // move this element to the top of body
         /*if (this.refModal) {
             this.savedParent = this.refModal.current.parentElement;
@@ -118,7 +118,7 @@ class SmartDialogGeneric extends Component {
     }
 
     componentWillUnmount() {
-        document.getElementById('root').className = ``;
+        // document.getElementById('root').className = ``;
         //this.refModal && this.savedParent.appendChild(this.refModal.current);
 
         if (this.props.onCollectIds && this.subscribed) {
@@ -236,7 +236,7 @@ class SmartDialogGeneric extends Component {
                 }
 
                 // sort
-                chart.sort((a, b) => a.ts > b.ts ? 1 : (a.ts < b.ts ? -1 : 0));
+                chart.sort((a, b) => a.ts > b.ts ? 1 : (a.ts < b.ts ? -1 : 0)).filter(e => e.val !== null);
                 ref.current?.getEchartsInstance().setOption({
                     series: [{
                         data: this.convertData(chart)
@@ -252,11 +252,27 @@ class SmartDialogGeneric extends Component {
     }
 
     convertData = (values) => {
-        return values.map(e => e.val !== null ? e.val : 0);
+        return values.map(e => {
+            if (e.val !== null) {
+                if (typeof e.val === 'boolean') {
+                    if (e.val) {
+                        return 1;
+                    }
+                    return 0;
+                }
+                return e.val;
+            }
+            return 0;
+        });
     }
 
 
-    getCharts = (id, ref) => {
+    getCharts = (id, ref, classes) => {
+        //style
+        //classes.root 
+        //classes.name 
+        //classes.chart 
+        //
         if (!this.firstGetCharts[id]) {
             this.firstGetCharts[id] = true;
             this.readHistory(id, ref);
@@ -313,7 +329,8 @@ class SmartDialogGeneric extends Component {
                 {
                     silent: true,
                     type: 'line',
-                    smooth: true,
+                    smooth: this.props.objects[id] && this.props.objects[id]?.common?.type ? this.props.objects[id]?.common?.type === 'number' : true,
+                    step: this.props.objects[id] && this.props.objects[id]?.common?.type ? this.props.objects[id]?.common?.type !== 'number' : false,
                     showSymbol: false,
                     color: style.color,
                     areaStyle: { color: style.areaStyle },
@@ -322,10 +339,10 @@ class SmartDialogGeneric extends Component {
             ]
         };
         let parts = id.split('.');
-        return <div key={id} onClick={this.props.openModal ? () => this.props.openModal(id) : null} className={cls.wrapperCharts}>
-            <div className={cls.chartsName}>{parts.pop()}</div>
+        return <div key={id} onClick={this.props.openModal ? () => this.props.openModal(id) : null} className={clsx(cls.wrapperCharts, classes?.root)}>
+            <div className={clsx(cls.chartsName, classes?.name)}>{parts.pop()}</div>
             <ReactEchartsCore
-                className={cls.styleCharts}
+                className={clsx(cls.styleCharts, classes?.chart)}
                 ref={ref}
                 echarts={echarts}
                 option={option}
@@ -366,14 +383,20 @@ class SmartDialogGeneric extends Component {
             fullWidth
             scroll="paper"
             classes={{
-                paper: clsx('dialog-paper', this.props.classes?.dialogPaper, this.props.transparent ? cls.paper:cls.backgroundDialog),
+                paper: clsx('dialog-paper', this.props.classes?.dialogPaper, this.props.transparent ? cls.paper : cls.backgroundDialog),
                 root: cls.rootDialog
             }}
             open={true}
+            BackdropProps={{
+                classes: {
+                  root: cls.filterBlur,
+                },
+              }}
             disableBackdropClick={!!this.getButtons}
             onClose={() => this.onClose()}
             maxWidth="sm"
         >
+            <div className={cls.filterBlur}/>
             {this.getHeader ? <DialogTitle>{this.getHeader()}</DialogTitle> : null}
             <DialogContent
                 className={cls.dialogContent}

@@ -1,5 +1,23 @@
-.root {
-    background: var(--editBackground) !important;
+.toolbarTimeGrid{
+    border: 1px solid var(--editIconColor);
+    border-radius: 4px;
+    margin: 0 5px;
+    padding: 0 5px;
+}
+.wrapperMenu{
+    margin: 4px 0;
+}
+.toolbarDate{
+    width: 160px;
+    margin-top: 9px;
+}
+.toolbarTime{
+    width: 100px;
+    margin-top: 9px;
+    margin-left: 8px;
+}
+.toolbarDate,.toolbarTime{
+    // background: var(--editBackground) !important;
     border-radius: 5px;
     // margin-top: 0 !important;
     // margin-bottom: 0 !important;
@@ -9,8 +27,14 @@
     [class*="MuiInputLabel-shrink"] {
         color: var(--generalColor) !important;
     }
+    [class*="Mui-disabled"]{
+        opacity: 0.5;
+    }
     [class*="MuiInput-underline"] {
         :after {
+            border-bottom-color: var(--generalColor) !important;
+        }
+        &:before {
             border-bottom-color: var(--generalColor) !important;
         }
     }
@@ -36,7 +60,26 @@
         }
     }
 }
-
-.icon {
-
+@mixin media($maxNumber, $heightMedia: true, $widthMedia: true) {
+    $resolution: $maxNumber;
+    @if $heightMedia {
+        @media screen and (max-height: $resolution) {
+            @content;
+        }
+    }
+    @if $widthMedia {
+        @media screen and (max-width: $resolution) {
+            @content;
+        }
+    }
+}
+@include media(600px,false) {
+    .toolbarTimeGrid {
+        display: none;
+    }
+}
+@include media(450px,true,false) {
+    .toolbarTimeGrid {
+        display: none;
+    }
 }

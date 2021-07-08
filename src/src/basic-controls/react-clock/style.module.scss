@@ -1,33 +1,48 @@
+$check: (
+    --widthBlock: 1,
+);
+@mixin spread-map($map: ()) {
+    @each $key, $value in $map {
+        #{$key}: $value;
+    }
+}
+
+.noBigClock {
+    @include spread-map($check);
+}
+
+@function size($sizeItem) {
+    @return calc(#{$sizeItem} * var(--widthBlock));
+}
+
 .clockWrapper {
-    // background: #c0c0c094;
-    // margin: 10px;
     padding: 10px;
     border-radius: 7px;
-    width: calc(200px * var(--widthBlock));
+    width: size(200px);
     flex-direction: column;
     display: flex;
     justify-content: center;
 }
 .timeWrapper {
     color: var(--silverColor);
-    font-size: calc(55px * var(--widthBlock));
+    font-size: size(55px);
     font-weight: bold;
     font-family: inherit;
     // margin-bottom: 6px;
     position: relative;
     span {
-        font-size: calc(13px * var(--widthBlock));
+        font-size: size(13px);
         position: absolute;
         top: -7px;
         right: -15px;
     }
 }
 .timeWrapperSmall {
-    font-size: calc(22px * var(--widthBlock));
+    font-size: size(22px);
     span {
         right: -11px;
         top: -8px;
-        font-size: calc(9px * var(--widthBlock));
+        font-size: size(9px);
     }
 }
 .wrapperButtons {
@@ -47,33 +62,33 @@
     display: flex;
     flex-direction: column;
     align-self: center;
-    width: calc(234px * var(--widthBlock));
+    width: size(234px);
 }
 .clockSmall {
-    width: calc(96px * var(--widthBlock));
+    width: size(96px);
 }
 .dayOfWeek {
-    font-size: calc(16px * var(--widthBlock));
+    font-size: size(16px);
     color: var(--generalColor);
     display: flex;
     justify-content: space-between;
 }
-.dayOfWeekSmall{
+.dayOfWeekSmall {
     flex-direction: column;
-    font-size: calc(12px * var(--widthBlock));
+    font-size: size(12px);
     position: absolute;
     bottom: 10px;
 }
 .emptyDayOfWeek {
     // height: 19px;
 }
-.clockBigSmall{
-    font-size: calc(33px * var(--widthBlock));
+.clockBigSmall {
+    font-size: size(33px);
 }
 .hour12 {
-    width: calc(24px * var(--widthBlock));
-    height: calc(24px * var(--widthBlock));
-    font-size: calc(13px * var(--widthBlock));
+    width: size(24px);
+    height: size(24px);
+    font-size: size(13px);
     display: flex;
     align-items: center;
     justify-content: center;

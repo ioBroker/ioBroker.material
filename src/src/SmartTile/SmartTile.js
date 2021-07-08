@@ -48,6 +48,7 @@ import SmartVacuumCleaner from '../States/SmartVacuumCleaner/SmartVacuumCleaner'
 import SmartLocation from '../States/SmartLocation/SmartLocation';
 import SmartEchart from '../States/SmartEchart/SmartEchart';
 import SmartCamera from '../States/SmartCamera/SmartCamera';
+import clsx from 'clsx/dist/clsx';
 
 class SmartTile extends Component {
     static propTypes = {
@@ -140,8 +141,8 @@ class SmartTile extends Component {
             }
             delete style.background;
         }
-        style.width = this.props.widthBlock ? 192 : 128;
-        style.height = style.width;
+        // style.width = this.props.widthBlock ?  192 : 128;
+        // style.height = style.width;
         if (this.state.width > 1) {
             style.width = style.width * this.state.width + (8 * this.state.width);
         }
@@ -211,7 +212,7 @@ class SmartTile extends Component {
         return <Paper ref={this.tileRef}
             style={style}
             //    className={this.hasAnimation}
-            className={cls.paperSmartTitle}
+            className={clsx(cls.paperSmartTitle,this.state.width > 1 && cls.doubleSmartTitle)}
             onMouseDown={this.onMouseDown}
             onTouchStart={this.onMouseDown}
             onMouseUp={this.onMouseUp}

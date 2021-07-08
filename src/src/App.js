@@ -1344,7 +1344,7 @@ class App extends GenericApp {
                 <IconButton
                     onClick={this.onToggleFullScreen}
                     className={cls.iconSettings}
-                    >
+                >
                     {this.state.fullScreen ?
                         <IconFullScreenExit width={Theme.iconSize} height={Theme.iconSize} /> :
                         <IconFullScreen width={Theme.iconSize} height={Theme.iconSize} />
@@ -1376,7 +1376,7 @@ class App extends GenericApp {
                 <IconButton
                     onClick={this.editEnumSettingsOpen}
                     className={cls.iconSettings}
-                    >
+                >
                     <IconSettings width={Theme.iconSize} height={Theme.iconSize} />
                 </IconButton>);
         } else {
@@ -1434,7 +1434,7 @@ class App extends GenericApp {
             }}
         >
             <Toolbar className={cls.wrapperToolBar} >
-                {toolbarBackground && <div style={{ borderColor: toolbarBackground }} className={cls.toolbarBackgroundOpacity}/>}
+                {toolbarBackground && <div style={{ borderColor: toolbarBackground }} className={cls.toolbarBackgroundOpacity} />}
                 {!this.state.menuFixed &&
                     <IconButton color="inherit" aria-label="Menu" onClick={this.onToggleMenu} >
                         <IconMenu />
@@ -1443,8 +1443,8 @@ class App extends GenericApp {
                 <h3 color="inherit" style={{ flex: 1 }}>
                     {this.getTitle()}
                 </h3>
-                <div style={{ display: 'flex', color: useBright ? Theme.palette.textColorBright : Theme.palette.textColorDark, whiteSpace: 'nowrap' }}>
-                    {this.getVersionControl(useBright)}
+                {this.getVersionControl(useBright)}
+                <div className={cls.blockButtons}>
                     {this.getButtonSignal(useBright)}
                     {this.getButtonEditSettings(useBright)}
                     {this.getButtonSync(useBright)}
@@ -1476,6 +1476,7 @@ class App extends GenericApp {
                 </div>
                 {this.state.editEnumSettings ? <DialogSettings key={'enum-settings'}
                     name={this.getTitle()}
+                    transparent
                     windowWidth={parseFloat(this.state.width)}
                     getImages={this.readImageNames}
                     dialogKey={'enum-settings'}
@@ -1548,7 +1549,7 @@ class App extends GenericApp {
                     autoFocus
                     onClick={() => this.setState({ errorShow: false })}
                     color="primary"
-                    startIcon={<IconCheck/>}
+                    startIcon={<IconCheck />}
                 >OK</Button>
             </DialogActions>
         </Dialog>;
@@ -1588,7 +1589,7 @@ class App extends GenericApp {
         } else {
             const useBright = this.state.appSettings && this.state.appSettings.menuBackground && Utils.isUseBright(this.state.appSettings.menuBackground);
             return <MuiThemeProvider theme={this.state.theme}>
-                <div className={cls.wrapperApp}>
+                <div id="app" className={cls.wrapperApp}>
                     {this.getAppBar(useBright)}
                     {this.getMenu(useBright)}
                     {!this.state.bigMessage ? this.getStateList(useBright) : <div style={{

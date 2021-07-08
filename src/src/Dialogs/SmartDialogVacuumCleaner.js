@@ -117,7 +117,7 @@ class SmartDialogVacuumCleaner extends SmartDialogGeneric {
     }
 
     componentDidMount() {
-        document.getElementById('root').className = `blurDialogOpen`;
+        // document.getElementById('root').className = `blurDialogOpen`;
         if (this.subscribes && !this.subscribed) {
             this.subscribed = true;
             this.props.onCollectIds(this, this.subscribes, true);
@@ -153,7 +153,7 @@ class SmartDialogVacuumCleaner extends SmartDialogGeneric {
     }
 
     componentWillUnmount() {
-        document.getElementById('root').className = ``;
+        // document.getElementById('root').className = ``;
         if (this.props.onCollectIds && this.subscribed) {
             this.props.onCollectIds(this, this.subscribes, false);
             this.subscribed = null;

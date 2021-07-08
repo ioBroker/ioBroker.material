@@ -1,4 +1,4 @@
-import { FormControl, FormHelperText, Input, MenuItem, Select } from '@material-ui/core';
+import { FormControl, FormHelperText, Input, InputLabel, MenuItem, Select } from '@material-ui/core';
 import React, { useState } from 'react';
 import I18n from '@iobroker/adapter-react/i18n';
 import PropTypes from 'prop-types';
@@ -6,7 +6,7 @@ import cls from './style.module.scss';
 import clsx from 'clsx';
 // import CustomCheckbox from '../CustomCheckbox';
 
-const CustomSelect = ({ multiple, optionsName, value, objs, customValue, title, attr, options, style, onChange, className, doNotTranslate, doNotTranslate2 }) => {
+const CustomSelect = ({ customOptions, ref, multiple, optionsName, value, objs, customValue, title, attr, options, style, onChange, className, doNotTranslate, doNotTranslate2 }) => {
     const [inputText, setInputText] = useState(value === undefined ? options[0].value : value);
 
     const v = customValue ? value : inputText;
@@ -18,12 +18,14 @@ const CustomSelect = ({ multiple, optionsName, value, objs, customValue, title, 
         variant="outlined"
         style={style}
     >
+        {title ? <InputLabel>{I18n.t(title)}</InputLabel> : null}
         <Select
             value={text}
             fullWidth
+            ref={ref}
             multiple={multiple}
-            renderValue={selected => {
-                if(optionsName){
+            renderValue={!customOptions ? (selected) => {
+                if (optionsName) {
                     return objs[selected];
                 }
                 if (multiple && selected.join) {
@@ -54,7 +56,7 @@ const CustomSelect = ({ multiple, optionsName, value, objs, customValue, title, 
                     const item = options ? options.find(item => item.value === selected || (selected === '_' && item.value === '')) : null;
                     return item?.title ? (doNotTranslate ? item?.title : I18n.t(item?.title)) : selected;
                 }
-            }}
+            } : undefined}
             onChange={e => {
                 !customValue && setInputText(e.target.value);
                 if (multiple) {
@@ -73,13 +75,13 @@ const CustomSelect = ({ multiple, optionsName, value, objs, customValue, title, 
             }}
             input={attr ? <Input name={attr} id={attr + '-helper'} /> : <Input name={attr} />}
         >
-            {!multiple && !optionsName && options && options.map(item => <MenuItem style={{ placeContent: 'space-between' }} key={'key-' + item.value} value={item.value === '' || item.value === null || item.value === undefined ? '_' : item.value}>{doNotTranslate ? item.title : I18n.t(item.title)}{item.title2 && <div>{doNotTranslate2 ? item.title2 : I18n.t(item.title2)}</div>}</MenuItem>)}
-            {multiple && !optionsName && options && options.map(item => <MenuItem style={{ placeContent: 'space-between' }} key={'key-' + item.value} value={item.value || '_'}>{doNotTranslate ? item.title : I18n.t(item.title)}
+            {!multiple && !customOptions && !optionsName && options && options.map(item => <MenuItem style={{ placeContent: 'space-between' }} key={'key-' + item.value} value={item.value === '' || item.value === null || item.value === undefined ? '_' : item.value}>{doNotTranslate ? item.title : I18n.t(item.title)}{item.title2 && <div>{doNotTranslate2 ? item.title2 : I18n.t(item.title2)}</div>}</MenuItem>)}
+            {multiple && !customOptions && !optionsName && options && options.map(item => <MenuItem style={{ placeContent: 'space-between' }} key={'key-' + item.value} value={item.value || '_'}>{doNotTranslate ? item.title : I18n.t(item.title)}
                 {/* <CustomCheckbox customValue value={value.includes(item.value)} /> */}
             </MenuItem>)}
-            {optionsName && options && options.map(name => <MenuItem key={'key-' + name} value={name}>{objs[name]}</MenuItem>)}
+            {optionsName && !customOptions && options && options.map(name => <MenuItem key={'key-' + name} value={name}>{objs[name]}</MenuItem>)}
+            {customOptions && options}
         </Select>
-        {title ? <FormHelperText>{I18n.t(title)}</FormHelperText> : null}
     </FormControl>;
 }
 
@@ -89,7 +91,8 @@ CustomSelect.defaultProps = {
     table: false,
     customValue: false,
     multiple: false,
-    optionsName: false
+    optionsName: false,
+    ref: undefined
 };
 
 CustomSelect.propTypes = {

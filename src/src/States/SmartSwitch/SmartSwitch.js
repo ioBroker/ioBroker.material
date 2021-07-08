@@ -32,6 +32,7 @@ import clsx from 'clsx/dist/clsx';
 import CustomSwitch from '../../Components/CustomSwitch';
 import Dialog from '../../Dialogs/SmartDialogInfo';
 import SmartInfo from '../SmartInfo/SmartInfo';
+import { dialogChartCallBack } from '../../Dialogs/DialogChart';
 class SmartSwitch extends SmartGeneric {
     constructor(props) {
         super(props);
@@ -196,9 +197,13 @@ class SmartSwitch extends SmartGeneric {
                         name={this.state.settings.name}
                         onValueChange={this.setValue}
                         onClose={this.onDialogClose}
-                        objects={this.props.objects}
                         states={this.props.states}
                         checkHistory={this.checkHistory}
+                        ///Modal Charts
+                        objects={this.props.objects}
+                        themeName={this.props.themeName}
+                        socket={this.props.socket}
+                        openModal={id => dialogChartCallBack(() => { }, id, this.props.socket, this.props.themeType, this.props.systemConfig, this.props.allObjects, [id])}
                     /> : null
             ]);
     }

@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import CustomIcon from '@iobroker/adapter-react/Components/Icon';
 
-const CustomInput = ({ autoFocus, fullWidth, disabled, multiline, rows, autoComplete, label, error, size, variant, value, type, style, onChange, className, icon }) => {
+const CustomInput = ({ autoFocus, min, max, onKeyDown, fullWidth, disabled, multiline, rows, autoComplete, label, error, size, variant, value, type, style, onChange, className, icon }) => {
     return <TextField
         error={!!error}
         autoFocus={autoFocus}
@@ -19,6 +19,9 @@ const CustomInput = ({ autoFocus, fullWidth, disabled, multiline, rows, autoComp
         rows={rows}
         value={value}
         type={type}
+        min={min}
+        max={max}
+        onKeyDown={onKeyDown}
         helperText={error}
         style={style}
         className={clsx(cls.root, className)}
@@ -31,7 +34,7 @@ const CustomInput = ({ autoFocus, fullWidth, disabled, multiline, rows, autoComp
                 <InputAdornment position="end"><CustomIcon className={cls.icon} src={icon} /></InputAdornment>
                 : null
         }}
-        margin="normal"
+        // margin="normal"
         size={size}
     />;
 }

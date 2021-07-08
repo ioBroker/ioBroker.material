@@ -87,7 +87,7 @@ class SmartDialogInfo extends SmartDialogGeneric {
             newState[id].lc = state.lc;
             newState[id].ts = state.ts;
         }
-        if (this.state[id].val !== newState[id].val) {
+        if (this.state[id]?.val !== newState[id]?.val) {
             this.setState(newState);
         }
         this.controlValue(id, value);
@@ -102,6 +102,9 @@ class SmartDialogInfo extends SmartDialogGeneric {
             const divider = i !== this.props.points.length - 1 ? <ListItem key={e.id + '_div'} className={cls.devider} /> : null;
 
             let item;
+
+            let parts = e.id.split('.');
+            parts = parts.pop();
 
             if (e.common && e.common.write) {
                 if (e.common.type === 'boolean') {
@@ -151,6 +154,7 @@ class SmartDialogInfo extends SmartDialogGeneric {
                             key={this.props.dialogKey + '-' + e.id + '-title'}
                             type={e.common && e.common.type === 'number' ? 'number' : 'text'}
                             icon={e.icon}
+                            iconDef={<StateIcon type={parts} />}
                             label={e.name + (e.unit ? ' (' + e.unit.trim() + ')' : '')}
                             min={e.common.min}
                             max={e.common.max}
@@ -167,15 +171,14 @@ class SmartDialogInfo extends SmartDialogGeneric {
                         language={I18n.getLanguage()}
                     />;
                 } else {
-                    let parts = e.id.split('.');
-                    parts = parts.pop();
                     item = <InfoControl
                         key={this.props.dialogKey + '-' + e.id + '-control'}
                         label={e.name}
                         unit={e.unit || ''}
                         value={this.state[e.id]}
+                        id={this.props.checkHistory(e.id)}
                         icon={<StateIcon type={parts} />}
-                        chart={this.props.checkHistory(e.id) ? this.getCharts(e.id, React.createRef()) : null}
+                        chart={this.props.checkHistory(e.id) ? this.getCharts : null}
                         language={I18n.getLanguage()}
                     />;
                 }

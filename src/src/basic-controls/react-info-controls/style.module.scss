@@ -1,0 +1,50 @@
+.line {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin: 5px 0;
+}
+.label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 5px;
+}
+.valueUnit {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+}
+.unit {
+    display: flex;
+    margin-left: 3px;
+    margin-top: 3px;
+}
+.displayFlex {
+    display: flex;
+    align-items: center;
+}
+.rootChartStyle {
+    width: 100%;
+    height: 50px;
+    max-width: 200px;
+}
+.chartStyle {
+    height: 30px !important;
+}
+.input{
+    width: calc(60% - 40px);
+    margin: 10px !important;
+    height: 40px;
+    min-width: 200px !important;
+}
+.button{
+    width: 40%;
+    height: 40px;
+    margin: 10px !important;
+    min-width: 200px !important;
+}
+.bottom{
+    align-items: flex-end;
+}

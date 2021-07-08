@@ -13,12 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {withStyles} from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 // import Moment from 'react-moment';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import cls from './style.module.scss';
+import CustomButton from '../../States/components/CustomButton';
+import clsx from 'clsx/dist/clsx';
+import CustomInput from '../../States/components/CustomInput';
 
 const styles = theme => ({
     line: {
@@ -39,15 +43,15 @@ const styles = theme => ({
 
 class InputControl extends Component {
     static propTypes = {
-        classes:    PropTypes.object.isRequired,
-        label:      PropTypes.string.isRequired,
-        value:      PropTypes.object.isRequired,
-        icon:       PropTypes.oneOfType([
+        classes: PropTypes.object.isRequired,
+        label: PropTypes.string.isRequired,
+        value: PropTypes.object.isRequired,
+        icon: PropTypes.oneOfType([
             PropTypes.string,
             PropTypes.object
         ]),
-        type:       PropTypes.string,
-        onChange:   PropTypes.func.isRequired
+        type: PropTypes.string,
+        onChange: PropTypes.func.isRequired
     };
 
     constructor(props) {
@@ -61,7 +65,7 @@ class InputControl extends Component {
     }
 
     onChange(val) {
-        this.setState({val});
+        this.setState({ val });
     }
 
     onKeyDown = e => {
@@ -71,21 +75,21 @@ class InputControl extends Component {
     }
 
     render() {
-        const {classes, label, icon, onChange} = this.props;
+        const { classes, label, icon, onChange, iconDef } = this.props;
         let Icon;
         if (icon) {
             if (typeof icon === 'object') {
                 Icon = icon;
                 Icon = <Icon className={classes.icon} />;
             } else {
-                Icon = <img alt={label} src={icon} className={classes.icon}/>;
+                Icon = <img alt={label} src={icon} className={classes.icon} />;
             }
         }
 
-        return <div className={classes.line}>
-            <TextField
+        return <div className={clsx(cls.line,cls.bottom)}>
+            <CustomInput
                 tabIndex="0"
-                className={classes.input}
+                className={cls.input}
                 type={this.type}
                 label={label}
                 min={this.props.min}
@@ -93,16 +97,19 @@ class InputControl extends Component {
                 value={this.state.val}
                 onKeyDown={this.onKeyDown}
                 onChange={event => this.onChange(event.target.value)}
-                margin="normal"
+                variant="outlined"
+                // margin="normal"
+                size="small"
             />
-            <Button
+            <CustomButton
                 tabIndex="1"
-                className={classes.button}
+                active
+                startIcon={Icon || iconDef}
+                className={cls.button}
                 onClick={e => onChange(this.type === 'number' ? parseFloat(this.state.val) : this.state.val)}
                 variant="contained">
-                {Icon}
                 {label}
-            </Button>
+            </CustomButton>
         </div>;
     }
 }

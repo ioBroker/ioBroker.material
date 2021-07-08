@@ -92,7 +92,7 @@ class SmartDialogThermostat extends SmartDialogGeneric {
     }
 
     componentDidMount() {
-        document.getElementById('root').className = `blurDialogOpen`;
+        // document.getElementById('root').className = `blurDialogOpen`;
         this.initMouseHandlers();
     }
 
@@ -274,9 +274,9 @@ class SmartDialogThermostat extends SmartDialogGeneric {
                         </CustomButton>
                     : null}
                 <div className={cls.charts}>
-                    {this.props.humidityId && this.props.checkHistory(this.props.humidityId) && this.getCharts(this.props.humidityId, React.createRef())}
-                    {this.props.actualId && this.props.checkHistory(this.props.actualId) && this.getCharts(this.props.actualId, React.createRef())}
-                    {this.props.setId && this.props.checkHistory(this.props.setId) && this.getCharts(this.props.setId, React.createRef())}
+                    {this.props.humidityId && this.props.checkHistory(this.props.humidityId) && this.getCharts(this.props.checkHistory(this.props.humidityId), React.createRef())}
+                    {this.props.actualId && this.props.checkHistory(this.props.actualId) && this.getCharts(this.props.checkHistory(this.props.actualId), React.createRef())}
+                    {this.props.setId && this.props.checkHistory(this.props.setId) && this.getCharts(this.props.checkHistory(this.props.setId), React.createRef())}
                 </div>
                 <div ref={this.refPanel} className={cls.wrapperControl}>
                     <ThermostatControl

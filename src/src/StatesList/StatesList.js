@@ -58,7 +58,7 @@ const styles = {
         position: 'fixed',
         top: 70,
         right: 30,
-        zIndex: 4,
+        zIndex: 222,
         padding: '0 !important'
     },
     'add-button': {
@@ -367,6 +367,7 @@ class StatesList extends Component {
         return <SmartDialogWidget
             dialogKey="WidgetKey"
             key="WidgetKey"
+            overflowHidden
             transparent
             overflowHidden
             name={I18n.t('Widgets')}
@@ -383,6 +384,7 @@ class StatesList extends Component {
                             hour12Params={true}
                             date={true}
                             doubleSize={true}
+                            noBigClock
                         />,
                     name: I18n.t('Add custom Clock'),
                     onClick: this.onAddCustomClock

@@ -1,10 +1,10 @@
 import { createRef, Component } from 'react';
 import PropTypes from 'prop-types';
 import withWidth from '@material-ui/core/withWidth';
-import {withStyles} from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 
-import {MuiPickersUtilsProvider, KeyboardTimePicker, KeyboardDatePicker} from '@material-ui/pickers';
+import { MuiPickersUtilsProvider, KeyboardTimePicker, KeyboardDatePicker } from '@material-ui/pickers';
 import Paper from '@material-ui/core/Paper';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -13,6 +13,7 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Toolbar from '@material-ui/core/Toolbar';
 import Fab from '@material-ui/core/Fab';
+import cls from './style.module.scss';
 
 import ReactEchartsCore from 'echarts-for-react/lib/core';
 
@@ -28,7 +29,7 @@ import {
     LegendComponent,
     SingleAxisComponent,
 } from 'echarts/components';
-import {SVGRenderer} from 'echarts/renderers';
+import { SVGRenderer } from 'echarts/renderers';
 
 import DateFnsUtils from '@date-io/date-fns';
 import frLocale from 'date-fns/locale/fr';
@@ -58,7 +59,10 @@ import 'moment/locale/de';
 import Utils from '@iobroker/adapter-react/Components/Utils';
 
 // icons
-import {FaChartLine as SplitLineIcon} from 'react-icons/fa';
+import { FaChartLine as SplitLineIcon } from 'react-icons/fa';
+import CustomSelect from '../CustomSelect';
+import CustomFab from '../CustomFab';
+import { Tooltip } from '@material-ui/core';
 // import EchartsIcon from '../../assets/echarts.png';
 
 echarts.use([SingleAxisComponent, LegendComponent, TimelineComponent, ToolboxComponent, TitleComponent, TooltipComponent, GridComponent, LineChart, SVGRenderer]);
@@ -217,8 +221,8 @@ class ObjectChart extends Component {
             this.end = this.props.end;
         }
         let relativeRange = window.localStorage.getItem('App.relativeRange') || '30';
-        let min           = parseInt(window.localStorage.getItem('App.absoluteStart'), 10) || 0;
-        let max           = parseInt(window.localStorage.getItem('App.absoluteEnd'), 10)   || 0;
+        let min = parseInt(window.localStorage.getItem('App.absoluteStart'), 10) || 0;
+        let max = parseInt(window.localStorage.getItem('App.absoluteEnd'), 10) || 0;
 
         if ((!min || !max) && (!relativeRange || relativeRange === 'absolute')) {
             relativeRange = '30';
@@ -246,14 +250,14 @@ class ObjectChart extends Component {
         };
 
         this.echartsReact = createRef();
-        this.rangeRef     = createRef();
-        this.readTimeout  = null;
+        this.rangeRef = createRef();
+        this.readTimeout = null;
 
-        this.chartValues  = null;
+        this.chartValues = null;
 
-        this.divRef       = createRef();
+        this.divRef = createRef();
 
-        this.chart        = {};
+        this.chart = {};
 
         this.lastFormattedTime = null;
 
@@ -265,8 +269,8 @@ class ObjectChart extends Component {
             this.objectList = [this.props.obj];
         }
 
-        this.units        = {};
-        this.names        = {};
+        this.units = {};
+        this.names = {};
 
         this.objectList.forEach(obj => {
             maxYLen[obj._id] = 0;
@@ -328,7 +332,7 @@ class ObjectChart extends Component {
             this.chartValues && this.chartValues[id] &&
             (!this.chartValues[id].length || this.chartValues[id][this.chartValues[id].length - 1].ts < state.ts)
         ) {
-            this.chartValues[id] && this.chartValues[id].push({val: state.val, ts: state.ts});
+            this.chartValues[id] && this.chartValues[id].push({ val: state.val, ts: state.ts });
 
             // update only if end is near to now
             if (state.ts >= this.chart.min && state.ts <= this.chart.max + 300000) {
@@ -342,7 +346,7 @@ class ObjectChart extends Component {
 
         if (this.props.noToolbar) {
             return new Promise(resolve =>
-                this.setState( {
+                this.setState({
                     dateFormat: this.props.dateFormat.replace(/D/g, 'd').replace(/Y/g, 'y'),
                     defaultHistory: this.props.defaultHistory,
                     historyInstance: this.props.defaultHistory,
@@ -382,7 +386,7 @@ class ObjectChart extends Component {
                                 historyInstance = defaultHistory;
                             }
 
-                            this.setState( {
+                            this.setState({
                                 dateFormat: (config.common.dateFormat || 'dd.MM.yyyy').replace(/D/g, 'd').replace(/Y/g, 'y'),
                                 historyInstances: list,
                                 defaultHistory,
@@ -396,7 +400,7 @@ class ObjectChart extends Component {
 
     getHistoryInstances() {
         const list = [];
-        const ids  = [];
+        const ids = [];
 
         if (this.props.historyInstance) {
             return Promise.resolve(list);
@@ -405,7 +409,7 @@ class ObjectChart extends Component {
         this.props.customsInstances.forEach(instance => {
             const instObj = this.props.objects['system.adapter.' + instance];
             if (instObj && instObj.common && instObj.common.getHistory) {
-                let listObj = {id: instance, alive: false};
+                let listObj = { id: instance, alive: false };
                 list.push(listObj);
                 ids.push(`system.adapter.${instance}.alive`);
             }
@@ -449,13 +453,13 @@ class ObjectChart extends Component {
             aggregate?: 'minmax' | 'min' | 'max' | 'average' | 'total' | 'count' | 'none';
         }*/
         const options = {
-            instance:  this.state.historyInstance,
+            instance: this.state.historyInstance,
             start,
             end,
-            from:      false,
-            ack:       false,
-            q:         false,
-            addID:     false,
+            from: false,
+            ack: false,
+            q: false,
+            addID: false,
             aggregate: 'none'
         };
 
@@ -467,9 +471,9 @@ class ObjectChart extends Component {
         return this.props.socket.getHistory(id, options)
             .then(values => {
                 let chart = [];
-                let r     = 0;
-                let minY  = null;
-                let maxY  = null;
+                let r = 0;
+                let minY = null;
+                let maxY = null;
 
                 for (let t = 0; t < values.length; t++) {
                     // if range and details are not equal
@@ -519,7 +523,7 @@ class ObjectChart extends Component {
             return data;
         }
         for (let i = 0; i < values.length; i++) {
-            data.push({value: [values[i].ts, values[i].val]});
+            data.push({ value: [values[i].ts, values[i].val] });
         }
         if (!this.chart.min) {
             this.chart.min = values[0].ts;
@@ -538,9 +542,9 @@ class ObjectChart extends Component {
             if (_index < 2 || this.lastFormattedTime === null || value < this.lastFormattedTime) {
                 showDate = true;
             } else
-            if (!showDate && new Date(this.lastFormattedTime).getDate() !== dateInMonth) {
-                showDate = true;
-            }
+                if (!showDate && new Date(this.lastFormattedTime).getDate() !== dateInMonth) {
+                    showDate = true;
+                }
             if (showDate) {
                 dateTxt = `{b|..}\n{a|${padding2(dateInMonth)}.${padding2(date.getMonth() + 1)}.}`;
             }
@@ -596,24 +600,24 @@ class ObjectChart extends Component {
         for (let k = 0; k < data.length - 1; k++) {
             if (data[k].value[0] === ts) {
                 // Calculate
-                return {exact: true, val: data[k].value[1]};
+                return { exact: true, val: data[k].value[1] };
             } else if (data[k].value[0] < ts && ts < data[k + 1].value[0]) {
                 const y1 = data[k].value[1];
                 const y2 = data[k + 1].value[1];
                 if (y2 === null || y2 === undefined || y1 === null || y1 === undefined) {
-                    return hoverNoNulls ? null : {exact: false, val: null};
+                    return hoverNoNulls ? null : { exact: false, val: null };
                 }
                 if (type === 'boolean') {
-                    return {exact: false, val: y1};
+                    return { exact: false, val: y1 };
                 }
 
                 // interpolate
                 const diff = data[k + 1].value[0] - data[k].value[0];
                 const kk = (data[k + 1].value[0] - ts) / diff;
-                return {exact: false, val: (1 - kk) * (y2 - y1) + y1};
+                return { exact: false, val: (1 - kk) * (y2 - y1) + y1 };
             }
         }
-        return hoverNoNulls ? null : {exact: false, val: null};
+        return hoverNoNulls ? null : { exact: false, val: null };
     }
 
     yFormatter(val, obj, withUnit, interpolated, ignoreWidth) {
@@ -634,27 +638,27 @@ class ObjectChart extends Component {
                 return val.toFixed(afterComma) + (withUnit ? this.config.l[line].unit : '');
             }
         } else {*/
-            if (interpolated) {
-                val = Math.round(val * 10000) / 10000;
-            }
-            let text;
-            if (this.isFloatComma) {
-                val = parseFloat(val) || 0;
-                val = val.toString().replace('.', ',');
-                text = val + (withUnit ? this.units[obj._id] : '');
-            } else {
-                val = val.toString();
-                text = val + (withUnit ? this.units[obj._id] : '');
-            }
-            if (!ignoreWidth && this.state.maxYLen[obj._id] < val.length) {
-                this.maxYLenTimeout && clearTimeout(this.maxYLenTimeout);
-                this.maxYLenTimeout = setTimeout((_maxYLen, id) => {
-                    this.maxYLenTimeout = null;
-                    const maxYLen = JSON.parse(JSON.stringify(this.state.maxYLen));
-                    maxYLen[id] = _maxYLen;
-                    this.setState({maxYLen});
-                }, 200, val.length, obj._id);
-            }
+        if (interpolated) {
+            val = Math.round(val * 10000) / 10000;
+        }
+        let text;
+        if (this.isFloatComma) {
+            val = parseFloat(val) || 0;
+            val = val.toString().replace('.', ',');
+            text = val + (withUnit ? this.units[obj._id] : '');
+        } else {
+            val = val.toString();
+            text = val + (withUnit ? this.units[obj._id] : '');
+        }
+        if (!ignoreWidth && this.state.maxYLen[obj._id] < val.length) {
+            this.maxYLenTimeout && clearTimeout(this.maxYLenTimeout);
+            this.maxYLenTimeout = setTimeout((_maxYLen, id) => {
+                this.maxYLenTimeout = null;
+                const maxYLen = JSON.parse(JSON.stringify(this.state.maxYLen));
+                maxYLen[id] = _maxYLen;
+                this.setState({ maxYLen });
+            }, 200, val.length, obj._id);
+        }
         //}
         return text;
     }
@@ -667,7 +671,7 @@ class ObjectChart extends Component {
             const p = params.find(param => param.seriesIndex === i);
             let interpolated;
             if (p) {
-                interpolated = {exact: p.data.exact !== undefined ? p.data.exact : true, val: p.value[1]};
+                interpolated = { exact: p.data.exact !== undefined ? p.data.exact : true, val: p.value[1] };
             }
 
             interpolated = interpolated || this.getInterpolatedValue(i, ts, obj.common.type, false);
@@ -698,7 +702,7 @@ class ObjectChart extends Component {
         let widthAxisRight = [];
 
         const diff = this.state.max - this.state.min;
-        this.withTime    = diff < 3600000 * 24 * 7;
+        this.withTime = diff < 3600000 * 24 * 7;
         this.withSeconds = diff < 60000 * 30;
 
         const yAxis = [];
@@ -800,12 +804,12 @@ class ObjectChart extends Component {
                 hoverAnimation: true,
                 animation: false,
                 data: this.convertData(obj._id),
-                itemStyle: {color: THEMES[i]},
+                itemStyle: { color: THEMES[i] },
                 lineStyle: {
                     color: THEMES[i],
                     width: 2,
                 },
-                emphasis:{
+                emphasis: {
                     scale: false,
                     focus: 'none',
                     blurScope: 'none',
@@ -859,7 +863,7 @@ class ObjectChart extends Component {
             grid: {
                 left: widthAxisLeft ? widthAxisLeft + 10 : GRID_PADDING_LEFT,
                 top: 8,
-                right: (rightOffset ? rightOffset + 10 : 0) + (this.props.noToolbar ? 5: GRID_PADDING_RIGHT),
+                right: (rightOffset ? rightOffset + 10 : 0) + (this.props.noToolbar ? 5 : GRID_PADDING_RIGHT),
                 bottom: 40,
             },
             tooltip: {
@@ -878,7 +882,7 @@ class ObjectChart extends Component {
                 splitNumber: this.withSeconds ? Math.round((this.state.chartWidth - GRID_PADDING_RIGHT - GRID_PADDING_LEFT) / 60) : Math.round((this.state.chartWidth - GRID_PADDING_RIGHT - GRID_PADDING_LEFT) / 50),
                 min: this.chart.min,
                 max: this.chart.max,
-                axisTick: {alignWithLabel: true,},
+                axisTick: { alignWithLabel: true, },
                 axisLabel: {
                     formatter: this.xFormatter.bind(this),/*(value, index) => {
                         const date = new Date(value);
@@ -928,7 +932,7 @@ class ObjectChart extends Component {
             this.end = end;
         }
         start = start || this.start;
-        end   = end   || this.end;
+        end = end || this.end;
 
         this.readTimeout && clearTimeout(this.readTimeout);
 
@@ -937,8 +941,8 @@ class ObjectChart extends Component {
 
             const diff = this.chart.max - this.chart.min;
             if (diff !== this.chart.diff) {
-                this.chart.diff        = diff;
-                this.chart.withTime    = this.chart.diff < 3600000 * 24 * 7;
+                this.chart.diff = diff;
+                this.chart.withTime = this.chart.diff < 3600000 * 24 * 7;
                 this.chart.withSeconds = this.chart.diff < 60000 * 30;
             }
 
@@ -946,7 +950,7 @@ class ObjectChart extends Component {
                 this.readHistories(start, end)
                     .then(values => {
                         this.echartsReact && typeof this.echartsReact.getEchartsInstance === 'function' && this.echartsReact.getEchartsInstance().setOption({
-                            series: this.objectList.map(obj => ({data: this.convertData(obj._id, values[obj._id])})),
+                            series: this.objectList.map(obj => ({ data: this.convertData(obj._id, values[obj._id]) })),
                             xAxis: {
                                 min: this.chart.min,
                                 max: this.chart.max,
@@ -956,7 +960,7 @@ class ObjectChart extends Component {
                     });
             } else {
                 this.echartsReact && typeof this.echartsReact.getEchartsInstance === 'function' && this.echartsReact.getEchartsInstance().setOption({
-                    series: this.objectList.map(obj => ({data: this.convertData(obj._id)})),
+                    series: this.objectList.map(obj => ({ data: this.convertData(obj._id) })),
                     xAxis: {
                         min: this.chart.min,
                         max: this.chart.max,
@@ -974,8 +978,8 @@ class ObjectChart extends Component {
             this.rangeRef.current.childNodes[0].innerHTML = '';
             this.rangeRef.current.childNodes[1].value = '';
         }*/
-        this.chart.diff        = this.chart.max - this.chart.min;
-        this.chart.withTime    = this.chart.diff < 3600000 * 24 * 7;
+        this.chart.diff = this.chart.max - this.chart.min;
+        this.chart.withTime = this.chart.diff < 3600000 * 24 * 7;
         this.chart.withSeconds = this.chart.diff < 60000 * 30;
 
         if (this.state.relativeRange !== 'absolute') {
@@ -1045,7 +1049,7 @@ class ObjectChart extends Component {
             now.setDate(1);
             now.setMonth(0);
             min = now.getTime();
-        }  else if (mins === '12months') {
+        } else if (mins === '12months') {
             now.setHours(0);
             now.setMinutes(0);
             now.setFullYear(now.getFullYear() - 1);
@@ -1148,7 +1152,7 @@ class ObjectChart extends Component {
             this.chart.min = this.chart.max - mins * 60000;
         }
 
-        this.setState({min: this.chart.min, max: this.chart.max}, () =>
+        this.setState({ min: this.chart.min, max: this.chart.max }, () =>
             this.updateChart(this.chart.min, this.chart.max, true, false, cb));
     }
 
@@ -1233,8 +1237,8 @@ class ObjectChart extends Component {
                             let diff = this.chart.max - this.chart.min;
                             const chartWidth = this.state.chartWidth - GRID_PADDING_RIGHT - GRID_PADDING_LEFT;
 
-                            const amount     = fingerWidth > this.chart.lastWidth ? 1.1 : 0.9;
-                            const positionX  = touches[0].pageX > touches[1].pageX ?
+                            const amount = fingerWidth > this.chart.lastWidth ? 1.1 : 0.9;
+                            const positionX = touches[0].pageX > touches[1].pageX ?
                                 touches[1].pageX - GRID_PADDING_LEFT + fingerWidth / 2 :
                                 touches[0].pageX - GRID_PADDING_LEFT + fingerWidth / 2;
 
@@ -1253,7 +1257,7 @@ class ObjectChart extends Component {
                     } else {
                         // swipe
                         const moved = this.chart.lastX - pageX;
-                        const diff  = this.chart.max - this.chart.min;
+                        const diff = this.chart.max - this.chart.min;
                         const chartWidth = this.state.chartWidth - GRID_PADDING_RIGHT - GRID_PADDING_LEFT;
 
                         const shift = Math.round(moved * diff / chartWidth);
@@ -1282,14 +1286,14 @@ class ObjectChart extends Component {
 
             return <ReactEchartsCore
                 ref={e => this.echartsReact = e}
-                echarts={ echarts }
-                option={ this.option }
-                notMerge={ true }
-                lazyUpdate={ true }
-                theme={ this.props.themeType === 'dark' ? 'dark' : '' }
+                echarts={echarts}
+                option={this.option}
+                notMerge={true}
+                lazyUpdate={true}
+                theme={this.props.themeType === 'dark' ? 'dark' : ''}
                 style={{ height: this.state.chartHeight + 'px', width: '100%' }}
                 opts={{ renderer: 'svg' }}
-                onEvents={ {
+                onEvents={{
                     rendered: e => {
                         this.objectList.length === 1 && this.installEventHandlers();
                     },
@@ -1303,7 +1307,7 @@ class ObjectChart extends Component {
                 }}
             />;
         } else {
-            return <LinearProgress/>;
+            return <LinearProgress />;
         }
     }
 
@@ -1342,7 +1346,7 @@ class ObjectChart extends Component {
             this.timeTimer = null;
         }
         this.chart.max = max;
-        this.setState({ max, relativeRange: 'absolute'  }, () =>
+        this.setState({ max, relativeRange: 'absolute' }, () =>
             this.updateChart(this.chart.min, this.chart.max, true));
     }
 
@@ -1370,129 +1374,133 @@ class ObjectChart extends Component {
 
         const classes = this.props.classes;
 
-        return <Toolbar>
-            {!this.props.historyInstance && <FormControl className={ classes.selectHistoryControl }>
-                <InputLabel>{ this.props.t('History instance') }</InputLabel>
+        return <Toolbar className={cls.wrapperMenu}>
+            {!this.props.historyInstance && <FormControl className={classes.selectHistoryControl}>
+                <InputLabel>{this.props.t('History instance')}</InputLabel>
                 <Select
-                    value={ this.state.historyInstance }
-                    onChange={ e => {
+                    value={this.state.historyInstance}
+                    onChange={e => {
                         window.localStorage.setItem('App.historyInstance', e.target.value);
                         this.setState({ historyInstance: e.target.value });
                     }}
                 >
-                    { this.state.historyInstances.map(it => <MenuItem key={ it.id } value={ it.id } className={ clsx(!it.alive && classes.notAliveInstance )}>{ it.id }</MenuItem>) }
+                    {this.state.historyInstances.map(it => <MenuItem key={it.id} value={it.id} className={clsx(!it.alive && classes.notAliveInstance)}>{it.id}</MenuItem>)}
                 </Select>
             </FormControl>}
-            <FormControl className={ classes.selectRelativeTime }>
-                <InputLabel>{ this.props.t('Relative') }</InputLabel>
-                <Select
-                    ref={ this.rangeRef }
-                    value={ this.state.relativeRange }
-                    onChange={ e => this.setRelativeInterval(e.target.value) }
-                >
-                    <MenuItem key={ 'custom' } value={ 'absolute' } className={ classes.customRange }>{ this.props.t('custom range') }</MenuItem>
-                    <MenuItem key={ '1'  } value={ 10 }            >{ this.props.t('last 10 minutes') }</MenuItem>
-                    <MenuItem key={ '2'  } value={ 30 }            >{ this.props.t('last 30 minutes') }</MenuItem>
-                    <MenuItem key={ '3'  } value={ 60 }            >{ this.props.t('last hour') }</MenuItem>
-                    <MenuItem key={ '4'  } value={ 'day' }         >{ this.props.t('this day') }</MenuItem>
-                    <MenuItem key={ '5'  } value={ 24 * 60 }       >{ this.props.t('last 24 hours') }</MenuItem>
-                    <MenuItem key={ '6'  } value={ 'week' }        >{ this.props.t('this week') }</MenuItem>
-                    <MenuItem key={ '7'  } value={ 24 * 60 * 7 }   >{ this.props.t('last week') }</MenuItem>
-                    <MenuItem key={ '8'  } value={ '2weeks' }      >{ this.props.t('this 2 weeks') }</MenuItem>
-                    <MenuItem key={ '9'  } value={ 24 * 60 * 14 }  >{ this.props.t('last 2 weeks') }</MenuItem>
-                    <MenuItem key={ '10' } value={ 'month' }       >{ this.props.t('this month') }</MenuItem>
-                    <MenuItem key={ '11' } value={ 30 * 24 * 60 }  >{ this.props.t('last 30 days') }</MenuItem>
-                    <MenuItem key={ '12' } value={ 'year' }        >{ this.props.t('this year') }</MenuItem>
-                    <MenuItem key={ '13' } value={ '12months' }    >{ this.props.t('last 12 months') }</MenuItem>
-                </Select>
-            </FormControl>
+            <CustomSelect
+                onChange={this.setRelativeInterval.bind(this)}
+                customValue
+                value={this.state.relativeRange}
+                className={classes.selectRelativeTime}
+                customOptions
+                ref={this.rangeRef}
+                title="Relative"
+                options={[<MenuItem key={'custom'} value={'absolute'} className={classes.customRange}>{this.props.t('custom range')}</MenuItem>,
+                <MenuItem key={'1'} value={10}            >{this.props.t('last 10 minutes')}</MenuItem>,
+                <MenuItem key={'2'} value={30}            >{this.props.t('last 30 minutes')}</MenuItem>,
+                <MenuItem key={'3'} value={60}            >{this.props.t('last hour')}</MenuItem>,
+                <MenuItem key={'4'} value={'day'}         >{this.props.t('this day')}</MenuItem>,
+                <MenuItem key={'5'} value={24 * 60}       >{this.props.t('last 24 hours')}</MenuItem>,
+                <MenuItem key={'6'} value={'week'}        >{this.props.t('this week')}</MenuItem>,
+                <MenuItem key={'7'} value={24 * 60 * 7}   >{this.props.t('last week')}</MenuItem>,
+                <MenuItem key={'8'} value={'2weeks'}      >{this.props.t('this 2 weeks')}</MenuItem>,
+                <MenuItem key={'9'} value={24 * 60 * 14}  >{this.props.t('last 2 weeks')}</MenuItem>,
+                <MenuItem key={'10'} value={'month'}       >{this.props.t('this month')}</MenuItem>,
+                <MenuItem key={'11'} value={30 * 24 * 60}  >{this.props.t('last 30 days')}</MenuItem>,
+                <MenuItem key={'12'} value={'year'}        >{this.props.t('this year')}</MenuItem>,
+                <MenuItem key={'13'} value={'12months'}    >{this.props.t('last 12 months')}</MenuItem>]}
+            />
             <MuiPickersUtilsProvider utils={DateFnsUtils} locale={localeMap[this.props.lang]}>
-                <div className={ classes.toolbarTimeGrid }>
+                <div className={cls.toolbarTimeGrid}>
                     <KeyboardDatePicker
-                        className={ classes.toolbarDate }
-                        disabled={ this.state.relativeRange !== 'absolute' }
+                        className={cls.toolbarDate}
+                        disabled={this.state.relativeRange !== 'absolute'}
                         disableToolbar
                         variant="inline"
                         margin="normal"
                         format={this.state.dateFormat}
                         //format="fullDate"
-                        label={ this.props.t('Start date') }
-                        value={ new Date(this.state.min) }
+                        label={this.props.t('Start date')}
+                        value={new Date(this.state.min)}
                         onChange={date => this.setStartDate(date)}
                     />
                     <KeyboardTimePicker
-                        disabled={ this.state.relativeRange !== 'absolute' }
-                        className={ classes.toolbarTime }
+                        disabled={this.state.relativeRange !== 'absolute'}
+                        className={cls.toolbarTime}
                         margin="normal"
                         //format="fullTime24h"
-                        ampm={ false }
-                        label={ this.props.t('Start time') }
-                        value={ new Date(this.state.min) }
+                        ampm={false}
+                        label={this.props.t('Start time')}
+                        value={new Date(this.state.min)}
                         onChange={date => this.setStartDate(date)}
                     />
                 </div>
-                <div className={ classes.toolbarTimeGrid }>
+                <div className={cls.toolbarTimeGrid}>
                     <KeyboardDatePicker
-                        disabled={ this.state.relativeRange !== 'absolute' }
-                        className={ classes.toolbarDate }
+                        disabled={this.state.relativeRange !== 'absolute'}
+                        className={cls.toolbarDate}
                         disableToolbar
                         format={this.state.dateFormat}
                         variant="inline"
                         //format="fullDate"
                         margin="normal"
-                        label={ this.props.t('End date') }
-                        value={ new Date(this.state.max) }
+                        label={this.props.t('End date')}
+                        value={new Date(this.state.max)}
                         onChange={date => this.setEndDate(date)}
                     />
                     <KeyboardTimePicker
-                        disabled={ this.state.relativeRange !== 'absolute' }
-                        className={ classes.toolbarTime }
+                        disabled={this.state.relativeRange !== 'absolute'}
+                        className={cls.toolbarTime}
                         margin="normal"
                         //format="fullTime24h"
-                        ampm={ false }
-                        label={ this.props.t('End time') }
-                        value={ new Date(this.state.max) }
+                        ampm={false}
+                        label={this.props.t('End time')}
+                        value={new Date(this.state.max)}
                         onChange={date => this.setEndDate(date)}
                     />
                 </div>
             </MuiPickersUtilsProvider>
             <div className={classes.grow} />
-            {this.props.showJumpToEchart && this.state.echartsJump && <Fab
+            {this.props.showJumpToEchart && this.state.echartsJump && <CustomFab
                 className={classes.echartsButton}
                 size="small"
                 onClick={() => this.openEcharts()}
                 title={this.props.t('Open charts in new window')}
             >
-                <img src={EchartsIcon} alt="echarts" className={classes.buttonIcon}/>
-            </Fab>}
-            <Fab
-                variant="extended"
-                size="small"
-                color={ this.state.splitLine ? 'primary' : 'inherit' }
-                aria-label="show lines"
-                onClick={() => {
-                    window.localStorage.setItem('App.splitLine', this.state.splitLine ? 'false' : 'true');
-                    this.setState({splitLine: !this.state.splitLine});
-                }}
-                className={ classes.splitLineButton }
-            >
-                <SplitLineIcon className={ classes.splitLineButtonIcon } />
-                { this.props.t('Show lines') }
-            </Fab>
+                <img src={EchartsIcon} alt="echarts" className={classes.buttonIcon} />
+            </CustomFab>}
+            <Tooltip title={this.props.t('Show lines')}>
+                <CustomFab
+                    variant="extended"
+                    size="small"
+                    active={this.state.splitLine}
+                    title={this.props.t('Show lines')}
+                    // color={ this.state.splitLine ? 'primary' : 'inherit' }
+                    aria-label="show lines"
+                    onClick={() => {
+                        window.localStorage.setItem('App.splitLine', this.state.splitLine ? 'false' : 'true');
+                        this.setState({ splitLine: !this.state.splitLine });
+                    }}
+                    className={classes.splitLineButton}
+                >
+                    <SplitLineIcon />
+                    {/* { this.props.t('Show lines') } */}
+                </CustomFab>
+            </Tooltip>
         </Toolbar>;
     }
 
     render() {
         if (!this.state.historyInstance && !this.state.defaultHistory) {
-            return <LinearProgress/>;
+            return <LinearProgress />;
         }
 
-        return <Paper className={ this.props.classes.paper }>
-            { this.renderToolbar() }
-            <div ref={ this.divRef } className={clsx(this.props.classes.chart, this.props.noToolbar ? this.props.classes.chartWithoutToolbar : this.props.classes.chartWithToolbar) }>
-                { this.renderChart() }
+        return <div className={this.props.classes.paper}>
+            {this.renderToolbar()}
+            <div ref={this.divRef} className={clsx(this.props.classes.chart, this.props.noToolbar ? this.props.classes.chartWithoutToolbar : this.props.classes.chartWithToolbar)}>
+                {this.renderChart()}
             </div>
-        </Paper>;
+        </div>;
     }
 }
 
