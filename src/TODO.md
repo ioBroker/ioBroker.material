@@ -4,24 +4,24 @@
 
 - Make translation for icon selector work
 
-- Show chart in the corner if any state of the device has "history"//////////
+<!-- - Show chart in the corner if any state of the device has "history"////////// -->
 - Remove all WARNINGS
-- Layout of dialogs: Thermostat, ...
+<!-- - Layout of dialogs: Thermostat, ... -->
 
 ## Info dialog
-- Show device icon in the title
-- Show for known state types the icon: humidity, temperature, voltage, power, frequency, ...
-- Show small chart (if available), like in thermostat
-- Update dialog like in charts
-- Padding in info dialog left and right
+<!-- - Show device icon in the title -->
+<!-- - Show for known state types the icon: humidity, temperature, voltage, power, frequency, ... -->
+<!-- - Show small chart (if available), like in thermostat -->
+<!-- - Update dialog like in charts -->
+<!-- - Padding in info dialog left and right -->
 
 ## Control by state
 - Change page
 - Change thema
-- Open dialog
-- Router for dialogs: 
+<!-- - Open dialog -->
+<!-- - Router for dialogs: 
     - http://localhost:3000/#rooms.Starter/channelID/
-    - http://localhost:3000/#rooms.Starter/channelID/chart
+    - http://localhost:3000/#rooms.Starter/channelID/chart -->
 
 ## Loading 
 ## Dimmer
@@ -30,8 +30,8 @@
 ## Clock
 
 ## Gate
-- Depends on type of variable: 
-  - boolean: OPEN / CLOSE buttons
+<!-- - Depends on type of variable: 
+  - boolean: OPEN / CLOSE buttons -->
   - number: slider from min to max
 
 ## Location
@@ -41,7 +41,7 @@
 ## Blinds
 
 ## Thermostat
-- On mobile devices hide controls in chart-dialog and make it maximal big
+<!-- - On mobile devices hide controls in chart-dialog and make it maximal big -->
 - ? Tooltips for values: actual temperature / target temperature
 
 ## Temperature
@@ -65,7 +65,7 @@
 ## Icons url
 
 ## Custom e-chart
-- Add screenshot to Add-Widget dialog
+<!-- - Add screenshot to Add-Widget dialog -->
 
 ## Camera
 - Auto detect and add widget//

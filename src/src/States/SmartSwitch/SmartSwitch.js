@@ -24,7 +24,6 @@ import IconSwitch from '../../icons/Socket';
 import Types from '../SmartTypes';
 import Theme from '../../theme';
 import I18n from '@iobroker/adapter-react/i18n';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import IconAdapter from '@iobroker/adapter-react/Components/Icon';
 import cls from './style.module.scss';
 import clsGeneric from '../style.module.scss';
@@ -33,6 +32,8 @@ import CustomSwitch from '../../Components/CustomSwitch';
 import Dialog from '../../Dialogs/SmartDialogInfo';
 import SmartInfo from '../SmartInfo/SmartInfo';
 import { dialogChartCallBack } from '../../Dialogs/DialogChart';
+import TypeIcon from '../components/TypeIcon';
+
 class SmartSwitch extends SmartGeneric {
     constructor(props) {
         super(props);
@@ -160,7 +161,7 @@ class SmartSwitch extends SmartGeneric {
 
         if (this.state.settings.useDefaultIcon) {
             // TODO: which src should be?
-            customIcon = <IconAdapter className={clsx(clsGeneric.iconStyle, this.state[this.id] && clsGeneric.activeIconStyle)} src={state ? this.state.settings.icon : this.state.settings.iconOff || this.state.settings.icon} alt="icon" src={this.getDefaultIcon()} style={{ height: '100%' }} />;
+            customIcon = <IconAdapter className={clsx(clsGeneric.iconStyle, this.state[this.id] && clsGeneric.activeIconStyle)} alt="icon" src={this.getDefaultIcon()} style={{ height: '100%' }} />;
         } else {
             if (this.state.settings.icon) {
                 customIcon = <IconAdapter alt="icon" className={clsx(clsGeneric.iconStyle, this.state[this.id] && clsGeneric.activeIconStyle)} src={state ? this.state.settings.icon : this.state.settings.iconOff || this.state.settings.icon} style={{ height: '100%' }} />;
@@ -188,7 +189,9 @@ class SmartSwitch extends SmartGeneric {
                 this.state.showDialog ?
                     <Dialog
                         key={this.key + 'dialog'}
+                        icon
                         open={true}
+                        iconType={<TypeIcon type={this.channelInfo.type}/>}
                         transparent
                         dialogKey={this.key + 'dialog'}
                         windowWidth={this.props.windowWidth}

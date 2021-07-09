@@ -94,7 +94,10 @@ class SmartDialogInfo extends SmartDialogGeneric {
     }
 
     getHeader() {
-        return this.props.name;
+        return <>
+            {this.props.iconType !== undefined && this.props.iconType}
+            {this.props.name}
+        </>;
     }
 
     generateContent() {
@@ -105,7 +108,6 @@ class SmartDialogInfo extends SmartDialogGeneric {
 
             let parts = e.id.split('.');
             parts = parts.pop();
-
             if (e.common && e.common.write) {
                 if (e.common.type === 'boolean') {
                     // switch
@@ -136,7 +138,7 @@ class SmartDialogInfo extends SmartDialogGeneric {
                                 min={e.common.min}
                                 max={e.common.max}
                                 step={((e.common.max - e.common.min) / 100)}
-                                value={this.state[e.id].val}
+                                value={this.state[e.id]?.val}
                                 aria-labelledby={e.name}
                                 style={{ width: 'calc(100% - 20px)', marginLeft: 10 }}
                                 onChange={(event, value) => this.handleValue(e.id, value)}
@@ -176,6 +178,7 @@ class SmartDialogInfo extends SmartDialogGeneric {
                         label={e.name}
                         unit={e.unit || ''}
                         value={this.state[e.id]}
+                        role={e?.common?.role}
                         id={this.props.checkHistory(e.id)}
                         icon={<StateIcon type={parts} />}
                         chart={this.props.checkHistory(e.id) ? this.getCharts : null}

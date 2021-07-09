@@ -282,7 +282,15 @@ class SmartGeneric extends Component {
         if (this.width > 1) {
             this.props.tile.setSize(this.width);
         }
+        const location = this.props.getLocation();
 
+        if(location.id === this.id){
+            if(location.dialog === 'charts'){
+                this.stateRx.showDialogBottom = true;
+            }else if(location.dialog === 'dialog'){
+                this.stateRx.showDialog = true;
+            }
+        }
         //    ↓ ignore error here
         // eslint-disable-next-line react/no-direct-mutation-state
         this.state = this.stateRx;
@@ -436,10 +444,12 @@ class SmartGeneric extends Component {
             clearTimeout(this.timer);
             this.timer = null;
         }
+        this.props.doNavigate(null, 'dialog', this.id);
         this.setState({ showDialog: true });
     }
 
     onDialogClose = (e) => {
+        this.props.doNavigate(null);
         this.setState({ showDialog: false })
     };
 
@@ -452,11 +462,14 @@ class SmartGeneric extends Component {
             clearTimeout(this.timer);
             this.timer = null;
         }
+        this.props.doNavigate(null, 'charts', this.id);
         this.setState({ showDialogBottom: true });
     }
 
     onDialogCloseBottom = () =>
-        this.setState({ showDialogBottom: false });
+        this.setState({ showDialogBottom: false }, () => {
+            this.props.doNavigate(null);
+        });
 
     onMouseUp = () => {
         document.removeEventListener('mouseup', this.onMouseUp, { passive: false, capture: true });
@@ -473,7 +486,7 @@ class SmartGeneric extends Component {
         if (this.state.showDialog) {
             return;
         }
-        //e.preventDefault();
+        // e.preventDefault();
         e.stopPropagation();
 
         this.timer = setTimeout(() => {
@@ -1103,7 +1116,9 @@ class SmartGeneric extends Component {
         let array = [];
         ids.forEach(id => {
             const _id = this.checkHistory(id);
-            _id && array.push(_id);
+            if(_id && !array.includes(_id)){
+               array.push(_id);
+            }
         });
         if (showCornerBottom && !array.length) {
             this.showCornerBottom = false;

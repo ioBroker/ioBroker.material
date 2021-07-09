@@ -138,7 +138,7 @@ class App extends GenericApp {
 
     componentDidMount() {
         super.componentDidMount();
-        let path = decodeURIComponent(window.location.hash).replace(/^#/, '');
+        let path = GenericApp.getLocation()?.tab || '';
         const menuFixed = (typeof Storage !== 'undefined') ? window.localStorage.getItem('menuFixed') === '1' : false;
         const widthBlock = window.localStorage.getItem('Material.width') ? JSON.parse(window.localStorage.getItem('Material.width')) : false;
         const state = {
@@ -167,7 +167,6 @@ class App extends GenericApp {
             bigMessage: '',
             widthBlock
         };
-
         this.setState(state);
         document.getElementsByTagName('HTML')[0].className = `${this.state.themeName} ${widthBlock ? 'double' : 'single'}`;
 
@@ -196,6 +195,10 @@ class App extends GenericApp {
                 loadingStep: 'connecting'
             });
         }
+    }
+
+    doNavigate = () => {
+        return GenericApp.doNavigate();
     }
 
     componentWillUnmount() {
@@ -1476,7 +1479,7 @@ class App extends GenericApp {
                 </div>
                 {this.state.editEnumSettings ? <DialogSettings key={'enum-settings'}
                     name={this.getTitle()}
-                    transparent
+                    // transparent
                     windowWidth={parseFloat(this.state.width)}
                     getImages={this.readImageNames}
                     dialogKey={'enum-settings'}
@@ -1507,6 +1510,8 @@ class App extends GenericApp {
             user={this.user}
             states={this.states}
             socket={this.socket}
+            getLocation={GenericApp.getLocation}
+            doNavigate={GenericApp.doNavigate}
             allObjects={this.allObjects}
             systemConfig={this.systemConfig}
             widthBlock={this.state.widthBlock}

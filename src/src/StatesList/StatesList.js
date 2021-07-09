@@ -290,6 +290,8 @@ class StatesList extends Component {
                             states={this.props.states}
                             newLine={this.props.newLine}
                             socket={this.props.socket}
+                            doNavigate={this.props.doNavigate}
+                            getLocation={this.props.getLocation}
                             allObjects={this.props.allObjects}
                             systemConfig={this.props.systemConfig}
                             widthBlock={this.props.widthBlock}
@@ -325,6 +327,8 @@ class StatesList extends Component {
                 states={this.props.states}
                 newLine={this.props.newLine}
                 socket={this.props.socket}
+                doNavigate={this.props.doNavigate}
+                getLocation={this.props.getLocation}
                 allObjects={this.props.allObjects}
                 systemConfig={this.props.systemConfig}
                 widthBlock={this.props.widthBlock}
@@ -739,6 +743,8 @@ class StatesList extends Component {
                         editMode={this.props.editMode}
                         user={this.props.user}
                         socket={this.props.socket}
+                        doNavigate={this.props.doNavigate}
+                        getLocation={this.props.getLocation}
                         allObjects={this.props.allObjects}
                         systemConfig={this.props.systemConfig}
                         widthBlock={this.props.widthBlock}

@@ -48,3 +48,9 @@
 .bottom{
     align-items: flex-end;
 }
+.imageNew{
+    object-fit: contain;
+    width: auto;
+    height: 100%;
+    max-height: 50px;
+}

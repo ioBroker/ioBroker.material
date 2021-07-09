@@ -20,10 +20,11 @@ import { withStyles } from '@material-ui/core/styles';
 import Moment from 'react-moment';
 import Theme from '../../theme';
 import cls from './style.module.scss';
+import IconAdapter from '@iobroker/adapter-react/Components/Icon';
 
 const styles = () => (Theme.dialog.info);
 
-const InfoControl = ({ classes, label, value, onChange, language, icon, unit, chart, id }) => {
+const InfoControl = ({ classes, label, value, onChange, language, icon, unit, chart, id, role }) => {
     let Icon;
     if (icon) {
         if (typeof icon === 'object') {
@@ -47,8 +48,8 @@ const InfoControl = ({ classes, label, value, onChange, language, icon, unit, ch
         })}
         <span className={cls.displayFlex}>
             <div className={cls.valueUnit}>
-            <span className={classes.value}>{value && value.val !== undefined && value.val !== null ? value.val.toString() : '?'}</span>
-            {unit && <span className={cls.unit}>{unit}</span>}
+                <span className={classes.value}>{value && value.val !== undefined && value.val !== null ? role === 'image'?<IconAdapter src={value.val} className={cls.imageNew}/>:value.val.toString() : '?'}</span>
+                {unit && <span className={cls.unit}>{unit}</span>}
             </div>
             {value && value.lc && <Moment className={classes.lc} date={value.lc} interval={15} fromNow locale={language} />}
         </span>

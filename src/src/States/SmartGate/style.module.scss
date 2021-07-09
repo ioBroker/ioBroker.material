@@ -58,7 +58,6 @@
     bottom: 0;
     left: 0;
 }
-
 .filterBlur{
     backdrop-filter: blur(8px);
     transition: backdrop-filter 0.5s;
@@ -79,4 +78,11 @@
     width: 30px !important;
     height: 30px !important;
     min-height: 30px !important;
+}
+.percent {
+    display: flex;
+    position: absolute;
+    right: 7px;
+    top: 18px;
+    font-size: calc(17.5px * var(--widthBlock));
 }

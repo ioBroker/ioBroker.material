@@ -48,6 +48,7 @@ import SmartVacuumCleaner from '../States/SmartVacuumCleaner/SmartVacuumCleaner'
 import SmartLocation from '../States/SmartLocation/SmartLocation';
 import SmartEchart from '../States/SmartEchart/SmartEchart';
 import SmartCamera from '../States/SmartCamera/SmartCamera';
+import SmartGate from '../States/SmartGate/SmartGate';
 import clsx from 'clsx/dist/clsx';
 
 class SmartTile extends Component {
@@ -212,7 +213,7 @@ class SmartTile extends Component {
         return <Paper ref={this.tileRef}
             style={style}
             //    className={this.hasAnimation}
-            className={clsx(cls.paperSmartTitle,this.state.width > 1 && cls.doubleSmartTitle)}
+            className={clsx(cls.paperSmartTitle, this.state.width > 1 && cls.doubleSmartTitle)}
             onMouseDown={this.onMouseDown}
             onTouchStart={this.onMouseDown}
             onMouseUp={this.onMouseUp}
@@ -241,6 +242,8 @@ class SmartTile extends Component {
             channelInfo={channelInfo}
             tile={tile}
             socket={this.props.socket}
+            doNavigate={this.props.doNavigate}
+            getLocation={this.props.getLocation}
             allObjects={this.props.allObjects}
             systemConfig={this.props.systemConfig}
             widthBlock={this.props.widthBlock}
@@ -266,7 +269,10 @@ class SmartTile extends Component {
                 case Types.light:
                 case Types.socket:
                     Control = SmartSwitch;
-                    break;
+                    break; 
+                case Types.gate:
+                    Control = SmartGate;
+                    break; 
                 case Types.dimmer:
                     Control = SmartDimmer;
                     break;

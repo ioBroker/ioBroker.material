@@ -16,10 +16,13 @@
 import React from 'react';
 import Moment from 'react-moment';
 import SmartGeneric from '../SmartGeneric';
-import {MdLock as IconLockClosed} from 'react-icons/md';
-import {MdLockOpen as IconLockOpened} from 'react-icons/md';
-import {MdClose as IconClose} from 'react-icons/md'
-import IconDoorOpened from '../../icons/DoorOpened';
+import { GiGate as IconLockClosed } from "react-icons/gi";
+import { GiOpenGate as IconLockOpened } from "react-icons/gi";
+import { GiStopSign as IconDoorOpened } from "react-icons/gi";
+// import {MdLock as IconLockClosed} from 'react-icons/md';
+// import {MdLockOpen as IconLockOpened} from 'react-icons/md';
+import { MdClose as IconClose } from 'react-icons/md'
+// import IconDoorOpened from '../../icons/DoorOpened';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -49,12 +52,20 @@ class SmartLock extends SmartGeneric {
             } else {
                 this.id = '';
             }
+            let parts = this.id.split('.');
+            parts.pop();
+            parts = parts.join('.');
 
             state = this.channelInfo.states.find(state => state.id && state.name === 'ACTUAL');
-            this.actualId = state ? state.id : this.id;
+            this.actualId = state?.id || `${parts}.ACTUAL`;
 
-            state = this.channelInfo.states.find(state => state.id && state.name === 'OPEN');
+            state = this.channelInfo.states.find(state => state.id && state.name === 'STOP');
             this.openId = state && state.id;
+
+            if (this.actualId) {
+                const common = this.props.objects[this.actualId] && this.props.objects[this.actualId].common;
+                this.actualUnit = common?.unit || '%';
+            }
         }
 
         this.props.tile.setState({
@@ -101,17 +112,17 @@ class SmartLock extends SmartGeneric {
     getIcon() {
         const isOn = this.state[this.id] === '1' || this.state[this.id] === 1 || this.state[this.id] === true || this.state[this.id] === 'true' || this.state[this.id] === 'on' || this.state[this.id] === 'ON';
         const color = isOn ? this.iconColorOn : this.iconColorOff;
-        let style = color ? {color} : {};
+        let style = color ? { color } : {};
         let customIcon;
 
         if (this.state.settings.useDefaultIcon) {
-            customIcon = <IconAdapter src={this.getDefaultIcon()} alt="icon" style={{height: '100%', zIndex: 1}}/>;
+            customIcon = <IconAdapter src={this.getDefaultIcon()} alt="icon" style={{ height: '100%', zIndex: 1 }} />;
         } else {
             if (this.state.settings.icon) {
-                customIcon = <IconAdapter alt="icon" src={isOn ? this.state.settings.icon : this.state.settings.iconOff || this.state.settings.icon} style={{height: '100%', zIndex: 1}}/>;
+                customIcon = <IconAdapter alt="icon" src={isOn ? this.state.settings.icon : this.state.settings.iconOff || this.state.settings.icon} style={{ height: '100%', zIndex: 1 }} />;
             } else {
                 const Icon = isOn ? IconLockOpened : IconLockClosed;
-                customIcon = <Icon className={clsGeneric.iconStyle}/>;
+                customIcon = <Icon className={clsGeneric.iconStyle} />;
             }
         }
 
@@ -124,25 +135,25 @@ class SmartLock extends SmartGeneric {
             const isOn = this.state[this.id] === '1' || this.state[this.id] === 1 || this.state[this.id] === true || this.state[this.id] === 'true' || this.state[this.id] === 'on' || this.state[this.id] === 'ON';
             return isOn ? I18n.t(this.textOn) : I18n.t(this.textOff);
         } else {
-            return <Moment style={{fontSize: 12}} date={this.lastChange} interval={15} fromNow locale={I18n.getLanguage()}/>;
+            return <Moment style={{ fontSize: 12 }} date={this.lastChange} interval={15} fromNow locale={I18n.getLanguage()} />;
         }
     }
 
     onTileClick() {
-        this.setState({dialog: true});
+        this.setState({ dialog: true });
     }
 
     onAction(action) {
         switch (action) {
-            case 'openLock':
+            case 'openGate':
                 this.props.onControl(this.id, true);
                 break;
 
-            case 'closeLock':
+            case 'closeGate':
                 this.props.onControl(this.id, false);
                 break;
 
-            case 'openDoor':
+            case 'stopGate':
                 this.props.onControl(this.openId, true);
                 break;
 
@@ -151,37 +162,41 @@ class SmartLock extends SmartGeneric {
         }
         // No idea why direct control does not work
         setTimeout(() => {
-            this.setState({dialog: false});
+            this.setState({ dialog: false });
         }, 0);
+    }
+
+    getSecondaryDivTop() {
+        return <>
+            {this.state[this.actualId] !== undefined && <div className={cls.percent}>{this.state[this.actualId]}{this.state[this.actualId] && this.actualUnit}</div>}
+        </>
     }
 
     getDialog() {
         return <Dialog
             key={this.key + 'tile-dialog'}
-            style={{zIndex: 2101}}
+            style={{ zIndex: 2101 }}
             open={this.state.dialog}
             classes={{
-                paper:cls.paper
+                paper: cls.paper
             }}
             BackdropProps={{
                 classes: {
-                  root: cls.filterBlur,
+                    root: cls.filterBlur,
                 },
-              }}
-            aria-labelledby={I18n.t('Lock state')}
-            aria-describedby={I18n.t('Select action!')}
-            onEscapeKeyDown={() => this.setState({dialog: false})}
+            }}
+            onEscapeKeyDown={() => this.setState({ dialog: false })}
         >
-            <DialogTitle id="alert-dialog-title" style={{textAlign: 'center'}}>
+            <DialogTitle style={{ textAlign: 'center' }}>
                 {I18n.t('Select action')}
                 <CustomFab className={cls.button} active onClick={() => this.onAction('close')} size="small" autoFocus>
-                        <IconClose />
-                    </CustomFab>
+                    <IconClose />
+                </CustomFab>
             </DialogTitle>
             <DialogActions>
-                <Button style={style.icon} title={I18n.t('Open lock')} onClick={() => this.onAction('openLock')}  color={this.state[this.id]?'primary':'secondary'}><IconLockOpened/></Button>
-                <Button style={style.icon} title={I18n.t('Close lock')}  onClick={() => this.onAction('closeLock')} color={!this.state[this.id]?'primary':'secondary'} autoFocus><IconLockClosed/></Button>
-                {this.openId ? <Button style={style.icon} title={I18n.t('Open door')}  onClick={() => this.onAction('openDoor')}  color="secondary"><IconDoorOpened width={32} height={32}/></Button> : null}
+                <Button style={style.icon} title={I18n.t('Open gate')} onClick={() => this.onAction('openGate')} color={this.state[this.id] ? 'primary' : 'secondary'}><IconLockOpened /></Button>
+                <Button style={style.icon} title={I18n.t('Close gate')} onClick={() => this.onAction('closeGate')} color={!this.state[this.id] ? 'primary' : 'secondary'} autoFocus><IconLockClosed /></Button>
+                {this.openId ? <Button style={style.icon} title={I18n.t('Stop gate')} onClick={() => this.onAction('stopGate')} color="secondary"><IconDoorOpened width={32} height={32} /></Button> : null}
             </DialogActions>
         </Dialog>;
     }
@@ -189,6 +204,7 @@ class SmartLock extends SmartGeneric {
     render() {
         return this.wrapContent([
             this.getStandardContent(this.actualId),
+            this.getSecondaryDivTop(),
             this.state.dialog ? this.getDialog() : null
         ]);
     }

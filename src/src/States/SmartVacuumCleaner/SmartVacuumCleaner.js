@@ -23,7 +23,6 @@ import I18n from '@iobroker/adapter-react/i18n';
 import IconAdapter from '@iobroker/adapter-react/Components/Icon';
 import cls from './style.module.scss';
 import clsGeneric from '../style.module.scss';
-import { dialogChartCallBack } from '../../Dialogs/DialogChart';
 import { IoMdBatteryCharging } from "react-icons/io";
 import clsx from 'clsx';
 
@@ -171,30 +170,10 @@ class SmartVacuumCleaner extends SmartGeneric {
         }
     }
 
-    // getStateText() {
-    //     return this.formatValue(this.state[this.id]);
-    // }
-
 
     getSecondaryDivTop() {
         return <div className={cls.battery}><IoMdBatteryCharging />{this.formatValue(this.state[this.batteryId], this.batteryUnit)}</div>
     }
-
-    // getSecondaryDiv() {
-    //     if (!this.humidityId) {
-    //         return null;
-    //     }
-    //     return (
-    //         <div key={this.key + 'tile-secondary'}
-    //             className={cls.wrapperTextSecond}
-    //             title={I18n.t('Environment values')}>
-    //             {this.humidityId ?
-    //                 [
-    //                     (<IconHydro key={this.key + 'tile-secondary-icon-1'} style={Object.assign({}, Theme.tile.secondary.icon)} />),
-    //                     (<span key={this.key + 'tile-secondary-text-1'} style={Theme.tile.secondary.text}>{this.formatValue(this.state[this.humidityId], this.humUnit)}</span>)
-    //                 ] : null}
-    //         </div>);
-    // }
 
     getSecondaryDivActual() {
         if (!this.stateId) {

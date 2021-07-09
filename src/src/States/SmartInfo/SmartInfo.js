@@ -29,6 +29,7 @@ import cls from './style.module.scss';
 import clsGeneric from '../style.module.scss';
 import clsx from 'clsx/dist/clsx';
 import { dialogChartCallBack } from '../../Dialogs/DialogChart';
+import TypeIcon from '../components/TypeIcon';
 
 const invisibleDefaultRoles = [
     /^timer.off$/,
@@ -92,6 +93,11 @@ class SmartInfo extends SmartGeneric {
         this.props.tile.setState({
             isPointer: this.showCorner
         });
+
+        let parts = this.id.split('.');
+        parts.pop();
+        parts = parts.join('.');
+        this.roleInfo = this.props.objects[parts]?.common?.role || 'info';
 
         this.key = `smart-info-${this.id}-`;
         this.stateRx.chartSettingsId = this.actualId;
@@ -231,6 +237,7 @@ class SmartInfo extends SmartGeneric {
                 <Dialog
                     key={this.key + 'dialog'}
                     open={true}
+                    iconType={<TypeIcon type={this.roleInfo} />}
                     transparent
                     dialogKey={this.key + 'dialog'}
                     windowWidth={this.props.windowWidth}

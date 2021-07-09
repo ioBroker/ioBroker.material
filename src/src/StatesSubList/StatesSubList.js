@@ -232,6 +232,8 @@ class StatesSubList extends Component {
             key={state.id + '-sublist-' + Component.name + '-' + i}
             id={channelId}
             socket={this.props.socket}
+            doNavigate={this.props.doNavigate}
+            getLocation={this.props.getLocation}
             allObjects={this.props.allObjects}
             systemConfig={this.props.systemConfig}
             widthBlock={this.props.widthBlock}

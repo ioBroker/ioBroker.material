@@ -1,0 +1,1 @@
+node ../../node_modules/svgr/bin/svgr -d ./ ./
