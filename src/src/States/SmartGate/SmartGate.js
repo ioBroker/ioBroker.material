@@ -35,6 +35,7 @@ import clsGeneric from '../style.module.scss';
 import Theme from '../../theme';
 import I18n from '@iobroker/adapter-react/i18n';
 import CustomFab from '../components/CustomFab';
+import CustomButton from '../components/CustomButton';
 
 const style = {
     icon: {
@@ -194,9 +195,9 @@ class SmartLock extends SmartGeneric {
                 </CustomFab>
             </DialogTitle>
             <DialogActions>
-                <Button style={style.icon} title={I18n.t('Open gate')} onClick={() => this.onAction('openGate')} color={this.state[this.id] ? 'primary' : 'secondary'}><IconLockOpened /></Button>
-                <Button style={style.icon} title={I18n.t('Close gate')} onClick={() => this.onAction('closeGate')} color={!this.state[this.id] ? 'primary' : 'secondary'} autoFocus><IconLockClosed /></Button>
-                {this.openId ? <Button style={style.icon} title={I18n.t('Stop gate')} onClick={() => this.onAction('stopGate')} color="secondary"><IconDoorOpened width={32} height={32} /></Button> : null}
+                <CustomButton style={style.icon} title={I18n.t('Open gate')} onClick={() => this.onAction('openGate')} active={this.state[this.id]} color={this.state[this.id] ? 'primary' : 'secondary'}><IconLockOpened /></CustomButton>
+                <CustomButton style={style.icon} title={I18n.t('Close gate')} onClick={() => this.onAction('closeGate')} active={!this.state[this.id]} color={!this.state[this.id] ? 'primary' : 'secondary'} autoFocus><IconLockClosed /></CustomButton>
+                {this.openId ? <CustomButton style={style.icon} title={I18n.t('Stop gate')} onClick={() => this.onAction('stopGate')} color="secondary"><IconDoorOpened width={32} height={32} /></CustomButton> : null}
             </DialogActions>
         </Dialog>;
     }

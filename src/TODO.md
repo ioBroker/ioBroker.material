@@ -3,25 +3,21 @@
 - Don't forget about comma/point in floats
 
 - Make translation for icon selector work
+- Change for "colored" the colors. as the text is not readable
+- Change for "light" the colors. as the text is not readable
 
-<!-- - Show chart in the corner if any state of the device has "history"////////// -->
+
 - Remove all WARNINGS
-<!-- - Layout of dialogs: Thermostat, ... -->
 
 ## Info dialog
-<!-- - Show device icon in the title -->
-<!-- - Show for known state types the icon: humidity, temperature, voltage, power, frequency, ... -->
-<!-- - Show small chart (if available), like in thermostat -->
-<!-- - Update dialog like in charts -->
-<!-- - Padding in info dialog left and right -->
 
 ## Control by state
-- Change page
-- Change thema
-<!-- - Open dialog -->
-<!-- - Router for dialogs: 
-    - http://localhost:3000/#rooms.Starter/channelID/
-    - http://localhost:3000/#rooms.Starter/channelID/chart -->
+- Change page: material.0.control.page => 
+  - string '#rooms.Starter'
+  - json {"address": "столовая", "page": "/#rooms.Starter"}
+- Change thema: material.0.control.thema =>
+  - string 'colored'
+  - json: {"address": "столовая", "theme": "colored"}
 
 ## Loading 
 ## Dimmer
@@ -30,8 +26,6 @@
 ## Clock
 
 ## Gate
-<!-- - Depends on type of variable: 
-  - boolean: OPEN / CLOSE buttons -->
   - number: slider from min to max
 
 ## Location
@@ -41,7 +35,6 @@
 ## Blinds
 
 ## Thermostat
-<!-- - On mobile devices hide controls in chart-dialog and make it maximal big -->
 - ? Tooltips for values: actual temperature / target temperature
 
 ## Temperature
@@ -55,6 +48,7 @@
 ## Weather
 - (BF) Type detector to detect current temperature get from current and day 0
 - test widget with all weather adapters
+- Add sunset and sunrise time: https://github.com/ioBroker/ioBroker.type-detector/commit/59c91848df436cb272bb158999925817321fd865
 
 ## Weather current (as type detector)
 
@@ -65,7 +59,11 @@
 ## Icons url
 
 ## Custom e-chart
-<!-- - Add screenshot to Add-Widget dialog -->
 
 ## Camera
 - Auto detect and add widget//
+
+## React.native
+https://www.tutorialspoint.com/react_native/react_native_environment_setup.htm
+
+## Plugins

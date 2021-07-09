@@ -16,9 +16,9 @@
 import React from 'react';
 import Moment from 'react-moment';
 import SmartGeneric from '../SmartGeneric';
-import {MdLock as IconLockClosed} from 'react-icons/md';
-import {MdLockOpen as IconLockOpened} from 'react-icons/md';
-import {MdClose as IconClose} from 'react-icons/md'
+import { MdLock as IconLockClosed } from 'react-icons/md';
+import { MdLockOpen as IconLockOpened } from 'react-icons/md';
+import { MdClose as IconClose } from 'react-icons/md'
 import IconDoorOpened from '../../icons/DoorOpened';
 
 import Dialog from '@material-ui/core/Dialog';
@@ -32,6 +32,7 @@ import clsGeneric from '../style.module.scss';
 import Theme from '../../theme';
 import I18n from '@iobroker/adapter-react/i18n';
 import CustomFab from '../components/CustomFab';
+import CustomButton from '../components/CustomButton';
 
 const style = {
     icon: {
@@ -101,17 +102,17 @@ class SmartLock extends SmartGeneric {
     getIcon() {
         const isOn = this.state[this.id] === '1' || this.state[this.id] === 1 || this.state[this.id] === true || this.state[this.id] === 'true' || this.state[this.id] === 'on' || this.state[this.id] === 'ON';
         const color = isOn ? this.iconColorOn : this.iconColorOff;
-        let style = color ? {color} : {};
+        let style = color ? { color } : {};
         let customIcon;
 
         if (this.state.settings.useDefaultIcon) {
-            customIcon = <IconAdapter src={this.getDefaultIcon()} alt="icon" style={{height: '100%', zIndex: 1}}/>;
+            customIcon = <IconAdapter src={this.getDefaultIcon()} alt="icon" style={{ height: '100%', zIndex: 1 }} />;
         } else {
             if (this.state.settings.icon) {
-                customIcon = <IconAdapter alt="icon" src={isOn ? this.state.settings.icon : this.state.settings.iconOff || this.state.settings.icon} style={{height: '100%', zIndex: 1}}/>;
+                customIcon = <IconAdapter alt="icon" src={isOn ? this.state.settings.icon : this.state.settings.iconOff || this.state.settings.icon} style={{ height: '100%', zIndex: 1 }} />;
             } else {
                 const Icon = isOn ? IconLockOpened : IconLockClosed;
-                customIcon = <Icon className={clsGeneric.iconStyle}/>;
+                customIcon = <Icon className={clsGeneric.iconStyle} />;
             }
         }
 
@@ -124,12 +125,12 @@ class SmartLock extends SmartGeneric {
             const isOn = this.state[this.id] === '1' || this.state[this.id] === 1 || this.state[this.id] === true || this.state[this.id] === 'true' || this.state[this.id] === 'on' || this.state[this.id] === 'ON';
             return isOn ? I18n.t(this.textOn) : I18n.t(this.textOff);
         } else {
-            return <Moment style={{fontSize: 12}} date={this.lastChange} interval={15} fromNow locale={I18n.getLanguage()}/>;
+            return <Moment style={{ fontSize: 12 }} date={this.lastChange} interval={15} fromNow locale={I18n.getLanguage()} />;
         }
     }
 
     onTileClick() {
-        this.setState({dialog: true});
+        this.setState({ dialog: true });
     }
 
     onAction(action) {
@@ -151,37 +152,37 @@ class SmartLock extends SmartGeneric {
         }
         // No idea why direct control does not work
         setTimeout(() => {
-            this.setState({dialog: false});
+            this.setState({ dialog: false });
         }, 0);
     }
 
     getDialog() {
         return <Dialog
             key={this.key + 'tile-dialog'}
-            style={{zIndex: 2101}}
+            style={{ zIndex: 2101 }}
             open={this.state.dialog}
             classes={{
-                paper:cls.paper
+                paper: cls.paper
             }}
             BackdropProps={{
                 classes: {
-                  root: cls.filterBlur,
+                    root: cls.filterBlur,
                 },
-              }}
+            }}
             aria-labelledby={I18n.t('Lock state')}
             aria-describedby={I18n.t('Select action!')}
-            onEscapeKeyDown={() => this.setState({dialog: false})}
+            onEscapeKeyDown={() => this.setState({ dialog: false })}
         >
-            <DialogTitle id="alert-dialog-title" style={{textAlign: 'center'}}>
+            <DialogTitle id="alert-dialog-title" style={{ textAlign: 'center' }}>
                 {I18n.t('Select action')}
                 <CustomFab className={cls.button} active onClick={() => this.onAction('close')} size="small" autoFocus>
-                        <IconClose />
-                    </CustomFab>
+                    <IconClose />
+                </CustomFab>
             </DialogTitle>
             <DialogActions>
-                <Button style={style.icon} title={I18n.t('Open lock')} onClick={() => this.onAction('openLock')}  color={this.state[this.id]?'primary':'secondary'}><IconLockOpened/></Button>
-                <Button style={style.icon} title={I18n.t('Close lock')}  onClick={() => this.onAction('closeLock')} color={!this.state[this.id]?'primary':'secondary'} autoFocus><IconLockClosed/></Button>
-                {this.openId ? <Button style={style.icon} title={I18n.t('Open door')}  onClick={() => this.onAction('openDoor')}  color="secondary"><IconDoorOpened width={32} height={32}/></Button> : null}
+                <CustomButton style={style.icon} title={I18n.t('Open lock')} onClick={() => this.onAction('openLock')} active={this.state[this.id]} color={this.state[this.id] ? 'primary' : 'secondary'}><IconLockOpened /></CustomButton>
+                <CustomButton style={style.icon} title={I18n.t('Close lock')} onClick={() => this.onAction('closeLock')} active={!this.state[this.id]} color={!this.state[this.id] ? 'primary' : 'secondary'} autoFocus><IconLockClosed /></CustomButton>
+                {this.openId ? <CustomButton style={style.icon} title={I18n.t('Open door')} onClick={() => this.onAction('openDoor')} color="secondary"><IconDoorOpened width={32} height={32} /></CustomButton> : null}
             </DialogActions>
         </Dialog>;
     }
