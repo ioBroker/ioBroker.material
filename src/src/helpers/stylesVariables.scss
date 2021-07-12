@@ -1,30 +1,3 @@
-// $themeBlue: (
-//     --backgroundApp: linear-gradient(45deg, #2f2230 0%, #413d4c 35%, #595270 100%),
-//     --backgroundHeader: #474255,
-//     --borderBottomHeader: #34393e,
-//     --backgroundDraver: #454154ba,
-//     --white: #eaebdf,
-//     --generalColor: #eddf73,
-//     --generalColorOpacity: #eddf7317,
-//     --silverColor: #b8c2ce,
-//     --cornerColor: #4a445b #423d50 #312634 #322635,
-//     --cornerColorBottom:#312634 #2c0b36,
-//     --iconWrapperBorder: linear-gradient(45deg, #312433 0%, #3f354c 90%, #423d50 100%),
-//     --iconWrapper: linear-gradient(45deg, #312433 0%, #3f354c 90%, #423d50 100%),
-//     --iconActive: linear-gradient(208deg, #312433 0%, #3f354c 42%, #423d50 100%),
-//     --editActiveBackground: #eddf7326,
-//     --editBackground: #2f2331bd,
-//     --editBorder: #eddf7363,
-//     --editIconColor: #eddf73a1,
-//     --editIconBorder: #151819,
-//     --itemBlockBorder: linear-gradient(45deg, #2a0633 0%, #423d50 59%, #423d50 110%),
-//     --itemBlockBackground: linear-gradient(45deg, #2f2230 0%, #433e51 60%, #504963 100%),
-//     --gradientAddBorder: linear-gradient(197deg, #2c0936 0%, #423d4f 90%, #4e4760 100%),
-//     --gradientAddBackground: linear-gradient(358deg, #312433 0%, #3e374a 45%, #423d50 100%),
-//     --gradientAddActive: linear-gradient(180deg, #eddf73 0%, #ece7bd 90%, #e8e7d9 100%),
-//     --gradientAddDefault: linear-gradient(231deg, #312433 17%, #3f354c 74%, #4e4760 100%),
-//     --colorTextOff: #515151,
-// );
 $themeBlue: (
     --backgroundApp: linear-gradient(45deg, #164477 0%, #20548e 35%, #1f5da2 100%),
     --backgroundHeader: #164177,
@@ -51,6 +24,9 @@ $themeBlue: (
     --gradientAddActive: linear-gradient(180deg, #236384 0%, #6abde6 90%, #6bb4d8 100%),
     --gradientAddDefault: linear-gradient(231deg, #03182f 17%, #083569 74%, #0a3f7f 100%),
     --colorTextOff: #515151,
+    --backgroundDialog: var(--generalColorOpacity),
+    --colorTextDialog: var(--editBackground),
+    --borderDialog: var(--editIconColor),
 );
 $themeColored: (
     --backgroundApp: linear-gradient(45deg, #008a98 0%, #77b1cc 35%, #c4fffc 100%),
@@ -58,7 +34,7 @@ $themeColored: (
     --borderBottomHeader: #1badce,
     --backgroundDraver: #1494a0bf,
     --white: rgb(255, 255, 255),
-    --generalColor: #194040,
+    --generalColor: #002929,
     --generalColorOpacity: #1940406b,
     --silverColor: #e4e4e4,
     --cornerColor: #4ee3d6 #4ee3d6 #30a1c3 #2facc9,
@@ -69,7 +45,7 @@ $themeColored: (
     --editActiveBackground: #62f3e570,
     --editBackground: #005c6ba6,
     --editBorder: #03a6b7,
-    --editIconColor: #1940409e,
+    --editIconColor: #009e9e9e,
     --editIconBorder: #151819,
     --itemBlockBorder: linear-gradient(45deg, #11888e 0%, #659ade 59%, #45ffd4 110%),
     --itemBlockBackground: linear-gradient(45deg, #2ebbd2 0%, #3197bd 60%, #4ec8cc 100%),
@@ -78,6 +54,9 @@ $themeColored: (
     --gradientAddActive: linear-gradient(180deg, #0b7979 0%, #10b1b1 90%, #24c2c3 100%),
     --gradientAddDefault: linear-gradient(231deg, #2fb8d1 17%, #309dc0 74%, #32a3b2 100%),
     --colorTextOff: #87c0d2,
+    --backgroundDialog: #00b3a240,
+    --colorTextDialog: var(--generalColor),
+    --borderDialog: var(--editActiveBackground),
 );
 $themeDark: (
     --backgroundApp: linear-gradient(45deg, rgba(18, 20, 22, 1) 0%, rgba(49, 49, 51, 1) 35%, rgba(48, 52, 57, 1) 100%),
@@ -108,6 +87,9 @@ $themeDark: (
     --gradientAddActive: linear-gradient(180deg, #df4325 0%, #f77b4f 90%, #de8b72 100%),
     --gradientAddDefault: linear-gradient(231deg, #121416 17%, #313133 74%, #5e666f 100%),
     --colorTextOff: #515151,
+    --backgroundDialog: var(--generalColorOpacity),
+    --colorTextDialog: var(--generalColor),
+    --borderDialog: var(--editIconColor),
 );
 $themeLight: (
     --backgroundApp: linear-gradient(45deg, #6e7171 0%, #a6acaf 35%, #f7f7f7 100%),
@@ -124,9 +106,9 @@ $themeLight: (
     --iconWrapper: linear-gradient(51deg, #777777 0%, #a7acad 45%, #d0d6d8 100%),
     --iconActive: linear-gradient(208deg, #5b5c5d 0%, #a9afaf 42%, #c6d0d0 100%),
     --editActiveBackground: #eaeaea70,
-    --editBackground: #828282a6,
+    // --editBackground: #2b2b2ba6,
     --editBorder: #696969,
-    --editIconColor: #4646469e,
+    --editIconColor: #0000009e,
     --editIconBorder: #151819,
     --itemBlockBorder: linear-gradient(45deg, #6f6f6f 0%, #a4a6a9 59%, #f3f3f3 110%),
     --itemBlockBackground: linear-gradient(45deg, #808486 0%, #acaeaf 60%, #cad2d2 100%),
@@ -135,6 +117,9 @@ $themeLight: (
     --gradientAddActive: linear-gradient(180deg, #000000 0%, #5a5a5a 90%, #818484 100%),
     --gradientAddDefault: linear-gradient(231deg, #a9a9a9 17%, #878888 74%, #5d5e5f 100%),
     --colorTextOff: #b1b1b1,
+    --backgroundDialog: #fbfbfb6b,
+    --colorTextDialog: var(--generalColor),
+    --borderDialog: #000000c2,
 );
 
 $double: (

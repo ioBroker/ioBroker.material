@@ -64,6 +64,8 @@ class SmartCamera extends SmartGeneric {
             }
         }
 
+        
+
         this.width = 2;
         this.props.tile.setState({ isPointer: false });
         this.props.tile.setState({ state: true });
@@ -74,6 +76,22 @@ class SmartCamera extends SmartGeneric {
         this.stateRx.showDialog = false; // support dialog in this tile used in generic class)
 
         this.componentReady();
+    }
+
+    componentDidMount() {
+        // get type of object 
+        if (this.props.objects[this.id].common.type === 'file') {
+            // read every 5000
+            this.updateInterval = setInterval(() => 
+                this.props.socket.getBinaryState(this.id)
+                    .then(base64 => {
+                        // Use dom to update image
+                    }), 5000);
+        }    
+    }
+
+    componentWillUnmount() {
+        this.updateInterval && clearInterval(this.updateInterval);
     }
 
     applySettings(settings) {
@@ -162,6 +180,7 @@ class SmartCamera extends SmartGeneric {
                     open={true}
                     key={this.key + 'dialog'}
                     transparent
+                    overflowHidden
 
                     file={this.id ? this.state[this.id] : null}
 

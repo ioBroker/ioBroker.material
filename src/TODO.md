@@ -2,22 +2,13 @@
 - copy from root the package.json into src/src in gulpfile
 - Don't forget about comma/point in floats
 
-- Make translation for icon selector work
-- Change for "colored" the colors. as the text is not readable
-- Change for "light" the colors. as the text is not readable
+- header light in dialog => white
 
 
 - Remove all WARNINGS
 
 ## Info dialog
-
-## Control by state
-- Change page: material.0.control.page => 
-  - string '#rooms.Starter'
-  - json {"address": "столовая", "page": "/#rooms.Starter"}
-- Change thema: material.0.control.thema =>
-  - string 'colored'
-  - json: {"address": "столовая", "theme": "colored"}
+- Instance
 
 ## Loading 
 ## Dimmer
@@ -61,7 +52,7 @@
 ## Custom e-chart
 
 ## Camera
-- Auto detect and add widget//
+- get binary state (1000 in dialog, 5000 in normal state)
 
 ## React.native
 https://www.tutorialspoint.com/react_native/react_native_environment_setup.htm

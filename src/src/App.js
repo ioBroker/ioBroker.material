@@ -69,6 +69,10 @@ const appConfigID = 'system.adapter.material.0';
 
 const styles = () => (Theme.classes);
 
+function getRandomInstance() {
+    return Math.round(Math.random() * 10000);
+}
+
 class App extends GenericApp {
     // ensure ALLOW_KEYBOARD_INPUT is available and enabled
 
@@ -126,6 +130,12 @@ class App extends GenericApp {
                 this.showAlert(message.toString(), 'info');
             }
         };
+
+        this.browserInstance = window.localStorage.getItem('Material.instance');
+        if (!this.browserInstance) {
+            this.browserInstance = getRandomInstance();
+            window.localStorage.setItem('Material.instance', this.browserInstance);
+        }
     }
 
     showAlert = (message, status) => {
@@ -197,13 +207,20 @@ class App extends GenericApp {
         }
     }
 
-    doNavigate = () => {
-        return GenericApp.doNavigate();
+    doNavigate = (tab, dialog, id, arg) => {
+        //if (this.stateThemeId && tab) {
+        //    console.log('SET 1' + this.statePageId);
+        //    this.socket.setState(this.statePageId, {val: tab, ack: true});
+        //}
+        return GenericApp.doNavigate(tab, dialog, id, arg);
     }
 
     componentWillUnmount() {
         super.componentWillUnmount();
         window.removeEventListener('resize', this.updateWindowDimensions);
+        //thema and page change
+        this.socket.unsubscribeState('material.0.control.page', this.onPageChange);
+        this.socket.unsubscribeState('material.0.control.thema', this.onThemaChange);
     }
 
     updateWindowDimensions = () => {
@@ -510,9 +527,52 @@ class App extends GenericApp {
                 this.socket.unsubscribeObject('system.adapter.*', this.onObjectChanged);
                 this.subscribeInstances = false;
             }
+            this.statesPrefix = 'material.0.';
+            //thema and page change
+            this.socket.subscribeState(this.statesPrefix + 'control.page', this.onPageChange);
+            this.socket.subscribeState(this.statesPrefix + 'control.thema', this.onThemaChange);
+
             this.gotObjects = true;
         } catch (err) {
             this.showError(err);
+        }
+    }
+
+
+    checkLocation = (name, instance) => {
+        const location = GenericApp.getLocation();
+
+        if (name !== undefined) {
+            if (typeof name === 'string' && /^[\],:{}\s]*$/.test(name.replace(/\\["\\\/bfnrtu]/g, '@').
+                replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']').
+                replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
+                return this.checkLocation(JSON.parse(name));
+            } else if (typeof name === 'string' && location?.tab !== name && (!instance || this.instance === instance)) {
+                return name;
+            } else if (typeof name === 'object' && name?.page) {
+                return this.checkLocation(name.page, name.instance);
+            }
+        }
+        return null;
+    }
+
+    onPageChange = (id, state) => {
+        // GenericApp.doNavigate
+        if (id === this.statesPrefix + 'control.page' && state && !state.ack && state.val) {
+            console.log('11223344', state);
+            const loc = this.checkLocation(state.val);
+            if (loc && state.val !== loc) {
+                // GenericApp.doNavigate(this.checkLocation(obj.val));
+                this.onItemSelected(`enum.${loc}`);
+            }
+        }    
+    }
+
+    onThemaChange = (id, state) => {      
+        if (id === this.statesPrefix + 'control.theme' && state && !state.ack && state.val) {  
+            if (this.checkThemeName(state.val)) {
+                this.toggleTheme(state.val);
+            }
         }
     }
 
@@ -590,6 +650,10 @@ class App extends GenericApp {
 
     onItemSelected = (enumId, masterPath, doNotCloseMenu) => {
         window.location.hash = encodeURIComponent(enumId.replace(/^enum\./, ''));
+                
+        this.socket.setState(this.statesPrefix + 'control.page', {
+            val: JSON.stringify({page: enumId.replace(/^enum\./, ''), 
+            instance: this.instance}), ack: true});
 
         const states = {
             viewEnum: enumId,
@@ -1325,6 +1389,7 @@ class App extends GenericApp {
             </Toolbar>
             <MenuList
                 width={Theme.menu.width}
+                doNavigate={this.doNavigate}
                 objects={this.objects}
                 debug={this.state.appSettings ? (this.state.appSettings.debug === undefined ? true : this.state.appSettings.debug) : true}
                 user={this.user}
@@ -1424,6 +1489,52 @@ class App extends GenericApp {
         </IconButton>;
     }
 
+    checkThemeName = (name) => {
+        const themeName = this.state.themeName;
+        if (name !== undefined) {
+            if (name && themeName !== name && (name === 'dark' || name === 'blue' || name === 'colored' || name === 'light')) {
+                return name;
+            } else if (typeof name === 'string' && /^[\],:{}\s]*$/.test(name.replace(/\\["\\\/bfnrtu]/g, '@').
+                replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']').
+                replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
+                return this.checkThemeName(JSON.parse(name));
+            } else if (typeof name === 'object' && name?.theme) {
+                return this.checkThemeName(name.theme);
+            }
+        }
+        return null;
+    }
+
+    toggleTheme(name) {
+        const themeName = this.state.themeName;
+
+        // dark => blue => colored => light => dark
+        let newThemeName = themeName === 'dark' ? 'blue' :
+            (themeName === 'blue' ? 'colored' :
+                (themeName === 'colored' ? 'light' : 'dark'));
+
+        if (name !== undefined) {
+            if (this.checkThemeName(name)) {
+                newThemeName = this.checkThemeName(name);
+            } else {
+                return null;
+            }
+        }
+
+        Utils.setThemeName(newThemeName);
+
+        const theme = this.createTheme(newThemeName);
+
+        this.setState({
+            theme,
+            themeName: this.getThemeName(theme),
+            themeType: this.getThemeType(theme)
+        }, () => {
+            document.getElementsByTagName('HTML')[0].className = `${newThemeName} ${this.state.widthBlock ? 'double' : 'single'}`;
+            this.socket.setState(this.statesPrefix + 'control.theme', {val: newThemeName, ack: true});            
+        });
+    }
+
     getAppBar() {
         const toolbarBackground = this.state.settings ? this.state.settings.color : undefined;
         const useBright = !toolbarBackground || Utils.isUseBright(toolbarBackground);
@@ -1470,7 +1581,6 @@ class App extends GenericApp {
                         toggleTheme={() => this.toggleTheme()}
                         themeName={this.state.themeName}
                         className={cls.iconSettings}
-                        widthBlock={this.state.widthBlock}
                         t={I18n.t} />}
                     {this.getEditButton(useBright)}
                     {this.getButtonSpeech(useBright)}
@@ -1511,7 +1621,7 @@ class App extends GenericApp {
             states={this.states}
             socket={this.socket}
             getLocation={GenericApp.getLocation}
-            doNavigate={GenericApp.doNavigate}
+            doNavigate={this.doNavigate}
             allObjects={this.allObjects}
             systemConfig={this.systemConfig}
             widthBlock={this.state.widthBlock}
