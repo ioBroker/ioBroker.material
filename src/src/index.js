@@ -21,14 +21,15 @@ import { MuiThemeProvider } from '@material-ui/core/styles';
 import * as Sentry from '@sentry/browser';
 import * as SentryIntegrations from '@sentry/integrations';
 
+import { Button } from '@material-ui/core';
+import { SnackbarProvider } from 'notistack';
+
+import * as serviceWorker from './serviceWorker';
+
+import '@iobroker/adapter-react/index.css';
 import theme from '@iobroker/adapter-react/Theme';
 import Utils from '@iobroker/adapter-react/Components/Utils';
 import App from './App';
-
-import * as serviceWorker from './serviceWorker';
-import '@iobroker/adapter-react/index.css';
-import { SnackbarProvider } from 'notistack';
-import { Button } from '@material-ui/core';
 
 window.adapterName = 'material';
 

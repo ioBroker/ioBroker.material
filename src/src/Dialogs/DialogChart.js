@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 
-import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import { makeStyles, ThemeProvider } from '@material-ui/core';
 import cls from './style.module.scss';
 
-import IconClose from '@material-ui/icons/Close';
 import { MdClose as CloseIcon } from 'react-icons/md';
 
 import I18n from '@iobroker/adapter-react/i18n';
@@ -18,11 +16,9 @@ import ObjectChart from '../States/components/ObjectChart';
 import CustomFab from '../States/components/CustomFab';
 import clsx from 'clsx/dist/clsx';
 
-
-
 let node = null;
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
     root: {
         backgroundColor: theme.palette.background.paper,
         width: '100%',
@@ -83,15 +79,17 @@ const DialogChart = ({ cb, id, socket, themeType, systemConfig, allObjects, ids 
     const classes = useStyles();
     const [open, setOpen] = useState(true);
     const [arrayObjects, setArrayObjects] = useState([]);
+
     useEffect(() => {
         // document.getElementById('root').className = `blurDialogOpen`;
-    }, [])
+    }, []);
+
     useEffect(() => {
         if (ids.length) {
             let newArray = ids.map(idUri => allObjects[idUri]);
             setArrayObjects(newArray);
         }
-    }, [ids])
+    }, [ids]);
 
     const onClose = () => {
         cb()
@@ -126,7 +124,7 @@ const DialogChart = ({ cb, id, socket, themeType, systemConfig, allObjects, ids 
                 classes={{
                     root: cls.overflowHidden,
                 }}
-                // className={classes.overflowHidden} 
+                // className={classes.overflowHidden}
                 dividers>
                 <div className={classes.showDialog}>
                     {allObjects[id] && <ObjectChart

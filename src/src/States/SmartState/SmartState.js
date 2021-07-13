@@ -254,6 +254,7 @@ class SmartState extends SmartGeneric {
         const Icon = (typeof this.secondary.icon === 'function') ? this.secondary.icon.call(this, val) : this.secondary.icon;
         if (typeof val === 'number') {
             val = Math.round(val * 100) / 100;
+            val = this.roundValue(val);
         }
         return <div key={this.key + 'tile-secondary'} className="tile-text-second" style={Theme.tile.secondary.div} title={this.secondary.title}>
             {Icon ? <Icon style={Object.assign({}, Theme.tile.secondary.icon, this.secondary.iconStyle)} /> : null}

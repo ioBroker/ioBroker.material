@@ -708,7 +708,9 @@ class App extends GenericApp {
             .then(states => {
                 Object.keys(states).forEach(id => {
                     this.states[id] = states[id];
-                    if (!this.states[id]) delete this.states[id];
+                    if (!this.states[id]) {
+                        delete this.states[id];
+                    }
 
                     if (this.subscribes[id]) {
                         this.subscribes[id].forEach(elem => elem.updateState(id, states[id]));

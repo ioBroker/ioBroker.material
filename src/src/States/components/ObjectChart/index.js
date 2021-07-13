@@ -5,14 +5,12 @@ import { withStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 
 import { MuiPickersUtilsProvider, KeyboardTimePicker, KeyboardDatePicker } from '@material-ui/pickers';
-import Paper from '@material-ui/core/Paper';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Toolbar from '@material-ui/core/Toolbar';
-import Fab from '@material-ui/core/Fab';
 import cls from './style.module.scss';
 
 import ReactEchartsCore from 'echarts-for-react/lib/core';
@@ -142,12 +140,14 @@ const styles = theme => ({
 
     toolbarTime: {
         width: 100,
-        marginTop: 9,
+        marginTop: '4px !important',
+        marginBottom: '4px !important',
         marginLeft: theme.spacing(1),
     },
     toolbarDate: {
         width: 160,
-        marginTop: 9,
+        marginTop: '4px !important',
+        marginBottom: '4px !important',
     },
     toolbarTimeGrid: {
         marginLeft: theme.spacing(1),
@@ -356,7 +356,7 @@ class ObjectChart extends Component {
                 .then(_list => {
                     list = _list;
                     // read default history
-                    return this.props.socket.getCompactSystemConfig();
+                    return this.props.socket.getSystemConfig();
                 })
                 .then(config => {
                     return (!this.props.showJumpToEchart ? Promise.resolve([]) : this.props.socket.getAdapterInstances('echarts'))

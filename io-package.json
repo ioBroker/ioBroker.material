@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "material",
-        "version": "0.13.9",
+        "version": "1.0.0",
         "news": {
+            "1.0.0": {
+                "en": "Re-design",
+                "de": "Neugestaltung",
+                "ru": "Редизайн",
+                "pt": "Redesenhar",
+                "nl": "Opnieuw ontwerpen",
+                "fr": "Re-conception",
+                "it": "Riprogettazione",
+                "es": "Rediseño",
+                "pl": "Przeprojektowanie",
+                "zh-cn": "重新设计"
+            },
             "0.13.9": {
                 "en": "Added support for new socket.io",
                 "de": "Unterstützung für neues socket.io hinzugefügt",

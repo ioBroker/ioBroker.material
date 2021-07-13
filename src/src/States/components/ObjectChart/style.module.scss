@@ -1,22 +1,24 @@
-.toolbarTimeGrid{
+.toolbarTimeGrid {
     border: 1px solid var(--editIconColor);
     border-radius: 4px;
     margin: 0 5px;
     padding: 0 5px;
 }
-.wrapperMenu{
+.wrapperMenu {
     margin: 4px 0;
 }
-.toolbarDate{
+.toolbarDate {
     width: 160px;
-    margin-top: 9px;
+    margin-top: 4px !important;
+    margin-bottom: 2px !important;
 }
-.toolbarTime{
+.toolbarTime {
     width: 100px;
-    margin-top: 9px;
     margin-left: 8px;
+    margin-top: 4px !important;
+    margin-bottom: 2px !important;
 }
-.toolbarDate,.toolbarTime{
+.toolbarDate,.toolbarTime {
     // background: var(--editBackground) !important;
     border-radius: 5px;
     // margin-top: 0 !important;
