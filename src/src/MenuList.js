@@ -625,7 +625,6 @@ class MenuList extends Component {
         }
 
         const dividerStyle = useBright ? { backgroundColor: 'rgba(255,255,255,0.12)' } : {};
-        console.log(11223344,this.props.viewEnum)
         if (items && items.length) {
             const list = this.getListItems(items, 0);
             if (this.state.instances && (this.props.root === 'enum.rooms' || this.props.root === Utils.INSTANCES)) {

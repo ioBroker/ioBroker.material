@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import React from 'react';
+import React, { createRef } from 'react';
 
 import SmartGeneric from '../SmartGeneric';
 import Dialog from '../../Dialogs/SmartDialogCamera';
@@ -74,17 +74,20 @@ class SmartCamera extends SmartGeneric {
         this.stateRx.chartSettingsId = this.id;
         // this.stateRx.showDialogBottom = false;
         this.stateRx.showDialog = false; // support dialog in this tile used in generic class)
-
+        this.refImage = createRef();
         this.componentReady();
     }
 
     componentDidMount() {
         // get type of object 
-        if (this.props.objects[this.id].common.type === 'file') {
+        if (this.props.objects[this.id]?.common.type === 'file' && !this.state[this.id]) {
             // read every 5000
             this.updateInterval = setInterval(() => 
                 this.props.socket.getBinaryState(this.id)
                     .then(base64 => {
+                        if(this.refImage.current){
+                            this.refImage.current.src = `data:image/png;base64,${base64}`;
+                        }
                         // Use dom to update image
                     }), 5000);
         }    
@@ -156,7 +159,10 @@ class SmartCamera extends SmartGeneric {
         return <>
             <div className={cls.name}>{this.state.settings.name}</div>
             <div className={cls.wrapCamera}>
+                {this.id && !this.state[this.id]?
+                <img ref={this.refImage} className={cls.camera} src={this.state[this.id]} />:
                 <IconAdapter className={cls.camera} src={this.state[this.id]} />
+                }
             </div>
         </>;
     }
@@ -181,7 +187,11 @@ class SmartCamera extends SmartGeneric {
                     key={this.key + 'dialog'}
                     transparent
                     overflowHidden
-
+                    objects={this.props.objects}
+                    state={this.state}
+                    id={this.id}
+                    socket={this.props.socket}
+                    
                     file={this.id ? this.state[this.id] : null}
 
                     autoFocus={this.autoFocusId ? this.state[this.autoFocusId] : null}

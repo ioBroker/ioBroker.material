@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import React from 'react';
+import React, { createRef } from 'react';
 import PropTypes from 'prop-types';
 import SmartDialogGeneric from './SmartDialogGeneric';
 import IconAdapter from '@iobroker/adapter-react/Components/Icon';
@@ -32,6 +32,7 @@ class SmartDialogCamera extends SmartDialogGeneric {
         }
         this.tMin = this.props.zoomMin || 0;
         this.tMax = this.props.zoomMax || 100;
+        this.refImage = createRef();
     }
 
     onPtzChange = (value) => {
@@ -43,11 +44,33 @@ class SmartDialogCamera extends SmartDialogGeneric {
         }, 100, value);
     }
 
+    componentDidMount() {
+        // get type of object 
+        if (this.props.objects[this.props.id]?.common.type === 'file' && !this.props.state[this.props.id]) {
+            // read every 5000
+            this.updateInterval = setInterval(() =>
+                this.props.socket.getBinaryState(this.props.id)
+                    .then(base64 => {
+                        if (this.refImage.current) {
+                            this.refImage.current.src = `data:image/png;base64,${base64}`;
+                        }
+                        // Use dom to update image
+                    }), 1000);
+        }
+    }
+
+    componentWillUnmount() {
+        this.updateInterval && clearInterval(this.updateInterval);
+    }
+
     generateContent() {
         return <div className={cls.wrapperModalContentCamera}>
-            {this.props.file &&
+            {this.props.file || this.props.id &&
                 <div className={cls.wrapCamera}>
-                    <IconAdapter className={cls.camera} src={this.props.file} />
+                    {this.props.id && !this.props.file  ?
+                        <img ref={this.refImage} className={cls.camera} /> :
+                        <IconAdapter className={cls.camera} src={this.props.file} />
+                    }
                 </div>
             }
 

@@ -207,20 +207,12 @@ class App extends GenericApp {
         }
     }
 
-    doNavigate = (tab, dialog, id, arg) => {
-        //if (this.stateThemeId && tab) {
-        //    console.log('SET 1' + this.statePageId);
-        //    this.socket.setState(this.statePageId, {val: tab, ack: true});
-        //}
-        return GenericApp.doNavigate(tab, dialog, id, arg);
-    }
-
     componentWillUnmount() {
         super.componentWillUnmount();
         window.removeEventListener('resize', this.updateWindowDimensions);
         //thema and page change
         this.socket.unsubscribeState('material.0.control.page', this.onPageChange);
-        this.socket.unsubscribeState('material.0.control.thema', this.onThemaChange);
+        this.socket.unsubscribeState('material.0.control.theme', this.onThemaChange);
     }
 
     updateWindowDimensions = () => {
@@ -530,7 +522,7 @@ class App extends GenericApp {
             this.statesPrefix = 'material.0.';
             //thema and page change
             this.socket.subscribeState(this.statesPrefix + 'control.page', this.onPageChange);
-            this.socket.subscribeState(this.statesPrefix + 'control.thema', this.onThemaChange);
+            this.socket.subscribeState(this.statesPrefix + 'control.theme', this.onThemaChange);
 
             this.gotObjects = true;
         } catch (err) {
@@ -547,7 +539,7 @@ class App extends GenericApp {
                 replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']').
                 replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
                 return this.checkLocation(JSON.parse(name));
-            } else if (typeof name === 'string' && location?.tab !== name && (!instance || this.instance === instance)) {
+            } else if (typeof name === 'string' && location?.tab !== name && (!instance || this.browserInstance === instance)) {
                 return name;
             } else if (typeof name === 'object' && name?.page) {
                 return this.checkLocation(name.page, name.instance);
@@ -557,21 +549,19 @@ class App extends GenericApp {
     }
 
     onPageChange = (id, state) => {
-        // GenericApp.doNavigate
         if (id === this.statesPrefix + 'control.page' && state && !state.ack && state.val) {
-            console.log('11223344', state);
             const loc = this.checkLocation(state.val);
             if (loc && state.val !== loc) {
-                // GenericApp.doNavigate(this.checkLocation(obj.val));
                 this.onItemSelected(`enum.${loc}`);
             }
-        }    
+        }
     }
 
-    onThemaChange = (id, state) => {      
-        if (id === this.statesPrefix + 'control.theme' && state && !state.ack && state.val) {  
-            if (this.checkThemeName(state.val)) {
-                this.toggleTheme(state.val);
+    onThemaChange = (id, state) => {
+        if (id === this.statesPrefix + 'control.theme' && state && !state.ack && state.val) {
+            const loc = this.checkThemeName(state.val);
+            if (loc && state.val !==loc) {
+                this.toggleTheme(loc);
             }
         }
     }
@@ -650,10 +640,13 @@ class App extends GenericApp {
 
     onItemSelected = (enumId, masterPath, doNotCloseMenu) => {
         window.location.hash = encodeURIComponent(enumId.replace(/^enum\./, ''));
-                
+
         this.socket.setState(this.statesPrefix + 'control.page', {
-            val: JSON.stringify({page: enumId.replace(/^enum\./, ''), 
-            instance: this.instance}), ack: true});
+            val: JSON.stringify({
+                page: enumId.replace(/^enum\./, ''),
+                instance: this.browserInstance
+            }), ack: true
+        });
 
         const states = {
             viewEnum: enumId,
@@ -1389,7 +1382,7 @@ class App extends GenericApp {
             </Toolbar>
             <MenuList
                 width={Theme.menu.width}
-                doNavigate={this.doNavigate}
+                doNavigate={GenericApp.doNavigate}
                 objects={this.objects}
                 debug={this.state.appSettings ? (this.state.appSettings.debug === undefined ? true : this.state.appSettings.debug) : true}
                 user={this.user}
@@ -1489,17 +1482,17 @@ class App extends GenericApp {
         </IconButton>;
     }
 
-    checkThemeName = (name) => {
+    checkThemeName = (name, instance) => {
         const themeName = this.state.themeName;
         if (name !== undefined) {
-            if (name && themeName !== name && (name === 'dark' || name === 'blue' || name === 'colored' || name === 'light')) {
+            if (name && themeName !== name && (name === 'dark' || name === 'blue' || name === 'colored' || name === 'light') && (!instance || this.browserInstance === instance)) {
                 return name;
             } else if (typeof name === 'string' && /^[\],:{}\s]*$/.test(name.replace(/\\["\\\/bfnrtu]/g, '@').
                 replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']').
                 replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
                 return this.checkThemeName(JSON.parse(name));
             } else if (typeof name === 'object' && name?.theme) {
-                return this.checkThemeName(name.theme);
+                return this.checkThemeName(name.theme, name.instance);
             }
         }
         return null;
@@ -1531,7 +1524,10 @@ class App extends GenericApp {
             themeType: this.getThemeType(theme)
         }, () => {
             document.getElementsByTagName('HTML')[0].className = `${newThemeName} ${this.state.widthBlock ? 'double' : 'single'}`;
-            this.socket.setState(this.statesPrefix + 'control.theme', {val: newThemeName, ack: true});            
+            this.socket.setState(this.statesPrefix + 'control.theme', { val: JSON.stringify({
+                theme: newThemeName,
+                instance: this.browserInstance
+            }), ack: true });
         });
     }
 
@@ -1621,7 +1617,7 @@ class App extends GenericApp {
             states={this.states}
             socket={this.socket}
             getLocation={GenericApp.getLocation}
-            doNavigate={this.doNavigate}
+            doNavigate={GenericApp.doNavigate}
             allObjects={this.allObjects}
             systemConfig={this.systemConfig}
             widthBlock={this.state.widthBlock}
