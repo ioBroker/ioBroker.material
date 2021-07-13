@@ -52,7 +52,6 @@
 ## Custom e-chart
 
 ## Camera
-- get binary state (1000 in dialog, 5000 in normal state)
 
 ## React.native
 https://www.tutorialspoint.com/react_native/react_native_environment_setup.htm

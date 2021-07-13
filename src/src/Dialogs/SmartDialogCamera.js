@@ -44,18 +44,35 @@ class SmartDialogCamera extends SmartDialogGeneric {
         }, 100, value);
     }
 
+    updateBinaryImage() {
+        this.props.socket.getBinaryState(this.props.id)
+            .then(base64 => {
+                if (this.refImage.current) {
+                    this.refImage.current.src = `data:image/jpeg;base64,${base64}`;
+                }
+                // Use dom to update image
+            });
+    }
+    updateURLImage() {
+        if (this.refImage.current) {
+            this.refImage.current.src = this.props.url.includes('?') ? this.props.url + '&_q=' + Date.now() : this.props.url + '?_q' + Date.now();
+        }
+    }
+
+    updateImage() {
+        if (this.props.url) {
+            this.updateURLImage();
+        } else {
+            this.updateBinaryImage();
+        }
+    }
+
     componentDidMount() {
         // get type of object 
         if (this.props.objects[this.props.id]?.common.type === 'file' && !this.props.state[this.props.id]) {
             // read every 5000
-            this.updateInterval = setInterval(() =>
-                this.props.socket.getBinaryState(this.props.id)
-                    .then(base64 => {
-                        if (this.refImage.current) {
-                            this.refImage.current.src = `data:image/png;base64,${base64}`;
-                        }
-                        // Use dom to update image
-                    }), 1000);
+            this.updateInterval = setInterval(() => this.updateImage(), 1000);
+            this.updateImage();
         }
     }
 
@@ -67,7 +84,7 @@ class SmartDialogCamera extends SmartDialogGeneric {
         return <div className={cls.wrapperModalContentCamera}>
             {this.props.file || this.props.id &&
                 <div className={cls.wrapCamera}>
-                    {this.props.id && !this.props.file  ?
+                    {this.props.id && !this.props.file ?
                         <img ref={this.refImage} className={cls.camera} /> :
                         <IconAdapter className={cls.camera} src={this.props.file} />
                     }

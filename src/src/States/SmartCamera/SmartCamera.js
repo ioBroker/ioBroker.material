@@ -64,7 +64,7 @@ class SmartCamera extends SmartGeneric {
             }
         }
 
-        
+
 
         this.width = 2;
         this.props.tile.setState({ isPointer: false });
@@ -76,21 +76,46 @@ class SmartCamera extends SmartGeneric {
         this.stateRx.showDialog = false; // support dialog in this tile used in generic class)
         this.refImage = createRef();
         this.componentReady();
+
+        if (this.id.startsWith('cameras.')) {
+            this.url = '/' + this.id.replace('.cameras.', '/');
+            if (window.location.port === '3000') {
+                this.url = window.location.protocol + '//' + window.location.hostname + ':8082' + this.url;
+            }
+        }
+    }
+
+    updateBinaryImage() {
+        this.props.socket.getBinaryState(this.id)
+            .then(base64 => {
+                  // Use dom to update image
+                  if (this.refImage.current) {
+                    this.refImage.current.src = `data:image/jpeg;base64,${base64}`;
+                }
+            });
+    }
+    updateURLImage() {
+        if (this.refImage.current) {
+            this.refImage.current.src = this.url.includes('?') ? this.url + '&_q=' + Date.now() : this.url + '?_q=' + Date.now();
+        }
+    }
+
+    updateImage() {
+        if (this.url) {
+            this.updateURLImage();
+        } else {
+            this.updateBinaryImage();
+        }
     }
 
     componentDidMount() {
         // get type of object 
-        if (this.props.objects[this.id]?.common.type === 'file' && !this.state[this.id]) {
+        if (this.props.objects[this.id]?.common.type === 'file') {
+
             // read every 5000
-            this.updateInterval = setInterval(() => 
-                this.props.socket.getBinaryState(this.id)
-                    .then(base64 => {
-                        if(this.refImage.current){
-                            this.refImage.current.src = `data:image/png;base64,${base64}`;
-                        }
-                        // Use dom to update image
-                    }), 5000);
-        }    
+            this.updateInterval = setInterval(() => this.updateImage(), 5000);
+            this.updateImage();
+        }
     }
 
     componentWillUnmount() {
@@ -159,9 +184,9 @@ class SmartCamera extends SmartGeneric {
         return <>
             <div className={cls.name}>{this.state.settings.name}</div>
             <div className={cls.wrapCamera}>
-                {this.id && !this.state[this.id]?
-                <img ref={this.refImage} className={cls.camera} src={this.state[this.id]} />:
-                <IconAdapter className={cls.camera} src={this.state[this.id]} />
+                {this.id && !this.state[this.id] ?
+                    <img ref={this.refImage} className={cls.camera} src={this.state[this.id]} /> :
+                    <IconAdapter className={cls.camera} src={this.state[this.id]} />
                 }
             </div>
         </>;
@@ -191,7 +216,8 @@ class SmartCamera extends SmartGeneric {
                     state={this.state}
                     id={this.id}
                     socket={this.props.socket}
-                    
+                    url={this.url}
+
                     file={this.id ? this.state[this.id] : null}
 
                     autoFocus={this.autoFocusId ? this.state[this.autoFocusId] : null}

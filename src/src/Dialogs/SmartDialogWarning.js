@@ -201,6 +201,9 @@ class SmartDialogWarning extends SmartDialogGeneric  {
     }
 
     updateState(id, state) {
+        if (!id || !state) {
+            return;
+        }
         if (id === this.ids.title ||
             id === this.ids.info ||
             id === this.ids.start ||
