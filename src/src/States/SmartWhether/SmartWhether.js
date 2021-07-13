@@ -196,30 +196,28 @@ class SmartWhether extends SmartGeneric {
     getWeather() {
         const array = [1, 2, 3, 4, 5];
 
-        return (
-            <div key={this.key + 'icon'} className={cls.wrapContent}>
-                <Weather
-                    secondsParams={this.state?.settings?.seconds}
-                    dayOfWeekParams={this.state?.settings?.dayOfWeek}
-                    hour12Params={this.state?.settings['12/24']}
-                    date={this.state?.settings?.date}
-                    doubleSize={this.state?.settings?.doubleSize}
-                    socket={this.props.socket}
-                    data={{
-                        temperature: 'openweathermap.0.forecast.current.temperature',
-                        humidity: 'openweathermap.0.forecast.current.humidity',
-                        title: 'openweathermap.0.forecast.current.title',
-                        array: array.map(e => ({
-                            temperatureMax: `openweathermap.0.forecast.day${e}.temperatureMax`,
-                            temperatureMin: `openweathermap.0.forecast.day${e}.temperatureMin`,
-                            humidity: `openweathermap.0.forecast.day${e}.humidity`,
-                            title: `openweathermap.0.forecast.day${e}.title`,
-                            date: `openweathermap.0.forecast.day${e}.date`
-                        }))
-                    }}
-                />
-            </div>
-        );
+        return <div key={this.key + 'icon'} className={cls.wrapContent}>
+            <Weather
+                secondsParams={this.state?.settings?.seconds}
+                dayOfWeekParams={this.state?.settings?.dayOfWeek}
+                hour12Params={this.state?.settings['12/24']}
+                date={this.state?.settings?.date}
+                doubleSize={this.state?.settings?.doubleSize}
+                socket={this.props.socket}
+                data={{
+                    temperature: 'openweathermap.0.forecast.current.temperature',
+                    humidity: 'openweathermap.0.forecast.current.humidity',
+                    title: 'openweathermap.0.forecast.current.title',
+                    array: array.map(e => ({
+                        temperatureMax: `openweathermap.0.forecast.day${e}.temperatureMax`,
+                        temperatureMin: `openweathermap.0.forecast.day${e}.temperatureMin`,
+                        humidity: `openweathermap.0.forecast.day${e}.humidity`,
+                        title: `openweathermap.0.forecast.day${e}.title`,
+                        date: `openweathermap.0.forecast.day${e}.date`
+                    }))
+                }}
+            />
+        </div>;
     }
 
     onDialogClose = () => {

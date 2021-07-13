@@ -369,33 +369,30 @@ class ImageSelector extends React.Component {
                                     if (this.state.imageStatus !== 'rejected') {
                                         this.setState({imageStatus: 'rejected'});
                                     }
-                                    return (
-                                        <div className={className || this.props.classes.dropzoneDiv} {...getRootProps()}>
-                                            <input {...getInputProps()} />
-                                            <span key="text" className={this.props.classes.text}>{I18n.t('Some files will be rejected')}</span>
-                                            <IconNo key="icon" className={this.props.classes.icon + ' ' + this.props.classes.iconError}/>
-                                        </div>);
+                                    return <div className={className || this.props.classes.dropzoneDiv} {...getRootProps()}>
+                                        <input {...getInputProps()} />
+                                        <span key="text" className={this.props.classes.text}>{I18n.t('Some files will be rejected')}</span>
+                                        <IconNo key="icon" className={this.props.classes.icon + ' ' + this.props.classes.iconError}/>
+                                    </div>;
                                 } else if (isDragActive) {
                                     if (this.state.imageStatus !== 'accepted') {
                                         this.setState({imageStatus: 'accepted'});
                                     }
 
-                                    return (
-                                        <div className={className || this.props.classes.dropzoneDiv} {...getRootProps()}>
-                                            <input {...getInputProps()} />
-                                            <span key="text" className={this.props.classes.text}>{I18n.t('All files will be accepted')}</span>
-                                            <IconPlus key="icon" className={this.props.classes.icon + ' ' + this.props.classes.iconOk}/>
-                                        </div>);
+                                    return <div className={className || this.props.classes.dropzoneDiv} {...getRootProps()}>
+                                        <input {...getInputProps()} />
+                                        <span key="text" className={this.props.classes.text}>{I18n.t('All files will be accepted')}</span>
+                                        <IconPlus key="icon" className={this.props.classes.icon + ' ' + this.props.classes.iconOk}/>
+                                    </div>;
                                 } else {
                                     if (this.state.imageStatus !== 'wait') {
                                         this.setState({imageStatus: 'wait'});
                                     }
-                                    return (
-                                        <div className={className || this.props.classes.dropzoneDiv} {...getRootProps()}>
-                                            <input {...getInputProps()} />
-                                            <span key="text" className={this.props.classes.text}>{I18n.t('Drop some files here or click...')}</span>
-                                            <IconUpload key="icon" className={this.props.classes.icon}/>
-                                        </div>);
+                                    return <div className={className || this.props.classes.dropzoneDiv} {...getRootProps()}>
+                                        <input {...getInputProps()} />
+                                        <span key="text" className={this.props.classes.text}>{I18n.t('Drop some files here or click...')}</span>
+                                        <IconUpload key="icon" className={this.props.classes.icon}/>
+                                    </div>;
                                 }
                             }
                         }

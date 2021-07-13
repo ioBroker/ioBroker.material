@@ -186,24 +186,22 @@ class Thermostat extends React.Component {
         const styles = this.getStyles();
 
         // Piece it all together to form the thermostat display.
-        return (
-            <svg width={this.props.width} height={this.props.height} style={styles.dial}
+        return <svg width={this.props.width} height={this.props.height} style={styles.dial}
                  viewBox={['0 0 ', diameter, ' ', diameter].join('')}
-            >
-                <circle cx={radius} cy={radius} r={radius} style={styles.circle}></circle>
-                <g>{tickArray}</g>
-                <text x={radius} y={radius} style={styles.target}>
-                    {Math.round(this.props.targetTemperature)}
-                </text>
-                <text x={ambientPosition[0]} y={ambientPosition[1]} style={styles.ambient}>
-                    {Math.round(this.props.ambientTemperature)}
-                </text>
-                <text x={radius} y={radius} style={styles.away}>AWAY</text>
-                <path d={leafDef} style={styles.leaf}
-                      transform={['translate(', translate[0], ',', translate[1], ')'].join('')}
-                ></path>
-            </svg>
-        );
+        >
+            <circle cx={radius} cy={radius} r={radius} style={styles.circle}/>
+            <g>{tickArray}</g>
+            <text x={radius} y={radius} style={styles.target}>
+                {Math.round(this.props.targetTemperature)}
+            </text>
+            <text x={ambientPosition[0]} y={ambientPosition[1]} style={styles.ambient}>
+                {Math.round(this.props.ambientTemperature)}
+            </text>
+            <text x={radius} y={radius} style={styles.away}>AWAY</text>
+            <path d={leafDef} style={styles.leaf}
+                  transform={['translate(', translate[0], ',', translate[1], ')'].join('')}
+            />
+        </svg>;
     }
 }
 

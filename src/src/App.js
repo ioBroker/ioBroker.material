@@ -73,6 +73,16 @@ function getRandomInstance() {
     return Math.round(Math.random() * 10000);
 }
 
+function getUrlQuery() {
+    const parts = (window.location.search || '').replace(/^\?/, '').split('&');
+    const query = {};
+    parts.forEach(item => {
+        const [name, val] = item.split('=');
+        query[decodeURIComponent(name)] = val !== undefined ? decodeURIComponent(val) : true;
+    });
+    return query;
+}
+
 class App extends GenericApp {
     // ensure ALLOW_KEYBOARD_INPUT is available and enabled
 
@@ -151,6 +161,9 @@ class App extends GenericApp {
         let path = GenericApp.getLocation()?.tab || '';
         const menuFixed = (typeof Storage !== 'undefined') ? window.localStorage.getItem('menuFixed') === '1' : false;
         const widthBlock = window.localStorage.getItem('Material.width') ? JSON.parse(window.localStorage.getItem('Material.width')) : false;
+
+        this.isApp = getUrlQuery().app;
+
         const state = {
             menuFixed,
             open: menuFixed,
@@ -560,7 +573,7 @@ class App extends GenericApp {
     onThemaChange = (id, state) => {
         if (id === this.statesPrefix + 'control.theme' && state && !state.ack && state.val) {
             const loc = this.checkThemeName(state.val);
-            if (loc && state.val !==loc) {
+            if (loc && state.val !== loc) {
                 this.toggleTheme(loc);
             }
         }

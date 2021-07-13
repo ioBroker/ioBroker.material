@@ -273,51 +273,49 @@ class StatesList extends Component {
             return <Draggable
                 key={this.state.enumID + '_' + id + '-list1'}
                 draggableId={this.state.enumID + '_' + id + '-list'} index={index}>
-                {(provided, snapshot) => (
-                    <div
-                        key={this.state.enumID + '_' + id + '-list2'}
-                        className={clsx(cls.drag, snapshot.isDragging && cls.dragStyle)}
-                        // className={this.props.classes['drag-item'] + (snapshot.isDragging ? ' ' + this.props.classes['drag-item-overlay'] : '')}
-                        // style={{ display: 'inline-block' }}
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                    >
-                        <StatesSubList
-                            key={this.state.enumID + '_' + id + '-list'}
-                            objects={this.props.objects}
-                            user={this.props.user}
-                            states={this.props.states}
-                            newLine={this.props.newLine}
-                            socket={this.props.socket}
-                            doNavigate={this.props.doNavigate}
-                            getLocation={this.props.getLocation}
-                            allObjects={this.props.allObjects}
-                            systemConfig={this.props.systemConfig}
-                            widthBlock={this.props.widthBlock}
-                            items={items}
-                            isUseBright={isUseBright}
-                            ignoreIndicators={this.props.ignoreIndicators}
-                            onVisibilityControl={this.onVisibilityControl}
-                            onDelete={this.onDelete}
-                            themeType={this.props.themeType}
-                            themeName={this.props.themeName}
-                            debug={this.props.debug}
-                            align={this.state.align}
-                            editMode={this.props.editMode}
-                            windowWidth={this.props.windowWidth}
-                            enumFunctions={this.enumFunctions}
-                            enumID={id === Utils.INSTANCES ? Utils.INSTANCES : this.state.enumID}
-                            enumSubID={id === Utils.INSTANCES ? '' : id}
-                            keys={this.keys}
-                            onSaveSettings={this.props.onSaveSettings}
-                            onControl={this.props.onControl}
-                            onCollectIds={this.props.onCollectIds}
-                            dragHandleProps={provided.dragHandleProps}
-                            subDragging={false}
-                        />
-                    </div>
-                )}
+                {(provided, snapshot) => <div
+                    key={this.state.enumID + '_' + id + '-list2'}
+                    className={clsx(cls.drag, snapshot.isDragging && cls.dragStyle)}
+                    // className={this.props.classes['drag-item'] + (snapshot.isDragging ? ' ' + this.props.classes['drag-item-overlay'] : '')}
+                    // style={{ display: 'inline-block' }}
+                    ref={provided.innerRef}
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                >
+                    <StatesSubList
+                        key={this.state.enumID + '_' + id + '-list'}
+                        objects={this.props.objects}
+                        user={this.props.user}
+                        states={this.props.states}
+                        newLine={this.props.newLine}
+                        socket={this.props.socket}
+                        doNavigate={this.props.doNavigate}
+                        getLocation={this.props.getLocation}
+                        allObjects={this.props.allObjects}
+                        systemConfig={this.props.systemConfig}
+                        widthBlock={this.props.widthBlock}
+                        items={items}
+                        isUseBright={isUseBright}
+                        ignoreIndicators={this.props.ignoreIndicators}
+                        onVisibilityControl={this.onVisibilityControl}
+                        onDelete={this.onDelete}
+                        themeType={this.props.themeType}
+                        themeName={this.props.themeName}
+                        debug={this.props.debug}
+                        align={this.state.align}
+                        editMode={this.props.editMode}
+                        windowWidth={this.props.windowWidth}
+                        enumFunctions={this.enumFunctions}
+                        enumID={id === Utils.INSTANCES ? Utils.INSTANCES : this.state.enumID}
+                        enumSubID={id === Utils.INSTANCES ? '' : id}
+                        keys={this.keys}
+                        onSaveSettings={this.props.onSaveSettings}
+                        onControl={this.props.onControl}
+                        onCollectIds={this.props.onCollectIds}
+                        dragHandleProps={provided.dragHandleProps}
+                        subDragging={false}
+                    />
+                </div>}
             </Draggable>;
         } else {
             const control = <StatesSubList

@@ -43,9 +43,9 @@ function build() {
     return ReactDOM.render(<MuiThemeProvider theme={theme(themeName)}>
         <SnackbarProvider
             ref={notistackRef}
-            action={key => (
-                <Button onClick={onClickDismiss(key)}>x</Button>
-            )} maxSnack={6}>
+            action={key => <Button onClick={onClickDismiss(key)}>x</Button>}
+            maxSnack={6}
+        >
             <App onThemeChange={_themeName => {
                 themeName = _themeName;
                 build();

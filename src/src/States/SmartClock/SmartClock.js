@@ -181,17 +181,15 @@ class SmartClock extends SmartGeneric {
     }
 
     getClock() {
-        return (
-            <div key={this.key + 'icon'} className={cls.wrapContent}>
-                <Clock
-                    secondsParams={this.state?.settings?.seconds}
-                    dayOfWeekParams={this.state?.settings?.dayOfWeek}
-                    hour12Params={this.state?.settings['12/24']}
-                    date={this.state?.settings?.date}
-                    doubleSize={this.state?.settings?.doubleSize}
-                />
-            </div>
-        );
+        return <div key={this.key + 'icon'} className={cls.wrapContent}>
+            <Clock
+                secondsParams={this.state?.settings?.seconds}
+                dayOfWeekParams={this.state?.settings?.dayOfWeek}
+                hour12Params={this.state?.settings['12/24']}
+                date={this.state?.settings?.date}
+                doubleSize={this.state?.settings?.doubleSize}
+            />
+        </div>;
     }
 
     onDialogClose = () => {

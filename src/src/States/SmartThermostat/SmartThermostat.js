@@ -187,33 +187,31 @@ class SmartThermostat extends SmartGeneric {
         if (!this.humidityId) {
             return null;
         }
-        return (
-            <div key={this.key + 'tile-secondary'}
-                className={cls.wrapperTextSecond}
-                title={I18n.t('Environment values')}>
-                {this.humidityId ?
-                    [
-                        <IconHydro key={this.key + 'tile-secondary-icon-1'} style={Object.assign({}, Theme.tile.secondary.icon)} />,
-                        <span key={this.key + 'tile-secondary-text-1'} style={Theme.tile.secondary.text}>{this.formatValue(this.state[this.humidityId], this.humUnit)}</span>
-                    ] : null}
-            </div>);
+        return <div key={this.key + 'tile-secondary'}
+            className={cls.wrapperTextSecond}
+            title={I18n.t('Environment values')}>
+            {this.humidityId ?
+                [
+                    <IconHydro key={this.key + 'tile-secondary-icon-1'} style={Object.assign({}, Theme.tile.secondary.icon)} />,
+                    <span key={this.key + 'tile-secondary-text-1'} style={Theme.tile.secondary.text}>{this.formatValue(this.state[this.humidityId], this.humUnit)}</span>
+                ] : null}
+        </div>;
     }
 
     getSecondaryDivActual() {
         if (this.actualId === this.id) {
             return null;
         }
-        return (
-            <div key={this.key + 'tile-secondary'}
-                className={cls.wrapperTextSecondActual}
-                title={I18n.t('Environment values')}>
-                {this.actualId !== this.id ?
-                    [
-                        <IconThermometer key={this.key + 'tile-secondary-icon-0'} style={Object.assign({}, Theme.tile.secondary.icon)} />,
-                        <span key={this.key + 'tile-secondary-text-0'} style={Theme.tile.secondary.text}>{this.formatValue(this.state[this.actualId])}</span>,
-                        <br key={this.key + 'tile-secondary-br-0'} />
-                    ] : null}
-            </div>);
+        return <div key={this.key + 'tile-secondary'}
+            className={cls.wrapperTextSecondActual}
+            title={I18n.t('Environment values')}>
+            {this.actualId !== this.id ?
+                [
+                    <IconThermometer key={this.key + 'tile-secondary-icon-0'} style={Object.assign({}, Theme.tile.secondary.icon)} />,
+                    <span key={this.key + 'tile-secondary-text-0'} style={Theme.tile.secondary.text}>{this.formatValue(this.state[this.actualId])}</span>,
+                    <br key={this.key + 'tile-secondary-br-0'} />
+                ] : null}
+        </div>;
     }
 
     onBoostToggle = boostOn => {

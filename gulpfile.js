@@ -16,9 +16,6 @@
 const gulp       = require('gulp');
 const exec       = require('gulp-exec');
 const fs         = require('fs');
-const copy       = require('gulp-copy');
-const connect    = require('gulp-connect');
-const watch      = require('gulp-watch');
 const del        = require('del');
 const uglify     = require('gulp-uglify');
 const concat     = require('gulp-concat');
@@ -203,18 +200,16 @@ function build() {
     json.version = version;
     fs.writeFileSync(__dirname + '/src/package.json', JSON.stringify(json, null, 2));
 
-
     console.log(options.cwd);
 
     if (fs.existsSync(__dirname + '/src/node_modules/react-scripts/scripts/build.js')) {
         return gulp.src(__dirname + '/src/node_modules/react-scripts/scripts/build.js')
-            .pipe(exec('node <%= file.path %>', options))
-            .pipe(exec.reporter(reportOptions)).pipe(connect.reload());
+            .pipe(exec(file => `node ${file.path}`, options))
+            .pipe(exec.reporter(reportOptions));
     } else {
         return gulp.src(__dirname + '/node_modules/react-scripts/scripts/build.js')
-            .pipe(exec('node <%= file.path %>', options))
-            .pipe(exec.reporter(reportOptions)).pipe(connect.reload());
-
+            .pipe(exec(file => `node ${file.path}`, options))
+            .pipe(exec.reporter(reportOptions));
     }
 }
 
@@ -305,21 +300,8 @@ function patchIndex() {
     });
 }
 
-gulp.task('6-patch', () => patchIndex(gulp));
+gulp.task('6-patch', () => patchIndex());
 
 gulp.task('6-patch-dep', gulp.series('5-copy-dep', '6-patch'));
-
-
-gulp.task('webserver', () => {
-    connect.server({
-        root: 'src/build',
-        livereload: true
-    });
-});
-
-gulp.task('watch', gulp.series('webserver', () => {
-    // Callback mode, useful if any plugin in the pipeline depends on the `end`/`flush` event
-    return watch(['src/src/*/**', 'src/src/*'], { ignoreInitial: true }, ['build']);
-}));
 
 gulp.task('default', gulp.series('6-patch-dep'));

@@ -429,36 +429,34 @@ class Slider extends React.Component {
         const inlineTrackAfterStyles = { [trackProperty]: this.calculateTrackAfterStyles(percent) };
         const inlineThumbStyles = { [thumbProperty]: `${percent}%` };
 
-        return (
-            <Component
-                role="slider"
-                className={className}
-                aria-valuenow={value}
-                aria-valuemin={min}
-                aria-valuemax={max}
-                aria-orientation={vertical ? 'vertical' : 'horizontal'}
-                onClick={this.handleClick}
-                onMouseDown={this.handleMouseDown}
-                onTouchStart={this.handleTouchStart}
-                ref={ref => {
-                    this.containerRef = findDOMNode(ref);
-                }}
-                {...other}
-            >
-                <div className={containerClasses}>
-                    <div className={trackBeforeClasses} style={inlineTrackBeforeStyles} />
-                    <ButtonBase
-                        className={thumbClasses}
-                        disableRipple
-                        style={inlineThumbStyles}
-                        onBlur={this.handleBlur}
-                        onKeyDown={this.handleKeyDown}
-                        onFocusVisible={this.handleFocus}
-                    />
-                    <div className={trackAfterClasses} style={inlineTrackAfterStyles} />
-                </div>
-            </Component>
-        );
+        return <Component
+            role="slider"
+            className={className}
+            aria-valuenow={value}
+            aria-valuemin={min}
+            aria-valuemax={max}
+            aria-orientation={vertical ? 'vertical' : 'horizontal'}
+            onClick={this.handleClick}
+            onMouseDown={this.handleMouseDown}
+            onTouchStart={this.handleTouchStart}
+            ref={ref => {
+                this.containerRef = findDOMNode(ref);
+            }}
+            {...other}
+        >
+            <div className={containerClasses}>
+                <div className={trackBeforeClasses} style={inlineTrackBeforeStyles} />
+                <ButtonBase
+                    className={thumbClasses}
+                    disableRipple
+                    style={inlineThumbStyles}
+                    onBlur={this.handleBlur}
+                    onKeyDown={this.handleKeyDown}
+                    onFocusVisible={this.handleFocus}
+                />
+                <div className={trackAfterClasses} style={inlineTrackAfterStyles} />
+            </div>
+        </Component>;
     }
 }
 

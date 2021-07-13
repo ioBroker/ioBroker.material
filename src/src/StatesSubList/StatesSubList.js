@@ -422,17 +422,15 @@ class StatesSubList extends Component {
         if (this.state.visibleChildren[item.id]) {
             const key = `item-${this.state.enumID}-${this.state.enumSubID}-${item.id}`;
             return <Draggable key={key} draggableId={key} index={index}>
-                {(provided, snapshot) => (
-                    <div
-                        className={this.props.classes['drag-item'] + (snapshot.isDragging ? ' ' + this.props.classes['drag-item-overlay'] : '')}
-                        style={{ display: 'inline-block' }}
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                    >
-                        {item.control}
-                    </div>
-                )}
+                {(provided, snapshot) => <div
+                    className={this.props.classes['drag-item'] + (snapshot.isDragging ? ' ' + this.props.classes['drag-item-overlay'] : '')}
+                    style={{ display: 'inline-block' }}
+                    ref={provided.innerRef}
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                >
+                    {item.control}
+                </div>}
             </Draggable>;
         } else {
             return <div key={'item-' + item.id}>{item.control}</div>;
@@ -600,8 +598,8 @@ class StatesSubList extends Component {
                     <h3 {...this.props.dragHandleProps}
                         className={clsx(cls.h3Style, !this.props.subDragging && cls.h3Active)}
                     >
-                        {this.props.editMode ? (
-                            <IconGrip style={{ color: this.props.isUseBright ? 'white' : 'black', width: 24, height: 24, float: 'left', opacity: this.state.subDragging ? 0 : 1 }} />)
+                        {this.props.editMode ? <IconGrip
+                            style={{ color: this.props.isUseBright ? 'white' : 'black', width: 24, height: 24, float: 'left', opacity: this.state.subDragging ? 0 : 1 }} />
                             : null}
                         {enumIcon && <ListItemIcon className={cls.itemIcon} key="icon">
                             <IconAdapter className={cls.itemIconColor} src={enumIcon} />

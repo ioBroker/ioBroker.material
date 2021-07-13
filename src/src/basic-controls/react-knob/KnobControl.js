@@ -275,18 +275,19 @@ class KnobControl extends Component {
             transform: 'rotate(' + angle + 'deg)'
         };
 
-        return (
-            <div className={this.props.classes.knob} style={style}>
-                <div className={this.props.classes.knobBefore}/>
-            </div>
-        );
+        return <div className={this.props.classes.knob} style={style}>
+            <div className={this.props.classes.knobBefore}/>
+        </div>;
     }
 
     drawValue() {
-        if (this.props.hideValue) return null;
-        return <div className={this.props.classes.value}>{
-            Math.round(this.localValue2externalValue(this.state.value)) + this.unit
-        }</div>;
+        if (this.props.hideValue) {
+            return null;
+        } else {
+            return <div className={this.props.classes.value}>{
+                Math.round(this.localValue2externalValue(this.state.value)) + this.unit
+            }</div>;
+        }
     }
 
     eventToValue(e) {

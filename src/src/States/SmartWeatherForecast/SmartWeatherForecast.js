@@ -609,15 +609,13 @@ class SmartWeatherForecast extends SmartGeneric {
 
     getWeather() {
         if (!this.ids) {
-            return
+            return;
         }
-        return (
-            <Weather
-                doubleSize={this.state?.settings?.doubleSize}
-                socket={this.props.socket}
-                data={this.ids}
-            />
-        );
+        return <Weather
+            doubleSize={this.state?.settings?.doubleSize}
+            socket={this.props.socket}
+            data={this.ids}
+        />;
     }
 
     render() {
