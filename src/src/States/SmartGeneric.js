@@ -21,7 +21,6 @@ import Theme from '../theme';
 
 import { MdVisibility as IconCheck } from 'react-icons/md';
 import { MdVisibilityOff as IconUncheck } from 'react-icons/md';
-import { MdRemove as IconRemoved } from 'react-icons/md';
 import { MdEdit as IconEdit } from 'react-icons/md';
 import { MdArrowUpward as IconDirectionUp } from 'react-icons/md';
 import { MdArrowDownward as IconDirectionDown } from 'react-icons/md';
@@ -30,16 +29,25 @@ import cls from './style.module.scss';
 
 import Dialog from '../Dialogs/SmartDialogSettings';
 import clsx from 'clsx';
-//import ReactEcharts from 'echarts-for-react';
 import ReactEchartsCore from 'echarts-for-react/lib/core';
 
 import * as echarts from 'echarts/core';
 import { LineChart } from 'echarts/charts';
-import { GridComponent } from 'echarts/components';
+import {
+    GridComponent,
+    ToolboxComponent,
+    TooltipComponent,
+    TitleComponent,
+    TimelineComponent,
+    LegendComponent,
+    SingleAxisComponent,
+} from 'echarts/components';
 import { SVGRenderer } from 'echarts/renderers';
 import { dialogChartCallBack } from '../Dialogs/DialogChart';
 
-echarts.use([GridComponent, LineChart, SVGRenderer]);
+//echarts.use([LineChart, SVGRenderer]);
+echarts.use([SingleAxisComponent, LegendComponent, TimelineComponent, ToolboxComponent, TitleComponent, TooltipComponent, GridComponent, LineChart, SVGRenderer]);
+
 
 
 // taken from here: https://stackoverflow.com/questions/4817029/whats-the-best-way-to-detect-a-touch-screen-device-using-javascript
@@ -989,49 +997,31 @@ class SmartGeneric extends Component {
             ack: false,
             q: false,
             addID: false,
-            aggregate: this.props.objects[id]?.common?.type === 'number' ? 'minmax' : 'none'
+            aggregate: this.props.objects[id]?.common?.type === 'number' && !this.props.objects[id]?.common?.states ? 'minmax' : 'none'
         };
 
+        let chart;
         return this.props.socket.getHistory(id || this.id, options)
-            .then(values => {
-                // merge range and chart
-                let chart = [];
-                let r = 0;
-                let range = this.rangeValues;
-                // let minY = null;
-                // let maxY = null;
-
-                for (let t = 0; t < values.length; t++) {
-                    if (range) {
-                        while (r < range.length && range[r].ts < values[t].ts) {
-                            chart.push(range[r]);
-                            // console.log(`add ${new Date(range[r].ts).toISOString()}: ${range[r].val}`);
-                            r++;
-                        }
-                    }
-                    // if range and details are not equal
-                    if (!chart.length || chart[chart.length - 1].ts < values[t].ts) {
-                        chart.push(values[t]);
-                        // console.log(`add value ${new Date(values[t].ts).toISOString()}: ${values[t].val}`)
-                    }
-                }
-
-                if (range) {
-                    while (r < range.length) {
-                        chart.push(range[r]);
-                        console.log(`add range ${new Date(range[r].ts).toISOString()}: ${range[r].val}`);
-                        r++;
-                    }
-                }
-
+            .then(_chart => {
+                chart = _chart;
+                return this.props.socket.getState(id || this.id);
+            })
+            .then(state => {
                 // sort
+                if (chart[0].ts !== start) {
+                    chart.unshift({ts: start, val: null});
+                }
                 chart.sort((a, b) => a.ts > b.ts ? 1 : (a.ts < b.ts ? -1 : 0)).filter(e => e.val !== null);
+                state && state.val !== null && state.val !== undefined && chart.push({ts: Date.now(), val: state.val});
+
+                this.chart = {};
+                this.chart.data = this.convertData(chart);
+                // add current value
                 this.echartsReact.current?.getEchartsInstance().setOption({
-                    series: [{
-                        data: this.convertData(chart)
-                    }],
+                    series: [{data: this.chart.data}],
                     xAxis: {
-                        data: this.convertData(chart)
+                        min: this.chart.min,
+                        max: this.chart.max,
                     }
                 });
             })
@@ -1040,16 +1030,36 @@ class SmartGeneric extends Component {
             );
     }
 
-    convertData = (values) => {
+    convertData = values => {
+        const data = [];
+        if (!values || !values.length) {
+            return data;
+        }
+        for (let i = 0; i < values.length; i++) {
+            if (values[i].val === true) {
+                values[i].val = 1;
+            } else if (values[i].val === false) {
+                values[i].val = 0;
+            }
+
+            data.push({ value: [values[i].ts, values[i].val] });
+        }
+        if (!this.chart.min) {
+            this.chart.min = values[0].ts;
+            this.chart.max = values[values.length - 1].ts;
+        }
+
+        return data;
+    }
+
+    convertDataFlat = (values) => {
         return values.map(e => {
             if (e.val !== null) {
                 if (typeof e.val === 'boolean') {
-                    if (e.val) {
-                        return 1;
-                    }
-                    return 0;
+                    return e.val ? 1 : 0;
+                } else {
+                    return e.val;
                 }
-                return e.val;
             }
             return 0;
         });
@@ -1066,13 +1076,14 @@ class SmartGeneric extends Component {
             if (!this.props.allObjects[idOrData]) {
                 hasHistory = false;
             } else
-                if (!this.props.allObjects[idOrData]?.common?.custom) {
-                    hasHistory = false;
-                } else
-                    if (this.props.allObjects[idOrData]?.common?.custom &&
-                        !this.props.allObjects[idOrData]?.common?.custom[defaultHistory]) {
-                        hasHistory = false;
-                    }
+            if (!this.props.allObjects[idOrData]?.common?.custom) {
+                hasHistory = false;
+            } else
+            if (this.props.allObjects[idOrData]?.common?.custom &&
+                !this.props.allObjects[idOrData]?.common?.custom[defaultHistory]) {
+                hasHistory = false;
+            }
+
             if (!hasHistory && this.props.allObjects[idOrData]?.common?.alias?.id) {
                 const alias = this.props.allObjects[idOrData].common.alias.id;
                 if (typeof alias === 'object') {
@@ -1130,6 +1141,7 @@ class SmartGeneric extends Component {
         return array;
     }
 
+    // used for map or location
     getReadHistoryData = (idOrData, callBack) => {
         const _id = this.checkHistory(idOrData);
         if (!_id) {
@@ -1140,7 +1152,8 @@ class SmartGeneric extends Component {
         }
     }
 
-    readHistoryData = async (id, callBack = () => { }) => {
+    // used for map or location
+    readHistoryData = async (id, cb) => {
         const now = new Date();
         now.setHours(now.getHours() - 24);
         now.setMinutes(0);
@@ -1158,42 +1171,16 @@ class SmartGeneric extends Component {
             ack: false,
             q: false,
             addID: false,
-            aggregate: this.props.objects[id]?.common?.type === 'number' ? 'minmax' : 'none'
+            aggregate: this.props.objects[id]?.common?.type === 'number' && !this.props.objects[id]?.common?.states ? 'minmax' : 'none'
         };
 
         return this.props.socket.getHistory(id || this.id, options)
             .then(values => {
-                let chart = [];
-                let r = 0;
-                let range = this.rangeValues;
-
-                for (let t = 0; t < values.length; t++) {
-                    if (range) {
-                        while (r < range.length && range[r].ts < values[t].ts) {
-                            chart.push(range[r]);
-                            r++;
-                        }
-                    }
-                    if (!chart.length || chart[chart.length - 1].ts < values[t].ts) {
-                        chart.push(values[t]);
-                    }
-                }
-
-                if (range) {
-                    while (r < range.length) {
-                        chart.push(range[r]);
-                        console.log(`add range ${new Date(range[r].ts).toISOString()}: ${range[r].val}`);
-                        r++;
-                    }
-                }
-
                 // sort
-                chart.sort((a, b) => a.ts > b.ts ? 1 : (a.ts < b.ts ? -1 : 0));
-                callBack(this.convertData(chart));
+                values.sort((a, b) => a.ts > b.ts ? 1 : (a.ts < b.ts ? -1 : 0));
+                cb && cb(this.convertDataFlat(values));
             })
-            .catch(e => {
-                console.error('Cannot read history: ' + e);
-            })
+            .catch(e => console.error('Cannot read history: ' + e));
     }
 
     getChartId() {
@@ -1221,7 +1208,7 @@ class SmartGeneric extends Component {
         const style = {
             color: '#f85e27',
             areaStyle: '#f85e276b',
-        }
+        };
         if (this.props.themeName === 'dark') {
             style.color = '#f85e27';
             style.areaStyle = '#f85e276b';
@@ -1236,7 +1223,7 @@ class SmartGeneric extends Component {
             style.areaStyle = '#0202026b';
         }
         const option = {
-            animation: true,
+            animation: false,
             legend: {
                 show: false,
             },
@@ -1251,19 +1238,18 @@ class SmartGeneric extends Component {
             {
                 show: false,
                 boundaryGap: false,
-                data: typeof id === 'string' ? [] : id
+                type: 'time',
             },
             yAxis: {
                 show: false,
-                type: 'value'
             },
             series: [
                 {
                     silent: true,
                     type: 'line',
-                    smooth: (this.props.objects[id]?.common?.type === 'number' || typeof id !== 'string'),
+                    smooth: (this.props.objects[id]?.common?.type === 'number' && !this.props.objects[id]?.common?.states) || typeof id !== 'string',
                     showSymbol: false,
-                    step: !(typeof id === 'string' && this.props.objects[id]?.common?.type === 'number' || typeof id !== 'string'),
+                    step: typeof id !== 'string' || this.props.objects[id]?.common?.type !== 'number' || this.props.objects[id]?.common?.states ? true : undefined,
                     color: style.color,
                     areaStyle: { color: style.areaStyle },
                     data: typeof id === 'string' ? [] : id
@@ -1279,9 +1265,18 @@ class SmartGeneric extends Component {
                 option={option}
                 notMerge={true}
                 lazyUpdate={true}
-                //theme={ this.props.themeType === 'dark' ? 'dark' : '' }
-                //style={{ height: this.state.chartHeight + 'px', width: '100%' }}
                 opts={{ renderer: 'svg' }}
+                onChartReady={() => {
+                    this.echartsReact &&
+                    this.chart && typeof this.echartsReact.getEchartsInstance === 'function' &&
+                    this.echartsReact.getEchartsInstance().setOption({
+                        series: this.chart.data,
+                        xAxis: {
+                            min: this.chart.min,
+                            max: this.chart.max,
+                        }
+                    });
+                }}
             />
         </div>;
     }

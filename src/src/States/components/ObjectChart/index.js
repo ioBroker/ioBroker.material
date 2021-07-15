@@ -463,7 +463,8 @@ class ObjectChart extends Component {
             aggregate: 'none'
         };
 
-        if (end - start > 60000 * 24) {
+        if (end - start > 60000 * 24 &&
+            !(this.props.obj.common.type === 'boolean' || (this.props.obj.common.type === 'number' && this.props.obj.common.states))) {
             options.aggregate = 'minmax';
             //options.step = 60000;
         }
@@ -559,10 +560,10 @@ class ObjectChart extends Component {
         }
     }
 
-    getYAxis(obj, i) {
+    getYAxis(obj, i, isBoolean) {
         return {
             type: 'value',
-            _boolean: true,
+            _boolean: isBoolean,
             _unit: this.units[obj._id],
             boundaryGap: [0, '100%'],
             position: 'left',
@@ -591,7 +592,7 @@ class ObjectChart extends Component {
 
     // result.val === null => start and end are null
     // result === null => no start or no end
-    getInterpolatedValue(i, ts, type, hoverNoNulls) {
+    getInterpolatedValue(i, ts, type, states, hoverNoNulls) {
         const data = this.option.series[i].data;
         if (!data || !data[0] || data[0].value[0] > ts || data[data.length - 1].value[0] < ts) {
             return null;
@@ -607,7 +608,7 @@ class ObjectChart extends Component {
                 if (y2 === null || y2 === undefined || y1 === null || y1 === undefined) {
                     return hoverNoNulls ? null : { exact: false, val: null };
                 }
-                if (type === 'boolean') {
+                if (type === 'boolean' || (type === 'number' && states)) {
                     return { exact: false, val: y1 };
                 }
 
@@ -623,6 +624,8 @@ class ObjectChart extends Component {
     yFormatter(val, obj, withUnit, interpolated, ignoreWidth) {
         if (obj.common.type === 'boolean') {
             return val ? 'TRUE' : 'FALSE';
+        } else if (obj.common.type === 'number' && obj.common.states) {
+            return obj.common.states[val] !== undefined ? obj.common.states[val] : val;
         }
 
         if (val === null || val === undefined) {
@@ -674,7 +677,7 @@ class ObjectChart extends Component {
                 interpolated = { exact: p.data.exact !== undefined ? p.data.exact : true, val: p.value[1] };
             }
 
-            interpolated = interpolated || this.getInterpolatedValue(i, ts, obj.common.type, false);
+            interpolated = interpolated || this.getInterpolatedValue(i, ts, obj.common.type, obj.common.states, false);
             if (!interpolated) {
                 return '';
             }
@@ -720,7 +723,7 @@ class ObjectChart extends Component {
                     yAxisIndex = yAxis.indexOf(axis);
                     position = axis.position;
                 } else {
-                    _yAxis = this.getYAxis(obj, i);
+                    _yAxis = this.getYAxis(obj, i, true);
                     if (yAxis.filter(axis => axis).length) {
                         _yAxis.position = 'right';
                     }
@@ -741,7 +744,7 @@ class ObjectChart extends Component {
                     }
                 }
             } else {
-                const axis = yAxis.find(axis => axis && axis._unit === this.units[id]);
+                const axis = this.units[id] && yAxis.find(axis => axis && axis._unit && axis._unit === this.units[id]);
                 if (axis) {
                     yAxisIndex = yAxis.indexOf(axis);
                     position = axis.position;
@@ -750,8 +753,38 @@ class ObjectChart extends Component {
                     if (yAxis.filter(axis => axis).length) {
                         _yAxis.position = 'right';
                     }
+                    if (obj.common.type === 'number' && obj.common.states) {
+                        _yAxis.axisLabel.showMaxLabel = false;
+                        _yAxis.axisLabel.formatter = value => obj.common.states[value] !== undefined ? obj.common.states[value] : value;
+                        const keys = Object.keys(obj.common.states);
+                        keys.sort();
+                        _yAxis.max = parseFloat(keys[keys.length - 1]) + 0.5;
+                        _yAxis.interval = 1;
+                    }
                     position = _yAxis.position;
                 }
+
+                if (obj.common.type === 'number' && obj.common.states) {
+                    const keys = Object.keys(obj.common.states);
+                    let max = '';
+                    for (let i = 0; i < keys.length; i++) {
+                        if (typeof obj.common.states[keys[i]] === 'string' && obj.common.states[keys[i]].length > max.length) {
+                            max = obj.common.states[keys[i]];
+                        }
+                    }
+
+                    if (position === 'left') {
+                        const w = calcTextWidth(max);
+                        if (w > widthAxisLeft) {
+                            widthAxisLeft = w;
+                        }
+                    } else {
+                        const w = calcTextWidth(max);
+                        if (w > widthAxisRight[i]) {
+                            widthAxisRight[i] = w;
+                        }
+                    }
+                } else
                 if (position === 'left') {
                     if (this.minY[id] !== null && this.minY[id] !== undefined) {
                         const w = calcTextWidth(this.minY[id].toString() + this.units[id]);
@@ -799,7 +832,7 @@ class ObjectChart extends Component {
                 name: this.names[obj._id],
                 yAxisIndex: yAxisIndex,
                 type: 'line',
-                step: obj.common.type === 'boolean' ? 'end' : undefined,
+                step: obj.common.type === 'boolean' || (obj.common.type === 'number' && obj.common.states) ? 'end' : undefined,
                 showSymbol: false,
                 hoverAnimation: true,
                 animation: false,
@@ -1293,6 +1326,17 @@ class ObjectChart extends Component {
                 theme={this.props.themeType === 'dark' ? 'dark' : ''}
                 style={{ height: this.state.chartHeight + 'px', width: '100%' }}
                 opts={{ renderer: 'svg' }}
+                onChartReady={() => {
+                    this.echartsReact &&
+                    this.chartValues && typeof this.echartsReact.getEchartsInstance === 'function' &&
+                    this.echartsReact.getEchartsInstance().setOption({
+                        series: this.objectList.map(obj => ({ data: this.convertData(obj._id) })),
+                        xAxis: {
+                            min: this.chart.min,
+                            max: this.chart.max,
+                        }
+                    });
+                }}
                 onEvents={{
                     rendered: e => {
                         this.objectList.length === 1 && this.installEventHandlers();

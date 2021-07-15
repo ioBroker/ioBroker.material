@@ -104,10 +104,20 @@ class App extends GenericApp {
             'pl': require('./i18n/pl'),
             'zh-cn': require('./i18n/zh-cn'),
         };
+        const query = getUrlQuery();
+
+        if (query.port) {
+            extendedProps.socket = {
+                port: query.port,
+                host: query.host || window.location.hostname,
+            }
+        }
+
         super(props, extendedProps);
 
         I18n.setLanguage((navigator.language || navigator.userLanguage || 'en').substring(0, 2).toLowerCase());
 
+        this.isApp = query.app;
         this.objects = {};
         this.allObjects = {};
         this.systemConfig = {};
@@ -161,8 +171,6 @@ class App extends GenericApp {
         let path = GenericApp.getLocation()?.tab || '';
         const menuFixed = (typeof Storage !== 'undefined') ? window.localStorage.getItem('menuFixed') === '1' : false;
         const widthBlock = window.localStorage.getItem('Material.width') ? JSON.parse(window.localStorage.getItem('Material.width')) : false;
-
-        this.isApp = getUrlQuery().app;
 
         const state = {
             menuFixed,
