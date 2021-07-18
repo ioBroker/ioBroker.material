@@ -195,5 +195,11 @@
   "last 30 days": "letzte 30 Tage",
   "this year": "dieses Jahr",
   "Relative": "Relativ",
-  "custom range": "benutzerdefinierten Bereich"
+  "custom range": "benutzerdefinierten Bereich",
+  "UNREACH": "Gerät nicht erreichbar",
+  "WORKING": "In der Ausführung...",
+  "LOWBAT": "Niedriger Batteriestatus!",
+  "MAINTAIN": "Wartung erforderlich",
+  "ERROR": "Globaler Fehler",
+  "DIRECTION": "Richtung"
 }

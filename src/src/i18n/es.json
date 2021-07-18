@@ -195,5 +195,11 @@
   "last 30 days": "últimos 30 días",
   "this year": "este año",
   "Relative": "Relativo",
-  "custom range": "rango personalizado"
+  "custom range": "rango personalizado",
+  "UNREACH": "Dispositivo inaccesible",
+  "WORKING": "Trabajando...",
+  "LOWBAT": "¡Batería baja!",
+  "MAINTAIN": "Requiere mantenimiento",
+  "ERROR": "Error global",
+  "DIRECTION": "Dirección"
 }

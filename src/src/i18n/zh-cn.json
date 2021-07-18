@@ -195,5 +195,11 @@
   "last 30 days": "过去 30 天",
   "this year": "今年",
   "Relative": "相对的",
-  "custom range": "自定义范围"
+  "custom range": "自定义范围",
+  "UNREACH": "设备不可达",
+  "WORKING": "在职的...",
+  "LOWBAT": "低电量！",
+  "MAINTAIN": "需要维护",
+  "ERROR": "全局错误",
+  "DIRECTION": "方向"
 }

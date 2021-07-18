@@ -195,5 +195,11 @@
   "last 30 days": "laatste 30 dagen",
   "this year": "dit jaar",
   "Relative": "Familielid",
-  "custom range": "aangepast bereik"
+  "custom range": "aangepast bereik",
+  "UNREACH": "Apparaat onbereikbaar",
+  "WORKING": "Werken...",
+  "LOWBAT": "Lage batterij!",
+  "MAINTAIN": "Onderhoud vereist",
+  "ERROR": "Algemene fout",
+  "DIRECTION": "Richting"
 }

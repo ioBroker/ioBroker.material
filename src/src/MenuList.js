@@ -245,10 +245,10 @@ class MenuList extends Component {
                         }
                         const name = settings.name;
                         const visibilityButton = this.props.editMode ? <VisibilityButton className={cls.expendIcon} useBright={useBright} visible={this.state.visibility[item.id]} onChange={() => this.onToggleEnabled(null, item.id)} /> : null;
-                        let style = {};
+                        /*let style = {};
                         if (this.props.editMode && !this.state.visibility[item.id]) {
                             style = Object.assign({}, style, { opacity: 0.5 });
-                        }
+                        }*/
                         if (item.id === 'enum.rooms') {
                             return <IconButton
                                 key={item.id}
@@ -304,11 +304,13 @@ class MenuList extends Component {
         if (!page) {
             let pages = items.map(item => {
                 let ids = this.getElementsToShow(item.id);
-                return ids.find(item => {
-                    return this.props.objects[item.id] && this.props.objects[item.id].common && this.props.objects[item.id].common.members && this.props.objects[item.id].common.members.length
-                });
+                return ids.find(item =>
+                    this.props.objects[item.id] &&
+                    this.props.objects[item.id].common &&
+                    this.props.objects[item.id].common.members &&
+                    this.props.objects[item.id].common.members.length);
             });
-            page = pages.find(item => pages[0]);
+            page = pages.find(item => item);//pages.find(item => pages[0]);
         }
         this.props.onRootChanged && this.props.onRootChanged(id, page && page.id, true);
     }
@@ -519,7 +521,7 @@ class MenuList extends Component {
                     return (e.settings.prefix || '') + e.settings.icon;
                 }
         });
-        const anyIcons = !!icons.find(icon => icon);
+        //const anyIcons = !!icons.find(icon => icon);
 
         const useBright = Utils.isUseBright(this.state.background, false);
 
@@ -536,7 +538,7 @@ class MenuList extends Component {
             }
 
             const visibilityButton = this.props.editMode ? <VisibilityButton
-                key="button"
+                key={'button-' + i}
                 big={true}
                 className={cls.expendIcon}
                 visible={this.state.visibility[item.id]}
@@ -548,7 +550,7 @@ class MenuList extends Component {
             style.width = `calc(100% - ${16 * level}px)`;
 
             const expanded = this.state.roots[item.id] && this.state.roots[item.id].expanded;
-            const styleButton = useBright ? styles.menuTextBright : styles.menuTextDark;
+            //const styleButton = useBright ? styles.menuTextBright : styles.menuTextDark;
 
             const content = <div className={cls.contentItem}>
                 <ListItemIcon className={cls.itemIcon} key="icon">
@@ -567,7 +569,7 @@ class MenuList extends Component {
                 {children && children.length ? (expanded ?
                     <ExpandLess key="ExpandLess" className={cls.expendIcon} onClick={e => this.onExpandMenu(e, item.id)} /> :
                     <ExpandMore key="ExpandMore" className={cls.expendIcon} onClick={e => this.onExpandMenu(e, item.id)} />) : ''}
-            </div>
+            </div>;
 
             return [
                 this.getSortableItem(content, style, this.props.viewEnum === item.id ? 'menu-selected' : '', item.id, i, parent),
@@ -575,7 +577,7 @@ class MenuList extends Component {
                     <Collapse key={'sub_' + item.id} in={expanded} timeout="auto" unmountOnExit>
                         {this.getSortableContainer(children, null, 'list_' + item.id)}
                     </Collapse> : null
-            ]
+            ];
         });
     }
 

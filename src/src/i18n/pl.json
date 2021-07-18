@@ -195,5 +195,11 @@
   "last 30 days": "ostatnie 30 dni",
   "this year": "W tym roku",
   "Relative": "Krewny",
-  "custom range": "Zakres niestandardowy"
+  "custom range": "Zakres niestandardowy",
+  "UNREACH": "Urządzenie nieosiągalne",
+  "WORKING": "Pracujący...",
+  "LOWBAT": "Niski poziom baterii!",
+  "MAINTAIN": "Wymagana konserwacja",
+  "ERROR": "Globalny błąd",
+  "DIRECTION": "Kierunek"
 }

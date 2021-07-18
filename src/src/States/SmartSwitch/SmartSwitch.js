@@ -52,7 +52,11 @@ class SmartSwitch extends SmartGeneric {
             state = this.channelInfo.states.find(state => state.id && state.name === 'ACTUAL');
             this.actualId = state ? state.id : this.id;
 
-            let infoIDs = this.channelInfo.states.filter(state => state.name !== 'ACTUAL' && state.name !== 'SET').map(state => state?.id || `${parts}.${state.name}`).filter(id => !!this.props.objects[id]);
+            let infoIDs = this.channelInfo.states
+                .filter(state => state.name !== 'ACTUAL' && state.name !== 'SET' && !state.indicator)
+                .map(state => state?.id || `${parts}.${state.name}`)
+                .filter(id => !!this.props.objects[id]);
+
             // place numbers first
             if (infoIDs.length > 1) {
                 infoIDs.sort((a, b) => {
@@ -104,7 +108,7 @@ class SmartSwitch extends SmartGeneric {
         this.props.tile.setState({
             isPointer: true
         });
-        this.key = 'smart-switch-' + this.id + '-';
+        this.key = `smart-switch-${this.id}-`;
         this.doubleState = true; // used in generic
         this.noAck = true;  // used in generic
 
@@ -153,14 +157,13 @@ class SmartSwitch extends SmartGeneric {
 
     getIcon() {
         const state = !!this.state[this.actualId];
-        let style = state ? { color: this.colorOn } : { color: this.colorOff };
+        /*let style = state ? { color: this.colorOn } : { color: this.colorOff };
         if (this.style) {
             style = Object.assign(style, this.style);
-        }
+        }*/
         let customIcon;
 
         if (this.state.settings.useDefaultIcon) {
-            // TODO: which src should be?
             customIcon = <IconAdapter className={clsx(clsGeneric.iconStyle, this.state[this.id] && clsGeneric.activeIconStyle)} alt="icon" src={this.getDefaultIcon()} style={{ height: '100%' }} />;
         } else {
             if (this.state.settings.icon) {
@@ -170,6 +173,7 @@ class SmartSwitch extends SmartGeneric {
                 customIcon = <Icon className={clsx(clsGeneric.iconStyle, this.state[this.id] && clsGeneric.activeIconStyle)} />;
             }
         }
+
         return SmartGeneric.renderIcon(customIcon, this.state.executing, this.state[this.id]);
     }
 
@@ -178,7 +182,9 @@ class SmartSwitch extends SmartGeneric {
     }
 
     getSecondaryDiv() {
-        return <div key="secondary" className={cls.wrapperSwitch}><CustomSwitch customValue onChange={this.toggle} value={this.state[this.id]} /></div>
+        return <div key="secondary" className={cls.wrapperSwitch}>
+            <CustomSwitch customValue onChange={this.toggle} value={this.state[this.id]} />
+        </div>;
     }
 
     render() {
@@ -206,7 +212,16 @@ class SmartSwitch extends SmartGeneric {
                         objects={this.props.objects}
                         themeName={this.props.themeName}
                         socket={this.props.socket}
-                        openModal={id => dialogChartCallBack(() => { }, id, this.props.socket, this.props.themeType, this.props.systemConfig, this.props.allObjects, [id])}
+                        openModal={id =>
+                            dialogChartCallBack(
+                                () => { },
+                                id,
+                                this.props.socket,
+                                this.props.themeType,
+                                this.props.systemConfig,
+                                this.props.allObjects,
+                                [id]
+                            )}
                     /> : null
             ]);
     }

@@ -292,7 +292,7 @@ class SmartGeneric extends Component {
         }
         const location = this.props.getLocation();
 
-        if(location.id === this.id){
+        if (location.id === this.id){
             if(location.dialog === 'charts'){
                 this.stateRx.showDialogBottom = true;
             }else if(location.dialog === 'dialog'){
@@ -453,12 +453,19 @@ class SmartGeneric extends Component {
             this.timer = null;
         }
         this.props.doNavigate(null, 'dialog', this.id);
+
+        // disable handler
+        this.props.tile.disableHandler('onClick');
         this.setState({ showDialog: true });
     }
 
-    onDialogClose = (e) => {
+    onDialogClose = e => {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
         this.props.doNavigate(null);
-        this.setState({ showDialog: false })
+        this.setState({ showDialog: false }, () => this.props.tile.enableHandler('onClick'));
     };
 
     onLongClickBottom = e => {
@@ -895,8 +902,7 @@ class SmartGeneric extends Component {
         ];
     }
 
-    static renderIcon = (icon, loading, active, onClick = () => {
-    }, color = '') => {
+    static renderIcon = (icon, loading, active, onClick = () => {}, color = '') => {
         return <div onClick={onClick} className={clsx(cls.iconWrapper, loading && cls.iconWrapperLoading)}>
             <div className={clsx(cls.styleIcon, loading && cls.styleIconLoading, active && cls.styleIconActive)}>
                 {icon}

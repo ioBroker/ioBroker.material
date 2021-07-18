@@ -17,27 +17,29 @@ import React, { Component, createRef } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 
-import Theme from '../theme';
 import Snackbar from '@material-ui/core/Snackbar';
-import { MdClose as CloseIcon } from 'react-icons/md';
 import Fab from '@material-ui/core/Fab';
 import I18n from '@iobroker/adapter-react/i18n';
 import { Dialog } from "@material-ui/core";
 import DialogActions from '@material-ui/core/DialogActions';
-import Button from '@material-ui/core/Button';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import cls from './style.module.scss';
 import ReactEchartsCore from 'echarts-for-react/lib/core';
-import CustomFab from '../States/components/CustomFab';
 
 import * as echarts from 'echarts/core';
 import { LineChart } from 'echarts/charts';
-import { GridComponent } from 'echarts/components';
+//import { GridComponent } from 'echarts/components';
 import { SVGRenderer } from 'echarts/renderers';
 import CustomButton from '../States/components/CustomButton';
 
-echarts.use([GridComponent, LineChart, SVGRenderer]);
+import { MdClose as CloseIcon } from 'react-icons/md';
+
+import Theme from '../theme';
+import CustomFab from '../States/components/CustomFab';
+import cls from './style.module.scss';
+
+echarts.use([/*GridComponent,*/ LineChart, SVGRenderer]);
+
 class SmartDialogGeneric extends Component {
 
     static COLOR_MODES = {
@@ -168,7 +170,11 @@ class SmartDialogGeneric extends Component {
             return <Fab
                 size="small"
                 aria-label={I18n.t('close')}
-                onClick={() => this.onClose(true)}
+                onClick={e => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    this.onClose(true)
+                }}
                 style={Theme.dialog.closeButtonLeft}>
                 <CloseIcon />
             </Fab>;
@@ -269,9 +275,9 @@ class SmartDialogGeneric extends Component {
 
     getCharts = (id, ref, classes) => {
         //style
-        //classes.root 
-        //classes.name 
-        //classes.chart 
+        //classes.root
+        //classes.name
+        //classes.chart
         //
         if (!this.firstGetCharts[id]) {
             this.firstGetCharts[id] = true;
@@ -376,7 +382,7 @@ class SmartDialogGeneric extends Component {
                     />
                     {this.showCloseButton()}
                 </Paper>
- 
+
             {this.getAdditionalElements && this.getAdditionalElements()}
         </div>;*/
         return <Dialog

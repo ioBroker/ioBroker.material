@@ -24,7 +24,6 @@ import Utils from '@iobroker/adapter-react/Components/Utils';
 
 import SmartBlinds from '../States/SmartBlinds/SmartBlinds';
 import SmartButton from '../States/SmartButton/SmartButton';
-// import SmartDimmer from '../States/SmartDimmer/SmartDimmer';
 import SmartGeneric from '../States/SmartGeneric';
 import SmartInfo from '../States/SmartInfo/SmartInfo';
 import SmartSlider from '../States/SmartSlider/SmartSlider';
@@ -88,6 +87,7 @@ class SmartTile extends Component {
             onMouseUp: null,
             onClick: null
         };
+        this.disabledHandlers = {};
         this.tileRef = React.createRef();
     }
 
@@ -107,6 +107,7 @@ class SmartTile extends Component {
         this.handlers.onMouseUp && !this.props.editMode && this.handlers.onMouseUp(e);
 
     onClick = e => {
+        e.stopPropagation();
         this.handlers.onClick && !this.props.editMode && this.handlers.onClick(e);
     };
 
@@ -230,6 +231,18 @@ class SmartTile extends Component {
     registerHandler = (eventName, handler) =>
         this.handlers[eventName] = handler;
 
+    disableHandler = eventName => {
+        this.disabledHandlers[eventName] = this.handlers[eventName];
+        this.handlers[eventName] = null;
+    }
+
+    enableHandler = eventName => {
+        if (this.disabledHandlers[eventName]) {
+            this.handlers[eventName] = this.disabledHandlers[eventName];
+            delete this.disabledHandlers[eventName];
+        }
+    }
+
     unregisterHandler = eventName =>
         this.handlers[eventName] && (this.handlers[eventName] = null);
 
@@ -269,10 +282,10 @@ class SmartTile extends Component {
                 case Types.light:
                 case Types.socket:
                     Control = SmartSwitch;
-                    break; 
+                    break;
                 case Types.gate:
                     Control = SmartGate;
-                    break; 
+                    break;
                 case Types.dimmer:
                     Control = SmartDimmer;
                     break;

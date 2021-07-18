@@ -1,9 +1,21 @@
 {
     "common": {
         "name": "material",
-        "version": "1.0.0",
+        "version": "1.0.2",
         "news": {
-            "1.0.0": {
+            "1.0.2": {
+                "en": "Redesign",
+                "de": "Neugestaltung",
+                "ru": "Редизайн",
+                "pt": "Redesenhar",
+                "nl": "Herontwerp",
+                "fr": "Refonte",
+                "it": "Riprogettazione",
+                "es": "Rediseñar",
+                "pl": "Przeprojektowanie",
+                "zh-cn": "重新设计"
+            },
+            "1.0.1": {
                 "en": "Re-design",
                 "de": "Neugestaltung",
                 "ru": "Редизайн",
@@ -110,7 +122,7 @@
                 "pl": "Naprawiono błąd z pustą stroną"
             }
         },
-        "title":                    "Material UI",
+        "title": "Material UI",
         "desc": {
             "en": "Material UI based ioBroker user interface",
             "de": "ioBroker GUI für mobile Geräte auf dem Basis von Material UI",
@@ -123,18 +135,24 @@
             "pl": "Interfejs użytkownika ioBroker oparty na interfejsie użytkownika",
             "zh-cn": "基于Material UI的ioBroker用户界面"
         },
-        "platform":                 "Javascript/Node.js",
-        "onlyWWW":                  true,
-        "loglevel":                 "info",
-        "icon":                     "material.png",
-        "enabled":                  true,
-        "extIcon":                  "https://raw.githubusercontent.com/ioBroker/ioBroker.material/master/admin/material.png",
-        "keywords":                 ["user", "interface", "webapp", "jquerymobile", "ui"],
-        "readme":                   "https://github.com/ioBroker/ioBroker.material/blob/master/README.md",
-        "singleton":                true,
-        "preserveSettings":         "custom",
-	    "nogit":                    true,
-        "webPreSettings":           {
+        "platform": "Javascript/Node.js",
+        "onlyWWW": true,
+        "loglevel": "info",
+        "icon": "material.png",
+        "enabled": true,
+        "extIcon": "https://raw.githubusercontent.com/ioBroker/ioBroker.material/master/admin/material.png",
+        "keywords": [
+            "user",
+            "interface",
+            "webapp",
+            "jquerymobile",
+            "ui"
+        ],
+        "readme": "https://github.com/ioBroker/ioBroker.material/blob/master/README.md",
+        "singleton": true,
+        "preserveSettings": "custom",
+        "nogit": true,
+        "webPreSettings": {
             "materialBackground": "native.loadingBackground"
         },
         "authors": [
@@ -145,22 +163,31 @@
                 "web": ">=3.0.12"
             }
         ],
-        "localLinks":               {"_default": "%web_protocol%://%web_bind%:%web_port%/material/index.html"},
-        "type":                     "visualization",
-        "license":                  "CC-BY-NC-4.0",
+        "connectionType": "local",
+        "dataSource": "push",
+        "localLinks": {
+            "_default": "%web_protocol%://%web_bind%:%web_port%/material/index.html"
+        },
+        "type": "visualization",
+        "license": "CC-BY-NC-4.0",
         "adminUI": {
             "config": "none"
         },
-        "noConfig":                 true,
-        "eraseOnUpload":            true,
-        "webByVersion":             true,
-		"welcomeScreen": 			{"link": "material/index.html", "name": "material", "img": "material.admin/material.png", "color": "black", "order": 2}
+        "noConfig": true,
+        "eraseOnUpload": true,
+        "webByVersion": true,
+        "welcomeScreen": {
+            "link": "material/index.html",
+            "name": "material",
+            "img": "material.admin/material.png",
+            "color": "black",
+            "order": 2
+        }
     },
     "native": {
         "loadingBackground": ""
     },
-    "objects": [
-    ],
+    "objects": [],
     "instanceObjects": [
         {
             "_id": "",

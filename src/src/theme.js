@@ -420,7 +420,7 @@ export default {
         tileIndicators: {
             position: 'absolute',
             top: 16,
-            right: 16,
+            right: 40,
             whiteSpace: 'nowrap',
             //width: 'calc(100% - ' + tileIconWidth + 'px)'
         },
