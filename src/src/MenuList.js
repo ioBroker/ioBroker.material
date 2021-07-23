@@ -22,7 +22,6 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListSubheader from '@material-ui/core/ListSubheader';
-import Divider from '@material-ui/core/Divider';
 import Button from '@material-ui/core/Button';
 import Collapse from '@material-ui/core/Collapse';
 
@@ -253,7 +252,7 @@ class MenuList extends Component {
                             return <IconButton
                                 key={item.id}
                                 className={clsx(cls.buttonStyle, item.id === this.props.root && cls.buttonActive)}
-                                tooltip={name}
+                                title={name}
                                 onClick={() => this.onRootChanged('enum.rooms')}>
                                 <IconRooms name="rooms" width={Theme.iconSize} height={Theme.iconSize} isOn={item.id === this.props.root}/>
                                 {visibilityButton}
@@ -262,7 +261,7 @@ class MenuList extends Component {
                             return <IconButton
                                 key={item.id}
                                 className={clsx(cls.buttonStyle, item.id === this.props.root && cls.buttonActive)}
-                                tooltip={name}
+                                title={name}
                                 onClick={() => this.onRootChanged('enum.functions')}>
                                 <IconFunctions width={Theme.iconSize} height={Theme.iconSize} />
                                 {visibilityButton}
@@ -271,22 +270,33 @@ class MenuList extends Component {
                             return <IconButton
                                 key={item.id}
                                 className={clsx(cls.buttonStyle, item.id === this.props.root && cls.buttonActive)}
-                                tooltip={name}
+                                title={name}
                                 onClick={() => this.onRootChanged('enum.favorites')}>
                                 <IconFavorites width={Theme.iconSize} height={Theme.iconSize} />
                                 {visibilityButton}
                             </IconButton>;
                         } else {
                             const icon = Utils.getIcon(item.settings, Theme.menuIcon);
-                            return <Button
-                                variant="outlined"
-                                className={clsx(cls.buttonStyle, item.id === this.props.root && cls.buttonActive)}
-                                key={item.id}
-                                onClick={() => this.onRootChanged(item.id)}>
-                                {icon}
-                                {name}
-                                {visibilityButton}
-                            </Button>;
+                            if (item.settings.icon) {
+                                return <IconButton
+                                    key={item.id}
+                                    className={clsx(cls.buttonStyle, item.id === this.props.root && cls.buttonActive)}
+                                    title={name}
+                                    onClick={() => this.onRootChanged(item.id)}>
+                                    <IconAdapter src={item.settings.icon} style={Theme.menuIcon}/>
+                                    {visibilityButton}
+                                </IconButton>;
+                            } else {
+                                return <Button
+                                    variant="outlined"
+                                    className={clsx(cls.buttonStyle, item.id === this.props.root && cls.buttonActive)}
+                                    key={item.id}
+                                    onClick={() => this.onRootChanged(item.id)}>
+                                    {name}
+                                    {visibilityButton}
+                                </Button>;
+
+                            }
                         }
                     })
                 }

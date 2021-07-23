@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "material",
-        "version": "1.0.2",
+        "version": "1.0.3",
         "news": {
+            "1.0.3": {
+                "en": "Corrected the size of icons",
+                "de": "Die Größe der Symbole wurde korrigiert",
+                "ru": "Подправили размер иконок",
+                "pt": "Corrigido o tamanho dos ícones",
+                "nl": "De grootte van pictogrammen gecorrigeerd",
+                "fr": "Correction de la taille des icônes",
+                "it": "Corretta la dimensione delle icone",
+                "es": "Se corrigió el tamaño de los íconos.",
+                "pl": "Poprawiono rozmiar ikon",
+                "zh-cn": "修正了图标的大小"
+            },
             "1.0.2": {
                 "en": "Redesign",
                 "de": "Neugestaltung",

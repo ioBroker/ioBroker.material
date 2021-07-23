@@ -22,17 +22,19 @@
 }
 .itemIconColor{
     color: var(--generalColor) !important;
+    width: 28px;
+    height: 28px;
 }
 .h3Style{
     font-size: 20px;
-    color: black !important;    
+    color: black !important;
     margin: 0;
     padding: 8px 8px 8px 16px;
     display: flex;
     border-radius: 5px;
 }
 .h3Active{
-    background: var(--generalColorOpacity);    
+    background: var(--generalColorOpacity);
     animation: moveWrapperIcon 1s linear ;
 }
 .styleIconH3{

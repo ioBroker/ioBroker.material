@@ -1014,22 +1014,25 @@ class SmartGeneric extends Component {
             })
             .then(state => {
                 // sort
-                if (chart[0].ts !== start) {
+                if (chart && chart[0] && chart[0].ts !== start) {
                     chart.unshift({ts: start, val: null});
                 }
-                chart.sort((a, b) => a.ts > b.ts ? 1 : (a.ts < b.ts ? -1 : 0)).filter(e => e.val !== null);
-                state && state.val !== null && state.val !== undefined && chart.push({ts: Date.now(), val: state.val});
+                if (chart) {
+                    chart.sort((a, b) => a.ts > b.ts ? 1 : (a.ts < b.ts ? -1 : 0)).filter(e => e.val !== null);
+                    state && state.val !== null && state.val !== undefined && chart.push({ts: Date.now(), val: state.val});
 
-                this.chart = {};
-                this.chart.data = this.convertData(chart);
-                // add current value
-                this.echartsReact.current?.getEchartsInstance().setOption({
-                    series: [{data: this.chart.data}],
-                    xAxis: {
-                        min: this.chart.min,
-                        max: this.chart.max,
-                    }
-                });
+                    this.chart = {};
+                    this.chart.data = this.convertData(chart);
+                    // add current value
+                    this.echartsReact.current?.getEchartsInstance().setOption({
+                        series: [{data: this.chart.data}],
+                        xAxis: {
+                            min: this.chart.min,
+                            max: this.chart.max,
+                        }
+                    });
+                }
+
             })
             .catch(e =>
                 console.error('Cannot read history: ' + e)
