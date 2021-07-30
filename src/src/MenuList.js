@@ -276,14 +276,13 @@ class MenuList extends Component {
                                 {visibilityButton}
                             </IconButton>;
                         } else {
-                            const icon = Utils.getIcon(item.settings, Theme.menuIcon);
                             if (item.settings.icon) {
                                 return <IconButton
                                     key={item.id}
                                     className={clsx(cls.buttonStyle, item.id === this.props.root && cls.buttonActive)}
                                     title={name}
                                     onClick={() => this.onRootChanged(item.id)}>
-                                    <IconAdapter src={item.settings.icon} style={Theme.menuIcon}/>
+                                    <IconAdapter src={item.settings.icon} style={Theme.menuIcon} styleUTF8={Object.assign({}, Theme.menuIcon, {height: 27, marginTop: -8})}/>
                                     {visibilityButton}
                                 </IconButton>;
                             } else {

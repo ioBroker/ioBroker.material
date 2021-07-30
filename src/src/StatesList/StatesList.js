@@ -582,8 +582,8 @@ class StatesList extends Component {
         if (this.state.background) {
             if (this.state.background.match(/\.jpg$|\.gif$|\.png$|\.jpeg$/)) {
                 style = Object.assign({}, {
-                    backgroundSize: this.props.windowWidth > this.props.windowHeight ? '100% auto' : 'auto 100%',
-                    backgroundImage: 'url(' + this.state.background + (this.state.backgroundId ? '?ts=' + Date.now() : '') + ')'
+                    backgroundSize: 'cover',
+                    backgroundImage: `url(${this.state.background}${this.state.backgroundId ? '?ts=' + Date.now() : ''})`
                 });
             } else {
                 style = Object.assign({}, { background: this.state.background, backgroundImage: 'none' });
@@ -591,7 +591,7 @@ class StatesList extends Component {
         } else if (this.state.backgroundColor) {
             style = Object.assign({}, { background: this.state.backgroundColor, backgroundImage: 'none' });
         } else {
-            style = Object.assign({}, { backgroundSize: this.props.windowWidth > this.props.windowHeight ? '100% auto' : 'auto 100%' });
+            style = Object.assign({}, { backgroundSize: 'cover' });
         }
 
         if (this.state.align && !this.state.dragging) {

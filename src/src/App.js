@@ -1561,7 +1561,7 @@ class App extends GenericApp {
             position="fixed"
             className={cls.colorBar}
             style={{
-                width: this.state.menuFixed ? 'calc(100% - ' + Theme.menu.width + 'px)' : '100%',
+                width: this.state.menuFixed ? `calc(100% - ${Theme.menu.width}px)` : '100%',
                 // color: 'white',
                 marginLeft: this.state.menuFixed ? Theme.menu.width : 0
             }}

@@ -23,7 +23,7 @@ const sourcemaps = require('gulp-sourcemaps');
 const crypto     = require('crypto');
 
 const dir = __dirname + '/src/src/i18n/';
-const dest = 'admin/';
+const dest = 'www/';
 
 gulp.task('i18n=>flat', done => {
     const files = fs.readdirSync(dir).filter(name => name.match(/\.json$/));

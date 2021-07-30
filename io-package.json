@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "material",
-        "version": "1.0.3",
+        "version": "1.0.4",
         "news": {
+            "1.0.4": {
+                "en": "Corrected the size of icons",
+                "de": "Die Größe der Symbole wurde korrigiert",
+                "ru": "Подправили размер иконок",
+                "pt": "Corrigido o tamanho dos ícones",
+                "nl": "De grootte van pictogrammen gecorrigeerd",
+                "fr": "Correction de la taille des icônes",
+                "it": "Corretta la dimensione delle icone",
+                "es": "Se corrigió el tamaño de los íconos.",
+                "pl": "Poprawiono rozmiar ikon",
+                "zh-cn": "修正了图标的大小"
+            },
             "1.0.3": {
                 "en": "Corrected the size of icons",
                 "de": "Die Größe der Symbole wurde korrigiert",
@@ -208,6 +220,42 @@
                 "name": "user files and images for material",
                 "type": "meta.user",
                 "expert": true
+            },
+            "native": {}
+        },
+        {
+            "_id": "control",
+            "type": "channel",
+            "common": {
+                "name": "Control states"
+            },
+            "native": {}
+        },
+        {
+            "_id": "control.theme",
+            "type": "state",
+            "common": {
+                "name": "Set theme of instance",
+                "type": "string",
+                "role": "state",
+                "read": true,
+                "write": true,
+                "desc": "Write JSON: {\"theme\": \"dark\", \"instance\": \"SOME_INSTANCE\"} or just theme name like 'dark'",
+                "def": ""
+            },
+            "native": {}
+        },
+        {
+            "_id": "control.page",
+            "type": "state",
+            "common": {
+                "name": "Set theme of instance",
+                "type": "string",
+                "role": "state",
+                "read": true,
+                "write": true,
+                "desc": "Write JSON: {\"page\": \"rooms.living_room\", \"instance\": \"SOME_INSTANCE\"} or just page name like rooms.living_room",
+                "def": ""
             },
             "native": {}
         }

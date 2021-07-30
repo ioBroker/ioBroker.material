@@ -5,6 +5,15 @@
 - header light in dialog => white
 
 
+## Plugins
+- Todo
+
+## User dialogs
+- Todo
+
+## Documentation
+- For control variables
+
 - Remove all WARNINGS
 
 ## Info dialog
@@ -12,7 +21,7 @@
 
 ## Loading 
 ## Dimmer
-- Add tooltips for all 4 buttons (on, off, ? , close)
+- Add tooltips for all 4 buttons (on, off, "?", close)
 
 ## Clock
 
