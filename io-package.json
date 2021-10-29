@@ -1,263 +1,205 @@
 {
-    "common": {
-        "name": "material",
-        "version": "1.0.4",
-        "news": {
-            "1.0.4": {
-                "en": "Corrected the size of icons",
-                "de": "Die Größe der Symbole wurde korrigiert",
-                "ru": "Подправили размер иконок",
-                "pt": "Corrigido o tamanho dos ícones",
-                "nl": "De grootte van pictogrammen gecorrigeerd",
-                "fr": "Correction de la taille des icônes",
-                "it": "Corretta la dimensione delle icone",
-                "es": "Se corrigió el tamaño de los íconos.",
-                "pl": "Poprawiono rozmiar ikon",
-                "zh-cn": "修正了图标的大小"
-            },
-            "1.0.3": {
-                "en": "Corrected the size of icons",
-                "de": "Die Größe der Symbole wurde korrigiert",
-                "ru": "Подправили размер иконок",
-                "pt": "Corrigido o tamanho dos ícones",
-                "nl": "De grootte van pictogrammen gecorrigeerd",
-                "fr": "Correction de la taille des icônes",
-                "it": "Corretta la dimensione delle icone",
-                "es": "Se corrigió el tamaño de los íconos.",
-                "pl": "Poprawiono rozmiar ikon",
-                "zh-cn": "修正了图标的大小"
-            },
-            "1.0.2": {
-                "en": "Redesign",
-                "de": "Neugestaltung",
-                "ru": "Редизайн",
-                "pt": "Redesenhar",
-                "nl": "Herontwerp",
-                "fr": "Refonte",
-                "it": "Riprogettazione",
-                "es": "Rediseñar",
-                "pl": "Przeprojektowanie",
-                "zh-cn": "重新设计"
-            },
-            "1.0.1": {
-                "en": "Re-design",
-                "de": "Neugestaltung",
-                "ru": "Редизайн",
-                "pt": "Redesenhar",
-                "nl": "Opnieuw ontwerpen",
-                "fr": "Re-conception",
-                "it": "Riprogettazione",
-                "es": "Rediseño",
-                "pl": "Przeprojektowanie",
-                "zh-cn": "重新设计"
-            },
-            "0.13.9": {
-                "en": "Added support for new socket.io",
-                "de": "Unterstützung für neues socket.io hinzugefügt",
-                "ru": "Добавлена поддержка нового socket.io",
-                "pt": "Adicionado suporte para novo socket.io",
-                "nl": "Ondersteuning toegevoegd voor nieuwe socket.io",
-                "fr": "Ajout du support pour le nouveau socket.io",
-                "it": "Aggiunto supporto per il nuovo socket.io",
-                "es": "Soporte agregado para nuevo socket.io",
-                "pl": "Dodano obsługę nowego socket.io",
-                "zh-cn": "添加了对新的socket.io的支持"
-            },
-            "0.13.8": {
-                "en": "Added sorting of rooms",
-                "de": "Sortierung der Räume hinzugefügt",
-                "ru": "Добавлена сортировка комнат",
-                "pt": "Classificação de salas adicionada",
-                "nl": "Sortering van kamers toegevoegd",
-                "fr": "Ajout du tri des chambres",
-                "it": "Aggiunto ordinamento delle stanze",
-                "es": "Clasificación agregada de habitaciones",
-                "pl": "Dodano sortowanie pokoi",
-                "zh-cn": "添加房间排序"
-            },
-            "0.13.5": {
-                "en": "Fixed error with stacked rooms",
-                "de": "Fehler bei gestapelten Räumen behoben",
-                "ru": "Исправлена ошибка со сложенными комнатами",
-                "pt": "Corrigido erro com salas empilhadas",
-                "nl": "Fout opgelost met gestapelde kamers",
-                "fr": "Correction d'une erreur avec les pièces empilées",
-                "it": "Risolto errore con stanze sovrapposte",
-                "es": "Se corrigió el error con habitaciones apiladas",
-                "pl": "Naprawiono błąd w piętrowych pokojach",
-                "zh-cn": "修复堆叠房间的错误"
-            },
-            "0.13.0": {
-                "en": "compatibility with Web >= 3.0.0 added",
-                "de": "Kompatibilität mit Web >= 3.0.0 hinzugefügt",
-                "ru": "добавлена совместимость с Web >= 3.0.0",
-                "pt": "compatibilidade com a Web >= 3.0.0 adicionada",
-                "nl": "compatibiliteit met Web >= 3.0.0 toegevoegd",
-                "fr": "compatibilité avec Web >= 3.0.0 ajoutée",
-                "it": "compatibilità con Web >= 3.0.0 aggiunto",
-                "es": "compatibilidad con Web >= 3.0.0 agregado",
-                "pl": "dodano kompatybilność z Internetem >= 3.0.0",
-                "zh-cn": "与Web >= 3.0.0的兼容性已添加"
-            },
-            "0.12.1": {
-                "en": "Packages were updated",
-                "de": "Pakete wurden aktualisiert",
-                "ru": "Пакеты были обновлены",
-                "pt": "Pacotes atualizados",
-                "nl": "Pakketten zijn bijgewerkt",
-                "fr": "Les paquets ont été mis à jour",
-                "it": "I pacchetti sono stati aggiornati",
-                "es": "Paquetes fueron actualizados",
-                "pl": "Pakiety zostały zaktualizowane",
-                "zh-cn": "软件包已更新"
-            },
-            "0.10.6": {
-                "en": "Added Chinese support",
-                "de": "Chinesische Unterstützung hinzugefügt",
-                "ru": "Добавлена ​​поддержка китайского",
-                "pt": "Adicionado suporte chinês",
-                "nl": "Chinese ondersteuning toegevoegd",
-                "fr": "Ajout du support chinois",
-                "it": "Aggiunto supporto cinese",
-                "es": "Añadido soporte chino",
-                "pl": "Dodano chińskie wsparcie",
-                "zh-cn": "增加了中文支持"
-            },
-            "0.9.12": {
-                "en": "RGB was implemented",
-                "de": "RGB wurde implementiert",
-                "ru": "RGB был реализован",
-                "pt": "RGB foi implementado",
-                "nl": "RGB is geïmplementeerd",
-                "fr": "RVB a été implémenté",
-                "it": "RGB è stato implementato",
-                "es": "RGB fue implementado",
-                "pl": "Zaimplementowano RGB"
-            },
-            "0.9.11": {
-                "en": "Fixed error with empty page",
-                "de": "Fehler bei leerer Seite behoben",
-                "ru": "Исправлена ​​ошибка с пустой страницей",
-                "pt": "Corrigido erro com página vazia",
-                "nl": "Vaste fout met lege pagina",
-                "fr": "Erreur fixe avec page vide",
-                "it": "Risolto errore con la pagina vuota",
-                "es": "Se arregló el error con la página vacía",
-                "pl": "Naprawiono błąd z pustą stroną"
-            }
-        },
-        "title": "Material UI",
-        "desc": {
-            "en": "Material UI based ioBroker user interface",
-            "de": "ioBroker GUI für mobile Geräte auf dem Basis von Material UI",
-            "ru": "ioBroker визуализация для мобильных устройств на Material UI",
-            "pt": "Interface de usuário ioBroker baseada em UI de material",
-            "nl": "Materiaal UI gebaseerde gebruikersinterface van ioBroker",
-            "fr": "Interface utilisateur ioBroker basée sur l'interface utilisateur matérielle",
-            "it": "Interfaccia utente ioBroker basata su UI materiale",
-            "es": "Interfaz de usuario ioBroker basada en IU de material",
-            "pl": "Interfejs użytkownika ioBroker oparty na interfejsie użytkownika",
-            "zh-cn": "基于Material UI的ioBroker用户界面"
-        },
-        "platform": "Javascript/Node.js",
-        "onlyWWW": true,
-        "loglevel": "info",
-        "icon": "material.png",
-        "enabled": true,
-        "extIcon": "https://raw.githubusercontent.com/ioBroker/ioBroker.material/master/admin/material.png",
-        "keywords": [
-            "user",
-            "interface",
-            "webapp",
-            "jquerymobile",
-            "ui"
-        ],
-        "readme": "https://github.com/ioBroker/ioBroker.material/blob/master/README.md",
-        "singleton": true,
-        "preserveSettings": "custom",
-        "nogit": true,
-        "webPreSettings": {
-            "materialBackground": "native.loadingBackground"
-        },
-        "authors": [
-            "bluefox <dogafox@gmail.com>"
-        ],
-        "dependencies": [
-            {
-                "web": ">=3.0.12"
-            }
-        ],
-        "connectionType": "local",
-        "dataSource": "push",
-        "localLinks": {
-            "_default": "%web_protocol%://%web_bind%:%web_port%/material/index.html"
-        },
-        "type": "visualization",
-        "license": "CC-BY-NC-4.0",
-        "adminUI": {
-            "config": "none"
-        },
-        "noConfig": true,
-        "eraseOnUpload": true,
-        "webByVersion": true,
-        "welcomeScreen": {
-            "link": "material/index.html",
-            "name": "material",
-            "img": "material.admin/material.png",
-            "color": "black",
-            "order": 2
-        }
+  "common": {
+    "name": "material",
+    "version": "1.0.5",
+    "news": {
+      "1.0.5": {
+        "en": "Added support of iobroker.material app",
+        "de": "Unterstützung der iobroker.material-App hinzugefügt",
+        "ru": "Добавлена поддержка приложения iobroker.material",
+        "pt": "Adicionado suporte para app iobroker.material",
+        "nl": "Ondersteuning toegevoegd voor de app iobroker.material",
+        "fr": "Ajout de la prise en charge de l'application iobroker.material",
+        "it": "Aggiunto il supporto dell'app iobroker.material",
+        "es": "Soporte agregado de la aplicación iobroker.material",
+        "pl": "Dodano obsługę aplikacji iobroker.material",
+        "zh-cn": "添加了对 iobroker.material 应用程序的支持"
+      },
+      "1.0.4": {
+        "en": "Corrected the size of icons",
+        "de": "Die Größe der Symbole wurde korrigiert",
+        "ru": "Подправили размер иконок",
+        "pt": "Corrigido o tamanho dos ícones",
+        "nl": "De grootte van pictogrammen gecorrigeerd",
+        "fr": "Correction de la taille des icônes",
+        "it": "Corretta la dimensione delle icone",
+        "es": "Se corrigió el tamaño de los íconos.",
+        "pl": "Poprawiono rozmiar ikon",
+        "zh-cn": "修正了图标的大小"
+      },
+      "1.0.3": {
+        "en": "Corrected the size of icons",
+        "de": "Die Größe der Symbole wurde korrigiert",
+        "ru": "Подправили размер иконок",
+        "pt": "Corrigido o tamanho dos ícones",
+        "nl": "De grootte van pictogrammen gecorrigeerd",
+        "fr": "Correction de la taille des icônes",
+        "it": "Corretta la dimensione delle icone",
+        "es": "Se corrigió el tamaño de los íconos.",
+        "pl": "Poprawiono rozmiar ikon",
+        "zh-cn": "修正了图标的大小"
+      },
+      "1.0.2": {
+        "en": "Redesign",
+        "de": "Neugestaltung",
+        "ru": "Редизайн",
+        "pt": "Redesenhar",
+        "nl": "Herontwerp",
+        "fr": "Refonte",
+        "it": "Riprogettazione",
+        "es": "Rediseñar",
+        "pl": "Przeprojektowanie",
+        "zh-cn": "重新设计"
+      },
+      "1.0.1": {
+        "en": "Re-design",
+        "de": "Neugestaltung",
+        "ru": "Редизайн",
+        "pt": "Redesenhar",
+        "nl": "Opnieuw ontwerpen",
+        "fr": "Re-conception",
+        "it": "Riprogettazione",
+        "es": "Rediseño",
+        "pl": "Przeprojektowanie",
+        "zh-cn": "重新设计"
+      },
+      "0.13.9": {
+        "en": "Added support for new socket.io",
+        "de": "Unterstützung für neues socket.io hinzugefügt",
+        "ru": "Добавлена поддержка нового socket.io",
+        "pt": "Adicionado suporte para novo socket.io",
+        "nl": "Ondersteuning toegevoegd voor nieuwe socket.io",
+        "fr": "Ajout du support pour le nouveau socket.io",
+        "it": "Aggiunto supporto per il nuovo socket.io",
+        "es": "Soporte agregado para nuevo socket.io",
+        "pl": "Dodano obsługę nowego socket.io",
+        "zh-cn": "添加了对新的socket.io的支持"
+      },
+      "0.13.8": {
+        "en": "Added sorting of rooms",
+        "de": "Sortierung der Räume hinzugefügt",
+        "ru": "Добавлена сортировка комнат",
+        "pt": "Classificação de salas adicionada",
+        "nl": "Sortering van kamers toegevoegd",
+        "fr": "Ajout du tri des chambres",
+        "it": "Aggiunto ordinamento delle stanze",
+        "es": "Clasificación agregada de habitaciones",
+        "pl": "Dodano sortowanie pokoi",
+        "zh-cn": "添加房间排序"
+      }
     },
-    "native": {
-        "loadingBackground": ""
+    "title": "Material UI",
+    "desc": {
+      "en": "Material UI based ioBroker user interface",
+      "de": "ioBroker GUI für mobile Geräte auf dem Basis von Material UI",
+      "ru": "ioBroker визуализация для мобильных устройств на Material UI",
+      "pt": "Interface de usuário ioBroker baseada em UI de material",
+      "nl": "Materiaal UI gebaseerde gebruikersinterface van ioBroker",
+      "fr": "Interface utilisateur ioBroker basée sur l'interface utilisateur matérielle",
+      "it": "Interfaccia utente ioBroker basata su UI materiale",
+      "es": "Interfaz de usuario ioBroker basada en IU de material",
+      "pl": "Interfejs użytkownika ioBroker oparty na interfejsie użytkownika",
+      "zh-cn": "基于Material UI的ioBroker用户界面"
     },
-    "objects": [],
-    "instanceObjects": [
-        {
-            "_id": "",
-            "type": "meta",
-            "common": {
-                "name": "user files and images for material",
-                "type": "meta.user",
-                "expert": true
-            },
-            "native": {}
-        },
-        {
-            "_id": "control",
-            "type": "channel",
-            "common": {
-                "name": "Control states"
-            },
-            "native": {}
-        },
-        {
-            "_id": "control.theme",
-            "type": "state",
-            "common": {
-                "name": "Set theme of instance",
-                "type": "string",
-                "role": "state",
-                "read": true,
-                "write": true,
-                "desc": "Write JSON: {\"theme\": \"dark\", \"instance\": \"SOME_INSTANCE\"} or just theme name like 'dark'",
-                "def": ""
-            },
-            "native": {}
-        },
-        {
-            "_id": "control.page",
-            "type": "state",
-            "common": {
-                "name": "Set theme of instance",
-                "type": "string",
-                "role": "state",
-                "read": true,
-                "write": true,
-                "desc": "Write JSON: {\"page\": \"rooms.living_room\", \"instance\": \"SOME_INSTANCE\"} or just page name like rooms.living_room",
-                "def": ""
-            },
-            "native": {}
-        }
-    ]
+    "platform": "Javascript/Node.js",
+    "onlyWWW": true,
+    "loglevel": "info",
+    "icon": "material.png",
+    "enabled": true,
+    "extIcon": "https://raw.githubusercontent.com/ioBroker/ioBroker.material/master/admin/material.png",
+    "keywords": [
+      "user",
+      "interface",
+      "webapp",
+      "jquerymobile",
+      "ui"
+    ],
+    "readme": "https://github.com/ioBroker/ioBroker.material/blob/master/README.md",
+    "singleton": true,
+    "preserveSettings": "custom",
+    "nogit": true,
+    "webPreSettings": {
+      "materialBackground": "native.loadingBackground"
+    },
+    "authors": [
+      "bluefox <dogafox@gmail.com>"
+    ],
+    "dependencies": [
+      {
+        "web": ">=3.0.12"
+      }
+    ],
+    "connectionType": "local",
+    "dataSource": "push",
+    "localLinks": {
+      "_default": "%web_protocol%://%web_bind%:%web_port%/material/index.html"
+    },
+    "type": "visualization",
+    "license": "CC-BY-NC-4.0",
+    "adminUI": {
+      "config": "none"
+    },
+    "noConfig": true,
+    "eraseOnUpload": true,
+    "webByVersion": true,
+    "welcomeScreen": {
+      "link": "material/index.html",
+      "name": "material",
+      "img": "material.admin/material.png",
+      "color": "black",
+      "order": 2
+    }
+  },
+  "native": {
+    "loadingBackground": ""
+  },
+  "objects": [],
+  "instanceObjects": [
+    {
+      "_id": "",
+      "type": "meta",
+      "common": {
+        "name": "user files and images for material",
+        "type": "meta.user",
+        "expert": true
+      },
+      "native": {}
+    },
+    {
+      "_id": "control",
+      "type": "channel",
+      "common": {
+        "name": "Control states"
+      },
+      "native": {}
+    },
+    {
+      "_id": "control.theme",
+      "type": "state",
+      "common": {
+        "name": "Set theme of instance",
+        "type": "string",
+        "role": "state",
+        "read": true,
+        "write": true,
+        "desc": "Write JSON: {\"theme\": \"dark\", \"instance\": \"SOME_INSTANCE\"} or just theme name like 'dark'",
+        "def": ""
+      },
+      "native": {}
+    },
+    {
+      "_id": "control.page",
+      "type": "state",
+      "common": {
+        "name": "Set theme of instance",
+        "type": "string",
+        "role": "state",
+        "read": true,
+        "write": true,
+        "desc": "Write JSON: {\"page\": \"rooms.living_room\", \"instance\": \"SOME_INSTANCE\"} or just page name like rooms.living_room",
+        "def": ""
+      },
+      "native": {}
+    }
+  ]
 }
