@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "material",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "news": {
+      "1.0.6": {
+        "en": "Added support of iobroker.material app",
+        "de": "Unterstützung der iobroker.material-App hinzugefügt",
+        "ru": "Добавлена поддержка приложения iobroker.material",
+        "pt": "Adicionado suporte para app iobroker.material",
+        "nl": "Ondersteuning toegevoegd voor de app iobroker.material",
+        "fr": "Ajout de la prise en charge de l'application iobroker.material",
+        "it": "Aggiunto il supporto dell'app iobroker.material",
+        "es": "Soporte agregado de la aplicación iobroker.material",
+        "pl": "Dodano obsługę aplikacji iobroker.material",
+        "zh-cn": "添加了对 iobroker.material 应用程序的支持"
+      },
       "1.0.5": {
         "en": "Added support of iobroker.material app",
         "de": "Unterstützung der iobroker.material-App hinzugefügt",
@@ -74,18 +86,6 @@
         "es": "Soporte agregado para nuevo socket.io",
         "pl": "Dodano obsługę nowego socket.io",
         "zh-cn": "添加了对新的socket.io的支持"
-      },
-      "0.13.8": {
-        "en": "Added sorting of rooms",
-        "de": "Sortierung der Räume hinzugefügt",
-        "ru": "Добавлена сортировка комнат",
-        "pt": "Classificação de salas adicionada",
-        "nl": "Sortering van kamers toegevoegd",
-        "fr": "Ajout du tri des chambres",
-        "it": "Aggiunto ordinamento delle stanze",
-        "es": "Clasificación agregada de habitaciones",
-        "pl": "Dodano sortowanie pokoi",
-        "zh-cn": "添加房间排序"
       }
     },
     "title": "Material UI",
