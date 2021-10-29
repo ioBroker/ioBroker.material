@@ -50,7 +50,7 @@ Better if every device belongs to both categories. Because every device has the 
 -->
 
 ## Changelog
-### 1.0.5 (2021-10-29)
+### __WORK IN PROGRESS__
 * (bluefox) Added support of iobroker.material app
 
 ### 1.0.4 (2021-07-30)
