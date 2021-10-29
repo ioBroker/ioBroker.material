@@ -1424,16 +1424,15 @@ class App extends GenericApp {
 
     getButtonFullScreen(useBright) {
         if (App.isFullScreenSupported() && !this.initialFullScreenMode) {
-            return (
-                <IconButton
-                    onClick={this.onToggleFullScreen}
-                    className={cls.iconSettings}
-                >
-                    {this.state.fullScreen ?
-                        <IconFullScreenExit width={Theme.iconSize} height={Theme.iconSize} /> :
-                        <IconFullScreen width={Theme.iconSize} height={Theme.iconSize} />
-                    }
-                </IconButton>);
+            return <IconButton
+                onClick={this.onToggleFullScreen}
+                className={cls.iconSettings}
+            >
+                {this.state.fullScreen ?
+                    <IconFullScreenExit width={Theme.iconSize} height={Theme.iconSize} /> :
+                    <IconFullScreen width={Theme.iconSize} height={Theme.iconSize} />
+                }
+            </IconButton>;
         } else {
             return null;
         }
@@ -1443,12 +1442,11 @@ class App extends GenericApp {
         if (!this.state.editMode && this.state.connected && this.state.appSettings &&
             (this.state.appSettings.text2command || this.state.appSettings.text2command === 0) &&
             SpeechDialog.isSpeechRecognitionSupported()) {
-            return (
-                <IconButton
-                    style={{ color: useBright ? Theme.palette.textColorBright : Theme.palette.textColorDark }}
-                    onClick={() => this.onSpeech(true)}>
-                    <IconMic width={Theme.iconSize} height={Theme.iconSize} />
-                </IconButton>);
+            return <IconButton
+                style={{ color: useBright ? Theme.palette.textColorBright : Theme.palette.textColorDark }}
+                onClick={() => this.onSpeech(true)}>
+                <IconMic width={Theme.iconSize} height={Theme.iconSize} />
+            </IconButton>;
         } else {
             return null;
         }
@@ -1456,13 +1454,12 @@ class App extends GenericApp {
 
     getButtonEditSettings(useBright) {
         if (this.state.connected && this.state.editMode) {
-            return (
-                <IconButton
-                    onClick={this.editEnumSettingsOpen}
-                    className={cls.iconSettings}
-                >
-                    <IconSettings width={Theme.iconSize} height={Theme.iconSize} />
-                </IconButton>);
+            return <IconButton
+                onClick={this.editEnumSettingsOpen}
+                className={cls.iconSettings}
+            >
+                <IconSettings width={Theme.iconSize} height={Theme.iconSize} />
+            </IconButton>;
         } else {
             return null;
         }
@@ -1470,13 +1467,12 @@ class App extends GenericApp {
 
     getButtonSync(useBright) {
         if (this.state.connected && this.state.editMode && (!this.state.appSettings || !this.state.appSettings.noCache)) {
-            return (
-                <IconButton
-                    onClick={this.syncObjects}
-                    title={I18n.t('Re-sync objects')}
-                    style={{ color: this.state.editEnumSettings ? Theme.palette.editActive : (useBright ? Theme.palette.textColorBright : Theme.palette.textColorDark) }}>
-                    <IconRefresh width={Theme.iconSize} height={Theme.iconSize} />
-                </IconButton>);
+            return <IconButton
+                onClick={this.syncObjects}
+                title={I18n.t('Re-sync objects')}
+                style={{ color: this.state.editEnumSettings ? Theme.palette.editActive : (useBright ? Theme.palette.textColorBright : Theme.palette.textColorDark) }}>
+                <IconRefresh width={Theme.iconSize} height={Theme.iconSize} />
+            </IconButton>;
         } else {
             return null;
         }
@@ -1722,6 +1718,12 @@ class App extends GenericApp {
             return this.getLoadingScreen();
         } else {
             const useBright = this.state.appSettings && this.state.appSettings.menuBackground && Utils.isUseBright(this.state.appSettings.menuBackground);
+
+            if (window.__material_instance && this.browserInstance !== window.__material_instance) {
+                this.browserInstance = window.__material_instance;
+                console.log('Set instance ' + window.__material_instance);
+            }
+
             return <MuiThemeProvider theme={this.state.theme}>
                 <div id="app" className={cls.wrapperApp}>
                     {this.getAppBar(useBright)}
