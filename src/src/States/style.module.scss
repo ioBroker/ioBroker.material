@@ -11,11 +11,20 @@
     border-color: var(--cornerColor);
     box-shadow: rgb(0 0 0 / 30%) 9px 4px 5px, rgb(0 0 0 / 20%) 5px 6px 5px;
     border-radius: 0px 0px 0px 10px;
-    transition: border-width 0.25s ease-in-out;
+    transition: border-width 0.1s ease-in-out 0s;
     cursor: pointer;
     z-index: 2;
     &:hover {
         border-width: 0 28px 28px 0;
+    }
+}
+:global(:root.light) {
+    .corner {
+        top: 0px;
+        border-width: 0px 16px 16px 0px;
+        &:hover {
+            border-width: 0 28px 28px 0;
+        }
     }
 }
 .cornerBottom {
@@ -63,6 +72,13 @@
     z-index: 1;
     color: var(--silverColor);
     transition: color 0.5s;
+}
+:global(:root.light) {
+    .iconStyle {
+        width: 40px;
+        height: 40px;
+        margin: 0px;
+    }
 }
 .iconWrapperLoading {
     background: linear-gradient(45deg, #12141600 54%, var(--generalColor) 80%, var(--generalColor) 105%);

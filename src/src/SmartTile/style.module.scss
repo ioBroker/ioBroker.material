@@ -10,10 +10,15 @@
     display: flex;
     position: relative;
     overflow: hidden;
-    box-shadow: none !important;
+    box-shadow: none;
     // box-shadow: rgb(0 0 0 / 20%) 0px 3px 5px -1px, rgb(0 0 0 / 14%) 0px 6px 10px 0px, rgb(0 0 0 / 12%) 0px 1px 18px 0px;
     background: var(--itemBlockBorder);
     border-radius: 16px !important;
+}
+:global(:root.light) {
+    .paperSmartTitle {
+        box-shadow: rgb(0 0 0 / 20%) 0px 3px 5px -1px, rgb(0 0 0 / 14%) 0px 6px 10px 0px, rgb(0 0 0 / 12%) 0px 1px 18px 0px;
+    }
 }
 .doubleSmartTitle{
     width: calc(var(--widthBlockPX) * 2 + 16px);
