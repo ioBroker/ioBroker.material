@@ -214,7 +214,7 @@ class SmartTile extends Component {
         return <Paper ref={this.tileRef}
             style={style}
             //    className={this.hasAnimation}
-            className={clsx(cls.paperSmartTitle, this.state.width > 1 && cls.doubleSmartTitle)}
+            className={clsx(this.state.state ? 'active' : null, cls.paperSmartTitle, this.state.width > 1 && cls.doubleSmartTitle)}
             onMouseDown={this.onMouseDown}
             onTouchStart={this.onMouseDown}
             onMouseUp={this.onMouseUp}
