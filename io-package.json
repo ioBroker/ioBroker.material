@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "material",
-    "version": "1.0.6",
+    "version": "1.1.0",
     "news": {
+      "1.1.0": {
+        "en": "Changed the light style to be looks like old style",
+        "de": "Der Lichtstil wurde so geändert, dass er wie im alten Stil aussieht",
+        "ru": "Изменен стиль освещения, чтобы он выглядел как старый стиль",
+        "pt": "Alterou o estilo da luz para se parecer com o estilo antigo",
+        "nl": "De lichtstijl gewijzigd om eruit te zien als een oude stijl",
+        "fr": "Modification du style d'éclairage pour qu'il ressemble à l'ancien style",
+        "it": "Modificato lo stile della luce in modo che assomigli al vecchio stile",
+        "es": "Cambió el estilo ligero para que parezca estilo antiguo.",
+        "pl": "Zmieniono styl światła, aby wyglądał jak stary styl",
+        "zh-cn": "将灯光样式更改为看起来像旧样式"
+      },
       "1.0.6": {
         "en": "Added support of iobroker.material app",
         "de": "Unterstützung der iobroker.material-App hinzugefügt",
@@ -74,18 +86,6 @@
         "es": "Rediseño",
         "pl": "Przeprojektowanie",
         "zh-cn": "重新设计"
-      },
-      "0.13.9": {
-        "en": "Added support for new socket.io",
-        "de": "Unterstützung für neues socket.io hinzugefügt",
-        "ru": "Добавлена поддержка нового socket.io",
-        "pt": "Adicionado suporte para novo socket.io",
-        "nl": "Ondersteuning toegevoegd voor nieuwe socket.io",
-        "fr": "Ajout du support pour le nouveau socket.io",
-        "it": "Aggiunto supporto per il nuovo socket.io",
-        "es": "Soporte agregado para nuevo socket.io",
-        "pl": "Dodano obsługę nowego socket.io",
-        "zh-cn": "添加了对新的socket.io的支持"
       }
     },
     "title": "Material UI",
