@@ -55,7 +55,7 @@ import Utils from '@iobroker/adapter-react/Components/Utils';
 import GenericApp from '@iobroker/adapter-react/GenericApp';
 
 import Theme from './theme';
-import VERSION from './version';
+import version from '../package.json';
 import MenuList from './MenuList';
 import StatesList from './StatesList/StatesList';
 import SpeechDialog from './SpeechDialog';
@@ -112,6 +112,8 @@ class App extends GenericApp {
                 host: query.host || window.location.hostname,
             }
         }
+
+        extendedProps.sentryDSN = window.sentryDSN;
 
         super(props, extendedProps);
 
@@ -1326,12 +1328,12 @@ class App extends GenericApp {
 
     getVersionControl() {
         if (!this.state.editMode) return null;
-        if (this.state.actualVersion && (this.state.actualVersion !== VERSION || (this.urlVersion && this.state.actualVersion !== this.urlVersion))) {
+        if (this.state.actualVersion && (this.state.actualVersion !== version || (this.urlVersion && this.state.actualVersion !== this.urlVersion))) {
             return <Button className={cls.iconSettings} onClick={() => this.onUpdateVersion()} variant="contained" size="small" title={I18n.t('Update to') + ' ' + this.state.actualVersion} color="secondary">
                 <IconRefresh style={{ marginRight: 5 }} /> {parseFloat(this.state.width) > 500 ? I18n.t('Update to') + ' ' + this.state.actualVersion : ''}
             </Button>;
         } else {
-            return <span className={cls.iconSettings} onClick={() => this.onUpdateVersion()}>{VERSION}</span>;
+            return <span className={cls.iconSettings} onClick={() => this.onUpdateVersion()}>{version}</span>;
         }
     }
 

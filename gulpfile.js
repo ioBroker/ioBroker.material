@@ -17,77 +17,9 @@ const gulp       = require('gulp');
 const exec       = require('gulp-exec');
 const fs         = require('fs');
 const del        = require('del');
-const uglify     = require('gulp-uglify');
-const concat     = require('gulp-concat');
-const sourcemaps = require('gulp-sourcemaps');
 const crypto     = require('crypto');
 
-const dir = __dirname + '/src/src/i18n/';
 const dest = 'www/';
-
-gulp.task('i18n=>flat', done => {
-    const files = fs.readdirSync(dir).filter(name => name.match(/\.json$/));
-    const index = {};
-    const langs = [];
-    files.forEach(file => {
-        const lang = file.replace(/\.json$/, '');
-        langs.push(lang);
-        let text = require(dir + file);
-
-        for (const id in text) {
-            if (text.hasOwnProperty(id)) {
-                index[id] = index[id] || {};
-                index[id][lang] = text[id] === undefined ? id : text[id];
-            }
-        }
-    });
-
-    const keys = Object.keys(index);
-    keys.sort();
-
-    if (!fs.existsSync(dir + '/flat/')) {
-        fs.mkdirSync(dir + '/flat/');
-    }
-
-    langs.forEach(lang => {
-        const words = [];
-        keys.forEach(key => {
-            words.push(index[key][lang]);
-        });
-        fs.writeFileSync(dir + '/flat/' + lang + '.txt', words.join('\n'));
-    });
-    fs.writeFileSync(dir + '/flat/index.txt', keys.join('\n'));
-    done();
-});
-
-gulp.task('flat=>i18n', done => {
-    if (!fs.existsSync(dir + '/flat/')) {
-        console.error(dir + '/flat/ directory not found');
-        return done();
-    }
-    const keys = fs.readFileSync(dir + '/flat/index.txt').toString().split(/[\r\n]/);
-
-    const files = fs.readdirSync(dir + '/flat/').filter(name => name.match(/\.txt$/) && name !== 'index.txt');
-    const index = {};
-    const langs = [];
-    files.forEach(file => {
-        const lang = file.replace(/\.txt$/, '');
-        langs.push(lang);
-        let lines = fs.readFileSync(dir + '/flat/' + file).toString().split(/[\r\n]/);
-        lines.forEach((word, i) => {
-            index[keys[i]] = index[keys[i]] || {};
-            index[keys[i]][lang] = word;
-        });
-    });
-    langs.forEach(lang => {
-        const words = {};
-        keys.forEach(key => {
-            words[key] = index[key][lang];
-        });
-        fs.writeFileSync(dir + '/' + lang + '.json', JSON.stringify(words, null, 4));
-    });
-    done();
-});
 
 gulp.task('icons', done => {
     const dir = __dirname + '/src/src/icons';
@@ -104,31 +36,10 @@ gulp.task('icons', done => {
     done();
 });
 
-gulp.task('version', done => {
-    const pack = require('./package');
-    fs.writeFileSync(__dirname + '/src/src/version.js', 'export default \'' + pack.version + '\';');
-    done();
-});
-
-gulp.task('vendorJS', () => {
-    return gulp.src([
-        'src/public/vendor/*.js',
-        '!src/public/vendor/detector.js',
-        '!src/public/vendor/conn.js',
-        '!src/public/vendor/socket.io.js'
-    ])
-        .pipe(sourcemaps.init())
-        .pipe(concat('vendor.js'))
-        .pipe(uglify())
-        .pipe(sourcemaps.write('.'))
-        .pipe(gulp.dest('src/public'));
-});
-
 gulp.task('clean', () => {
     return del([
         'src/node_modules/**/*',
         'src/build/**/*',
-        'src/src/version.js',
         'src/package-lock.json'
     ]).then(del([
         'src/node_modules',
@@ -215,7 +126,7 @@ function build() {
 
 gulp.task('3-build', () => build());
 
-gulp.task('3-build-dep', gulp.series('2-npm', 'icons', 'version', 'vendorJS', () => build()));
+gulp.task('3-build-dep', gulp.series('2-npm', 'icons', () => build()));
 
 const ignoreSvgs = ['fireOff.svg'];
 
@@ -266,11 +177,11 @@ function copyFiles() {
     });
 }
 
-gulp.task('5-copy', gulp.series('vendorJS', '4-modifyServiceWorker', () => {
+gulp.task('5-copy', gulp.series('4-modifyServiceWorker', () => {
     return copyFiles();
 }));
 
-gulp.task('5-copy-dep', gulp.series('vendorJS', '4-modifyServiceWorker-dep', () => {
+gulp.task('5-copy-dep', gulp.series('4-modifyServiceWorker-dep', () => {
     return copyFiles();
 }));
 

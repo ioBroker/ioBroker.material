@@ -32,6 +32,7 @@ import Utils from '@iobroker/adapter-react/Components/Utils';
 import App from './App';
 
 window.adapterName = 'material';
+window.sentryDSN = 'https://e5306c44730b45aea200a2f5a2635ae9@sentry.iobroker.net/135';
 
 console.log('iobroker.' + window.adapterName + '@' + version);
 let themeName = Utils.getThemeName();
@@ -53,15 +54,6 @@ function build() {
             }} />
         </SnackbarProvider>
     </MuiThemeProvider>, document.getElementById('root'));
-}
-
-if (window.location.host !== 'localhost:3000') {
-    Sentry.init({
-        dsn: 'https://e5306c44730b45aea200a2f5a2635ae9@sentry.iobroker.net/135',
-        integrations: [
-            new SentryIntegrations.Dedupe()
-        ]
-    });
 }
 
 build();
