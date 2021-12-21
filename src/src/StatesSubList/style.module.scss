@@ -1,25 +1,26 @@
-.ListRow{
+.ListRow {
     // background: linear-gradient(45deg, rgba(18, 20, 22, 1) 0%, rgba(49, 49, 51, 1) 35%, rgba(48, 52, 57, 1) 100%);
     border-radius: 8px;
     // border: 1px solid #34393e;
-    margin:5px 10px;
+    margin: 5px 10px;
     // box-shadow: 0px 2px 20px 1px rgb(0 0 0 / 21%);
     // box-shadow: -39px ​0px 15px -1px rgb(0 0 0 / 19%);
-    box-shadow: -10px 0px 20px -7px rgb(0 0 0 / 19%);
+    box-shadow: -10px 0 20px -7px rgb(0 0 0 / 19%);
     display: flex;
     flex-direction: column;
     height: fit-content;
-    h3{
+    h3 {
         color: var(--generalColor) !important;
     }
 }
 :global(:root.light) {
     .ListRow {
         border-radius: 32px;
-        border: 1px dashed rgb(199, 199, 199);
+        border: 1px dashed rgb(91, 91, 91);
         margin: 8px;
         padding-left: 16px;
         padding-right: 16px;
+        box-shadow: none;
     }
 }
 .wrapperItems{

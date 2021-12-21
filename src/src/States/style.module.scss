@@ -5,12 +5,12 @@
 .corner {
     position: absolute;
     top: 2px;
-    right: 0px;
-    border-width: 0px 21px 18px 0px;
+    right: 0;
+    border-width: 0 21px 18px 0;
     border-style: solid;
     border-color: var(--cornerColor);
     box-shadow: rgb(0 0 0 / 30%) 9px 4px 5px, rgb(0 0 0 / 20%) 5px 6px 5px;
-    border-radius: 0px 0px 0px 10px;
+    border-radius: 0 0 0 10px;
     transition: border-width 0.1s ease-in-out 0s;
     cursor: pointer;
     z-index: 2;
@@ -18,15 +18,24 @@
         border-width: 0 28px 28px 0;
     }
 }
+:global(:root.light) {
+    .corner {
+        top: 0;
+        border-width: 0 16px 16px 0;
+        &:hover {
+            border-width: 0 28px 28px 0;
+        }
+    }
+}
 .cornerBottom {
     position: absolute;
     bottom: 0;
     left: 0;
-    border-width: 21px 0px 0px 18px;
+    border-width: 21px 0 0 18px;
     border-style: solid;
     border-color: var(--cornerColorBottom);
     box-shadow: rgb(0 0 0 / 30%) 8px 4px 5px, rgb(0 0 0 / 20%) 6px 6px 5px;
-    border-radius: 0px 10px 0px 0px;
+    border-radius: 0 10px 0 0;
     transition: border-width 0.25s ease-in-out;
     cursor: pointer;
     z-index: 2;
@@ -64,9 +73,36 @@
     color: var(--silverColor);
     transition: color 0.5s;
 }
+:global(:root.light) {
+    .iconStyle {
+        width: 40px;
+        height: 40px;
+        margin: 0;
+    }
+}
 .iconWrapperLoading {
     background: linear-gradient(45deg, #12141600 54%, var(--generalColor) 80%, var(--generalColor) 105%);
-    animation: moveWrapperIcon 1s linear infinite;
+    animation: moveWrapperIcon 1.5s linear infinite;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    user-select: none;
+    position: absolute;
+    border-radius: 50%;
+    z-index: 1;
+    opacity: 0.7;
+}
+:global(:root.light) {
+    .iconWrapperLoading {
+        width: 40px;
+        height: 40px;
+        margin: 0;
+        background: inherit;
+        border-top: 1px solid #00000000;
+        border-left: 1px solid #00000000;
+        border-right: 1px solid #00000000;
+        border-bottom: 1px solid;
+    }
 }
 .styleIconLoading {
     animation: moveAcross 1s linear infinite;

@@ -903,8 +903,9 @@ class SmartGeneric extends Component {
     }
 
     static renderIcon = (icon, loading, active, onClick = () => {}, color = '') => {
-        return <div onClick={onClick} className={clsx(cls.iconWrapper, loading && cls.iconWrapperLoading)}>
-            <div className={clsx(cls.styleIcon, loading && cls.styleIconLoading, active && cls.styleIconActive)}>
+        return <div onClick={onClick} className={cls.iconWrapper}>
+            {!!loading && <div className={cls.iconWrapperLoading} />}
+            <div className={clsx(cls.styleIcon, active && cls.styleIconActive)}>
                 {icon}
             </div>
         </div>;

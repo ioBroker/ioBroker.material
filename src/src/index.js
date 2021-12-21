@@ -16,7 +16,7 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { version } from '../package.json';
+import version from '../package.json';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import * as Sentry from '@sentry/browser';
 import * as SentryIntegrations from '@sentry/integrations';

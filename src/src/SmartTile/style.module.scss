@@ -1,6 +1,6 @@
 .paperSmartTitle {
     margin: 8px;
-    padding: 12x;
+    //padding: 12px;
     transition: all 0.2s ease 0s;
     width: var(--widthBlockPX);
     height: var(--widthBlockPX);
@@ -17,9 +17,9 @@
 }
 :global(:root.light) {
     .paperSmartTitle {
-        box-shadow: rgb(0 0 0 / 20%) 0px 3px 5px -1px, rgb(0 0 0 / 14%) 0px 6px 10px 0px, rgb(0 0 0 / 12%) 0px 1px 18px 0px;
+        box-shadow: rgb(0 0 0 / 20%) 0 3px 5px -1px, rgb(0 0 0 / 14%) 0px 6px 10px 0px, rgb(0 0 0 / 12%) 0px 1px 18px 0px;
         background-color: rgb(183, 182, 182);
-        opacity: 0.7;
+        opacity: 0.6;
     }
     :global(.active).paperSmartTitle {
         background-color: white;
