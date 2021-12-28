@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "material",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "news": {
+      "1.1.1": {
+        "en": "Fixed double sending in the switch control",
+        "de": "Doppeltes Senden in der Schaltersteuerung behoben",
+        "ru": "Исправлена двойная отправка в переключателе управления",
+        "pt": "Correção de envio duplo no controle do interruptor",
+        "nl": "Vaste dubbele verzending in de schakelbediening",
+        "fr": "Correction d'un double envoi dans le contrôle du commutateur",
+        "it": "Risolto il problema con il doppio invio nel controllo dell'interruttore",
+        "es": "Se corrigió el doble envío en el control del interruptor.",
+        "pl": "Naprawiono podwójne wysyłanie w sterowaniu przełącznikiem",
+        "zh-cn": "修复开关控制中的双重发送"
+      },
       "1.1.0": {
         "en": "Changed the light style to be looks like old style",
         "de": "Der Lichtstil wurde so geändert, dass er wie im alten Stil aussieht",
@@ -72,18 +84,6 @@
         "fr": "Refonte",
         "it": "Riprogettazione",
         "es": "Rediseñar",
-        "pl": "Przeprojektowanie",
-        "zh-cn": "重新设计"
-      },
-      "1.0.1": {
-        "en": "Re-design",
-        "de": "Neugestaltung",
-        "ru": "Редизайн",
-        "pt": "Redesenhar",
-        "nl": "Opnieuw ontwerpen",
-        "fr": "Re-conception",
-        "it": "Riprogettazione",
-        "es": "Rediseño",
         "pl": "Przeprojektowanie",
         "zh-cn": "重新设计"
       }
