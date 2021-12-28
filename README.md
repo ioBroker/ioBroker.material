@@ -50,7 +50,7 @@ Better if every device belongs to both categories. Because every device has the 
 -->
 
 ## Changelog
-### 1.1.1 (2021-12-28)
+### __WORK IN PROGRESS__
 * (bluefox) Fixed double sending in the switch control
 
 ### 1.1.0 (2021-12-21)
