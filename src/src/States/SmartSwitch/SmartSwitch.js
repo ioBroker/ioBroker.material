@@ -144,7 +144,8 @@ class SmartSwitch extends SmartGeneric {
         }
     }
 
-    toggle = () => {
+    toggle = (_, e) => {
+        e && e.stopPropagation();
         if (this.actualId !== this.id) {
             this.setState({ executing: !this.state.settings.noAck });
         }

@@ -8,6 +8,7 @@ const CustomSwitch = ({ value, onChange, customValue }) => {
     return <div className={cls.wrapperSwitch}>
         <div className={cls.switch}
             onClick={e => {
+                e.stopPropagation();
                 !customValue && setSwitchChecked(!switchChecked);
                 onChange(!value);
             }}>
