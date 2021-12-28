@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "material",
-    "version": "1.1.1",
+    "version": "1.1.2",
     "news": {
+      "1.1.2": {
+        "en": "Fixed double sending in the switch control",
+        "de": "Doppeltes Senden in der Schaltersteuerung behoben",
+        "ru": "Исправлена двойная отправка в переключателе управления",
+        "pt": "Correção de envio duplo no controle do interruptor",
+        "nl": "Vaste dubbele verzending in de schakelbediening",
+        "fr": "Correction d'un double envoi dans le contrôle du commutateur",
+        "it": "Risolto il problema con il doppio invio nel controllo dell'interruttore",
+        "es": "Se corrigió el doble envío en el control del interruptor.",
+        "pl": "Naprawiono podwójne wysyłanie w sterowaniu przełącznikiem",
+        "zh-cn": "修复开关控制中的双重发送"
+      },
       "1.1.1": {
         "en": "Fixed double sending in the switch control",
         "de": "Doppeltes Senden in der Schaltersteuerung behoben",
@@ -74,18 +86,6 @@
         "es": "Se corrigió el tamaño de los íconos.",
         "pl": "Poprawiono rozmiar ikon",
         "zh-cn": "修正了图标的大小"
-      },
-      "1.0.2": {
-        "en": "Redesign",
-        "de": "Neugestaltung",
-        "ru": "Редизайн",
-        "pt": "Redesenhar",
-        "nl": "Herontwerp",
-        "fr": "Refonte",
-        "it": "Riprogettazione",
-        "es": "Rediseñar",
-        "pl": "Przeprojektowanie",
-        "zh-cn": "重新设计"
       }
     },
     "title": "Material UI",
