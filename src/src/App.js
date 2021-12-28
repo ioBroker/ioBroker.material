@@ -543,7 +543,7 @@ class App extends GenericApp {
                 this.subscribeInstances = false;
             }
             this.statesPrefix = 'material.0.';
-            //thema and page change
+            // theme and page change
             this.socket.subscribeState(this.statesPrefix + 'control.page', this.onPageChange);
             this.socket.subscribeState(this.statesPrefix + 'control.theme', this.onThemaChange);
 
@@ -552,7 +552,6 @@ class App extends GenericApp {
             this.showError(err);
         }
     }
-
 
     checkLocation = (name, instance) => {
         const location = GenericApp.getLocation();
