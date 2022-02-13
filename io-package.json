@@ -89,6 +89,9 @@
       }
     },
     "title": "Material UI",
+    "titleLang": {
+      "en": "Material UI"
+    },
     "desc": {
       "en": "Material UI based ioBroker user interface",
       "de": "ioBroker GUI für mobile Geräte auf dem Basis von Material UI",
