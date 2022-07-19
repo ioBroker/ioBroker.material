@@ -48,8 +48,6 @@ import { dialogChartCallBack } from '../Dialogs/DialogChart';
 //echarts.use([LineChart, SVGRenderer]);
 echarts.use([SingleAxisComponent, LegendComponent, TimelineComponent, ToolboxComponent, TitleComponent, TooltipComponent, GridComponent, LineChart, SVGRenderer]);
 
-
-
 // taken from here: https://stackoverflow.com/questions/4817029/whats-the-best-way-to-detect-a-touch-screen-device-using-javascript
 function isTouchDevice() {
     if (('ontouchstart' in window) || (window.DocumentTouch && window.document instanceof window.DocumentTouch)) {
@@ -1244,8 +1242,7 @@ class SmartGeneric extends Component {
                 right: 0,
                 bottom: 0,
             },
-            xAxis:
-            {
+            xAxis: {
                 show: false,
                 boundaryGap: false,
                 type: 'time',
@@ -1273,8 +1270,8 @@ class SmartGeneric extends Component {
                 ref={this.echartsReact}
                 echarts={echarts}
                 option={option}
-                notMerge={true}
-                lazyUpdate={true}
+                notMerge
+                lazyUpdate
                 opts={{ renderer: 'svg' }}
                 onChartReady={() => {
                     this.echartsReact &&
