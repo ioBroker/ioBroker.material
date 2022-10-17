@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2021 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2022 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
  **/
 import React, { Component, createRef } from 'react';
 import PropTypes from 'prop-types';
-import Utils from '@iobroker/adapter-react/Components/Utils';
-import I18n from '@iobroker/adapter-react/i18n';
+import Utils from '@iobroker/adapter-react-v5/Components/Utils';
+import I18n from '@iobroker/adapter-react-v5/i18n';
 import Theme from '../theme';
 
 import { MdVisibility as IconCheck } from 'react-icons/md';
@@ -290,10 +290,10 @@ class SmartGeneric extends Component {
         }
         const location = this.props.getLocation();
 
-        if (location.id === this.id){
-            if(location.dialog === 'charts'){
+        if (location.id === this.id) {
+            if (location.dialog === 'charts') {
                 this.stateRx.showDialogBottom = true;
-            }else if(location.dialog === 'dialog'){
+            } else if (location.dialog === 'dialog') {
                 this.stateRx.showDialog = true;
             }
         }
@@ -1196,6 +1196,9 @@ class SmartGeneric extends Component {
     }
 
     getCharts = (idOrData = this.getChartId(), className, showCornerBottom = true) => {
+        if (idOrData === 'none') {
+            return null;
+        }
         const id = this.checkHistory(idOrData, showCornerBottom);
         if (!id) {
             return null;

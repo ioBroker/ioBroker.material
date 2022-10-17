@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2021 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2022 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  **/
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@mui/styles';
 import Dropzone from 'react-dropzone';
 
 import {MdDelete as IconDelete} from 'react-icons/md';
@@ -25,15 +25,15 @@ import {MdFileUpload as IconUpload} from 'react-icons/md';
 import {MdCancel as IconNo} from 'react-icons/md';
 import {MdPlusOne as IconPlus} from 'react-icons/md';
 
-import Fab from '@material-ui/core/Button';
-import Button from '@material-ui/core/Button';
+import Fab from '@mui/material/Button';
+import Button from '@mui/material/Button';
 import PropTypes from 'prop-types';
 import ImageList from './ImageList';
 import ReactCrop/*, { makeAspectCrop } */from 'react-image-crop';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
 
 import NoImage from '../../assets/noImage.png';
 
@@ -41,7 +41,7 @@ import 'react-image-crop/dist/ReactCrop.css'
 
 // Icons
 //import IconList from '../../icons/icons/index.js';
-import I18n from '@iobroker/adapter-react/i18n';
+import I18n from '@iobroker/adapter-react-v5/i18n';
 
 const style = {
     label: {
@@ -234,13 +234,13 @@ class ImageSelector extends React.Component {
     handleSelectImage = file => {
         if (typeof file === 'object') {
             if (this.props.aspect) {
-                this.setState({beforeCrop: file, cropOpened: true});
+                this.setState({ beforeCrop: file, cropOpened: true });
             } else {
-                this.setState({image: file.data, errored: false});
+                this.setState({ image: file.data, errored: false });
                 this.props.onUpload && this.props.onUpload(file);
             }
         } else {
-            this.setState({image: file, errored: false});
+            this.setState({ image: file, errored: false });
             this.props.onUpload && this.props.onUpload(file);
         }
     }
@@ -332,7 +332,7 @@ class ImageSelector extends React.Component {
 
     render() {
         //const _style = Object.assign({}, style.dropzone, this.state.imageStatus === 'accepted' ? style.dropzoneAccepted : (this.state.imageStatus === 'rejected' ? style.dropzoneRejected : {}));
-        const className = this.props.classes.dropzone + ' ' + (this.state.imageStatus === 'accepted' ? this.props.classes.dropzoneAccepted : (this.state.imageStatus === 'rejected' ? this.props.classes.dropzoneRejected : ''));
+        const className = `${this.props.classes.dropzone} ${this.state.imageStatus === 'accepted' ? this.props.classes.dropzoneAccepted : (this.state.imageStatus === 'rejected' ? this.props.classes.dropzoneRejected : '')}`;
 
         return <div style={{position: 'relative'}}>
             <div key={'image-label'} style={style.label}>{this.props.label}</div>
@@ -344,8 +344,8 @@ class ImageSelector extends React.Component {
                 <Fab key={'image-delete'} onClick={this.removeImage} style={style.deleteIcon} size="small" aria-label="delete">
                     <IconDelete />
                 </Fab>,
-                <Fab key={'image-open'} onClick={() => this.setState({opened: !this.state.opened})}
-                         style={!this.state.opened ? Object.assign({}, style.openIcon, {bottom: -5}) : Object.assign({}, style.openIcon, {bottom: 120})}  aria-label="delete">
+                <Fab key={'image-open'} onClick={() => this.setState({ opened: !this.state.opened })}
+                         style={!this.state.opened ? Object.assign({}, style.openIcon, {bottom: -5}) : Object.assign({}, style.openIcon, { bottom: 120 })}  aria-label="delete">
                     {this.state.opened ? <IconClose /> : <IconOpen/>}
                 </Fab>
             ] : null}
@@ -422,7 +422,7 @@ class ImageSelector extends React.Component {
                 </DialogContent>
                 <DialogActions>
                     <Button variant="contained" onClick={() => this.onCropEnd(true)} color="primary" autoFocus>{I18n.t('Crop')}</Button>
-                    <Button variant="contained" onClick={() => this.setState({cropOpened: false})} autoFocus>{I18n.t('Cancel')}</Button>
+                    <Button variant="contained" onClick={() => this.setState({ cropOpened: false })} color="grey" autoFocus>{I18n.t('Cancel')}</Button>
                 </DialogActions>
             </Dialog>: null}
         </div>;

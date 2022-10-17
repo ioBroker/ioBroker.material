@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2021 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2022 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,27 +16,26 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Fab from '@material-ui/core/Fab';
-import Slider from '@material-ui/core/Slider';
+import Fab from '@mui/material/Fab';
+import Slider from '@mui/material/Slider';
 
-import {MdMusicNote as IconNote} from 'react-icons/md';
-import {MdPlayArrow as IconPlay} from 'react-icons/md';
-import {MdPause as IconPause} from 'react-icons/md';
-import {MdStop as IconStop} from 'react-icons/md';
-import {MdSkipNext as IconNext} from 'react-icons/md';
-import {MdSkipPrevious as IconPrev} from 'react-icons/md';
+import { MdMusicNote as IconNote } from 'react-icons/md';
+import { MdPlayArrow as IconPlay } from 'react-icons/md';
+import { MdPause as IconPause } from 'react-icons/md';
+import { MdStop as IconStop } from 'react-icons/md';
+import { MdSkipNext as IconNext } from 'react-icons/md';
+import { MdSkipPrevious as IconPrev } from 'react-icons/md';
 
-import {MdShuffle as IconShuffle} from 'react-icons/md';
-import {MdRepeat as IconRepeatAll} from 'react-icons/md';
-import {MdRepeatOne as IconRepeatOne} from 'react-icons/md';
-import {MdVolumeUp as IconVolume100} from 'react-icons/md';
-import {MdVolumeMute as IconVolume0} from 'react-icons/md';
+import { MdShuffle as IconShuffle } from 'react-icons/md';
+import { MdRepeat as IconRepeatAll } from 'react-icons/md';
+import { MdRepeatOne as IconRepeatOne } from 'react-icons/md';
+import { MdVolumeUp as IconVolume100 } from 'react-icons/md';
+import { MdVolumeMute as IconVolume0 } from 'react-icons/md';
 
-import Utils from '@iobroker/adapter-react/Components/Utils';
+import Utils from '@iobroker/adapter-react-v5/Components/Utils';
 import SmartDialogGeneric from './SmartDialogGeneric';
-import I18n from '@iobroker/adapter-react/i18n';
+import I18n from '@iobroker/adapter-react-v5/i18n';
 import Theme from '../theme';
-import {withStyles} from "@material-ui/core/styles";
 //import cover from '../assets/cover.png';
 
 const HEIGHT_HEADER = 48;

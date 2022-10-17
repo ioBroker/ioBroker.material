@@ -1,16 +1,16 @@
 import { Component, createRef } from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@mui/styles';
 
 import { Cropper } from 'react-cropper';
 import 'cropperjs/dist/cropper.css';
 
-import { Menu, MenuItem, Tooltip } from '@material-ui/core';
-import IconButton from '@material-ui/core/IconButton';
+import { Menu, MenuItem, Tooltip } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
 
-import CropIcon from '@material-ui/icons/Crop';
+import CropIcon from '@mui/icons-material/Crop';
 
-import IconPicker from '@iobroker/adapter-react/Components/IconPicker';
+import IconPicker from '@iobroker/adapter-react-v5/Components/IconPicker';
 
 const styles = theme => ({
     image: {

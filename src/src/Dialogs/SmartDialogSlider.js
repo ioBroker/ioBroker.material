@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2021 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2022 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,19 +17,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 
-import { darken } from '@material-ui/core/styles/colorManipulator';
-import Fab from '@material-ui/core/Fab';
+import { darken } from '@mui/material/styles';
+import { withStyles } from '@mui/styles';
 
 import { FaAngleDoubleUp as IconUp } from 'react-icons/fa';
 import { FaAngleDoubleDown as IconDown } from 'react-icons/fa';
 import { TiLightbulb as IconLamp } from 'react-icons/ti';
 import { MdStop as IconStop } from 'react-icons/md'
 
-import I18n from '@iobroker/adapter-react/i18n';
+import I18n from '@iobroker/adapter-react-v5/i18n';
 
 import Theme from '../theme';
 import SmartDialogGeneric from './SmartDialogGeneric';
-import { withStyles } from "@material-ui/core/styles";
 import cls from './style.module.scss';
 import CustomButton from '../States/components/CustomButton';
 import CustomFab from '../States/components/CustomFab';
@@ -178,7 +177,7 @@ class SmartDialogSlider extends SmartDialogGeneric {
         }
     }
 
-    onMouseUp(e) {
+    onMouseUp = e => {
         e.preventDefault();
         e.stopPropagation();
         this.click = Date.now();
@@ -191,7 +190,10 @@ class SmartDialogSlider extends SmartDialogGeneric {
         document.getElementById('dimmerId')?.removeEventListener('touchend', this.onMouseUp, { passive: false, capture: true });
 
         this.lastControl = Date.now();
-        this.props?.onValueChange && this.props.onValueChange(this.localValue2externalValue(this.state.value));
+        console.log(this.localValue2externalValue(this.state.value))
+        if (this.props?.onValueChange) {
+            this.props.onValueChange(this.localValue2externalValue(this.state.value));
+        }
     }
 
     componentWillUnmount(){

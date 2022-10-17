@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2021 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2022 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,9 @@
  **/
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@mui/styles';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
-import IconButton from '@material-ui/core/IconButton';
+import IconButton from '@mui/material/IconButton';
 
 import { MdPermScanWifi as IconUnreach } from 'react-icons/md';
 import { MdDragHandle as IconGrip } from 'react-icons/md';
@@ -26,17 +26,17 @@ import { TiLightbulb as IconLight } from 'react-icons/ti';
 //import {TiLightbulb as IconBlind100} from 'react-icons/ti';
 import IconBlind from '../icons/Jalousie'
 
-import Utils from '@iobroker/adapter-react/Components/Utils';
+import Utils from '@iobroker/adapter-react-v5/Components/Utils';
 import Theme from '../theme';
-import I18n from '@iobroker/adapter-react/i18n';
+import I18n from '@iobroker/adapter-react-v5/i18n';
 import SmartTile from '../SmartTile/SmartTile';
 import SmartDetector from '../States/SmartDetector';
 import Types from '../States/SmartTypes';
 import VisibilityButton from '../basic-controls/react-visibility-button/VisibilityButton';
 import cls from './style.module.scss';
 import clsx from 'clsx';
-import { ListItemIcon } from '@material-ui/core';
-import IconAdapter from '@iobroker/adapter-react/Components/Icon';
+import { ListItemIcon } from '@mui/material';
+import IconAdapter from '@iobroker/adapter-react-v5/Components/Icon';
 
 
 const styles = {

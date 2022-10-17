@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2021 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2022 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Theme from '../theme';
-import I18n from '@iobroker/adapter-react/i18n';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import Button from '@material-ui/core/Button';
-import Slider from '@material-ui/core/Slider';
+import I18n from '@iobroker/adapter-react-v5/i18n';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import Button from '@mui/material/Button';
+import Slider from '@mui/material/Slider';
 import SmartDialogGeneric from './SmartDialogGeneric';
-import Typography from '@material-ui/core/Typography';
+import Typography from '@mui/material/Typography';
 import BoolControl from '../basic-controls/react-info-controls/BoolControl'
 import InputControl from '../basic-controls/react-info-controls/InputControl'
 import InfoControl from '../basic-controls/react-info-controls/InfoControl'
@@ -123,17 +123,17 @@ class SmartDialogInfo extends SmartDialogGeneric {
                     } else { // button: read = false, write = true
                         item = <div key={this.props.dialogKey + '-' + e.id + '-control'}
                             style={{ width: '100%', textAlign: 'center' }}>
-                            <Button variant="contained" style={{ minWidth: '50%' }} onClick={event => this.handleButton(event, e.id)}>{e.name}</Button>
+                            <Button color="grey" variant="contained" style={{ minWidth: '50%' }} onClick={event => this.handleButton(event, e.id)}>{e.name}</Button>
                         </div>;
                     }
                 } else
                     if (e.common.type === 'number' && e.common.min !== undefined && e.common.max !== undefined && e.common.max - e.common.min < 5000) {
                         // slider
                         item = [
-                            <Typography key={this.props.dialogKey + '-' + e.id + '-title'}>{e.name} - {this.state[e.id] ? this.state[e.id].val : '?'}{e.unit}</Typography>,
+                            <Typography key={`${this.props.dialogKey}-${e.id}-title`}>{e.name} - {this.state[e.id] ? this.state[e.id].val : '?'}{e.unit}</Typography>,
                             <Slider
                                 classes={{}}
-                                key={this.props.dialogKey + '-' + e.id + '-control'}
+                                key={`${this.props.dialogKey}-${e.id}-control`}
                                 valueLabelDisplay="auto"
                                 min={e.common.min}
                                 max={e.common.max}

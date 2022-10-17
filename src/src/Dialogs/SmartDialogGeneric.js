@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2021 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2022 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,26 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import React, { Component, createRef } from 'react';
+import React, {Component, createRef} from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 
-import Snackbar from '@material-ui/core/Snackbar';
-import Fab from '@material-ui/core/Fab';
-import I18n from '@iobroker/adapter-react/i18n';
-import { Dialog } from "@material-ui/core";
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import Snackbar from '@mui/material/Snackbar';
+import Fab from '@mui/material/Fab';
+import I18n from '@iobroker/adapter-react-v5/i18n';
+import {Dialog} from "@mui/material";
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
 import ReactEchartsCore from 'echarts-for-react/lib/core';
 
 import * as echarts from 'echarts/core';
-import { LineChart } from 'echarts/charts';
+import {LineChart} from 'echarts/charts';
 //import { GridComponent } from 'echarts/components';
-import { SVGRenderer } from 'echarts/renderers';
+import {SVGRenderer} from 'echarts/renderers';
 import CustomButton from '../States/components/CustomButton';
 
-import { MdClose as CloseIcon } from 'react-icons/md';
+import {MdClose as CloseIcon} from 'react-icons/md';
 
 import Theme from '../theme';
 import CustomFab from '../States/components/CustomFab';
@@ -133,7 +133,7 @@ class SmartDialogGeneric extends Component {
     updateState(id, state) {
         const newState = {};
         if (state) {
-            newState[id] = { val: state.val, ts: state.ts, lc: state.lc };
+            newState[id] = {val: state.val, ts: state.ts, lc: state.lc};
         } else {
             newState[id] = null;
         }
@@ -152,7 +152,7 @@ class SmartDialogGeneric extends Component {
     }
 
     handleToastClose = () =>
-        this.setState({ toast: '' });
+        this.setState({toast: ''});
 
     generateContent() {
         return null;
@@ -176,7 +176,7 @@ class SmartDialogGeneric extends Component {
                     this.onClose(true)
                 }}
                 style={Theme.dialog.closeButtonLeft}>
-                <CloseIcon />
+                <CloseIcon/>
             </Fab>;
         } else {
             return null;
@@ -321,11 +321,11 @@ class SmartDialogGeneric extends Component {
                 bottom: 0,
             },
             xAxis:
-            {
-                show: false,
-                boundaryGap: false,
-                data: []
-            }
+                {
+                    show: false,
+                    boundaryGap: false,
+                    data: []
+                }
             ,
             yAxis: {
                 show: false,
@@ -339,13 +339,14 @@ class SmartDialogGeneric extends Component {
                     step: this.props.objects[id] && this.props.objects[id]?.common?.type ? this.props.objects[id]?.common?.type !== 'number' : false,
                     showSymbol: false,
                     color: style.color,
-                    areaStyle: { color: style.areaStyle },
+                    areaStyle: {color: style.areaStyle},
                     data: []
                 }
             ]
         };
         let parts = id.split('.');
-        return <div key={id} onClick={this.props.openModal ? () => this.props.openModal(id) : null} className={clsx(cls.wrapperCharts, classes?.root)}>
+        return <div key={id} onClick={this.props.openModal ? () => this.props.openModal(id) : null}
+                    className={clsx(cls.wrapperCharts, classes?.root)}>
             <div className={clsx(cls.chartsName, classes?.name)}>{parts.pop()}</div>
             <ReactEchartsCore
                 className={clsx(cls.styleCharts, classes?.chart)}
@@ -354,7 +355,7 @@ class SmartDialogGeneric extends Component {
                 option={option}
                 notMerge={true}
                 lazyUpdate={true}
-                opts={{ renderer: 'svg' }}
+                opts={{renderer: 'svg'}}
             />
         </div>;
     }
@@ -392,14 +393,17 @@ class SmartDialogGeneric extends Component {
                 paper: clsx('dialog-paper', this.props.classes?.dialogPaper, this.props.transparent ? cls.paper : cls.backgroundDialog),
                 root: cls.rootDialog
             }}
-            open={true}
+            open={!0}
             BackdropProps={{
                 classes: {
-                  root: cls.filterBlur,
+                    root: cls.filterBlur,
                 },
-              }}
-            disableBackdropClick={!!this.getButtons}
-            onClose={() => this.onClose()}
+            }}
+            onClose={reason => {
+                if (!this.getButtons || (reason !== 'backdropClick' && reason !== 'escapeKeyDown')) {
+                    this.onClose();
+                }
+            }}
             maxWidth="sm"
         >
             <div className={cls.filterBlur}/>
@@ -415,21 +419,21 @@ class SmartDialogGeneric extends Component {
                 {this.getButtons ? this.getButtons() : null}
                 {this.getButtons ?
                     <CustomButton onClick={() => this.onClose(true)} variant="contained" autoFocus>
-                        <CloseIcon style={{ marginRight: 8 }} />{I18n.t('Close')}
+                        <CloseIcon style={{marginRight: 8}}/>{I18n.t('Close')}
                     </CustomButton> :
                     <CustomFab onClick={() => this.onClose(true)} size="small" autoFocus>
-                        <CloseIcon />{/*I18n.t('Close')*/}
+                        <CloseIcon/>{/*I18n.t('Close')*/}
                     </CustomFab>}
             </DialogActions>
             {this.getAdditionalElements && this.getAdditionalElements()}
             <Snackbar
                 key={this.props.dialogKey + '-toast'}
-                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                anchorOrigin={{vertical: 'top', horizontal: 'right'}}
                 open={!!this.state.toast}
                 onClick={this.handleToastClose}
                 onClose={this.handleToastClose}
                 autoHideDuration={4000}
-                ContentProps={{ 'aria-describedby': 'message-id' }}
+                ContentProps={{'aria-describedby': 'message-id'}}
                 message={<span id="message-id">{this.state.toast}</span>}
             />
         </Dialog>

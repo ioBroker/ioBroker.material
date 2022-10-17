@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2021 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2022 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,10 @@
  **/
 import React from 'react';
 import PropTypes from 'prop-types';
-import NativeSelect from '@material-ui/core/NativeSelect';
-import InputLabel from '@material-ui/core/InputLabel';
-import { withStyles } from '@material-ui/core/styles';
-import Input from '@material-ui/core/Input';
+import NativeSelect from '@mui/material/NativeSelect';
+import InputLabel from '@mui/material/InputLabel';
+import { withStyles } from '@mui/styles';
+import Input from '@mui/material/Input';
 import Theme from '../../theme';
 
 const styles = () => (Theme.dialog.info);

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from '@material-ui/core';
+import { Button } from '@mui/material';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import cls from './style.module.scss';

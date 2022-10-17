@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2021 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2022 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
  **/
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-import ButtonBase from '@material-ui/core/ButtonBase';
+import { withStyles } from '@mui/styles';
+import ButtonBase from '@mui/material/ButtonBase';
 
 const styles = theme => ({
     root: {
@@ -82,7 +82,7 @@ const styles = theme => ({
     },
     imageTitle: {
         position: 'relative',
-        padding: `${theme.spacing(2)}px ${theme.spacing(4)}px ${theme.spacing(6)}px`,
+        padding: `${theme.spacing(2)} ${theme.spacing(4)} ${theme.spacing(6)}`,
     },
     imageMarked: {
         height: 3,

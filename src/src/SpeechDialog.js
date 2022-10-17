@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2021 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2022 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,9 @@
  **/
 
 import React, {Component} from 'react';
-import Dialog from '@material-ui/core/Dialog';
-import Button from '@material-ui/core/Button';
-import I18n from '@iobroker/adapter-react/i18n';
+import Dialog from '@mui/material/Dialog';
+import Button from '@mui/material/Button';
+import I18n from '@iobroker/adapter-react-v5/i18n';
 import PropTypes from 'prop-types';
 
 class SpeechDialog extends Component {
@@ -156,6 +156,7 @@ class SpeechDialog extends Component {
     render() {
         const actions = [
             <Button
+                color="grey"
                 variant="outlined"
                 label="Cancel"
                 primary={true}

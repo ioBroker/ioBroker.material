@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2021 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2022 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  **/
 import React from 'react';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import CircularProgress from '@mui/material/CircularProgress';
 import { TinyColor } from '@ctrl/tinycolor';
 
 import { TiLightbulb as Icon } from 'react-icons/ti'
@@ -22,9 +22,9 @@ import { TiLightbulb as Icon } from 'react-icons/ti'
 import SmartGeneric from '../SmartGeneric';
 import Theme from '../../theme';
 import Dialog from '../../Dialogs/SmartDialogColor';
-import I18n from '@iobroker/adapter-react/i18n';
+import I18n from '@iobroker/adapter-react-v5/i18n';
 import UtilsColors from '../../UtilsColors';
-import IconAdapter from '@iobroker/adapter-react/Components/Icon';
+import IconAdapter from '@iobroker/adapter-react-v5/Components/Icon';
 import cls from './style.module.scss';
 import clsGeneric from '../style.module.scss';
 import clsx from 'clsx/dist/clsx';

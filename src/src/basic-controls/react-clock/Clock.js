@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import cls from './style.module.scss';
-import I18n from '@iobroker/adapter-react/i18n';
-import { IconButton, Tooltip } from '@material-ui/core';
+import I18n from '@iobroker/adapter-react-v5/i18n';
+import { IconButton, Tooltip } from '@mui/material';
 import { MdAvTimer } from 'react-icons/md';
 import { FaRegCalendarTimes } from "react-icons/fa";
 import clsx from 'clsx/dist/clsx';

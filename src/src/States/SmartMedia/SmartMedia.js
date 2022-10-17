@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2021 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2022 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  **/
 import React from 'react';
 import SmartGeneric from '../SmartGeneric';
-import Fab from '@material-ui/core/Fab';
+import Fab from '@mui/material/Fab';
 
 import {MdMusicNote as IconNote} from 'react-icons/md';
 import {MdPlayArrow as IconPlay} from 'react-icons/md';
@@ -23,7 +23,7 @@ import {MdPause as IconPause} from 'react-icons/md';
 import {MdStop as IconStop} from 'react-icons/md';
 import {MdSkipNext as IconNext} from 'react-icons/md';
 import {MdSkipPrevious as IconPrev} from 'react-icons/md';
-import IconAdapter from '@iobroker/adapter-react/Components/Icon';
+import IconAdapter from '@iobroker/adapter-react-v5/Components/Icon';
 import cls from './style.module.scss';
 import clsGeneric from '../style.module.scss';
 import Theme from '../../theme';

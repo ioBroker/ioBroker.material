@@ -1,17 +1,19 @@
 import { createRef, Component } from 'react';
 import PropTypes from 'prop-types';
-import withWidth from '@material-ui/core/withWidth';
-import { withStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
-
-import { MuiPickersUtilsProvider, KeyboardTimePicker, KeyboardDatePicker } from '@material-ui/pickers';
-import LinearProgress from '@material-ui/core/LinearProgress';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import Toolbar from '@material-ui/core/Toolbar';
+import { withStyles } from '@mui/styles';
 import cls from './style.module.scss';
+
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider, TimePicker, DatePicker } from '@mui/x-date-pickers';
+import LinearProgress from '@mui/material/LinearProgress';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import Toolbar from '@mui/material/Toolbar';
+import TextField from '@mui/material/TextField';
+import Fab from '@mui/material/Fab';
 
 import ReactEchartsCore from 'echarts-for-react/lib/core';
 
@@ -54,13 +56,14 @@ import 'moment/locale/ru';
 import 'moment/locale/zh-cn';
 import 'moment/locale/de';
 
-import Utils from '@iobroker/adapter-react/Components/Utils';
+import Utils from '@iobroker/adapter-react-v5/Components/Utils';
+import { withWidth } from '@iobroker/adapter-react-v5';
 
 // icons
 import { FaChartLine as SplitLineIcon } from 'react-icons/fa';
 import CustomSelect from '../CustomSelect';
 import CustomFab from '../CustomFab';
-import { Tooltip } from '@material-ui/core';
+import { Tooltip } from '@mui/material';
 // import EchartsIcon from '../../assets/echarts.png';
 
 echarts.use([SingleAxisComponent, LegendComponent, TimelineComponent, ToolboxComponent, TitleComponent, TooltipComponent, GridComponent, LineChart, SVGRenderer]);
@@ -110,7 +113,7 @@ const styles = theme => ({
         overflow: 'hidden',
     },
     chartWithToolbar: {
-        height: `calc(100% - ${theme.mixins.toolbar.minHeight + theme.spacing(1)}px)`,
+        height: `calc(100% - ${theme.mixins.toolbar.minHeight + parseInt(theme.spacing(1), 10)}px)`,
     },
     chartWithoutToolbar: {
         height: `100%`,
@@ -250,7 +253,6 @@ class ObjectChart extends Component {
         };
 
         this.echartsReact = createRef();
-        this.rangeRef = createRef();
         this.readTimeout = null;
 
         this.chartValues = null;
@@ -291,9 +293,7 @@ class ObjectChart extends Component {
         window.addEventListener('resize', this.onResize);
 
         this.prepareData()
-            .then(() => {
-                return new Promise(resolve => this.updateChart(null, null, true, true, () => resolve()))
-            })
+            .then(() => new Promise(resolve => this.updateChart(null, null, true, true, () => resolve())))
             .then(() => this.setRelativeInterval(this.state.relativeRange, true, () =>
                 this.forceUpdate()));
     }
@@ -982,7 +982,7 @@ class ObjectChart extends Component {
             if (withReadData || !this.chartValues) {
                 this.readHistories(start, end)
                     .then(values => {
-                        this.echartsReact && typeof this.echartsReact.getEchartsInstance === 'function' && this.echartsReact.getEchartsInstance().setOption({
+                        values && this.echartsReact && typeof this.echartsReact.getEchartsInstance === 'function' && this.echartsReact.getEchartsInstance().setOption({
                             series: this.objectList.map(obj => ({ data: this.convertData(obj._id, values[obj._id]) })),
                             xAxis: {
                                 min: this.chart.min,
@@ -1005,12 +1005,6 @@ class ObjectChart extends Component {
     }
 
     setNewRange(readData) {
-        /*if (this.rangeRef.current &&
-            this.rangeRef.current.childNodes[1] &&
-            this.rangeRef.current.childNodes[1].value) {
-            this.rangeRef.current.childNodes[0].innerHTML = '';
-            this.rangeRef.current.childNodes[1].value = '';
-        }*/
         this.chart.diff = this.chart.max - this.chart.min;
         this.chart.withTime = this.chart.diff < 3600000 * 24 * 7;
         this.chart.withSeconds = this.chart.diff < 60000 * 30;
@@ -1419,9 +1413,10 @@ class ObjectChart extends Component {
         const classes = this.props.classes;
 
         return <Toolbar className={cls.wrapperMenu}>
-            {!this.props.historyInstance && <FormControl className={classes.selectHistoryControl}>
+            {!this.props.historyInstance && <FormControl className={classes.selectHistoryControl} variant="standard">
                 <InputLabel>{this.props.t('History instance')}</InputLabel>
                 <Select
+                    variant="standard"
                     value={this.state.historyInstance}
                     onChange={e => {
                         window.localStorage.setItem('App.historyInstance', e.target.value);
@@ -1437,38 +1432,40 @@ class ObjectChart extends Component {
                 value={this.state.relativeRange}
                 className={classes.selectRelativeTime}
                 customOptions
-                ref={this.rangeRef}
                 title="Relative"
-                options={[<MenuItem key={'custom'} value={'absolute'} className={classes.customRange}>{this.props.t('custom range')}</MenuItem>,
-                <MenuItem key={'1'} value={10}            >{this.props.t('last 10 minutes')}</MenuItem>,
-                <MenuItem key={'2'} value={30}            >{this.props.t('last 30 minutes')}</MenuItem>,
-                <MenuItem key={'3'} value={60}            >{this.props.t('last hour')}</MenuItem>,
-                <MenuItem key={'4'} value={'day'}         >{this.props.t('this day')}</MenuItem>,
-                <MenuItem key={'5'} value={24 * 60}       >{this.props.t('last 24 hours')}</MenuItem>,
-                <MenuItem key={'6'} value={'week'}        >{this.props.t('this week')}</MenuItem>,
-                <MenuItem key={'7'} value={24 * 60 * 7}   >{this.props.t('last week')}</MenuItem>,
-                <MenuItem key={'8'} value={'2weeks'}      >{this.props.t('this 2 weeks')}</MenuItem>,
-                <MenuItem key={'9'} value={24 * 60 * 14}  >{this.props.t('last 2 weeks')}</MenuItem>,
-                <MenuItem key={'10'} value={'month'}       >{this.props.t('this month')}</MenuItem>,
-                <MenuItem key={'11'} value={30 * 24 * 60}  >{this.props.t('last 30 days')}</MenuItem>,
-                <MenuItem key={'12'} value={'year'}        >{this.props.t('this year')}</MenuItem>,
-                <MenuItem key={'13'} value={'12months'}    >{this.props.t('last 12 months')}</MenuItem>]}
+                options={[
+                    <MenuItem key={'custom'} value={'absolute'} className={classes.customRange}>{this.props.t('custom range')}</MenuItem>,
+                    <MenuItem key={'1'} value={10}            >{this.props.t('last 10 minutes')}</MenuItem>,
+                    <MenuItem key={'2'} value={30}            >{this.props.t('last 30 minutes')}</MenuItem>,
+                    <MenuItem key={'3'} value={60}            >{this.props.t('last hour')}</MenuItem>,
+                    <MenuItem key={'4'} value={'day'}         >{this.props.t('this day')}</MenuItem>,
+                    <MenuItem key={'5'} value={24 * 60}       >{this.props.t('last 24 hours')}</MenuItem>,
+                    <MenuItem key={'6'} value={'week'}        >{this.props.t('this week')}</MenuItem>,
+                    <MenuItem key={'7'} value={24 * 60 * 7}   >{this.props.t('last week')}</MenuItem>,
+                    <MenuItem key={'8'} value={'2weeks'}      >{this.props.t('this 2 weeks')}</MenuItem>,
+                    <MenuItem key={'9'} value={24 * 60 * 14}  >{this.props.t('last 2 weeks')}</MenuItem>,
+                    <MenuItem key={'10'} value={'month'}       >{this.props.t('this month')}</MenuItem>,
+                    <MenuItem key={'11'} value={30 * 24 * 60}  >{this.props.t('last 30 days')}</MenuItem>,
+                    <MenuItem key={'12'} value={'year'}        >{this.props.t('this year')}</MenuItem>,
+                    <MenuItem key={'13'} value={'12months'}    >{this.props.t('last 12 months')}</MenuItem>
+                ]}
             />
-            <MuiPickersUtilsProvider utils={DateFnsUtils} locale={localeMap[this.props.lang]}>
+            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={localeMap[this.props.lang]}>
                 <div className={cls.toolbarTimeGrid}>
-                    <KeyboardDatePicker
+                    <DatePicker
                         className={cls.toolbarDate}
                         disabled={this.state.relativeRange !== 'absolute'}
                         disableToolbar
                         variant="inline"
                         margin="normal"
-                        format={this.state.dateFormat}
+                        inputFormat={this.state.dateFormat}
                         //format="fullDate"
                         label={this.props.t('Start date')}
                         value={new Date(this.state.min)}
                         onChange={date => this.setStartDate(date)}
+                        renderInput={params => <TextField className={this.props.classes.dateInput} variant="standard" {...params} />}
                     />
-                    <KeyboardTimePicker
+                    <TimePicker
                         disabled={this.state.relativeRange !== 'absolute'}
                         className={cls.toolbarTime}
                         margin="normal"
@@ -1477,22 +1474,24 @@ class ObjectChart extends Component {
                         label={this.props.t('Start time')}
                         value={new Date(this.state.min)}
                         onChange={date => this.setStartDate(date)}
+                        renderInput={params => <TextField className={this.props.classes.timeInput} variant="standard" {...params} />}
                     />
                 </div>
                 <div className={cls.toolbarTimeGrid}>
-                    <KeyboardDatePicker
+                    <DatePicker
                         disabled={this.state.relativeRange !== 'absolute'}
                         className={cls.toolbarDate}
                         disableToolbar
-                        format={this.state.dateFormat}
+                        inputFormat={this.state.dateFormat}
                         variant="inline"
                         //format="fullDate"
                         margin="normal"
                         label={this.props.t('End date')}
                         value={new Date(this.state.max)}
                         onChange={date => this.setEndDate(date)}
+                        renderInput={params => <TextField className={this.props.classes.dateInput} variant="standard" {...params} />}
                     />
-                    <KeyboardTimePicker
+                    <TimePicker
                         disabled={this.state.relativeRange !== 'absolute'}
                         className={cls.toolbarTime}
                         margin="normal"
@@ -1501,9 +1500,10 @@ class ObjectChart extends Component {
                         label={this.props.t('End time')}
                         value={new Date(this.state.max)}
                         onChange={date => this.setEndDate(date)}
+                        renderInput={params => <TextField className={this.props.classes.timeInput} variant="standard" {...params} />}
                     />
                 </div>
-            </MuiPickersUtilsProvider>
+            </LocalizationProvider>
             <div className={classes.grow} />
             {this.props.showJumpToEchart && this.state.echartsJump && <CustomFab
                 className={classes.echartsButton}
@@ -1514,12 +1514,12 @@ class ObjectChart extends Component {
                 <img src={EchartsIcon} alt="echarts" className={classes.buttonIcon} />
             </CustomFab>}
             <Tooltip title={this.props.t('Show lines')}>
-                <CustomFab
+                <Fab
                     variant="extended"
                     size="small"
-                    active={this.state.splitLine}
-                    title={this.props.t('Show lines')}
-                    // color={ this.state.splitLine ? 'primary' : 'inherit' }
+                    // active={this.state.splitLine}
+                    // title={this.props.t('Show lines')}
+                    color={ this.state.splitLine ? 'primary' : 'inherit' }
                     aria-label="show lines"
                     onClick={() => {
                         window.localStorage.setItem('App.splitLine', this.state.splitLine ? 'false' : 'true');
@@ -1529,7 +1529,7 @@ class ObjectChart extends Component {
                 >
                     <SplitLineIcon />
                     {/* { this.props.t('Show lines') } */}
-                </CustomFab>
+                </Fab>
             </Tooltip>
         </Toolbar>;
     }

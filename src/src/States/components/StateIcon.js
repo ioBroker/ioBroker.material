@@ -46,7 +46,8 @@ import {
 import { IoIosWater } from 'react-icons/io';
 import { SiBoost } from 'react-icons/si';
 import { WiDaySunny, WiFire, WiHumidity, WiSmoke, WiThermometer } from 'react-icons/wi';
-import { FiPower, HiOutlineLightBulb } from 'react-icons/all';
+import { FiPower } from 'react-icons/fi';
+import { HiOutlineLightBulb } from 'react-icons/hi';
 import { IoColorFilter } from 'react-icons/io5';
 import { RiBrush2Fill, RiBrush3Fill } from 'react-icons/ri';
 import { TiWeatherNight } from 'react-icons/ti';

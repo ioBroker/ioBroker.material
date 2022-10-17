@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2021 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2022 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,12 @@
  **/
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Paper from '@material-ui/core/Paper';
+import Paper from '@mui/material/Paper';
 
-import I18n from '@iobroker/adapter-react/i18n';
+import I18n from '@iobroker/adapter-react-v5/i18n';
 import Theme from '../theme';
 import Types from '../States/SmartTypes';
-import Utils from '@iobroker/adapter-react/Components/Utils';
+import Utils from '@iobroker/adapter-react-v5/Components/Utils';
 
 import SmartBlinds from '../States/SmartBlinds/SmartBlinds';
 import SmartButton from '../States/SmartButton/SmartButton';
@@ -30,7 +30,7 @@ import SmartSlider from '../States/SmartSlider/SmartSlider';
 import SmartState from '../States/SmartState/SmartState';
 import SmartSwitch from '../States/SmartSwitch/SmartSwitch';
 import SmartThermometer from '../States/SmartThermometer/SmartThermometer';
-import SmartThermostat from "../States/SmartThermostat/SmartThermostat";
+import SmartThermostat from '../States/SmartThermostat/SmartThermostat';
 import SmartWindowTilt from '../States/SmartWindowTilt/SmartWindowTilt';
 import SmartLock from '../States/SmartLock/SmartLock';
 import SmartInstance from '../States/SmartInstance/SmartInstance';

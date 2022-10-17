@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-const gulp       = require('gulp');
-const exec       = require('gulp-exec');
-const fs         = require('fs');
-const del        = require('del');
-const crypto     = require('crypto');
+const gulp   = require('gulp');
+const exec   = require('gulp-exec');
+const fs     = require('fs');
+const del    = require('del');
+const crypto = require('crypto');
 
 const dest = 'www/';
 
@@ -28,7 +28,7 @@ gulp.task('icons', done => {
     let text = ['import {Component} from "react";'];
     text.push('class IconList extends Component {');
     text.push('    static List = [');
-    texts.forEach(file => text.push('       ' + '"data:image/svg+xml;base64,' + Buffer.from(file).toString('base64') + '",'));
+    texts.forEach(file => text.push(`       "data:image/svg+xml;base64,${Buffer.from(file).toString('base64')}",`));
     text.push('    ];');
     text.push('}');
     text.push('export default IconList;');
@@ -137,30 +137,6 @@ function getHash(data) {
     return md5.digest('hex');
 }
 
-function modifyServiceWorker() {
-    return new Promise(resolve => {
-        try {
-            let text = fs.readFileSync(__dirname + '/src/build/service-worker.js');
-            if (text.toString().indexOf('vendor.js') === -1) {
-                const hash = getHash(text);
-                text = text.toString().replace('precacheConfig=[["./index.html"', 'precacheConfig=[["./vendor.js","' + hash + '"],["./index.html"');
-                fs.writeFileSync(__dirname + '/src/build/service-worker.js', text);
-            }
-        } catch (e) {
-            console.error('Cannot modify service-worker.js' + e);
-        }
-        resolve();
-    });
-}
-
-gulp.task('4-modifyServiceWorker-dep', gulp.series('3-build-dep', () => {
-    return modifyServiceWorker();
-}));
-
-gulp.task('4-modifyServiceWorker', () => {
-    return modifyServiceWorker();
-});
-
 function copyFiles() {
     return del([
         'www/**/*'
@@ -177,11 +153,11 @@ function copyFiles() {
     });
 }
 
-gulp.task('5-copy', gulp.series('4-modifyServiceWorker', () => {
+gulp.task('4-copy', gulp.series('3-build', () => {
     return copyFiles();
 }));
 
-gulp.task('5-copy-dep', gulp.series('4-modifyServiceWorker-dep', () => {
+gulp.task('4-copy-dep', gulp.series('3-build-dep', () => {
     return copyFiles();
 }));
 
@@ -211,8 +187,8 @@ function patchIndex() {
     });
 }
 
-gulp.task('6-patch', () => patchIndex());
+gulp.task('5-patch', () => patchIndex());
 
-gulp.task('6-patch-dep', gulp.series('5-copy-dep', '6-patch'));
+gulp.task('5-patch-dep', gulp.series('4-copy-dep', '5-patch'));
 
-gulp.task('default', gulp.series('6-patch-dep'));
+gulp.task('default', gulp.series('5-patch-dep'));

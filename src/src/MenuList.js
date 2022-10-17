@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2021 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2022 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,15 @@
  **/
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@mui/styles';
 
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListSubheader from '@material-ui/core/ListSubheader';
-import Button from '@material-ui/core/Button';
-import Collapse from '@material-ui/core/Collapse';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListSubheader from '@mui/material/ListSubheader';
+import Button from '@mui/material/Button';
+import Collapse from '@mui/material/Collapse';
 
 import {
     sortableContainer,
@@ -31,13 +31,13 @@ import {
     sortableHandle,
 } from 'react-sortable-hoc';
 
-import Utils from '@iobroker/adapter-react/Components/Utils';
-import I18n from '@iobroker/adapter-react/i18n';
+import Utils from '@iobroker/adapter-react-v5/Components/Utils';
+import I18n from '@iobroker/adapter-react-v5/i18n';
 import VisibilityButton from './basic-controls/react-visibility-button/VisibilityButton';
 import Theme from './theme';
 
 import IconRooms from './icons/IconHome';
-import IconButton from '@material-ui/core/IconButton';
+import IconButton from '@mui/material/IconButton';
 import { MdLightbulbOutline as IconFunctions } from 'react-icons/md';
 import { MdDragHandle as IconDrag } from 'react-icons/md';
 import { MdFavorite as IconFavorites } from 'react-icons/md';
@@ -46,7 +46,7 @@ import { MdExpandMore as ExpandMore } from 'react-icons/md';
 import { MdPlayArrow as IconInstances } from 'react-icons/md';
 import cls from './style.module.scss';
 import clsx from 'clsx';
-import IconAdapter from '@iobroker/adapter-react/Components/Icon';
+import IconAdapter from '@iobroker/adapter-react-v5/Components/Icon';
 
 const DragHandle = sortableHandle(() => <IconDrag className={cls.iconDrag} />);
 
@@ -288,6 +288,7 @@ class MenuList extends Component {
                             } else {
                                 return <Button
                                     variant="outlined"
+                                    color="grey"
                                     className={clsx(cls.buttonStyle, item.id === this.props.root && cls.buttonActive)}
                                     key={item.id}
                                     onClick={() => this.onRootChanged(item.id)}>

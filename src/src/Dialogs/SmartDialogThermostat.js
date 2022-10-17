@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2021 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2022 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,16 +16,16 @@
 import React, { createRef } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@mui/styles';
 
-import Button from '@material-ui/core/Button';
+import Button from '@mui/material/Button';
 
-import I18n from '@iobroker/adapter-react/i18n';
+import I18n from '@iobroker/adapter-react-v5/i18n';
 
 import SmartDialogGeneric from './SmartDialogGeneric';
 import ThermostatControl from '../basic-controls/react-nest-thermostat/src/react-nest-thermostat';
 import cls from './style.module.scss';
-import { ButtonGroup, FormControl, FormLabel } from '@material-ui/core';
+import { ButtonGroup, FormControl, FormLabel } from '@mui/material';
 import CustomButton from '../States/components/CustomButton';
 import StateIcon from '../States/components/StateIcon';
 import CustomMode from '../States/components/CustomMode';

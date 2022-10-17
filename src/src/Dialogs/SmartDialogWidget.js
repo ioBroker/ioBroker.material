@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2021 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2022 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,13 @@ import PropTypes from 'prop-types';
 import ReactDOMServer from 'react-dom/server';
 import clsx from 'clsx';
 
-import I18n from '@iobroker/adapter-react/i18n';
+import I18n from '@iobroker/adapter-react-v5/i18n';
 import { MdFilterCenterFocus } from "react-icons/md";
 
 import SmartDialogGeneric from './SmartDialogGeneric';
 import cls from './style.module.scss';
 import cls2 from '../SmartTile/style.module.scss';
-import { Paper } from '@material-ui/core';
+import { Paper } from '@mui/material';
 
 
 class SmartDialogWidget extends SmartDialogGeneric {

@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2021 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2022 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,8 @@ import IconThermometer from '../../icons/Thermometer';
 import IconHydro from '../../icons/Humidity';
 
 // import Theme from '../../theme';
-import I18n from '@iobroker/adapter-react/i18n';
-import IconAdapter from '@iobroker/adapter-react/Components/Icon';
+import I18n from '@iobroker/adapter-react-v5/i18n';
+import IconAdapter from '@iobroker/adapter-react-v5/Components/Icon';
 import cls from './style.module.scss';
 import clsGeneric from '../style.module.scss';
 // import { Flag } from '@material-ui/icons';

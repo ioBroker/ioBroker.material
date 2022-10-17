@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2021 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2022 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,26 +15,26 @@
  **/
 
 import React from 'react';
-import ReactDOM from 'react-dom';
-import version from '../package.json';
-import { MuiThemeProvider } from '@material-ui/core/styles';
-import * as Sentry from '@sentry/browser';
-import * as SentryIntegrations from '@sentry/integrations';
+import { createRoot } from 'react-dom/client';
+import pack from '../package.json';
+import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 
-import { Button } from '@material-ui/core';
+import { Button } from '@mui/material';
 import { SnackbarProvider } from 'notistack';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers';
 
 import * as serviceWorker from './serviceWorker';
 
-import '@iobroker/adapter-react/index.css';
-import theme from '@iobroker/adapter-react/Theme';
-import Utils from '@iobroker/adapter-react/Components/Utils';
+import '@iobroker/adapter-react-v5/index.css';
+import theme from '@iobroker/adapter-react-v5/Theme';
+import Utils from '@iobroker/adapter-react-v5/Components/Utils';
 import App from './App';
 
 window.adapterName = 'material';
 window.sentryDSN = 'https://e5306c44730b45aea200a2f5a2635ae9@sentry.iobroker.net/135';
 
-console.log('iobroker.' + window.adapterName + '@' + version);
+console.log('iobroker.' + window.adapterName + '@' + pack.version);
 let themeName = Utils.getThemeName();
 
 function build() {
@@ -42,18 +42,25 @@ function build() {
     const onClickDismiss = key => () =>
         notistackRef.current.closeSnackbar(key);
 
-    return ReactDOM.render(<MuiThemeProvider theme={theme(themeName)}>
-        <SnackbarProvider
-            ref={notistackRef}
-            action={key => <Button onClick={onClickDismiss(key)}>x</Button>}
-            maxSnack={6}
-        >
-            <App onThemeChange={_themeName => {
-                themeName = _themeName;
-                build();
-            }} />
-        </SnackbarProvider>
-    </MuiThemeProvider>, document.getElementById('root'));
+    const container = document.getElementById('root');
+    const root = createRoot(container);
+    return root.render(
+        <StyledEngineProvider injectFirst>
+            <ThemeProvider theme={theme(themeName)}>
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <SnackbarProvider
+                        ref={notistackRef}
+                        action={key => <Button onClick={onClickDismiss(key)}>x</Button>}
+                        maxSnack={6}
+                    >
+                        <App onThemeChange={_themeName => {
+                            themeName = _themeName;
+                            build();
+                        }} />
+                    </SnackbarProvider>
+                </LocalizationProvider>
+            </ThemeProvider>
+        </StyledEngineProvider>);
 }
 
 build();

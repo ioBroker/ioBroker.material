@@ -1,6 +1,6 @@
-import { FormControl, FormHelperText, Input, InputLabel, MenuItem, Select } from '@material-ui/core';
+import { FormControl, FormHelperText, Input, InputLabel, MenuItem, Select } from '@mui/material';
 import React, { useState } from 'react';
-import I18n from '@iobroker/adapter-react/i18n';
+import I18n from '@iobroker/adapter-react-v5/i18n';
 import PropTypes from 'prop-types';
 import cls from './style.module.scss';
 import clsx from 'clsx';
@@ -20,6 +20,7 @@ const CustomSelect = ({ customOptions, ref, multiple, optionsName, value, objs, 
     >
         {title ? <InputLabel>{I18n.t(title)}</InputLabel> : null}
         <Select
+            variant="standard"
             value={text}
             fullWidth
             ref={ref}

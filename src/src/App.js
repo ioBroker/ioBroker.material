@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2021 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2022 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,8 @@
  * limitations under the License.
  **/
 import React from 'react';
-import { MuiThemeProvider, withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@mui/styles';
+import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import 'typeface-roboto'
 import clsx from 'clsx';
 import { withSnackbar } from 'notistack';
@@ -23,17 +24,17 @@ import './App.css';
 import './helpers/stylesVariables.scss';
 import cls from './style.module.scss';
 
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Drawer from '@material-ui/core/Drawer';
-import Dialog from '@material-ui/core/Dialog';
-import IconButton from '@material-ui/core/IconButton';
-import Button from '@material-ui/core/Button';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import { Tooltip } from '@material-ui/core';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Drawer from '@mui/material/Drawer';
+import Dialog from '@mui/material/Dialog';
+import IconButton from '@mui/material/IconButton';
+import Button from '@mui/material/Button';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import { Tooltip } from '@mui/material';
 
 import { MdClose as IconClose } from 'react-icons/md';
 import { MdCheck as IconCheck } from 'react-icons/md';
@@ -49,13 +50,13 @@ import { MdRefresh as IconRefresh } from 'react-icons/md';
 import { FaSignOutAlt as IconLogout } from 'react-icons/fa';
 import { GiResize } from 'react-icons/gi';
 
-import IconAdapter from '@iobroker/adapter-react/Components/Icon';
-import I18n from '@iobroker/adapter-react/i18n';
-import Utils from '@iobroker/adapter-react/Components/Utils';
-import GenericApp from '@iobroker/adapter-react/GenericApp';
+import IconAdapter from '@iobroker/adapter-react-v5/Components/Icon';
+import I18n from '@iobroker/adapter-react-v5/i18n';
+import Utils from '@iobroker/adapter-react-v5/Components/Utils';
+import GenericApp from '@iobroker/adapter-react-v5/GenericApp';
 
 import Theme from './theme';
-import version from '../package.json';
+import pack from '../package.json';
 import MenuList from './MenuList';
 import StatesList from './StatesList/StatesList';
 import SpeechDialog from './SpeechDialog';
@@ -295,6 +296,7 @@ class App extends GenericApp {
         if (this._useStorage && useCache) {
             if (this.storage) {
                 const objects = this._objects || this.storage.get('objects');
+                this.allObjects = objects;
                 if (objects) {
                     return Promise.resolve(objects);
                 }
@@ -335,7 +337,14 @@ class App extends GenericApp {
             })
             .then(channels => {
                 Object.keys(channels).forEach(id => data[id] = channels[id]);
-                // Read all devices for images
+
+                // Read all echarts for dialog
+                return this.socket.getObjectView('echarts.0', 'echarts.0.\u9999', 'chart');
+            })
+            .then(_charts => {
+                Object.keys(_charts).forEach(id => data[id] = _charts[id]);
+
+                // Read all adapters for images
                 return this.socket.getObjectView('', '\u9999', 'device');
             })
             .then(devices => {
@@ -371,6 +380,7 @@ class App extends GenericApp {
             this.localData.appConfig = this.localData.appConfig || { _id: appConfigID };
             this.localData.config = this.localData.config || {};
             this.localData.keys = this.localData.keys || [];
+            this.allObjects = this.localData.objects;
 
             const localData = this.localData;
             this.localData = null;
@@ -955,7 +965,7 @@ class App extends GenericApp {
             let fileName = `/${Utils.namespace}.0/${this.user}/${settings.background.name}`;
 
             if (settings.background.data.startsWith('data:')) {
-                settings.background.data = settings.background.data.split(',')[1];
+                settings.background.data = App._base64ToArrayBuffer(settings.background.data.split(',')[1]);
             }
             // upload image
             this.socket.writeFile64(Utils.namespace + '.0', `/${this.user}/${settings.background.name}`, settings.background.data)
@@ -1242,13 +1252,23 @@ class App extends GenericApp {
             .catch(e => window.alert('Cannot read directory: ' + e));
     }
 
+    static _base64ToArrayBuffer(base64) {
+        const binaryString = window.atob(base64);
+        const len = binaryString.length;
+        const bytes = new Uint8Array(len);
+        for (let i = 0; i < len; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+        }
+        return bytes.buffer;
+    }
+
     saveDialogSettings = settings => {
         settings = settings || this.state.settings;
         if (settings.background && typeof settings.background === 'object') {
             let fileName = `${this.user}/${this.state.viewEnum}.${settings.background.name.toLowerCase().split('.').pop()}`;
 
             if (settings.background.data.startsWith('data:')) {
-                settings.background.data = settings.background.data.split(',')[1];
+                settings.background.data = App._base64ToArrayBuffer(settings.background.data.split(',')[1]);
             }
             // upload image
             this.socket.writeFile64(Utils.namespace + '.0', fileName, settings.background.data, err => {
@@ -1314,7 +1334,7 @@ class App extends GenericApp {
     }
 
     onUpdateVersion() {
-        const newLocation = this.urlVersion ? '../' + this.state.actualVersion + '/' : this.state.actualVersion + '/';
+        const newLocation = this.urlVersion ? `../${this.state.actualVersion}/` : this.state.actualVersion + '/';
         console.log('redirect to ' + newLocation);
         if (!window.noServiceWorker && 'serviceWorker' in navigator) {
             navigator.serviceWorker.ready.then(registration => {
@@ -1326,13 +1346,22 @@ class App extends GenericApp {
     }
 
     getVersionControl() {
-        if (!this.state.editMode) return null;
-        if (this.state.actualVersion && (this.state.actualVersion !== version || (this.urlVersion && this.state.actualVersion !== this.urlVersion))) {
-            return <Button className={cls.iconSettings} onClick={() => this.onUpdateVersion()} variant="contained" size="small" title={I18n.t('Update to') + ' ' + this.state.actualVersion} color="secondary">
-                <IconRefresh style={{ marginRight: 5 }} /> {parseFloat(this.state.width) > 500 ? I18n.t('Update to') + ' ' + this.state.actualVersion : ''}
+        if (!this.state.editMode) {
+            return null;
+        }
+        if (this.state.actualVersion && (this.state.actualVersion !== pack.version || (this.urlVersion && this.state.actualVersion !== this.urlVersion))) {
+            return <Button
+                className={cls.iconSettings}
+                onClick={() => this.onUpdateVersion()}
+                variant="contained"
+                size="small"
+                title={`${I18n.t('Update to')} ${this.state.actualVersion}`}
+                color="secondary"
+            >
+                <IconRefresh style={{ marginRight: 5 }} /> {parseFloat(this.state.width) > 500 ? `${I18n.t('Update to')} ${this.state.actualVersion}` : ''}
             </Button>;
         } else {
-            return <span className={cls.iconSettings} onClick={() => this.onUpdateVersion()}>{version}</span>;
+            return <span className={cls.iconSettings} onClick={() => this.onUpdateVersion()}>{pack.version}</span>;
         }
     }
 
@@ -1681,7 +1710,7 @@ class App extends GenericApp {
                     onClick={() => this.setState({ errorShow: false })}
                     color="primary"
                     startIcon={<IconCheck />}
-                >OK</Button>
+                >{I18n.t('OK')}</Button>
             </DialogActions>
         </Dialog>;
     }
@@ -1725,21 +1754,23 @@ class App extends GenericApp {
                 console.log('Set instance ' + window.__material_instance);
             }
 
-            return <MuiThemeProvider theme={this.state.theme}>
-                <div id="app" className={cls.wrapperApp}>
-                    {this.getAppBar(useBright)}
-                    {this.getMenu(useBright)}
-                    {!this.state.bigMessage ? this.getStateList(useBright) : <div style={{
-                        position: 'absolute',
-                        fontSize: 36,
-                        top: '50%',
-                        width: '100%',
-                        textAlign: 'center'
-                    }}>{this.state.bigMessage}</div>}
-                    {this.getErrorDialog(useBright)}
-                    {this.getSpeechDialog(useBright)}
-                </div>
-            </MuiThemeProvider>;
+            return <StyledEngineProvider injectFirst>
+                <ThemeProvider theme={this.state.theme}>
+                    <div id="app" className={cls.wrapperApp}>
+                        {this.getAppBar(useBright)}
+                        {this.getMenu(useBright)}
+                        {!this.state.bigMessage ? this.getStateList(useBright) : <div style={{
+                            position: 'absolute',
+                            fontSize: 36,
+                            top: '50%',
+                            width: '100%',
+                            textAlign: 'center'
+                        }}>{this.state.bigMessage}</div>}
+                        {this.getErrorDialog(useBright)}
+                        {this.getSpeechDialog(useBright)}
+                    </div>
+                </ThemeProvider>
+            </StyledEngineProvider>;
         }
     }
 }

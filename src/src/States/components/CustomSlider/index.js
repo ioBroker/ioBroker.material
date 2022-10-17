@@ -1,12 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Slider } from '@material-ui/core';
+import { Slider } from '@mui/material';
 import cls from './style.module.scss';
 import clsx from 'clsx';
 import UtilsColor from '../../../UtilsColors';
 
 const CustomSlider = ({ value, className, onChange, hue, orientation, temperature, tMin, tMax, minMax }) => {
-
     const rgb = hue === '#FFFFFF' ?
         '#FFFFFF' :
         temperature ? UtilsColor.rgb2string(UtilsColor.temperatureToRGB(hue)) : UtilsColor.rgb2string(UtilsColor.hslToRgb(hue / 360, 1, 0.5));

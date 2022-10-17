@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2021 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2022 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ import React from 'react';
 import SmartGeneric from '../SmartGeneric';
 import Dialog from '../../Dialogs/SmartDialogEchartCustom';
 import EchartIframe from '../../basic-controls/react-echart/EchartIframe';
-import Utils from '@iobroker/adapter-react/Components/Utils';
+import Utils from '@iobroker/adapter-react-v5/Components/Utils';
 
 class SmartEchart extends SmartGeneric {
     constructor(props) {
@@ -96,8 +96,9 @@ class SmartEchart extends SmartGeneric {
         }
     }
 
-    getEchartIds(){
-        return Object.keys(this.props.objects).filter(key=>key.startsWith('echarts.0') && key !== 'echarts.0');
+    getEchartIds() {
+        return Object.keys(this.props.objects)
+            .filter(key => key.startsWith('echarts.0') && key !== 'echarts.0');
     }
 
     getDialogSettings() {
@@ -115,19 +116,22 @@ class SmartEchart extends SmartGeneric {
             settings.unshift({
                 name: 'echartId',
                 value: this.state?.settings?.echartId || 'none',
-                options: [...this.getEchartIds(true), 'none'],
+                options: [...this.getEchartIds(), 'none'],
                 type: 'select'
             });
             settings.unshift({
                 type: 'delete'
             });
         }
+
         return settings;
     }
+
     getLocation() {
         return <EchartIframe
+            key={this.key + 'iframe'}
             name={this.state.settings.name}
-            id={!this.id.startsWith('echarts.')?this.state?.settings?.echartId:this.id}
+            id={!this.id.startsWith('echarts.') ? this.state?.settings?.echartId : this.id}
         />;
     }
 

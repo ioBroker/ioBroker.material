@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Fab } from '@material-ui/core';
+import { Fab } from '@mui/material';
 import cls from './style.module.scss';
 import clsx from 'clsx';
 
@@ -11,7 +11,7 @@ const CustomFab = ({ fullWidth, size, onClick, style, className, children, activ
         onClick={onClick}
         //fullWidth={fullWidth}
         style={style}
-        className={clsx(cls.root, className && className, active && cls.active)}
+        className={clsx(cls.root, className, active && cls.active)}
         margin="normal"
         size={size}
     >

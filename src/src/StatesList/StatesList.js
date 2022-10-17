@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2021 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2022 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,15 +18,15 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 
-import { withStyles } from '@material-ui/core/styles';
-import Tooltip from '@material-ui/core/Tooltip';
+import { withStyles } from '@mui/styles';
+import { Tooltip, Fab } from '@mui/material';
 
 import { FaArrowsAltV as IconVertical } from 'react-icons/fa'
 import { MdAdd as IconAdd } from 'react-icons/md'
 import { FaArrowsAltH as IconHorizontal } from 'react-icons/fa'
 
-import Utils from '@iobroker/adapter-react/Components/Utils';
-import I18n from '@iobroker/adapter-react/i18n';
+import Utils from '@iobroker/adapter-react-v5/Components/Utils';
+import I18n from '@iobroker/adapter-react-v5/i18n';
 
 import StatesSubList from '../StatesSubList/StatesSubList';
 import Clock from '../basic-controls/react-clock/Clock';
@@ -55,7 +55,7 @@ const styles = {
         backgroundColor: 'rgba(90,90,90,0.5)'
     },
     'drag-button': {
-        position: 'fixed',
+        position: 'absolute',
         top: 70,
         right: 30,
         zIndex: 222,
@@ -271,10 +271,10 @@ class StatesList extends Component {
     wrapItem(id, items, isUseBright, index) {
         if (!this.state.subDragging && this.props.editMode && id !== 'nothing' && id !== Utils.INSTANCES) {
             return <Draggable
-                key={this.state.enumID + '_' + id + '-list1'}
-                draggableId={this.state.enumID + '_' + id + '-list'} index={index}>
+                key={`${this.state.enumID}_${id}-list1`}
+                draggableId={`${this.state.enumID}_${id}-list`} index={index}>
                 {(provided, snapshot) => <div
-                    key={this.state.enumID + '_' + id + '-list2'}
+                    key={`${this.state.enumID}_${id}-list2`}
                     className={clsx(cls.drag, snapshot.isDragging && cls.dragStyle)}
                     // className={this.props.classes['drag-item'] + (snapshot.isDragging ? ' ' + this.props.classes['drag-item-overlay'] : '')}
                     // style={{ display: 'inline-block' }}
@@ -352,7 +352,7 @@ class StatesList extends Component {
             />;
             if (this.props.editMode) {
                 return <div
-                    key={this.state.enumID + '_' + id + '-list2'}
+                    key={`${this.state.enumID}_${id}-list2`}
                     className={this.props.classes['drag-item']}
                     style={{ display: 'inline-block' }}
                 >{control}</div>;
@@ -420,10 +420,10 @@ class StatesList extends Component {
 
     getToggleDragButton() {
         if (this.props.editMode && this.props.enumID !== Utils.INSTANCES) {
-            return <CustomFab key={this.props.dialogKey + '-drag-button'}
+            return <CustomFab key={`${this.props.dialogKey}-drag-button`}
                 size="small"
                 title={I18n.t('Drag direction')}
-                style={{ fontSize: 24 }}
+                style={{ fontSize: 24, position: 'absolute' }}
                 onClick={() => this.setState({ subDragging: !this.state.subDragging })}
                 className={this.props.classes['drag-button']}>
                 {this.state.subDragging ? <IconHorizontal /> : <IconVertical />}
@@ -541,14 +541,14 @@ class StatesList extends Component {
     getAddButtonWidgets() {
         if (this.props.editMode && this.props.enumID !== Utils.INSTANCES) {
             return <Tooltip title={I18n.t('Widgets')}>
-                <CustomFab
+                <Fab
                     size="small"
-                    title={I18n.t('Widgets')}
                     style={{ fontSize: 24 }}
                     onClick={this.onDialogOpen}
-                    className={cls.buttonClock}>
+                    className={clsx(cls.root, cls.buttonClock)}
+                >
                     <IconAdd />
-                </CustomFab>
+                </Fab>
             </Tooltip>;
         } else {
             return null;

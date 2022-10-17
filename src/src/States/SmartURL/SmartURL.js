@@ -14,15 +14,15 @@
  * limitations under the License.
  **/
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@mui/styles';
 import PropTypes from 'prop-types';
 
 import {FaVideo as IconCam} from 'react-icons/fa';
 import SmartGeneric from '../SmartGeneric';
 import Dialog from '../../Dialogs/SmartDialogURL';
 import Theme from '../../theme';
-import Utils from '@iobroker/adapter-react/Components/Utils';
-import IconAdapter from '@iobroker/adapter-react/Components/Icon';
+import Utils from '@iobroker/adapter-react-v5/Components/Utils';
+import IconAdapter from '@iobroker/adapter-react-v5/Components/Icon';
 import cls from './style.module.scss';
 import clsGeneric from '../style.module.scss';
 

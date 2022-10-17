@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2021 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2022 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ import React from 'react';
 
 import SmartGeneric from '../SmartGeneric';
 import Dialog from '../../Dialogs/SmartDialogMap';
-import I18n from '@iobroker/adapter-react/i18n';
+import I18n from '@iobroker/adapter-react-v5/i18n';
 import Location from '../../basic-controls/react-location/Location';
 import Moment from 'react-moment';
 class SmartLocation extends SmartGeneric {

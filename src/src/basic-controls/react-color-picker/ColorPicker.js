@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2021 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2022 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,12 @@
  * limitations under the License.
  **/
 import React from 'react'
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@mui/styles';
 import {ChromePicker} from 'react-color'
 
-import TextField from '@material-ui/core/TextField';
-import Dialog from '@material-ui/core/Dialog';
-import IconButton from '@material-ui/core/IconButton';
+import TextField from '@mui/material/TextField';
+import Dialog from '@mui/material/Dialog';
+import IconButton from '@mui/material/IconButton';
 
 import {MdDelete as IconDelete} from 'react-icons/md';
 
@@ -78,6 +78,7 @@ class ColorPicker extends React.Component {
         const color = ColorPicker.getColor(this.state.color);
         return <div style={this.props.style}>
             <TextField
+                variant="standard"
                 id="name"
                 style={{width: 'calc(100% - 80px)'}}
                 label={this.props.name || 'color'}

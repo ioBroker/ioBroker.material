@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import { makeStyles, ThemeProvider } from '@material-ui/core';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import { makeStyles } from '@mui/styles';
+import { ThemeProvider } from '@mui/material/styles';
 import cls from './style.module.scss';
 
 import { MdClose as CloseIcon } from 'react-icons/md';
 
-import I18n from '@iobroker/adapter-react/i18n';
-import theme from '@iobroker/adapter-react/Theme';
-import Utils from '@iobroker/adapter-react/Components/Utils';
+import I18n from '@iobroker/adapter-react-v5/i18n';
+import theme from '@iobroker/adapter-react-v5/Theme';
+import Utils from '@iobroker/adapter-react-v5/Components/Utils';
 import ObjectChart from '../States/components/ObjectChart';
 import CustomFab from '../States/components/CustomFab';
 import clsx from 'clsx/dist/clsx';
@@ -20,7 +21,7 @@ let node = null;
 
 const useStyles = makeStyles(theme => ({
     root: {
-        backgroundColor: theme.palette.background.paper,
+        backgroundColor: theme.palette?.background?.paper,
         width: '100%',
         height: 'auto',
         display: 'flex'
@@ -157,9 +158,10 @@ export const dialogChartCallBack = (cb, id, socket, themeType, systemConfig, all
         node = document.createElement('div');
         node.id = 'renderModal';
         document.body.appendChild(node);
+        node._root = createRoot(node);
     }
 
-    return ReactDOM.render(
+    return node._root.render(
         <DialogChart
             cb={cb}
             themeType={themeType}
@@ -168,5 +170,5 @@ export const dialogChartCallBack = (cb, id, socket, themeType, systemConfig, all
             systemConfig={systemConfig}
             allObjects={allObjects}
             ids={ids}
-        />, node);
+        />);
 }

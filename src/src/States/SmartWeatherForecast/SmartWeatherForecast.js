@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2021 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2022 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,14 @@
  * limitations under the License.
  **/
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@mui/styles';
 import PropTypes from 'prop-types';
 
 import SmartGeneric from '../SmartGeneric';
-import Utils from '@iobroker/adapter-react/Components/Utils';
+import Utils from '@iobroker/adapter-react-v5/Components/Utils';
 import Dialog from '../../Dialogs/SmartDialogWeatherForecast';
-import I18n from '@iobroker/adapter-react/i18n';
-import IconAdapter from '@iobroker/adapter-react/Components/Icon';
+import I18n from '@iobroker/adapter-react-v5/i18n';
+import IconAdapter from '@iobroker/adapter-react-v5/Components/Icon';
 import cls from './style.module.scss';
 import clsGeneric from '../style.module.scss';
 import Weather from '../../basic-controls/react-weather/Weather';

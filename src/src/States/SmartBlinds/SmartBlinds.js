@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2021 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2022 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,10 @@
  * limitations under the License.
  **/
 import React from 'react';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import SmartGeneric from '../SmartGeneric';
 import Icon from '../../icons/Jalousie'
-import Theme from '../../theme';
 import Dialog from '../../Dialogs/SmartDialogSlider';
-import IconAdapter from '@iobroker/adapter-react/Components/Icon';
-import cls from './style.module.scss';
+import IconAdapter from '@iobroker/adapter-react-v5/Components/Icon';
 import clsGeneric from '../style.module.scss';
 import clsx from 'clsx';
 
@@ -79,7 +76,7 @@ class SmartBlinds extends SmartGeneric {
 
         this.stateRx.showDialog = false; // support dialog in this tile used in generic class)
         this.stateRx.setValue = null;
-        this.key = 'smart-blinds-' + this.id + '-';
+        this.key = `smart-blinds-${this.id}-`;
         this.noAck = true;  // used in generic
         this.doubleState = true; // used in generic: If colors for on and for off
 
@@ -146,7 +143,7 @@ class SmartBlinds extends SmartGeneric {
     }
 
     setValue = percent => {
-        console.log('Control ' + this.id + ' = ' + this.percentToRealValue(percent));
+        console.log(`Control ${this.id} = ${this.percentToRealValue(percent)}`);
         this.setState({ executing: !this.state.settings.noAck, setValue: percent });
         this.props.onControl(this.id, this.percentToRealValue(percent));
     }

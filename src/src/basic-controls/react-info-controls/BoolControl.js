@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2021 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2022 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,10 @@
  **/
 import React from 'react';
 import PropTypes from 'prop-types';
-import Typography from '@material-ui/core/Typography';
-import Switch from '@material-ui/core/Switch';
-import {withStyles} from '@material-ui/core/styles';
+import { withStyles } from '@mui/styles';
+
+import Typography from '@mui/material/Typography';
+import Switch from '@mui/material/Switch';
 import Moment from 'react-moment';
 import Theme from '../../theme';
 

@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2021 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2022 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,22 +17,22 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import CopyToClipboard from 'react-copy-to-clipboard';
 
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Paper from '@material-ui/core/Paper';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Paper from '@mui/material/Paper';
 
 import { MdSave as OkIcon } from 'react-icons/md';
 import { MdContentCopy as CopyIcon } from 'react-icons/md';
 import { MdCancel as IconCancel } from 'react-icons/md';
 
-import Utils from '@iobroker/adapter-react/Components/Utils';
+import Utils from '@iobroker/adapter-react-v5/Components/Utils';
 
 import ColorPicker from '../basic-controls/react-color-picker/ColorPicker';
 import ImageSelector from '../basic-controls/react-image-selector/ImageSelector';
@@ -42,7 +42,7 @@ import BoolControl from '../basic-controls/react-info-controls/BoolControl';
 
 import SmartDialogGeneric from './SmartDialogGeneric';
 import Theme from '../theme';
-import I18n from '@iobroker/adapter-react/i18n';
+import I18n from '@iobroker/adapter-react-v5/i18n';
 import UploadImage from '../basic-controls/UploadImage';
 import CustomButton from '../States/components/CustomButton';
 import CustomFab from '../States/components/CustomFab';
@@ -123,9 +123,7 @@ class SmartDialogSettings extends SmartDialogGeneric {
 
     onSave = () => {
         const settings = {};
-        this.props.settings.forEach(item => {
-            settings[item.name] = this.state.values[item.name];
-        });
+        this.props.settings.forEach(item => settings[item.name] = this.state.values[item.name]);
         this.props.onSave(settings);
         this.ignoreUnsaved = true;
         this.onClose();
@@ -227,7 +225,7 @@ class SmartDialogSettings extends SmartDialogGeneric {
                         <CopyIcon width={Theme.iconSize} height={Theme.iconSize} />
                     </CustomFab>
                 </CopyToClipboard>
-                {this.state.anchorEl ? <Button variant="outlined" disabled style={styles.descCopied}>{I18n.t('Copied')}</Button> : null}
+                {this.state.anchorEl ? <Button color="grey" variant="outlined" disabled style={styles.descCopied}>{I18n.t('Copied')}</Button> : null}
                 <div><span style={styles.descTitle}>{I18n.t('Name')}: </span>{Utils.getObjectName(this.props.objects, this.props.settingsId)}</div>
                 <div style={styles.descDivId}><span style={styles.descTitle}>{I18n.t('Description')}: </span>{Utils.getObjectName(this.props.objects, this.props.settingsId, null, null, true)}</div>
                 <div style={styles.descDivId}><span style={styles.descTitle}>ID: </span>{this.props.settingsId}</div>
@@ -240,6 +238,7 @@ class SmartDialogSettings extends SmartDialogGeneric {
     getHeader() {
         return this.props.name;
     }
+
     getButtons() {
         return <CustomButton active onClick={this.onSave} variant="contained" color="primary" startIcon={<OkIcon />}>{I18n.t('Save')}</CustomButton>
     }
@@ -258,7 +257,7 @@ class SmartDialogSettings extends SmartDialogGeneric {
                 >{I18n.t('Delete')}</CustomButton>;
             } else if (e.type === 'boolean') {
                 item = <BoolControl
-                    key={this.props.dialogKey + '-' + e.name + '-bool'}
+                    key={`${this.props.dialogKey}-${e.name}-bool`}
                     label={I18n.t(e.name)}
                     onChange={() => this.handleToggle(e.name)}
                     icon={e.icon}
@@ -267,7 +266,7 @@ class SmartDialogSettings extends SmartDialogGeneric {
                 />;
             } else if (e.type === 'color') {
                 item = <ColorPicker
-                    key={this.props.dialogKey + '-' + e.name + '-color'}
+                    key={`${this.props.dialogKey}-${e.name}-color`}
                     name={I18n.t(e.name)}
                     color={this.state.values[e.name] || ''}
                     onChange={color => this.handleValue(e.name, color)}
@@ -298,7 +297,7 @@ class SmartDialogSettings extends SmartDialogGeneric {
                 item = <ImageSelector
                     maxSize={6000000}
                     images={this.state.images}
-                    key={this.props.dialogKey + '-' + e.name + '-image'}
+                    key={`${this.props.dialogKey}-${e.name}-image`}
                     label={e.label ? I18n.t(e.label) : I18n.t(e.name)}
                     aspect={this.state.values.hasOwnProperty('doubleSize') ? (this.state.values.doubleSize ? 2 : 1) : e.aspect}
                     maxHeight={200}
@@ -311,7 +310,8 @@ class SmartDialogSettings extends SmartDialogGeneric {
             } else if (e.type === 'number') {
                 // input field
                 item = <TextField
-                    key={this.props.dialogKey + '-' + e.name + '-text'}
+                    variant="standard"
+                    key={`${this.props.dialogKey}-${e.name}-text`}
                     id={e.name}
                     label={I18n.t(e.name)}
                     style={{ width: '100%' }}
@@ -324,7 +324,8 @@ class SmartDialogSettings extends SmartDialogGeneric {
             } else {
                 // input field
                 item = <TextField
-                    key={this.props.dialogKey + '-' + e.name + '-text'}
+                    variant="standard"
+                    key={`${this.props.dialogKey}-${e.name}-text`}
                     id={e.name}
                     label={I18n.t(e.name)}
                     style={{ width: '100%' }}
@@ -337,7 +338,7 @@ class SmartDialogSettings extends SmartDialogGeneric {
             if (0 && divider) {
                 return [item, divider];
             } else {
-                return <div key={this.props.dialogKey + '-' + e.name + '-paper'} style={{ margin: 5, padding: 5 }} >{item}</div>;
+                return <div key={`${this.props.dialogKey}-${e.name}-paper`} style={{ margin: 5, padding: 5 }} >{item}</div>;
             }
         });
 
@@ -366,8 +367,8 @@ class SmartDialogSettings extends SmartDialogGeneric {
                 <DialogContentText>{I18n.t('Changes are not saved.')}</DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button onClick={this.handleWarningCancel} color="primary" autoFocus>{I18n.t('Stay edit')}</Button>
-                <Button onClick={this.handleWarningIgnore} startIcon={<IconCancel/>}>{I18n.t('Discard changes')}</Button>
+                <Button onClick={this.handleWarningCancel} color="primary" variant="contained" autoFocus>{I18n.t('Stay edit')}</Button>
+                <Button onClick={this.handleWarningIgnore} color="grey" variant="contained" startIcon={<IconCancel/>}>{I18n.t('Discard changes')}</Button>
             </DialogActions>
         </Dialog>;
     }

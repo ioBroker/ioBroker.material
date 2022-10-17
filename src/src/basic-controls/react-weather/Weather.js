@@ -1,11 +1,11 @@
 import React, { createRef, useEffect, useRef, useState } from 'react';
 import cls from './style.module.scss';
-import I18n from '@iobroker/adapter-react/i18n';
-import { IconButton, Tooltip } from '@material-ui/core';
+import I18n from '@iobroker/adapter-react-v5/i18n';
+import { IconButton, Tooltip } from '@mui/material';
 import { MdAvTimer } from 'react-icons/md';
 import { FaRegCalendarTimes } from "react-icons/fa";
 import clsx from 'clsx/dist/clsx';
-import IconAdapter, { getSystemIcon } from '@iobroker/adapter-react/Components/Icon';
+import IconAdapter, { getSystemIcon } from '@iobroker/adapter-react-v5/Components/Icon';
 import clearSky from './iconsWeather/clearSky.svg';
 import fewClouds from './iconsWeather/fewClouds.svg';
 import scatteredClouds from './iconsWeather/scatteredClouds.svg';

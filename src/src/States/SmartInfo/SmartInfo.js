@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2021 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2022 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,13 @@ import SmartGeneric from '../SmartGeneric';
 import IconThermometer from '../../icons/ThermometerSimple';
 import IconHydro from '../../icons/Humidity';
 import { MdInfo as IconInfo } from 'react-icons/md';
-import Utils from '@iobroker/adapter-react/Components/Utils';
+import Utils from '@iobroker/adapter-react-v5/Components/Utils';
 
 import Theme from '../../theme';
-import I18n from '@iobroker/adapter-react/i18n';
+import I18n from '@iobroker/adapter-react-v5/i18n';
 import Dialog from '../../Dialogs/SmartDialogInfo';
 import PropTypes from 'prop-types';
-import IconAdapter from '@iobroker/adapter-react/Components/Icon';
+import IconAdapter from '@iobroker/adapter-react-v5/Components/Icon';
 import cls from './style.module.scss';
 import clsGeneric from '../style.module.scss';
 import clsx from 'clsx/dist/clsx';

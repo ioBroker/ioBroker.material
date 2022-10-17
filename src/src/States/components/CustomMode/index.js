@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ButtonGroup, FormControl, FormLabel } from '@material-ui/core';
+import { ButtonGroup, FormControl, FormLabel } from '@mui/material';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import cls from './style.module.scss';
@@ -7,7 +7,7 @@ import CustomButton from '../CustomButton';
 import CustomSelect from '../CustomSelect';
 
 const CustomMode = ({ label, objs, value, orientation, onChange, className }) => {
-    
+
     const [longerLength, setLongerLength] = useState(false);
 
     const resizeThrottler = () => {
@@ -28,7 +28,7 @@ const CustomMode = ({ label, objs, value, orientation, onChange, className }) =>
             window.removeEventListener("resize", resizeThrottler);
         }
     }, []);
-    return <FormControl className={clsx(cls.styleGroup, className)} component="fieldset">
+    return <FormControl className={clsx(cls.styleGroup, className)} component="fieldset" variant="standard">
         <FormLabel component="legend">{label}</FormLabel>
         {!longerLength ? <ButtonGroup color="primary" orientation={orientation}>
             {Object.keys(objs).map(name => <CustomButton

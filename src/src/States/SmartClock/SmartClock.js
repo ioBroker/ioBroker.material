@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 bluefox <dogafox@gmail.com>
+ * Copyright 2022 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,14 @@
  * limitations under the License.
  **/
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@mui/styles';
 import PropTypes from 'prop-types';
 
 import { FaVideo as IconCam } from 'react-icons/fa';
 import SmartGeneric from '../SmartGeneric';
 import Dialog from '../../Dialogs/SmartDialogURL';
 import Theme from '../../theme';
-import Utils from '@iobroker/adapter-react/Components/Utils';
+import Utils from '@iobroker/adapter-react-v5/Components/Utils';
 import Clock from '../../basic-controls/react-clock/Clock';
 import cls from './style.module.scss';
 

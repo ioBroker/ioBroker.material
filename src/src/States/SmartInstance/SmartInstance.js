@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2021 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2022 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,21 @@
  * limitations under the License.
  **/
 import React from 'react';
-import Fab from '@material-ui/core/Fab';
+import Fab from '@mui/material/Fab';
 
 import SmartGeneric from '../SmartGeneric';
 import Theme from '../../theme';
-import I18n from '@iobroker/adapter-react/i18n';
+import I18n from '@iobroker/adapter-react-v5/i18n';
 
 import { MdPlayArrow as IconPlay } from 'react-icons/md';
 import { MdPause as IconPause } from 'react-icons/md';
 //import IconChecked from 'react-icons/lib/md/check-circle';
 //import IconUnchecked from 'react-icons/lib/md/cancel';
-import IconAdapter from '@iobroker/adapter-react/Components/Icon';
+import IconAdapter from '@iobroker/adapter-react-v5/Components/Icon';
 import cls from './style.module.scss';
 import clsGeneric from '../style.module.scss';
 import clsx from 'clsx';
-import { IconButton } from '@material-ui/core';
+import { IconButton } from '@mui/material';
 
 class SmartInstance extends SmartGeneric {
     constructor(props) {

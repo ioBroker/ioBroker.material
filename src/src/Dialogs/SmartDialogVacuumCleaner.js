@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2021 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2022 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,20 +16,20 @@
 import React, { createRef } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@mui/styles';
 
-import I18n from '@iobroker/adapter-react/i18n';
+import I18n from '@iobroker/adapter-react-v5/i18n';
 
 import SmartDialogGeneric from './SmartDialogGeneric';
 import cls from './style.module.scss';
-import { Tooltip } from '@material-ui/core';
+import { Tooltip } from '@mui/material';
 import CustomButton from '../States/components/CustomButton';
 import StateIcon from '../States/components/StateIcon';
 import Icon from '../icons/RobotVacuum';
 // import Circle1 from '../icons/Circle1';
 import Circle2 from '../icons/Circle2';
 import { IoMdBatteryCharging } from "react-icons/io";
-import IconAdapter from '@iobroker/adapter-react/Components/Icon';
+import IconAdapter from '@iobroker/adapter-react-v5/Components/Icon';
 import CustomMode from '../States/components/CustomMode';
 
 const styles = themes => ({

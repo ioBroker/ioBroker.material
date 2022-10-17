@@ -3,9 +3,9 @@ import { findDOMNode } from 'react-dom';
 import PropTypes from 'prop-types';
 import keycode from 'keycode';
 import clsx from 'clsx';
-import withStyles from '@material-ui/core/styles/withStyles';
-import ButtonBase from '@material-ui/core/ButtonBase';
-import { fade } from '@material-ui/core/styles/colorManipulator';
+import withStyles from '@mui/material/styles/withStyles';
+import ButtonBase from '@mui/material/ButtonBase';
+import { alpha } from '@mui/material/styles';
 
 function clamp(value, min = 0, max = 100) {
     return Math.min(Math.max(value, min), max);
@@ -107,7 +107,7 @@ export const styles = theme => {
             transition: commonTransitions,
             backgroundColor: colors.primary,
             '&$focused': {
-                boxShadow: `0px 0px 0px 9px ${fade(colors.primary, 0.16)}`,
+                boxShadow: `0px 0px 0px 9px ${alpha(colors.primary, 0.16)}`,
             },
             '&$activated': {
                 width: 17,
