@@ -3,19 +3,6 @@
     "name": "material",
     "version": "1.2.0",
     "news": {
-      "1.2.0": {
-        "en": "migrated to MUIv5\ncorrected error with blinds\ncorrected error with echarts\ncorrected error with background upload",
-        "de": "auf MUIv5 migriert\nkorrigierter fehler mit blinds\nkorrigierter fehler mit echarts\nfehler behoben mit hintergrund hochladen",
-        "ru": "мигрирован в MUIv5\nисправлена ошибка с жалюзи\nисправлена ошибка с echarts\nисправлена ошибка с загрузкой фона",
-        "pt": "migrado para MUIv5\nerro corrigido com blinds\nerro corrigido com echarts\nerro corrigido com upload de fundo",
-        "nl": "mUIV5\ngecorrigeerde fout met blinden\ngecorrigeerde fout met echarts\ngecorrigeerde fout met achtergrond upload",
-        "fr": "migré vers MUIv5\nerreur corrigée avec des stores\nerreur corrigée avec echarts\nerreur corrigée avec téléchargement de fond",
-        "it": "migrato a MUIv5\nerrore corretto con le tende\nerrore corretto con echarts\nerrore corretto con caricamento di sfondo",
-        "es": "migrado a MUIv5\nerror corregido con persianas\nerror corregido con echats\nerror corregido con subida de fondo",
-        "pl": "migruje do MUIv5\npoprawić błędy z oślepami\npoprawić błąd z ekhartem\npoprawiony błąd z tłem uploadem",
-        "uk": "мігрований до MUIv5\nвиправлена помилка з жалюзі\nвиправлена помилка з echarts\nвиправлена помилка з завантаженням фону",
-        "zh-cn": "移至MUIv5\n对盲人错误的纠正\n修改了与技术艺术有关的错误\na. 按背景更正的错误"
-      },
       "1.1.2": {
         "en": "Fixed double sending in the switch control",
         "de": "Doppeltes Senden in der Schaltersteuerung behoben",
