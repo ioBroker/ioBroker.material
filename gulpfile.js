@@ -21,10 +21,10 @@ const crypto = require('crypto');
 
 const dest = 'www/';
 
-gulp.task('icons', done => {
-    const dir = __dirname + '/src/src/icons';
-    const files = fs.readdirSync(__dirname + '/src/src/icons').filter(e => e.match(/\.svg$/) && ignoreSvgs.indexOf(e) === -1);
-    const texts = files.map(file => fs.readFileSync(dir + '/' + file));
+gulp.task('1-icons', done => {
+    const dir = `${__dirname}/src/src/icons`;
+    const files = fs.readdirSync(`${__dirname}/src/src/icons`).filter(e => e.match(/\.svg$/) && ignoreSvgs.indexOf(e) === -1);
+    const texts = files.map(file => fs.readFileSync(`${dir}/${file}`));
     let text = ['import {Component} from "react";'];
     text.push('class IconList extends Component {');
     text.push('    static List = [');
@@ -36,7 +36,7 @@ gulp.task('icons', done => {
     done();
 });
 
-gulp.task('clean', () => {
+gulp.task('0-clean', () => {
     return del([
         'src/node_modules/**/*',
         'src/build/**/*',
@@ -52,7 +52,7 @@ function npmInstall() {
         // Install node modules
         const cwd = __dirname.replace(/\\/g, '/') + '/src/';
 
-        const cmd = `npm install`;
+        const cmd = `npm install -f`;
         console.log(`"${cmd} in ${cwd}`);
 
         // System call used for update of js-controller itself,
@@ -84,7 +84,7 @@ gulp.task('2-npm', () => {
     }
 });
 
-gulp.task('2-npm-dep', gulp.series('clean', () => {
+gulp.task('2-npm-dep', gulp.series('0-clean', () => {
     if (fs.existsSync(__dirname + '/src/node_modules')) {
         return Promise.resolve();
     } else {
@@ -126,7 +126,7 @@ function build() {
 
 gulp.task('3-build', () => build());
 
-gulp.task('3-build-dep', gulp.series('2-npm', 'icons', () => build()));
+gulp.task('3-build-dep', gulp.series('2-npm', '1-icons', () => build()));
 
 const ignoreSvgs = ['fireOff.svg'];
 
@@ -160,7 +160,6 @@ gulp.task('4-copy', gulp.series('3-build', () => {
 gulp.task('4-copy-dep', gulp.series('3-build-dep', () => {
     return copyFiles();
 }));
-
 
 function patchIndex() {
     return new Promise(resolve => {
