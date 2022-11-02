@@ -338,8 +338,16 @@ class App extends GenericApp {
             .then(channels => {
                 Object.keys(channels).forEach(id => data[id] = channels[id]);
 
-                // Read all echarts for dialog
-                return this.socket.getObjectView('echarts.0', 'echarts.0.\u9999', 'chart');
+                // Check is charts view exists
+                return this.socket.getObject('_design/chart')
+                    .then(obj => {
+                        if (obj && obj.views && obj.views.chart) {
+                            // Read all echarts for dialog
+                            return this.socket.getObjectView('echarts.0', 'echarts.0.\u9999', 'chart');
+                        }
+                        return {};
+                    })
+                    .catch(() => ({}))
             })
             .then(_charts => {
                 Object.keys(_charts).forEach(id => data[id] = _charts[id]);
