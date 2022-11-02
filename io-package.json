@@ -3,32 +3,6 @@
     "name": "material",
     "version": "1.2.4",
     "news": {
-      "1.2.4": {
-        "en": "Corrected error with charts",
-        "de": "Fehler mit Diagrammen korrigiert",
-        "ru": "Исправлена ошибка с графиками",
-        "pt": "Erro corrigido com gráficos",
-        "nl": "Gecorrigeerde fout met kaarten",
-        "fr": "Erreur corrigée avec les graphiques",
-        "it": "Errore corretto con i grafici",
-        "es": "Error corregido con gráficos",
-        "pl": "Nieprawdopodobny błąd z wykresami",
-        "uk": "Виправлена помилка з діаграмами",
-        "zh-cn": "图表中的错误"
-      },
-      "1.2.3": {
-        "en": "Corrected error with charts",
-        "de": "Fehler mit Diagrammen korrigiert",
-        "ru": "Исправлена ошибка с графиками",
-        "pt": "Erro corrigido com gráficos",
-        "nl": "Gecorrigeerde fout met kaarten",
-        "fr": "Erreur corrigée avec les graphiques",
-        "it": "Errore corretto con i grafici",
-        "es": "Error corregido con gráficos",
-        "pl": "Nieprawdopodobny błąd z wykresami",
-        "uk": "Виправлена помилка з діаграмами",
-        "zh-cn": "图表中的错误"
-      },
       "1.2.2": {
         "en": "migrated to MUIv5\ncorrected error with blinds\ncorrected error with echarts\ncorrected error with background upload",
         "de": "auf MUIv5 migriert\nkorrigierter fehler mit blinds\nkorrigierter fehler mit echarts\nfehler behoben mit hintergrund hochladen",
