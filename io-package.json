@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "material",
-    "version": "1.2.2",
+    "version": "1.2.3",
     "news": {
+      "1.2.3": {
+        "en": "Corrected error with charts",
+        "de": "Fehler mit Diagrammen korrigiert",
+        "ru": "Исправлена ошибка с графиками",
+        "pt": "Erro corrigido com gráficos",
+        "nl": "Gecorrigeerde fout met kaarten",
+        "fr": "Erreur corrigée avec les graphiques",
+        "it": "Errore corretto con i grafici",
+        "es": "Error corregido con gráficos",
+        "pl": "Nieprawdopodobny błąd z wykresami",
+        "uk": "Виправлена помилка з діаграмами",
+        "zh-cn": "图表中的错误"
+      },
       "1.2.2": {
         "en": "migrated to MUIv5\ncorrected error with blinds\ncorrected error with echarts\ncorrected error with background upload",
         "de": "auf MUIv5 migriert\nkorrigierter fehler mit blinds\nkorrigierter fehler mit echarts\nfehler behoben mit hintergrund hochladen",
@@ -75,18 +88,6 @@
         "es": "Soporte agregado de la aplicación iobroker.material",
         "pl": "Dodano obsługę aplikacji iobroker.material",
         "zh-cn": "添加了对 iobroker.material 应用程序的支持"
-      },
-      "1.0.4": {
-        "en": "Corrected the size of icons",
-        "de": "Die Größe der Symbole wurde korrigiert",
-        "ru": "Подправили размер иконок",
-        "pt": "Corrigido o tamanho dos ícones",
-        "nl": "De grootte van pictogrammen gecorrigeerd",
-        "fr": "Correction de la taille des icônes",
-        "it": "Corretta la dimensione delle icone",
-        "es": "Se corrigió el tamaño de los íconos.",
-        "pl": "Poprawiono rozmiar ikon",
-        "zh-cn": "修正了图标的大小"
       }
     },
     "title": "Material UI",
