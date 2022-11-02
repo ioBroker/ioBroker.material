@@ -115,11 +115,11 @@ function build() {
 
     if (fs.existsSync(__dirname + '/src/node_modules/react-scripts/scripts/build.js')) {
         return gulp.src(__dirname + '/src/node_modules/react-scripts/scripts/build.js')
-            .pipe(exec(file => `node ${file.path}`, options))
+            .pipe(exec(file => `node  --max-old-space-size=4096 ${file.path}`, options))
             .pipe(exec.reporter(reportOptions));
     } else {
         return gulp.src(__dirname + '/node_modules/react-scripts/scripts/build.js')
-            .pipe(exec(file => `node ${file.path}`, options))
+            .pipe(exec(file => `node  --max-old-space-size=4096 ${file.path}`, options))
             .pipe(exec.reporter(reportOptions));
     }
 }
