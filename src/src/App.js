@@ -103,6 +103,7 @@ class App extends GenericApp {
             'it': require('./i18n/it'),
             'es': require('./i18n/es'),
             'pl': require('./i18n/pl'),
+            'uk': require('./i18n/uk'),
             'zh-cn': require('./i18n/zh-cn'),
         };
         const query = getUrlQuery();
@@ -339,7 +340,7 @@ class App extends GenericApp {
                 Object.keys(channels).forEach(id => data[id] = channels[id]);
 
                 // Check is charts view exists
-                return this.socket.getObject('_design/chart')
+                return this.socket.getObject('_design/system')
                     .then(obj => {
                         if (obj && obj.views && obj.views.chart) {
                             // Read all echarts for dialog
