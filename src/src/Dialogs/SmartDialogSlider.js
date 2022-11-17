@@ -275,7 +275,7 @@ class SmartDialogSlider extends SmartDialogGeneric {
                 this.button.timer = null;
             }
         } else {
-            console.log('on Button UP: ' + (Date.now() - this.button.timeUp));
+            console.log(`on Button UP: ${Date.now() - this.button.timeUp}`);
             this.button.timeUp = Date.now();
 
             if (this.button.timer) {
