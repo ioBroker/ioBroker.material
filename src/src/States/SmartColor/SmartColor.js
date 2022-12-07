@@ -431,12 +431,14 @@ class SmartColor extends SmartGeneric {
             if (this.state.settings.icon) {
                 customIcon = <IconAdapter style={Object.assign({height: '100%'}, color && this.state[this.ids.on?.id] ? { color } : {})} className={clsx(clsGeneric.iconStyle, this.state[this.ids.on?.id] && clsGeneric.activeIconStyle)} src={this.state.settings.icon} alt="icon" />;
             } else {
-                customIcon = <Icon style={color && this.state[this.ids.on?.id] ? { color } : null} className={clsx(clsGeneric.iconStyle, this.state[this.ids.on?.id] && clsGeneric.activeIconStyle)} />;
+                customIcon = <Icon
+                    style={color && this.state[this.ids.on?.id] ? { color } : null}
+                    className={clsx(clsGeneric.iconStyle, this.state[this.ids.on?.id] && clsGeneric.activeIconStyle)}
+                />;
             }
         }
 
         return SmartGeneric.renderIcon(customIcon, this.state.executing, this.state[this.ids.on?.id], this.onToggle.bind(this), this.state[this.ids.rgb?.id])
-
     }
 
     getColor(states) {

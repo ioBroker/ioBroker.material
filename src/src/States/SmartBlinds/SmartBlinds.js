@@ -14,24 +14,13 @@
  * limitations under the License.
  **/
 import React from 'react';
+
+import { Icon as IconAdapter, Utils } from '@iobroker/adapter-react-v5';
+
 import SmartGeneric from '../SmartGeneric';
 import Icon from '../../icons/Jalousie'
 import Dialog from '../../Dialogs/SmartDialogSlider';
-import IconAdapter from '@iobroker/adapter-react-v5/Components/Icon';
 import clsGeneric from '../style.module.scss';
-import clsx from 'clsx';
-
-const styles = {
-    overlap: {
-        zIndex: 2,
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        opacity: 0.8,
-        background: '#FFF',
-        width: '100%'
-    }
-};
 
 class SmartBlinds extends SmartGeneric {
     // props = {
@@ -123,7 +112,6 @@ class SmartBlinds extends SmartGeneric {
             } else {
                 newState[id] = null;
                 this.setState(newState);
-
             }
 
             // hide desired value
@@ -174,7 +162,15 @@ class SmartBlinds extends SmartGeneric {
             if (this.state.settings.icon) {
                 customIcon = <IconAdapter src={this.state.settings.icon} alt="icon" style={{ height: '100%', zIndex: 1 }} />;
             } else {
-                customIcon = <Icon className={clsx(clsGeneric.iconStyle, this.state[this.actualId] !== this.min && clsGeneric.activeIconStyle)} />;
+                customIcon = <Icon
+                    className={Utils.clsx(clsGeneric.iconStyle, this.state[this.actualId] !== this.min && clsGeneric.activeIconStyle)}
+                    style={{
+                        color: this.state[this.actualId] !== this.min ?
+                            (this.state.settings.colorOn || this.state.settings.colorOff || undefined)
+                            :
+                            this.state.settings.colorOff || undefined,
+                    }}
+                />;
             }
         }
 
@@ -197,13 +193,13 @@ class SmartBlinds extends SmartGeneric {
         settings.unshift({
             name: 'inverted',
             value: this.state.settings.inverted || false,
-            type: 'boolean'
+            type: 'boolean',
         });
 
         settings.unshift({
             name: 'toggleOnClick',
             value: this.state.settings.toggleOnClick || false,
-            type: 'boolean'
+            type: 'boolean',
         });
 
         return settings;
@@ -221,7 +217,7 @@ class SmartBlinds extends SmartGeneric {
             if (this.workingId && this.state[this.workingId] && this.state.setValue !== null && this.state.setValue !== undefined) {
                 return `${this.realValueToPercent()}% → ${this.state.setValue}%`;
             } else {
-                return this.realValueToPercent() + '%';
+                return `${this.realValueToPercent()}%`;
             }
         }
     }
@@ -230,7 +226,7 @@ class SmartBlinds extends SmartGeneric {
         return this.wrapContent([
             this.getStandardContent(this.id, true),
             this.state.showDialog ?
-                <Dialog key={this.key + 'dialog'}
+                <Dialog key={`${this.key}dialog`}
                     transparent
                     open={true}
                     startValue={this.realValueToPercent()}

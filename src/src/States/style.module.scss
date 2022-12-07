@@ -209,8 +209,8 @@
 
 :global(:root.light) {
     .corner {
-        top: 0px;
-        border-width: 0px 16px 16px 0px;
+        top: 0;
+        border-width: 0 16px 16px 0;
         &:hover {
             border-width: 0 28px 28px 0;
         }
@@ -218,8 +218,8 @@
     .iconStyle {
         width: 40px;
         height: 40px;
-        margin: 0px;
-        color: white;
+        margin: 0;
+        color: #5e5e5e;
     }
     .displayFlex {
         transition: color 0.5s;
@@ -232,7 +232,7 @@
     }
     .styleIconActive {
         .iconStyle {
-            color: rgb(255, 204, 2);
+            color: rgb(170, 136, 0);
         }
     }
 }

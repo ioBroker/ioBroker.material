@@ -192,7 +192,15 @@ class SmartDimmer extends SmartGeneric {
             if (this.state.settings.icon) {
                 customIcon = <IconAdapter src={this.state.settings.icon} alt="icon" style={{ height: '100%' }} />;
             } else {
-                customIcon = <Icon className={clsx(clsGeneric.iconStyle, this.state[this.actualId] !== this.min && clsGeneric.activeIconStyle)} />;
+                customIcon = <Icon
+                    className={clsx(clsGeneric.iconStyle, this.state[this.actualId] !== this.min && clsGeneric.activeIconStyle)}
+                    style={{
+                        color: this.state[this.actualId] !== this.min ?
+                            (this.state.settings.colorOn || this.state.settings.colorOff || undefined)
+                            :
+                            this.state.settings.colorOff || undefined,
+                    }}
+                />;
             }
         }
         // return (

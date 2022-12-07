@@ -50,6 +50,9 @@ Better if every device belongs to both categories. Because every device has the 
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Corrected color of blinds in light mode
+
 ### 1.2.5 (2022-11-02)
 * (bluefox) Corrected error with charts
 
