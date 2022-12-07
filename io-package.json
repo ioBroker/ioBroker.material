@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "material",
-    "version": "1.2.5",
+    "version": "1.2.6",
     "news": {
+      "1.2.6": {
+        "en": "Corrected color of blinds in light mode",
+        "de": "Korrigierte Farbe von Blinds im Lichtmodus",
+        "ru": "Исправлен цвет слепых в светлом режиме",
+        "pt": "Cor corrigida de cortinas no modo de luz",
+        "nl": "Gecorrigeerde kleur van blinden in lichtmodus",
+        "fr": "Couleur corrigée des stores en mode lumière",
+        "it": "Colore corretto delle tende in modalità luce",
+        "es": "Color corregido de persianas en modo de luz",
+        "pl": "Poprawne kolory ślepych w trybie świetlnym",
+        "uk": "Корисний колір жалюзі в режимі світла",
+        "zh-cn": "照明的盲人色"
+      },
       "1.2.5": {
         "en": "Corrected error with charts",
         "de": "Fehler mit Diagrammen korrigiert",
