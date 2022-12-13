@@ -77,7 +77,7 @@ function npmInstall() {
 }
 
 gulp.task('2-npm', () => {
-    if (fs.existsSync(__dirname + '/src/node_modules')) {
+    if (fs.existsSync(`${__dirname}/src/node_modules`)) {
         return Promise.resolve();
     } else {
         return npmInstall();
@@ -85,7 +85,7 @@ gulp.task('2-npm', () => {
 });
 
 gulp.task('2-npm-dep', gulp.series('0-clean', () => {
-    if (fs.existsSync(__dirname + '/src/node_modules')) {
+    if (fs.existsSync(`${__dirname}/src/node_modules`)) {
         return Promise.resolve();
     } else {
         return npmInstall();
