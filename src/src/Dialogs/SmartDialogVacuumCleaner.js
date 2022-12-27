@@ -15,21 +15,20 @@
  **/
 import React, { createRef } from 'react';
 import PropTypes from 'prop-types';
-import clsx from 'clsx';
 import { withStyles } from '@mui/styles';
 
-import I18n from '@iobroker/adapter-react-v5/i18n';
+import { Tooltip } from '@mui/material';
+
+import { Utils, I18n, Icon as IconAdapter } from '@iobroker/adapter-react-v5';
+
+import { IoMdBatteryCharging } from 'react-icons/io';
 
 import SmartDialogGeneric from './SmartDialogGeneric';
 import cls from './style.module.scss';
-import { Tooltip } from '@mui/material';
 import CustomButton from '../States/components/CustomButton';
 import StateIcon from '../States/components/StateIcon';
 import Icon from '../icons/RobotVacuum';
-// import Circle1 from '../icons/Circle1';
 import Circle2 from '../icons/Circle2';
-import { IoMdBatteryCharging } from "react-icons/io";
-import IconAdapter from '@iobroker/adapter-react-v5/Components/Icon';
 import CustomMode from '../States/components/CustomMode';
 
 const styles = themes => ({
@@ -244,7 +243,7 @@ class SmartDialogVacuumCleaner extends SmartDialogGeneric {
                         (this.props.sideBrushVacuum !== null && this.props.sideBrushVacuum !== undefined) ||
                         (this.props.brushVacuum !== null && this.props.brushVacuum !== undefined) ||
                         (this.props.sensorVacuum !== null && this.props.sensorVacuum !== undefined)) &&
-                    <div className={clsx(cls.infoBlockVacuum, this.props.stateVacuum === null || this.props.stateVacuum === undefined ? cls.infoBlockVacuumMiddle : '')}>
+                    <div className={Utils.clsx(cls.infoBlockVacuum, this.props.stateVacuum === null || this.props.stateVacuum === undefined ? cls.infoBlockVacuumMiddle : '')}>
                         {this.props.filterVacuum !== null && this.props.filterVacuum !== undefined &&
                             <Tooltip title={I18n.t('Filter')}>
                                 <div className={cls.currentItemInfo}>
@@ -276,13 +275,13 @@ class SmartDialogVacuumCleaner extends SmartDialogGeneric {
                     </div>
                 }
                 <div className={cls.wrapperControl}>
-                    <div className={clsx(cls.wrapperVacuumCleaner, !(this.props.imageVacuum !== null && this.props.imageVacuum !== undefined && this.props.powerValue) && cls.displayNone)}>
+                    <div className={Utils.clsx(cls.wrapperVacuumCleaner, !(this.props.imageVacuum !== null && this.props.imageVacuum !== undefined && this.props.powerValue) && cls.displayNone)}>
                         <IconAdapter className={cls.styleImageState} src={this.props.imageVacuum} />
                     </div>
-                    <div className={clsx(cls.wrapperVacuumCleaner, (this.props.imageVacuum !== null && this.props.imageVacuum !== undefined && this.props.powerValue) && cls.displayNone)}>
-                        <Icon d={"M0,100 C150,200 350,0 500,100 L500,00 L0,0 Z"} className={clsx(cls.vacuumCleaner, this.props.powerValue && !this.props.pauseValue && cls.vacuumCleanerWork, this.props.powerValue && this.props.pauseValue && cls.vacuumCleanerPause)} />
+                    <div className={Utils.clsx(cls.wrapperVacuumCleaner, (this.props.imageVacuum !== null && this.props.imageVacuum !== undefined && this.props.powerValue) && cls.displayNone)}>
+                        <Icon d={"M0,100 C150,200 350,0 500,100 L500,00 L0,0 Z"} className={Utils.clsx(cls.vacuumCleaner, this.props.powerValue && !this.props.pauseValue && cls.vacuumCleanerWork, this.props.powerValue && this.props.pauseValue && cls.vacuumCleanerPause)} />
                         {this.props.batteryVacuum !== null && this.props.batteryVacuum !== undefined &&
-                            <div ref={this.refVacuum} className={clsx(cls.batteryAnimation, this.props.powerValue && !this.props.pauseValue && cls.vacuumCleanerWork, this.props.powerValue && this.props.pauseValue && cls.vacuumCleanerPause)}>
+                            <div ref={this.refVacuum} className={Utils.clsx(cls.batteryAnimation, this.props.powerValue && !this.props.pauseValue && cls.vacuumCleanerWork, this.props.powerValue && this.props.pauseValue && cls.vacuumCleanerPause)}>
                                 <div className={cls.refVacuumAnimation} ref={this.refVacuumAnimation} style={{ width: '100%', height: '100%' }}>
                                     <Circle2 style={{ top: `${this.props.batteryVacuum ? 100 - this.props.batteryVacuum : 0}%` }} className={cls.circle1} />
                                     <Circle2 style={{ top: `calc(5px + ${this.props.batteryVacuum ? 100 - this.props.batteryVacuum : 0}%)` }} className={cls.circle2} />

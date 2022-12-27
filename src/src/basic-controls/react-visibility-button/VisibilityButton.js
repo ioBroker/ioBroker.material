@@ -16,10 +16,10 @@
 import React from 'react'
 import PropTypes from 'prop-types';
 
-import {MdVisibility as IconCheck} from 'react-icons/md';
-import {MdVisibilityOff as IconUncheck} from 'react-icons/md';
+import { MdVisibility as IconCheck } from 'react-icons/md';
+import { MdVisibilityOff as IconUncheck } from 'react-icons/md';
+
 import cls from './style.module.scss';
-// import IconButton from '@mui/material/IconButton';
 
 const styles = {
     button: {

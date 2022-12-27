@@ -16,6 +16,7 @@
 import React from 'react';
 import { withStyles } from '@mui/styles';
 import PropTypes from 'prop-types';
+
 import Paper from '@mui/material/Paper';
 
 import SmartDialogGeneric from './SmartDialogGeneric';
@@ -59,59 +60,39 @@ const styles = {
 };
 
 class SmartDialogURL extends SmartDialogGeneric  {
-    // expected:
-    static propTypes = {
-        name:               PropTypes.oneOfType([
-            PropTypes.string,
-            PropTypes.object
-        ]),
-        dialogKey:          PropTypes.string.isRequired,
-        windowWidth:        PropTypes.number,
-        onClose:            PropTypes.func.isRequired,
-        objects:            PropTypes.object,
-        states:             PropTypes.object,
-        onCollectIds:       PropTypes.func,
-        settings:           PropTypes.object,
-        image:              PropTypes.bool
-    };
-
     constructor(props) {
         super(props);
 
         this.ids = this.props.ids;
 
         this.setMaxHeight();
-        this.dialogStyle = {overflowY: 'auto'};
-        this.stateRx.url = this.getUrl(this.props.settings.background);
+        this.dialogStyle = { overflowY: 'auto' };
+        this.stateRx.url = this.getUrl(this.props.settings.background || this.props.settings.url);
 
         if (this.props.settings.fullWidth) {
-            this.dialogStyle = {width: 'calc(100% - 4rem)', maxWidth: 'calc(100% - 4rem)', left: '2rem'};
+            this.dialogStyle = { width: 'calc(100% - 4rem)', maxWidth: 'calc(100% - 4rem)', left: '2rem' };
         }
 
         this.componentReady();
     }
 
     getUrl(url) {
-        let _url;
-        if (this.props.image && url) {
+        if (this.props.isImage && url) {
             if (url.includes('?')) {
-                _url = url + '&ts=' + Date.now();
-            } else {
-                _url = url + '?ts=' + Date.now();
+                return `${url}&ts=${Date.now()}`;
             }
-            return _url;
-        } else {
-            return url;
+            return `${url}?ts=${Date.now()}`;
         }
+
+        return url;
     }
 
-    setMaxHeight(states) {
+    setMaxHeight() {
         let maxHeight = 0;
-        states = states || this.state;
 
         this.divs = {
-            'title':    {height: HEIGHT_TITLE,  visible: !!this.props.settings.title},
-            'iframe':   {height: HEIGHT_IFRAME, visible: true}
+            title:    { height: HEIGHT_TITLE,  visible: !!this.props.settings.title },
+            iframe:   { height: HEIGHT_IFRAME, visible: true }
         };
 
         // calculate height
@@ -122,13 +103,13 @@ class SmartDialogURL extends SmartDialogGeneric  {
         }
 
         if (this.dialogStyle.maxHeight !== maxHeight) {
-            this.dialogStyle = {maxHeight: maxHeight};
+            this.dialogStyle = { maxHeight };
         }
     }
 
     updateUrl() {
-        if (this.props.image) {
-            this.setState({url: this.getUrl(this.props.settings.background)});
+        if (this.props.isImage) {
+            this.setState({ url: this.getUrl(this.props.settings.background || this.props.settings.url) });
         }
     }
 
@@ -174,28 +155,40 @@ class SmartDialogURL extends SmartDialogGeneric  {
     }*/
 
     getIFrameDiv() {
-        const style = {height: 'calc(100% - ' + (this.props.settings.title ? HEIGHT_TITLE : '0') + 'px)'};
-        if (!this.props.image && this.state.url) {
+        const style = { height: `calc(100% - ${this.props.settings.title ? HEIGHT_TITLE : '0'}px)` };
+        if (!this.props.isImage && this.state.url) {
             return <Paper onClick={() => this.onOpenNewWindow()} className={this.props.classes['iframe-div']} style={style}>
-                <iframe className={this.props.classes['iframe']} title={this.state.url} src={this.state.url}/>
+                <iframe className={this.props.classes['iframe']} title={this.state.url} src={this.state.url} />
             </Paper>;
         } else if (this.state.url) {
             return <Paper key="image"  style={style} onClick={() => this.onOpenNewWindow()} className={this.props.classes['iframe-div']}>
-                <img className={this.props.classes['image-img']} alt="" src={this.state.url}/>
+                <img className={this.props.classes['image-img']} alt="" src={this.state.url} />
             </Paper>;
-        }else if(this.props.settings.url){
+        }else if (this.props.settings.url) {
             return <Paper key="image"  style={style} onClick={() => this.onOpenNewWindow()} className={this.props.classes['iframe-div']}>
-                <img className={this.props.classes['image-img']} alt="" src={this.props.settings.url}/>
+                <img className={this.props.classes['image-img']} alt="" src={this.props.settings.url} />
             </Paper>;
         }
     }
 
     generateContent() {
-        return [
-            //this.getTitleDiv(),
-            this.getIFrameDiv()
-        ];
+        return this.getIFrameDiv();
     }
 }
+
+SmartDialogURL.propTypes = {
+    name:         PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.object
+    ]),
+    dialogKey:    PropTypes.string.isRequired,
+    windowWidth:  PropTypes.number,
+    onClose:      PropTypes.func.isRequired,
+    objects:      PropTypes.object,
+    states:       PropTypes.object,
+    onCollectIds: PropTypes.func,
+    settings:     PropTypes.object,
+    isImage:        PropTypes.bool,
+};
 
 export default withStyles(styles)(SmartDialogURL);

@@ -17,10 +17,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Paper from '@mui/material/Paper';
 
-import I18n from '@iobroker/adapter-react-v5/i18n';
+import { Utils, I18n } from '@iobroker/adapter-react-v5';
+
 import Theme from '../theme';
 import Types from '../States/SmartTypes';
-import Utils from '@iobroker/adapter-react-v5/Components/Utils';
 
 import SmartBlinds from '../States/SmartBlinds/SmartBlinds';
 import SmartButton from '../States/SmartButton/SmartButton';
@@ -48,7 +48,6 @@ import SmartLocation from '../States/SmartLocation/SmartLocation';
 import SmartEchart from '../States/SmartEchart/SmartEchart';
 import SmartCamera from '../States/SmartCamera/SmartCamera';
 import SmartGate from '../States/SmartGate/SmartGate';
-import clsx from 'clsx/dist/clsx';
 
 class SmartTile extends Component {
     static propTypes = {
@@ -164,7 +163,7 @@ class SmartTile extends Component {
         }
     }
 
-    setBackgroundImage(url, bottomBar, seemless) {
+    setBackgroundImage(url, bottomBar) {
         if (this.state.background !== url) {
             this.setState({ background: url, bottomBar: bottomBar || false });
         }
@@ -214,7 +213,7 @@ class SmartTile extends Component {
         return <Paper ref={this.tileRef}
             style={style}
             //    className={this.hasAnimation}
-            className={clsx(this.state.state ? 'active' : null, cls.paperSmartTitle, this.state.width > 1 && cls.doubleSmartTitle)}
+            className={Utils.clsx(this.state.state ? 'active' : null, cls.paperSmartTitle, this.state.width > 1 && cls.doubleSmartTitle)}
             onMouseDown={this.onMouseDown}
             onTouchStart={this.onMouseDown}
             onMouseUp={this.onMouseUp}
@@ -347,6 +346,7 @@ class SmartTile extends Component {
                     break;
                 case Types.url:
                     Control = SmartURL;
+                    break;
                 case Types.camera:
                     Control = SmartCamera;
                     break;

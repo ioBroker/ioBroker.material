@@ -23,20 +23,20 @@ const styles = {
         position: 'absolute',
         top: '50%',
         width: '60%',
-        left: '20%'
+        left: '20%',
     },
     progressText:{
         position: 'absolute',
         top: 'calc(50% + 10px)',
         left: 0,
         width: '100%',
-        textAlign: 'center'
+        textAlign: 'center',
     }
 };
-const LoadingIndicator = ({classes, label, value, color, variant}) => {
+const LoadingIndicator = ({ classes, label, value, color, variant }) => {
     return [
         <LinearProgress key="progress" variant={variant || 'determinate'} className={classes.progress} value={value} />,
-        <div key="text" className={classes.progressText} style={{color: color}}>{label}</div>
+        <div key="text" className={classes.progressText} style={{ color }}>{label}</div>
     ];
 };
 
@@ -45,7 +45,7 @@ LoadingIndicator.propTypes = {
     label:      PropTypes.string.isRequired,
     variant:    PropTypes.string,
     value:      PropTypes.number.isRequired,
-    background: PropTypes.string
+    background: PropTypes.string,
 };
 
 export default withStyles(styles)(LoadingIndicator);

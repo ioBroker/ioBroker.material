@@ -16,32 +16,32 @@
 import React from 'react';
 import { withStyles } from '@mui/styles';
 import Dropzone from 'react-dropzone';
+import ReactCrop from 'react-image-crop';
 
-import {MdDelete as IconDelete} from 'react-icons/md';
-import {MdFileUpload as IconOpen} from 'react-icons/md';
-import {MdClose as IconClose} from 'react-icons/md';
-import {MdCameraAlt as IconCam} from 'react-icons/md';
-import {MdFileUpload as IconUpload} from 'react-icons/md';
-import {MdCancel as IconNo} from 'react-icons/md';
-import {MdPlusOne as IconPlus} from 'react-icons/md';
 
 import Fab from '@mui/material/Button';
 import Button from '@mui/material/Button';
 import PropTypes from 'prop-types';
-import ImageList from './ImageList';
-import ReactCrop/*, { makeAspectCrop } */from 'react-image-crop';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 
+import { MdDelete as IconDelete } from 'react-icons/md';
+import { MdFileUpload as IconOpen } from 'react-icons/md';
+import { MdClose as IconClose } from 'react-icons/md';
+import { MdCameraAlt as IconCam } from 'react-icons/md';
+import { MdFileUpload as IconUpload } from 'react-icons/md';
+import { MdCancel as IconNo } from 'react-icons/md';
+import { MdPlusOne as IconPlus } from 'react-icons/md';
+
 import NoImage from '../../assets/noImage.png';
+
+import ImageList from './ImageList';
 
 import 'react-image-crop/dist/ReactCrop.css'
 
-// Icons
-//import IconList from '../../icons/icons/index.js';
-import I18n from '@iobroker/adapter-react-v5/i18n';
+import { I18n } from '@iobroker/adapter-react-v5';
 
 const style = {
     label: {

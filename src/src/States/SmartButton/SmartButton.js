@@ -14,25 +14,22 @@
  * limitations under the License.
  **/
 import React from 'react';
+
+import { GoDiffModified as IconButton } from 'react-icons/go';
+import { MdStop as IconStop } from 'react-icons/md';
+import { MdPlayArrow as IconPlay } from 'react-icons/md';
+import { MdPause as IconPause } from 'react-icons/md';
+import { MdReplay as IconReplay } from 'react-icons/md';
+import { MdShuffle as IconShuffle } from 'react-icons/md';
+import { MdVolumeMute as IconMute } from 'react-icons/md';
+import { MdVolumeUp as IconUnmute } from 'react-icons/md';
+import { MdFastForward as IconForward } from 'react-icons/md';
+import { MdFastRewind as IconPrev } from 'react-icons/md';
+
+import { I18n, Icon as IconAdapter } from '@iobroker/adapter-react-v5';
+
 import SmartGeneric from '../SmartGeneric';
-
-import {GoDiffModified as IconButton} from 'react-icons/go';
-import {MdStop as IconStop} from 'react-icons/md';
-import {MdPlayArrow as IconPlay} from 'react-icons/md';
-import {MdPause as IconPause} from 'react-icons/md';
-import {MdReplay as IconReplay} from 'react-icons/md';
-import {MdShuffle as IconShuffle} from 'react-icons/md';
-import {MdVolumeMute as IconMute} from 'react-icons/md';
-import {MdVolumeUp as IconUnmute} from 'react-icons/md';
-import {MdFastForward as IconForward} from 'react-icons/md';
-import {MdFastRewind as IconPrev} from 'react-icons/md';
-
-import Theme from '../../theme';
-import I18n from '@iobroker/adapter-react-v5/i18n';
-import IconAdapter from '@iobroker/adapter-react-v5/Components/Icon';
-import cls from './style.module.scss';
 import clsGeneric from '../style.module.scss';
-import clsx from 'clsx/dist/clsx';
 
 class SmartButton extends SmartGeneric {
     constructor(props) {
@@ -82,7 +79,7 @@ class SmartButton extends SmartGeneric {
         } else if (stateName.match(/shuff/i)) {
             this.icon = IconShuffle;
         }
-        this.key = 'smart-button-' + this.id + '-';
+        this.key = `smart-button-${this.id}-`;
 
         this.props.tile.setState({isPointer: true});
         this.props.tile.registerHandler('onClick', this.onTileClick.bind(this));
@@ -98,10 +95,10 @@ class SmartButton extends SmartGeneric {
     getIcon() {
         let customIcon;
         if (this.state.settings.useDefaultIcon) {
-            customIcon = <IconAdapter src={this.getDefaultIcon()} alt="icon" style={{height: '100%'}}/>;
+            customIcon = <IconAdapter src={this.getDefaultIcon()} alt="icon" style={{height: '100%'}} />;
         } else {
             if (this.state.settings.icon) {
-                customIcon = <IconAdapter src={this.state.settings.icon} alt="icon" style={{height: '100%'}}/>;
+                customIcon = <IconAdapter src={this.state.settings.icon} alt="icon" style={{height: '100%'}} />;
             } else {
                 const Icon = this.icon;
                 customIcon = <Icon className={clsGeneric.iconStyle} />;

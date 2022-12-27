@@ -14,8 +14,9 @@
  * limitations under the License.
  **/
 import React from 'react';
-import CircularProgress from '@mui/material/CircularProgress';
 import IconButton from '@mui/material/IconButton';
+
+import { I18n, Utils, Icon as IconAdapter } from '@iobroker/adapter-react-v5';
 
 import { MdVolumeMute as IconVolume0 } from 'react-icons/md';
 import { MdVolumeDown as IconVolume50 } from 'react-icons/md';
@@ -24,13 +25,8 @@ import { MdVolumeUp as IconVolume100 } from 'react-icons/md';
 import Theme from '../../theme';
 import SmartGeneric from '../SmartGeneric';
 import Types from '../SmartTypes';
-//import Dialog from './SmartDialogSlider';
 import Dialog from '../../Dialogs/SmartDialogKnob';
-import IconAdapter from '@iobroker/adapter-react-v5/Components/Icon';
-import cls from './style.module.scss';
 import clsGeneric from '../style.module.scss';
-import I18n from '@iobroker/adapter-react-v5/i18n';
-import clsx from 'clsx';
 
 const style = {
     mute: {
@@ -189,7 +185,7 @@ class SmartVolume extends SmartGeneric {
                 } else {
                     IconCustom = IconVolume100;
                 }
-                customIcon = <IconCustom className={clsx(clsGeneric.iconStyle, this.state[this.actualId] !== this.min && clsGeneric.activeIconStyle)} />;
+                customIcon = <IconCustom className={Utils.clsx(clsGeneric.iconStyle, this.state[this.actualId] !== this.min && clsGeneric.activeIconStyle)} />;
             }
         }
         // return (

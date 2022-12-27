@@ -15,6 +15,9 @@
  **/
 import React from 'react';
 import Moment from 'react-moment';
+
+import { I18n, Utils, Icon as IconAdapter } from '@iobroker/adapter-react-v5';
+
 import SmartGeneric from '../SmartGeneric';
 import IconWindowOpened from '../../icons/WindowOpened';
 import IconWindowClosed from '../../icons/WindowClosed';
@@ -33,19 +36,11 @@ import { MdBrightness4 as IconSun4 } from 'react-icons/md';
 import { MdBrightness5 as IconSun5 } from 'react-icons/md';
 import { MdBrightness6 as IconSun6 } from 'react-icons/md';
 import { MdBrightness7 as IconSun7 } from 'react-icons/md';
-import Dialog from '../../Dialogs/SmartDialogSlider';
 
 import Theme from '../../theme';
-import I18n from '@iobroker/adapter-react-v5/i18n';
 import Types from '../SmartTypes';
-import IconAdapter from '@iobroker/adapter-react-v5/Components/Icon';
 import cls from './style.module.scss';
 import clsGeneric from '../style.module.scss';
-import clsx from 'clsx/dist/clsx';
-import { dialogChartCallBack } from '../../Dialogs/DialogChart';
-
-// import IconLockOpened from "react-icons/lib/md/lock-open";
-// import IconLockClosed from "react-icons/lib/md/lock";
 
 const IconSuns = [IconSun1, IconSun2, IconSun3, IconSun4, IconSun5, IconSun6, IconSun7];
 
@@ -240,7 +235,7 @@ class SmartState extends SmartGeneric {
         const state = this.state[this.id];
         if (state === undefined || state === null || !this.lastChange || !this.showTime) {
             const isOn = this.state[this.id] === '1' || this.state[this.id] === 1 || this.state[this.id] === true || this.state[this.id] === 'true' || this.state[this.id] === 'on' || this.state[this.id] === 'ON';
-            return <div className={clsx(isOn ? cls.textOn : cls.textOff)}>{isOn ? I18n.t(this.textOn) : I18n.t(this.textOff)}</div>;
+            return <div className={Utils.clsx(isOn ? cls.textOn : cls.textOff)}>{isOn ? I18n.t(this.textOn) : I18n.t(this.textOff)}</div>;
         } else {
             return <Moment style={{ fontSize: 12 }} date={this.lastChange} interval={15} fromNow locale={I18n.getLanguage()} />;
         }

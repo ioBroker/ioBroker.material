@@ -14,18 +14,13 @@
  * limitations under the License.
  **/
 import React from 'react';
-import CircularProgress from '@mui/material/CircularProgress';
 
 import { TiLightbulb as Icon } from 'react-icons/ti'
 
 import SmartGeneric from '../SmartGeneric';
-import Theme from '../../theme';
 import Dialog from '../../Dialogs/SmartDialogSlider';
-import I18n from '@iobroker/adapter-react-v5/i18n';
-import IconAdapter from '@iobroker/adapter-react-v5/Components/Icon';
-import cls from './style.module.scss';
+import { I18n, Utils, Icon as IconAdapter } from '@iobroker/adapter-react-v5';
 import clsGeneric from '../style.module.scss';
-import clsx from 'clsx';
 
 class SmartDimmer extends SmartGeneric {
     constructor(props) {
@@ -193,7 +188,7 @@ class SmartDimmer extends SmartGeneric {
                 customIcon = <IconAdapter src={this.state.settings.icon} alt="icon" style={{ height: '100%' }} />;
             } else {
                 customIcon = <Icon
-                    className={clsx(clsGeneric.iconStyle, this.state[this.actualId] !== this.min && clsGeneric.activeIconStyle)}
+                    className={Utils.clsx(clsGeneric.iconStyle, this.state[this.actualId] !== this.min && clsGeneric.activeIconStyle)}
                     style={{
                         color: this.state[this.actualId] !== this.min ?
                             (this.state.settings.colorOn || this.state.settings.colorOff || undefined)

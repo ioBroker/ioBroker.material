@@ -30,7 +30,7 @@ import cls from './style.module.scss';
 import clsGeneric from '../style.module.scss';
 
 import Theme from '../../theme';
-import I18n from '@iobroker/adapter-react-v5/i18n';
+import { I18n } from '@iobroker/adapter-react-v5';
 import CustomFab from '../components/CustomFab';
 import CustomButton from '../components/CustomButton';
 

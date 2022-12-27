@@ -15,6 +15,7 @@
  **/
 import React from 'react';
 import PropTypes from 'prop-types';
+
 import SmartDialogGeneric from './SmartDialogGeneric';
 import cls from './style.module.scss';
 

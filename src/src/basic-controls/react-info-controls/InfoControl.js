@@ -15,12 +15,15 @@
  **/
 import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
-import Typography from '@mui/material/Typography';
 import { withStyles } from '@mui/styles';
 import Moment from 'react-moment';
+
+import Typography from '@mui/material/Typography';
+
+import { Icon as IconAdapter } from '@iobroker/adapter-react-v5';
+
 import Theme from '../../theme';
 import cls from './style.module.scss';
-import IconAdapter from '@iobroker/adapter-react-v5/Components/Icon';
 
 const styles = () => (Theme.dialog.info);
 

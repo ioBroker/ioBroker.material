@@ -15,13 +15,13 @@
  **/
 import React from 'react'
 import { withStyles } from '@mui/styles';
-import {ChromePicker} from 'react-color'
+import { ChromePicker } from 'react-color'
 
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import IconButton from '@mui/material/IconButton';
 
-import {MdDelete as IconDelete} from 'react-icons/md';
+import { MdDelete as IconDelete } from 'react-icons/md';
 
 const styles = theme => ({
     color: {

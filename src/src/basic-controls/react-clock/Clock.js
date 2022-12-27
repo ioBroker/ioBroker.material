@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import { I18n, Utils } from '@iobroker/adapter-react-v5';
+
 import cls from './style.module.scss';
-import I18n from '@iobroker/adapter-react-v5/i18n';
-import { IconButton, Tooltip } from '@mui/material';
-import { MdAvTimer } from 'react-icons/md';
-import { FaRegCalendarTimes } from "react-icons/fa";
-import clsx from 'clsx/dist/clsx';
 
 const standardOptions = {
     hour: '2-digit',
@@ -72,13 +69,13 @@ const Clock = ({
         }
     }, [hour12Params, secondsParams]);
 
-    return <div className={clsx(cls.clockWrapper, noBigClock && cls.noBigClock)}>
-        <div className={clsx(cls.clock, !secondsParams && cls.noWidth, !doubleSize && cls.clockSmall)}>
-            <div className={clsx(cls.timeWrapper, !doubleSize && cls.timeWrapperSmall, !secondsParams && !doubleSize && cls.clockBigSmall)}>
+    return <div className={Utils.clsx(cls.clockWrapper, noBigClock && cls.noBigClock)}>
+        <div className={Utils.clsx(cls.clock, !secondsParams && cls.noWidth, !doubleSize && cls.clockSmall)}>
+            <div className={Utils.clsx(cls.timeWrapper, !doubleSize && cls.timeWrapperSmall, !secondsParams && !doubleSize && cls.clockBigSmall)}>
                 {time}{hour12Params && <span>pm</span>}
             </div>
         </div>
-        <div className={clsx(cls.dayOfWeek, !dayOfWeek && cls.emptyDayOfWeek, !doubleSize && cls.dayOfWeekSmall)}>
+        <div className={Utils.clsx(cls.dayOfWeek, !dayOfWeek && cls.emptyDayOfWeek, !doubleSize && cls.dayOfWeekSmall)}>
             {dayOfWeek}{date && <span>{format(new Date(), 'dd.MM.yyyy')}</span>}
         </div>
     </div>

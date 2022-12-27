@@ -14,17 +14,16 @@
  * limitations under the License.
  **/
 import React from 'react';
-import SmartGeneric from '../SmartGeneric';
 
+import { I18n, Utils, Icon as IconAdapter } from '@iobroker/adapter-react-v5';
+
+import SmartGeneric from '../SmartGeneric';
 import Icon from '../../icons/RobotVacuum';
 import Theme from '../../theme';
 import Dialog from '../../Dialogs/SmartDialogVacuumCleaner';
-import I18n from '@iobroker/adapter-react-v5/i18n';
-import IconAdapter from '@iobroker/adapter-react-v5/Components/Icon';
 import cls from './style.module.scss';
 import clsGeneric from '../style.module.scss';
 import { IoMdBatteryCharging } from "react-icons/io";
-import clsx from 'clsx';
 
 class SmartVacuumCleaner extends SmartGeneric {
     // props = {
@@ -146,12 +145,12 @@ class SmartVacuumCleaner extends SmartGeneric {
     getIcon() {
         let customIcon;
         if (this.state.settings.useDefaultIcon) {
-            customIcon = <IconAdapter className={clsx(clsGeneric.iconStyle, this.state[this.powerId] && clsGeneric.activeIconStyle)} alt="icon" src={this.getDefaultIcon()} style={{ height: '100%', zIndex: 1 }} />;
+            customIcon = <IconAdapter className={Utils.clsx(clsGeneric.iconStyle, this.state[this.powerId] && clsGeneric.activeIconStyle)} alt="icon" src={this.getDefaultIcon()} style={{ height: '100%', zIndex: 1 }} />;
         } else {
             if (this.state.settings.icon) {
-                customIcon = <IconAdapter className={clsx(clsGeneric.iconStyle, this.state[this.powerId] && clsGeneric.activeIconStyle)} alt="icon" src={this.state.settings.icon} style={{ height: '100%', zIndex: 1 }} />;
+                customIcon = <IconAdapter className={Utils.clsx(clsGeneric.iconStyle, this.state[this.powerId] && clsGeneric.activeIconStyle)} alt="icon" src={this.state.settings.icon} style={{ height: '100%', zIndex: 1 }} />;
             } else {
-                customIcon = <Icon className={clsx(clsGeneric.iconStyle, this.state[this.powerId] && clsGeneric.activeIconStyle)} />;
+                customIcon = <Icon className={Utils.clsx(clsGeneric.iconStyle, this.state[this.powerId] && clsGeneric.activeIconStyle)} />;
             }
         }
         return SmartGeneric.renderIcon(customIcon, this.state.executing, this.state[this.powerId], this.onPowerToggle.bind(this));

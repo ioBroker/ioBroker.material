@@ -14,21 +14,18 @@
  * limitations under the License.
  **/
 import React from 'react';
-import Fab from '@mui/material/Fab';
 
 import SmartGeneric from '../SmartGeneric';
 import Theme from '../../theme';
-import I18n from '@iobroker/adapter-react-v5/i18n';
+import { I18n } from '@iobroker/adapter-react-v5';
 
 import { MdPlayArrow as IconPlay } from 'react-icons/md';
 import { MdPause as IconPause } from 'react-icons/md';
-//import IconChecked from 'react-icons/lib/md/check-circle';
-//import IconUnchecked from 'react-icons/lib/md/cancel';
-import IconAdapter from '@iobroker/adapter-react-v5/Components/Icon';
 import cls from './style.module.scss';
 import clsGeneric from '../style.module.scss';
-import clsx from 'clsx';
 import { IconButton } from '@mui/material';
+
+import { Utils, Icon as IconAdapter } from '@iobroker/adapter-react-v5';
 
 class SmartInstance extends SmartGeneric {
     constructor(props) {
@@ -139,7 +136,7 @@ class SmartInstance extends SmartGeneric {
 
         return <div key={this.key + 'tile-secondary'} className="tile-text-second"
             style={Theme.tile.secondary.button} title={text}>
-            <IconButton className={clsx(this.props.objects[this.instanceId].common.enabled ? cls.textOn : cls.buttonOff)} variant="round" size="small" onClick={this.toggle} aria-label={text}>
+            <IconButton className={Utils.clsx(this.props.objects[this.instanceId].common.enabled ? cls.textOn : cls.buttonOff)} variant="round" size="small" onClick={this.toggle} aria-label={text}>
                 <Icon />
             </IconButton>
         </div>;
@@ -166,7 +163,7 @@ class SmartInstance extends SmartGeneric {
                 className="tile-text"
                 style={Object.assign({}, Theme.tile.tileText, { minHeight: 56 })}>
                 <div className="tile-channel-name" style={Object.assign({}, Theme.tile.tileName, this.state.nameStyle)}>{this.state.settings.name}</div>
-                <div className="tile-state-text" className={clsx(this.state[this.id] ? cls.textOn : cls.textOff)} >{this.getStateText()}</div>
+                <div className="tile-state-text" className={Utils.clsx(this.state[this.id] ? cls.textOn : cls.textOff)} >{this.getStateText()}</div>
             </div>
         ]);
     }

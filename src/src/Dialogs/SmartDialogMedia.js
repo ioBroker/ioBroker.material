@@ -32,11 +32,10 @@ import { MdRepeatOne as IconRepeatOne } from 'react-icons/md';
 import { MdVolumeUp as IconVolume100 } from 'react-icons/md';
 import { MdVolumeMute as IconVolume0 } from 'react-icons/md';
 
-import Utils from '@iobroker/adapter-react-v5/Components/Utils';
+import { Utils, I18n } from '@iobroker/adapter-react-v5';
+
 import SmartDialogGeneric from './SmartDialogGeneric';
-import I18n from '@iobroker/adapter-react-v5/i18n';
 import Theme from '../theme';
-//import cover from '../assets/cover.png';
 
 const HEIGHT_HEADER = 48;
 const HEIGHT_VOLUME = 48;

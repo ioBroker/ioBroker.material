@@ -21,7 +21,7 @@ import TextField from '@mui/material/TextField';
 import Chip from '@mui/material/Chip';
 import Fab from '@mui/material/Fab';
 
-import {MdAdd as AddIcon} from 'react-icons/md';
+import { MdAdd as AddIcon } from 'react-icons/md';
 
 const styles = theme => ({
     line: {

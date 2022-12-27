@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOMServer from 'react-dom/server';
+import L from 'leaflet';
 import cls from './style.module.scss';
-import clsx from 'clsx/dist/clsx';
 import 'leaflet/dist/leaflet.css';
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
+
+import { Utils } from '@iobroker/adapter-react-v5';
+
 import Pin from '../../icons/Pin';
-import L from 'leaflet';
 
 const MapUpdate = ({ position }) => {
     const map = useMapEvents({});
@@ -24,7 +26,7 @@ const MapUpdate = ({ position }) => {
 const Location = ({ center, data, iconSetting, settings }) => {
     const icon = L.divIcon({
         className: 'custom-icon',
-        html: ReactDOMServer.renderToString(iconSetting ? <img className={clsx(cls.iconStyle, cls.iconRadius)} src={iconSetting} alt="icon" /> : <Pin className={cls.iconStyle} />)
+        html: ReactDOMServer.renderToString(iconSetting ? <img className={Utils.clsx(cls.iconStyle, cls.iconRadius)} src={iconSetting} alt="icon" /> : <Pin className={cls.iconStyle} />)
     });
     const [position, setPosition] = useState([0, 0]);
     useEffect(() => {

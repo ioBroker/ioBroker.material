@@ -18,25 +18,21 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@mui/styles';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import IconButton from '@mui/material/IconButton';
+import { ListItemIcon } from '@mui/material';
+
+import { I18n, Utils, Icon as IconAdapter } from '@iobroker/adapter-react-v5';
 
 import { MdPermScanWifi as IconUnreach } from 'react-icons/md';
 import { MdDragHandle as IconGrip } from 'react-icons/md';
 import { TiLightbulb as IconLight } from 'react-icons/ti';
-//import {TiLightbulb as IconBlind0} from 'react-icons/ti';
-//import {TiLightbulb as IconBlind100} from 'react-icons/ti';
 import IconBlind from '../icons/Jalousie'
 
-import Utils from '@iobroker/adapter-react-v5/Components/Utils';
 import Theme from '../theme';
-import I18n from '@iobroker/adapter-react-v5/i18n';
 import SmartTile from '../SmartTile/SmartTile';
 import SmartDetector from '../States/SmartDetector';
 import Types from '../States/SmartTypes';
 import VisibilityButton from '../basic-controls/react-visibility-button/VisibilityButton';
 import cls from './style.module.scss';
-import clsx from 'clsx';
-import { ListItemIcon } from '@mui/material';
-import IconAdapter from '@iobroker/adapter-react-v5/Components/Icon';
 
 
 const styles = {
@@ -549,22 +545,22 @@ class StatesSubList extends Component {
 
         if (countLights > 1) {
             controls.push(<IconButton key="light-off" size="small" aria-label="Off" onClick={() => this.controlAllLights(false)}
-                className={clsx(cls.styleIconH3, cls.styleIconH3off)}
+                className={Utils.clsx(cls.styleIconH3, cls.styleIconH3off)}
                 title={I18n.t('All lights off')}>
                 <IconLight />
             </IconButton>);
             controls.push(<IconButton key="light-on" size="small" aria-label="On"
                 onClick={() => this.controlAllLights(true)}
-                className={clsx(cls.styleIconH3, cls.styleIconH3on)}
+                className={Utils.clsx(cls.styleIconH3, cls.styleIconH3on)}
                 title={I18n.t('All lights on')}>
                 <IconLight />
             </IconButton>);
         }
 
         if (countBlinds > 1) {
-            controls.push(<IconButton key="blind-off" size="small" aria-label="Off" onClick={() => this.controlAllBlinds(false)} className={clsx(cls.styleIconH3, cls.styleIconH3off)} title={I18n.t('Close all blinds')}><IconBlind style={{ width: 14, height: 14, margin: 2 }} /></IconButton>);
+            controls.push(<IconButton key="blind-off" size="small" aria-label="Off" onClick={() => this.controlAllBlinds(false)} className={Utils.clsx(cls.styleIconH3, cls.styleIconH3off)} title={I18n.t('Close all blinds')}><IconBlind style={{ width: 14, height: 14, margin: 2 }} /></IconButton>);
             controls.push(<IconButton key="blind-on" size="small" aria-label="On" onClick={() => this.controlAllBlinds(true)}
-                className={clsx(cls.styleIconH3, cls.styleIconH3on)} title={I18n.t('Open all blinds')}><IconBlind style={{ width: 14, height: 14, margin: 2 }} /></IconButton>);
+                className={Utils.clsx(cls.styleIconH3, cls.styleIconH3on)} title={I18n.t('Open all blinds')}><IconBlind style={{ width: 14, height: 14, margin: 2 }} /></IconButton>);
         }
 
         return controls.length ? controls : null;
@@ -596,7 +592,7 @@ class StatesSubList extends Component {
                     className={cls.ListRow}
                     style={style}>
                     <h3 {...this.props.dragHandleProps}
-                        className={clsx(cls.h3Style, !this.props.subDragging && cls.h3Active)}
+                        className={Utils.clsx(cls.h3Style, !this.props.subDragging && cls.h3Active)}
                     >
                         {this.props.editMode ? <IconGrip
                             style={{ color: this.props.isUseBright ? 'white' : 'black', width: 24, height: 24, float: 'left', opacity: this.state.subDragging ? 0 : 1 }} />

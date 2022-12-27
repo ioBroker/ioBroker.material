@@ -17,13 +17,11 @@ import React from 'react';
 import { withStyles } from '@mui/styles';
 import PropTypes from 'prop-types';
 
-import {FaVideo as IconCam} from 'react-icons/fa';
+import { FaVideo as IconCam } from 'react-icons/fa';
 import SmartGeneric from '../SmartGeneric';
 import Dialog from '../../Dialogs/SmartDialogURL';
-import Theme from '../../theme';
-import Utils from '@iobroker/adapter-react-v5/Components/Utils';
+import { Utils } from '@iobroker/adapter-react-v5';
 import IconAdapter from '@iobroker/adapter-react-v5/Components/Icon';
-import cls from './style.module.scss';
 import clsGeneric from '../style.module.scss';
 
 const styles = {
@@ -37,7 +35,7 @@ const styles = {
         background: 'rgba(255,255,255,0.45)',
         color: 'rgba(0, 0, 0, 0.6)',
         width: '100%',
-        textAlign: 'left'
+        textAlign: 'left',
     },
     'title-text': {
         paddingLeft: 16,
@@ -50,13 +48,20 @@ const styles = {
         left: 0,
         right: 0,
         bottom: 0,
-        border: 0
-    }
+        border: 0,
+    },
+    image: {
+        zIndex: 0,
+        border: 0,
+        width: 'auto',
+        height: '100%',
+        margin: 'auto',
+    },
 };
 
 class SmartURL extends SmartGeneric {
     static propTypes = {
-        classes:    PropTypes.object.isRequired
+        classes: PropTypes.object.isRequired,
     };
 
     constructor(props) {
@@ -76,7 +81,7 @@ class SmartURL extends SmartGeneric {
                 this.ids.url = state.id;
                 const settingsId = state.settingsId;
                 if (settingsId) {
-                    const settings = Utils.getSettingsCustomURLs(this.props.objects[settingsId], null, {user: this.props.user});
+                    const settings = Utils.getSettingsCustomURLs(this.props.objects[settingsId], null, { user: this.props.user });
                     if (settings) {
                         const tile = settings.find(e => e.id === state.id);
                         if (tile) {
@@ -96,26 +101,26 @@ class SmartURL extends SmartGeneric {
                 this.stateRx.showSettings = true;
             }
         }
-
-        this.image = this.isImage();
-        if (this.image) {
-            this.props.tile.setBackgroundImage(this.customSettings.background || '', true);
-        }
+        this.stateRx.url = this.stateRx.settings ? this.stateRx.settings.url || this.stateRx.settings.background || '' : '';
+        this._isImage = this.isImage(this.stateRx.settings);
 
         this.width = 2;
-        this.props.tile.setState({isPointer: false});
-        this.props.tile.setState({state: true});
-        this.key = 'smart-warning-' + this.id + '-';
+        this.props.tile.setState({ isPointer: false, state: true });
         this.props.tile.setVisibility(this.id && !!this.stateRx.settings);
-        this.stateRx.showDialog = false; // support dialog in this tile used in generic class)
+        this.key = `smart-warning-${this.id}-`;
+        this.stateRx.showDialog = false; // support dialog in this tile used in generic class
 
         this.interval = null;
 
         this.componentReady();
     }
 
-    isImage() {
-        return this.customSettings?.isImage || (this.customSettings.background && this.customSettings.background.toLowerCase().match(/\.png|\.jpg|\.gif|\.jpeg/));
+    isImage(settings) {
+        settings = settings || this.customSettings;
+        if (!settings) {
+            return false;
+        }
+        return settings.isImage || !!(settings.background || settings.url || '').toLowerCase().match(/\.png|\.jpg|\.gif|\.jpeg/);
     }
 
     componentWillUnmount() {
@@ -126,13 +131,16 @@ class SmartURL extends SmartGeneric {
     }
 
     updateUrl() {
-        if (!this.customSettings.background) return;
+        if (!this.customSettings.background && !this.customSettings.url) {
+            return;
+        }
 
-        if (this.image) {
-            if (this.customSettings.background.includes('?')) {
-                this.props.tile.setBackgroundImage(this.customSettings.background + '&ts=' + Date.now(), true, true);
+        if (this._isImage) {
+            const url = this.customSettings.url || this.customSettings.background;
+            if (url.includes('?')) {
+                this.setState({ url: `${url}&ts=${Date.now()}` });
             } else {
-                this.props.tile.setBackgroundImage(this.customSettings.background + '?ts=' + Date.now(), true, true);
+                this.setState({ url: `${url}?ts=${Date.now()}` });
             }
         }
     }
@@ -165,7 +173,7 @@ class SmartURL extends SmartGeneric {
             this.collectTimer && clearTimeout(this.collectTimer);
             this.collectTimer = setTimeout(() => this.onUpdateTimer(), 200);
         } else {
-            console.log(id + ' => ' + state.val);
+            console.log(`${id} => ${state.val}`);
             super.updateState(id, state);
         }
     }
@@ -176,31 +184,31 @@ class SmartURL extends SmartGeneric {
         settings.unshift({
             name: 'hideIcon',
             value: this.state.settings.hideIcon || false,
-            type: 'boolean'
+            type: 'boolean',
         });
 
         settings.unshift({
             name: 'fullWidth',
             value: this.state.settings.fullWidth || false,
-            type: 'boolean'
+            type: 'boolean',
         });
 
         settings.unshift({
             name: 'updateInDialog',
             value: this.state.settings.updateInDialog || 0,
-            type: 'number'
+            type: 'number',
         });
 
         settings.unshift({
             name: 'update',
             value: this.state.settings.update || 0,
-            type: 'number'
+            type: 'number',
         });
 
         settings.unshift({
             name: 'title',
             value: (this.state.settings.title === undefined) ? '' : this.state.settings.title,
-            type: 'text'
+            type: 'text',
         });
 
         settings.unshift({
@@ -232,9 +240,8 @@ class SmartURL extends SmartGeneric {
             }
         });
 
-
         settings.unshift({
-            type: 'delete'
+            type: 'delete',
         });
         return settings;
     }
@@ -251,38 +258,48 @@ class SmartURL extends SmartGeneric {
             }
         }
 
-        super.saveDialogSettings(settings, function (newSettings) {
+        super.saveDialogSettings(settings, newSettings => {
             this.customSettings = newSettings;
 
             this.componentDidMount();
-            this.image = this.isImage();
-            if (this.image && newSettings) {
-                this.props.tile.setBackgroundImage((this.state.settings && this.state.settings.background) || '', true);
-            }
-            this.setState({settings: newSettings});
-        }.bind(this));
+            this._isImage = this.isImage();
+            this.setState({ settings: newSettings });
+        });
     }
 
     getIconDiv() {
         let customIcon;
-        if (this.state.settings.hideIcon) return null;
+        if (this.state.settings.hideIcon) {
+            return null;
+        }
 
         if (this.state.settings.icon) {
-            customIcon = <IconAdapter src={this.state.settings.icon} alt="icon" style={{height: '100%', zIndex: 1, color: 'white'}}/>;
+            customIcon = <IconAdapter src={this.state.settings.icon} alt="icon" style={{ height: '100%', zIndex: 1, color: 'white' }} />;
         } else {
-            customIcon = <IconCam className={clsGeneric.iconStyle}/>;
+            customIcon = <IconCam className={clsGeneric.iconStyle} />;
         }
         return SmartGeneric.renderIcon(customIcon);
     }
 
     getIFrameDiv() {
-        if (!this.image && this.state.settings.background) {
-            return <iframe key="iframe" title={this.state.settings ? this.state.settings.name || '' : ''} className={this.props.classes['iframe']} src={this.state.settings.background}/>;
-        } else {
-            return null;
+        if (!this._isImage && this.state.settings.url) {
+            return <iframe
+                key="iframe"
+                title={this.state.settings ? this.state.settings.name || '' : ''}
+                className={this.props.classes.iframe}
+                src={this.state.settings.url}
+            />;
         }
+        if (this._isImage && this.state.url) {
+            return <img
+                key="img"
+                className={this.props.classes.image}
+                src={this.state.url}
+                alt="camera"
+            />;
+        }
+        return null;
     }
-
 
     getTitleDiv() {
         const classes = this.props.classes;
@@ -292,14 +309,14 @@ class SmartURL extends SmartGeneric {
             return <div key="title" className={classes['title-div']}>
                 <div className={classes['title-text']}>{title}</div>
             </div>;
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     onDialogClose = () => {
         // super.onDialogClose();
-        this.setState({showDialog: false});
+        this.setState({ showDialog: false });
         // start timer again
         this.componentDidMount();
     }
@@ -320,14 +337,14 @@ class SmartURL extends SmartGeneric {
             this.getTitleDiv(),
             this.state.showDialog ?
                 <Dialog
-                    dialogKey={this.key + 'dialog'}
-                    open={true}
-                    key={this.key + 'dialog'}
+                    dialogKey={`${this.key}dialog`}
+                    open={!0}
+                    key={`${this.key}dialog`}
                     name={this.state.settings ? this.state.settings.name || '' : ''}
                     enumNames={this.props.enumNames}
                     settings={this.state.settings}
                     objects={this.props.objects}
-                    image={this.image || this.state.settings.url}
+                    isImage={this._isImage}
                     onCollectIds={this.props.onCollectIds}
                     ids={this.ids}
                     windowWidth={this.props.windowWidth}

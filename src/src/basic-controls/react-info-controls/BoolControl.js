@@ -16,10 +16,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@mui/styles';
+import Moment from 'react-moment';
 
 import Typography from '@mui/material/Typography';
 import Switch from '@mui/material/Switch';
-import Moment from 'react-moment';
+
 import Theme from '../../theme';
 
 const styles = () => (Theme.dialog.info);

@@ -17,7 +17,7 @@ import React from 'react';
 
 import SmartGeneric from '../SmartGeneric';
 import Dialog from '../../Dialogs/SmartDialogMap';
-import I18n from '@iobroker/adapter-react-v5/i18n';
+import { I18n } from '@iobroker/adapter-react-v5';
 import Location from '../../basic-controls/react-location/Location';
 import Moment from 'react-moment';
 class SmartLocation extends SmartGeneric {

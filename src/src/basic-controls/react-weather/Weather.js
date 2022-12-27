@@ -1,11 +1,8 @@
 import React, { createRef, useEffect, useRef, useState } from 'react';
 import cls from './style.module.scss';
-import I18n from '@iobroker/adapter-react-v5/i18n';
-import { IconButton, Tooltip } from '@mui/material';
-import { MdAvTimer } from 'react-icons/md';
-import { FaRegCalendarTimes } from "react-icons/fa";
-import clsx from 'clsx/dist/clsx';
-import IconAdapter, { getSystemIcon } from '@iobroker/adapter-react-v5/Components/Icon';
+
+import { Icon as IconAdapter, Utils, I18n } from '@iobroker/adapter-react-v5';
+
 import clearSky from './iconsWeather/clearSky.svg';
 import fewClouds from './iconsWeather/fewClouds.svg';
 import scatteredClouds from './iconsWeather/scatteredClouds.svg';
@@ -18,41 +15,44 @@ import mist from './iconsWeather/mist.svg';
 
 const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-const nameIcon = {
-    clouds: fewClouds,
-    rain: rain,
-    clear: clearSky
-}
-
-const icons = [{
-    icon: clearSky,
-    name: ['01d', '01n']
-}, {
-    icon: fewClouds,
-    name: ['02d', '02n']
-}, {
-    icon: scatteredClouds,
-    name: ['03d', '03n']
-}, {
-    icon: brokenClouds,
-    name: ['04d', '04n']
-}, {
-    icon: showerRain,
-    name: ['09d', '09n']
-}, {
-    icon: rain,
-    name: ['10d', '10n']
-}, {
-    icon: thunderstorm,
-    name: ['11d', '11n']
-}, {
-    icon: snow,
-    name: ['13d', '13n']
-}, {
-    icon: mist,
-    name: ['50d', '50n']
-},
-]
+const icons = [
+    {
+        icon: clearSky,
+        name: ['01d', '01n'],
+    },
+    {
+        icon: fewClouds,
+        name: ['02d', '02n'],
+    },
+    {
+        icon: scatteredClouds,
+        name: ['03d', '03n'],
+    }, 
+    {
+        icon: brokenClouds,
+        name: ['04d', '04n'],
+    }, 
+    {
+        icon: showerRain,
+        name: ['09d', '09n'],
+    }, 
+    {
+        icon: rain,
+        name: ['10d', '10n'],
+    }, 
+    {
+        icon: thunderstorm,
+        name: ['11d', '11n'],
+    }, 
+    {
+        icon: snow,
+        name: ['13d', '13n'],
+    }, 
+    {
+        icon: mist,
+        name: ['50d', '50n'],
+    },
+];
 
 export const getIcon = (nameUri, decode) => {
     let name = nameUri;
@@ -72,11 +72,10 @@ const getWeekDay = (date, index) => {
     return days[idx];
 }
 const Weather = ({
-    doubleSize,
     socket,
     data
 }) => {
-    if(!data){
+    if (!data) {
         return
     }
     const temperatureCallBack = (_, state) => {
@@ -121,13 +120,12 @@ const Weather = ({
 
     const temperature = useRef();
     const humidity = useRef();
-    const titleIcon = useRef();
 
     const date = new Date;
 
     const arrLength = data.days.length;
 
-    /// 
+    ///
     const [temperatureMinRefs, setTemperatureMinRefs] = useState([]);
     const [temperatureMaxRefs, setTemperatureMaxRefs] = useState([]);
     const [titleRefs, setTitleRefs] = useState([]);
@@ -180,7 +178,7 @@ const Weather = ({
     useEffect(() => {
         const callBacks = [];
         if (temperatureMinRefs.length) {
-            for (var i = 0; i < data.days.length; i++) {
+            for (let i = 0; i < data.days.length; i++) {
                 callBacks[i] = {
                     min: getIndex(i, temperatureMinCallBack),
                     max: getIndex(i, temperatureMaxCallBack),
@@ -195,7 +193,7 @@ const Weather = ({
         }
         return () => {
             if (callBacks.length) {
-                for (var i = 0; i < data.days.length; i++) {
+                for (let i = 0; i < data.days.length; i++) {
                     data.days[i].temperatureMin && socket.unsubscribeState(data.days[i].temperatureMin, callBacks[i].min);
                     data.days[i].temperatureMax && socket.unsubscribeState(data.days[i].temperatureMax, callBacks[i].max);
                     data.days[i].state && socket.unsubscribeState(data.days[i].state, callBacks[i].state);
@@ -204,10 +202,10 @@ const Weather = ({
             }
         }
     }, [temperatureMinRefs])
-    return <div className={cls.whetherkWrapper}>
+    return <div className={cls.wheatherWrapper}>
         <div className={cls.wrapperBlock}>
             <div className={cls.iconWrapper}>
-                <div className={clsx(cls.iconWhetherWrapper, !arrLength && cls.noteArrayIcon)}>
+                <div className={Utils.clsx(cls.iconWhetherWrapper, !arrLength && cls.noteArrayIcon)}>
                     <IconAdapter className={cls.iconWhether} src={getIcon(iconName, true) || clearSky} />
                 </div>
                 <div className={cls.styleText}>{title}</div>

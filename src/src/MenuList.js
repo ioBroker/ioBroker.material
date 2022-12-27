@@ -31,8 +31,6 @@ import {
     sortableHandle,
 } from 'react-sortable-hoc';
 
-import Utils from '@iobroker/adapter-react-v5/Components/Utils';
-import I18n from '@iobroker/adapter-react-v5/i18n';
 import VisibilityButton from './basic-controls/react-visibility-button/VisibilityButton';
 import Theme from './theme';
 
@@ -45,8 +43,7 @@ import { MdExpandLess as ExpandLess } from 'react-icons/md';
 import { MdExpandMore as ExpandMore } from 'react-icons/md';
 import { MdPlayArrow as IconInstances } from 'react-icons/md';
 import cls from './style.module.scss';
-import clsx from 'clsx';
-import IconAdapter from '@iobroker/adapter-react-v5/Components/Icon';
+import { Icon as IconAdapter, Utils, I18n } from '@iobroker/adapter-react-v5';
 
 const DragHandle = sortableHandle(() => <IconDrag className={cls.iconDrag} />);
 
@@ -251,7 +248,7 @@ class MenuList extends Component {
                         if (item.id === 'enum.rooms') {
                             return <IconButton
                                 key={item.id}
-                                className={clsx(cls.buttonStyle, item.id === this.props.root && cls.buttonActive)}
+                                className={Utils.clsx(cls.buttonStyle, item.id === this.props.root && cls.buttonActive)}
                                 title={name}
                                 onClick={() => this.onRootChanged('enum.rooms')}>
                                 <IconRooms name="rooms" width={Theme.iconSize} height={Theme.iconSize} isOn={item.id === this.props.root}/>
@@ -260,7 +257,7 @@ class MenuList extends Component {
                         } else if (item.id === 'enum.functions') {
                             return <IconButton
                                 key={item.id}
-                                className={clsx(cls.buttonStyle, item.id === this.props.root && cls.buttonActive)}
+                                className={Utils.clsx(cls.buttonStyle, item.id === this.props.root && cls.buttonActive)}
                                 title={name}
                                 onClick={() => this.onRootChanged('enum.functions')}>
                                 <IconFunctions width={Theme.iconSize} height={Theme.iconSize} />
@@ -269,7 +266,7 @@ class MenuList extends Component {
                         } else if (item.id === 'enum.favorites') {
                             return <IconButton
                                 key={item.id}
-                                className={clsx(cls.buttonStyle, item.id === this.props.root && cls.buttonActive)}
+                                className={Utils.clsx(cls.buttonStyle, item.id === this.props.root && cls.buttonActive)}
                                 title={name}
                                 onClick={() => this.onRootChanged('enum.favorites')}>
                                 <IconFavorites width={Theme.iconSize} height={Theme.iconSize} />
@@ -279,7 +276,7 @@ class MenuList extends Component {
                             if (item.settings.icon) {
                                 return <IconButton
                                     key={item.id}
-                                    className={clsx(cls.buttonStyle, item.id === this.props.root && cls.buttonActive)}
+                                    className={Utils.clsx(cls.buttonStyle, item.id === this.props.root && cls.buttonActive)}
                                     title={name}
                                     onClick={() => this.onRootChanged(item.id)}>
                                     <IconAdapter src={item.settings.icon} style={Theme.menuIcon} styleUTF8={Object.assign({}, Theme.menuIcon, {height: 27, marginTop: -8})}/>
@@ -289,7 +286,7 @@ class MenuList extends Component {
                                 return <Button
                                     variant="outlined"
                                     color="grey"
-                                    className={clsx(cls.buttonStyle, item.id === this.props.root && cls.buttonActive)}
+                                    className={Utils.clsx(cls.buttonStyle, item.id === this.props.root && cls.buttonActive)}
                                     key={item.id}
                                     onClick={() => this.onRootChanged(item.id)}>
                                     {name}
@@ -440,7 +437,7 @@ class MenuList extends Component {
                 <ListItem
                     // style={Object.assign({}, style, { zIndex: 10000 })}
                     button
-                    classes={{ root: clsx(cls.listItem, cls.zIndexList, this.props.viewEnum === id && cls.listItemActive) }}
+                    classes={{ root: Utils.clsx(cls.listItem, cls.zIndexList, this.props.viewEnum === id && cls.listItemActive) }}
                     key={`item-${id}`}
                     onClick={el => this.onSelected(id, el)}
                 >
@@ -454,7 +451,7 @@ class MenuList extends Component {
             return <ListItem
                 style={style}
                 button
-                className={clsx(cls.listItem, this.props.viewEnum === id && cls.listItemActive)}
+                className={Utils.clsx(cls.listItem, this.props.viewEnum === id && cls.listItemActive)}
                 key={`item-${id}`}
                 onClick={el => this.onSelected(id, el)}
             >
@@ -571,7 +568,7 @@ class MenuList extends Component {
                 </ListItemIcon> */}
                 <ListItemText key="text"
                     classes={{
-                        primary: clsx(this.props.viewEnum === item.id && cls.menuSelectedBright)
+                        primary: Utils.clsx(this.props.viewEnum === item.id && cls.menuSelectedBright)
                     }}
                     primary={item.settings.name}
                 />
@@ -643,7 +640,7 @@ class MenuList extends Component {
                 list.push(<div className={cls.contentItem}><ListItem
                     button
                     key={Utils.INSTANCES}
-                    classes={{ root: clsx(cls.listItem, this.props.viewEnum === Utils.INSTANCES && cls.listItemActive) }}
+                    classes={{ root: Utils.clsx(cls.listItem, this.props.viewEnum === Utils.INSTANCES && cls.listItemActive) }}
                     onClick={el => this.onSelected(Utils.INSTANCES, el)}
                 >
                     <ListItemIcon className={cls.itemIcon}>
@@ -653,7 +650,7 @@ class MenuList extends Component {
                     <ListItemText
 
                         classes={{
-                            primary: clsx(this.props.viewEnum === Utils.INSTANCES && cls.menuSelectedBright)
+                            primary: Utils.clsx(this.props.viewEnum === Utils.INSTANCES && cls.menuSelectedBright)
                         }}
                         primary={I18n.t('Instances')} />
                 </ListItem>

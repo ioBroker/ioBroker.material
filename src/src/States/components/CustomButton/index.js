@@ -1,7 +1,8 @@
 import React from 'react';
 import { Button } from '@mui/material';
 import PropTypes from 'prop-types';
-import clsx from 'clsx';
+import { Utils } from '@iobroker/adapter-react-v5';
+
 import cls from './style.module.scss';
 
 const CustomButton = ({ fullWidth, active, size, onClick, style, className, startIcon, square, children }) => {
@@ -11,7 +12,7 @@ const CustomButton = ({ fullWidth, active, size, onClick, style, className, star
         onClick={onClick}
         fullWidth={fullWidth}
         style={style}
-        className={clsx(cls.root, active && cls.active, className, square ? cls.square : '')}
+        className={Utils.clsx(cls.root, active && cls.active, className, square ? cls.square : '')}
         margin="normal"
         size={size}
         startIcon={startIcon}

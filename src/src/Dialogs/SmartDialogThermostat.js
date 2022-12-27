@@ -13,19 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import React, { createRef } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import clsx from 'clsx';
 import { withStyles } from '@mui/styles';
 
-import Button from '@mui/material/Button';
-
-import I18n from '@iobroker/adapter-react-v5/i18n';
+import { I18n } from '@iobroker/adapter-react-v5';
 
 import SmartDialogGeneric from './SmartDialogGeneric';
 import ThermostatControl from '../basic-controls/react-nest-thermostat/src/react-nest-thermostat';
 import cls from './style.module.scss';
-import { ButtonGroup, FormControl, FormLabel } from '@mui/material';
 import CustomButton from '../States/components/CustomButton';
 import StateIcon from '../States/components/StateIcon';
 import CustomMode from '../States/components/CustomMode';

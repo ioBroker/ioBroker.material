@@ -1,7 +1,9 @@
 import React, { memo, useState } from 'react';
 import PropTypes from 'prop-types';
+
+import { Utils } from '@iobroker/adapter-react-v5';
+
 import cls from './style.module.scss';
-import clsx from 'clsx';
 
 const CustomSwitch = ({ value, onChange, customValue }) => {
     const [switchChecked, setSwitchChecked] = useState(false);
@@ -12,8 +14,8 @@ const CustomSwitch = ({ value, onChange, customValue }) => {
                 !customValue && setSwitchChecked(!switchChecked);
                 onChange(!value);
             }}>
-            <input type="checkbox" checked={!!(customValue ? value : switchChecked)} onChange={() => {}}/>
-            <span className={clsx(cls.slider, cls.round, value || switchChecked && cls.active)}/>
+            <input type="checkbox" checked={!!(customValue ? value : switchChecked)} onChange={() => {}} />
+            <span className={Utils.clsx(cls.slider, cls.round, value || switchChecked && cls.active)} />
         </div>
     </div>;
 }

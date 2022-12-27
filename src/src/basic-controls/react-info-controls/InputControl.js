@@ -16,12 +16,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@mui/styles';
-// import Moment from 'react-moment';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
+
+import { Utils } from '@iobroker/adapter-react-v5';
+
 import cls from './style.module.scss';
 import CustomButton from '../../States/components/CustomButton';
-import clsx from 'clsx/dist/clsx';
 import CustomInput from '../../States/components/CustomInput';
 
 const styles = theme => ({
@@ -86,7 +85,7 @@ class InputControl extends Component {
             }
         }
 
-        return <div className={clsx(cls.line,cls.bottom)}>
+        return <div className={Utils.clsx(cls.line,cls.bottom)}>
             <CustomInput
                 tabIndex="0"
                 className={cls.input}

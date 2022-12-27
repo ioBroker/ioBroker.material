@@ -15,24 +15,24 @@
  **/
 import React, {Component, createRef} from 'react';
 import PropTypes from 'prop-types';
-import clsx from 'clsx';
+
+import ReactEchartsCore from 'echarts-for-react/lib/core';
+import * as echarts from 'echarts/core';
+import { LineChart } from 'echarts/charts';
+import { SVGRenderer } from 'echarts/renderers';
 
 import Snackbar from '@mui/material/Snackbar';
 import Fab from '@mui/material/Fab';
-import I18n from '@iobroker/adapter-react-v5/i18n';
-import {Dialog} from "@mui/material";
+import { Dialog } from "@mui/material";
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import ReactEchartsCore from 'echarts-for-react/lib/core';
 
-import * as echarts from 'echarts/core';
-import {LineChart} from 'echarts/charts';
-//import { GridComponent } from 'echarts/components';
-import {SVGRenderer} from 'echarts/renderers';
+import { Utils, I18n } from '@iobroker/adapter-react-v5';
+
+import { MdClose as CloseIcon } from 'react-icons/md';
+
 import CustomButton from '../States/components/CustomButton';
-
-import {MdClose as CloseIcon} from 'react-icons/md';
 
 import Theme from '../theme';
 import CustomFab from '../States/components/CustomFab';
@@ -346,10 +346,10 @@ class SmartDialogGeneric extends Component {
         };
         let parts = id.split('.');
         return <div key={id} onClick={this.props.openModal ? () => this.props.openModal(id) : null}
-                    className={clsx(cls.wrapperCharts, classes?.root)}>
-            <div className={clsx(cls.chartsName, classes?.name)}>{parts.pop()}</div>
+                    className={Utils.clsx(cls.wrapperCharts, classes?.root)}>
+            <div className={Utils.clsx(cls.chartsName, classes?.name)}>{parts.pop()}</div>
             <ReactEchartsCore
-                className={clsx(cls.styleCharts, classes?.chart)}
+                className={Utils.clsx(cls.styleCharts, classes?.chart)}
                 ref={ref}
                 echarts={echarts}
                 option={option}
@@ -390,7 +390,7 @@ class SmartDialogGeneric extends Component {
             fullWidth
             scroll="paper"
             classes={{
-                paper: clsx('dialog-paper', this.props.classes?.dialogPaper, this.props.transparent ? cls.paper : cls.backgroundDialog),
+                paper: Utils.clsx('dialog-paper', this.props.classes?.dialogPaper, this.props.transparent ? cls.paper : cls.backgroundDialog),
                 root: cls.rootDialog
             }}
             open={!0}

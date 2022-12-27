@@ -32,7 +32,7 @@ import { MdSave as OkIcon } from 'react-icons/md';
 import { MdContentCopy as CopyIcon } from 'react-icons/md';
 import { MdCancel as IconCancel } from 'react-icons/md';
 
-import Utils from '@iobroker/adapter-react-v5/Components/Utils';
+import { Utils, I18n } from '@iobroker/adapter-react-v5';
 
 import ColorPicker from '../basic-controls/react-color-picker/ColorPicker';
 import ImageSelector from '../basic-controls/react-image-selector/ImageSelector';
@@ -42,7 +42,6 @@ import BoolControl from '../basic-controls/react-info-controls/BoolControl';
 
 import SmartDialogGeneric from './SmartDialogGeneric';
 import Theme from '../theme';
-import I18n from '@iobroker/adapter-react-v5/i18n';
 import UploadImage from '../basic-controls/UploadImage';
 import CustomButton from '../States/components/CustomButton';
 import CustomFab from '../States/components/CustomFab';

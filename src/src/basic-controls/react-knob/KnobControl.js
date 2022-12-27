@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import clsx from 'clsx';
 import { withStyles } from '@mui/styles';
+import { Utils } from '@iobroker/adapter-react-v5';
 
 const styles = theme => ({
     knobSurround: {
@@ -28,7 +28,7 @@ const styles = theme => ({
         borderRadius: '50%',
         border: 'solid 0.25em #0e0e0e',
         background: '-webkit-gradient(linear, left bottom, left top, color-stop(0, #1d1d1d), color-stop(1, #131313))',
-        boxShadow: '0 0.2em 0.1em 0.05em rgba(255, 255, 255, 0.1) inset, 0 -0.2em 0.1em 0.05em rgba(0, 0, 0, 0.5) inset, 0 0.5em 0.65em 0 rgba(0, 0, 0, 0.3)'
+        boxShadow: '0 0.2em 0.1em 0.05em rgba(255, 255, 255, 0.1) inset, 0 -0.2em 0.1em 0.05em rgba(0, 0, 0, 0.5) inset, 0 0.5em 0.65em 0 rgba(0, 0, 0, 0.3)',
     },
     knobBefore: {
         position: 'absolute',
@@ -45,7 +45,7 @@ const styles = theme => ({
         height: '100%',
         borderRadius: '50%',
         position: 'absolute',
-        zIndex: 10
+        zIndex: 10,
     },
     min: {
         display: 'block',
@@ -54,7 +54,7 @@ const styles = theme => ({
         textTransform: 'uppercase',
         fontSize: '70%',
         position: 'absolute',
-        opacity: '0.5'
+        opacity: '0.5',
     },
     max: {
         display: 'block',
@@ -63,7 +63,7 @@ const styles = theme => ({
         textTransform: 'uppercase',
         fontSize: '70%',
         position: 'absolute',
-        opacity: '0.5'
+        opacity: '0.5',
     },
     tick: {
         height: '0.08em',
@@ -82,7 +82,7 @@ const styles = theme => ({
         fontSize: 20,
         fontWeight: 'bold',
         color: '#a8d8f8',
-        textShadow: '0 0 10px #a8d8f8'//'0 0 0.3em 0.08em #79c3f4',
+        textShadow: '0 0 10px #a8d8f8', // '0 0 0.3em 0.08em #79c3f4',
     }
 });
 
@@ -92,11 +92,11 @@ const activeTick = {
 };
 const activeTitleMin = {
     color: '#ffa7a7',
-    textShadow: '0 0 0.3em rgba(23,23,23)'//'0 0 0.3em 0.08em #79c3f4',
+    textShadow: '0 0 0.3em rgba(23,23,23)', // '0 0 0.3em 0.08em #79c3f4',
 };
 const activeTitleMax = {
     color: '#a8d8f8',
-    textShadow: '0 0 0.3em rgba(23,23,23)'//'0 0 0.3em 0.08em #79c3f4',
+    textShadow: '0 0 0.3em rgba(23,23,23)', // '0 0 0.3em 0.08em #79c3f4',
 };
 class KnobControl extends Component {
     constructor(props) {
@@ -208,7 +208,6 @@ class KnobControl extends Component {
             value = this.state.value;
         }
         return Math.round(value / this.valueStep);
-
     }
 
     calcSteps(ticks) {
@@ -240,11 +239,11 @@ class KnobControl extends Component {
     drawTicks() {
         const result = [];
         for (let i = 0; i < this.ticksNumber; i++) {
-            const style = {transform: 'rotate(' + (this.angleStep * i + this.angleStart) + 'deg)'};
+            const style = {transform: `rotate(${this.angleStep * i + this.angleStart}deg)`};
 
-            result.push(<div  key={'tickDiv' + i} className={this.props.classes.knob} style={style}>
-                <div key={'tick' + i} className={this.props.classes.tick}
-                     style={(i <= this.state.activeTick) ? activeTick : {}}/>
+            result.push(<div key={`tickDiv${i}`} className={this.props.classes.knob} style={style}>
+                <div key={`tick${i}`} className={this.props.classes.tick}
+                     style={(i <= this.state.activeTick) ? activeTick : {}} />
             </div>);
         }
         return result;
@@ -264,7 +263,7 @@ class KnobControl extends Component {
     }
 
     onValueChange(value) {
-        this.setState({value, activeTick: this.calcActiveTick(value)});
+        this.setState({ value, activeTick: this.calcActiveTick(value) });
         this.props.onChange && this.props.onChange(this.localValue2externalValue(value));
     }
 
@@ -272,7 +271,7 @@ class KnobControl extends Component {
         const angle = this.angleStart + this.angleStep * (this.state.value / this.valueStep);
         // rotate knob
         const style = {
-            transform: 'rotate(' + angle + 'deg)'
+            transform: `rotate(${angle}deg)`
         };
 
         return <div className={this.props.classes.knob} style={style}>
@@ -283,11 +282,11 @@ class KnobControl extends Component {
     drawValue() {
         if (this.props.hideValue) {
             return null;
-        } else {
-            return <div className={this.props.classes.value}>{
-                Math.round(this.localValue2externalValue(this.state.value)) + this.unit
-            }</div>;
         }
+
+        return <div className={this.props.classes.value}>{
+            Math.round(this.localValue2externalValue(this.state.value)) + this.unit
+        }</div>;
     }
 
     eventToValue(e) {
@@ -346,7 +345,7 @@ class KnobControl extends Component {
         const halfSize = this.rect.width / 2;
         const x = (halfSize + 40) * Math.cos((Math.PI / 180) * angle) + halfSize;
         const y = (halfSize + 40) * Math.sin((Math.PI / 180) * angle) + halfSize;
-        return {x, y};
+        return { x, y };
     }
 
     drawMinMax() {
@@ -371,7 +370,8 @@ class KnobControl extends Component {
             onMouseDown={this.onMouseDown}
             onTouchStart={this.onMouseDown}
 
-            className={clsx(this.props.className, this.props.classes.knobSurround)} onWheel={this.onWheel}>
+            className={Utils.clsx(this.props.className, this.props.classes.knobSurround)} onWheel={this.onWheel}
+        >
             {this.drawMinMax()}
             {this.drawKnob()}
 

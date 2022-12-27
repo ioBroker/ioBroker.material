@@ -15,9 +15,10 @@
  **/
 import React, { createRef } from 'react';
 import PropTypes from 'prop-types';
+
+import { I18n, Icon as IconAdapter } from '@iobroker/adapter-react-v5';
+
 import SmartDialogGeneric from './SmartDialogGeneric';
-import IconAdapter from '@iobroker/adapter-react-v5/Components/Icon';
-import I18n from '@iobroker/adapter-react-v5/i18n';
 import cls from './style.module.scss';
 import StateIcon from '../States/components/StateIcon';
 import CustomButton from '../States/components/CustomButton';
@@ -68,7 +69,7 @@ class SmartDialogCamera extends SmartDialogGeneric {
     }
 
     componentDidMount() {
-        // get type of object 
+        // get type of object
         if (this.props.objects[this.props.id]?.common.type === 'file' && !this.props.state[this.props.id]) {
             // read every 5000
             this.updateInterval = setInterval(() => this.updateImage(), 1000);

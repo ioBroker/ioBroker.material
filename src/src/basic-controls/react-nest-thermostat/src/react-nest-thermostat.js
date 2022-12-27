@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import cls from './style.module.scss';
 
@@ -85,8 +85,12 @@ class Thermostat extends Component {
     }
 
     restrictToRange(val, min, max) {
-        if (val < min) return min;
-        if (val > max) return max;
+        if (val < min) {
+            return min;
+        }
+        if (val > max) {
+            return max;
+        }
         return val;
     }
 

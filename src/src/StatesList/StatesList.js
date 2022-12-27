@@ -15,7 +15,6 @@
  **/
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import clsx from 'clsx';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 
 import { withStyles } from '@mui/styles';
@@ -25,8 +24,7 @@ import { FaArrowsAltV as IconVertical } from 'react-icons/fa'
 import { MdAdd as IconAdd } from 'react-icons/md'
 import { FaArrowsAltH as IconHorizontal } from 'react-icons/fa'
 
-import Utils from '@iobroker/adapter-react-v5/Components/Utils';
-import I18n from '@iobroker/adapter-react-v5/i18n';
+import { I18n, Utils } from '@iobroker/adapter-react-v5';
 
 import StatesSubList from '../StatesSubList/StatesSubList';
 import Clock from '../basic-controls/react-clock/Clock';
@@ -275,7 +273,7 @@ class StatesList extends Component {
                 draggableId={`${this.state.enumID}_${id}-list`} index={index}>
                 {(provided, snapshot) => <div
                     key={`${this.state.enumID}_${id}-list2`}
-                    className={clsx(cls.drag, snapshot.isDragging && cls.dragStyle)}
+                    className={Utils.clsx(cls.drag, snapshot.isDragging && cls.dragStyle)}
                     // className={this.props.classes['drag-item'] + (snapshot.isDragging ? ' ' + this.props.classes['drag-item-overlay'] : '')}
                     // style={{ display: 'inline-block' }}
                     ref={provided.innerRef}
@@ -545,7 +543,7 @@ class StatesList extends Component {
                     size="small"
                     style={{ fontSize: 24 }}
                     onClick={this.onDialogOpen}
-                    className={clsx(cls.root, cls.buttonClock)}
+                    className={Utils.clsx(cls.root, cls.buttonClock)}
                 >
                     <IconAdd />
                 </Fab>

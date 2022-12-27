@@ -15,14 +15,16 @@
  **/
 import React from 'react';
 import PropTypes from 'prop-types';
-import Theme from '../theme';
-import I18n from '@iobroker/adapter-react-v5/i18n';
+
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import Button from '@mui/material/Button';
 import Slider from '@mui/material/Slider';
-import SmartDialogGeneric from './SmartDialogGeneric';
 import Typography from '@mui/material/Typography';
+
+import { I18n } from '@iobroker/adapter-react-v5';
+
+import SmartDialogGeneric from './SmartDialogGeneric';
 import BoolControl from '../basic-controls/react-info-controls/BoolControl'
 import InputControl from '../basic-controls/react-info-controls/InputControl'
 import InfoControl from '../basic-controls/react-info-controls/InfoControl'

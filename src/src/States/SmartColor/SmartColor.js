@@ -14,20 +14,18 @@
  * limitations under the License.
  **/
 import React from 'react';
-import CircularProgress from '@mui/material/CircularProgress';
 import { TinyColor } from '@ctrl/tinycolor';
 
 import { TiLightbulb as Icon } from 'react-icons/ti'
 
+import { I18n, Utils, Icon as IconAdapter } from '@iobroker/adapter-react-v5';
+
 import SmartGeneric from '../SmartGeneric';
 import Theme from '../../theme';
 import Dialog from '../../Dialogs/SmartDialogColor';
-import I18n from '@iobroker/adapter-react-v5/i18n';
 import UtilsColors from '../../UtilsColors';
-import IconAdapter from '@iobroker/adapter-react-v5/Components/Icon';
 import cls from './style.module.scss';
 import clsGeneric from '../style.module.scss';
-import clsx from 'clsx/dist/clsx';
 
 class SmartColor extends SmartGeneric {
 
@@ -426,14 +424,14 @@ class SmartColor extends SmartGeneric {
         let customIcon;
         const color = this.getColor();
         if (this.state.settings.useDefaultIcon) {
-            customIcon = <IconAdapter style={Object.assign({height: '100%'}, color && this.state[this.ids.on?.id] ? { color } : {})} className={clsx(clsGeneric.iconStyle, this.state[this.ids.on?.id] && clsGeneric.activeIconStyle)} src={this.getDefaultIcon()} alt="icon" />;
+            customIcon = <IconAdapter style={Object.assign({height: '100%'}, color && this.state[this.ids.on?.id] ? { color } : {})} className={Utils.clsx(clsGeneric.iconStyle, this.state[this.ids.on?.id] && clsGeneric.activeIconStyle)} src={this.getDefaultIcon()} alt="icon" />;
         } else {
             if (this.state.settings.icon) {
-                customIcon = <IconAdapter style={Object.assign({height: '100%'}, color && this.state[this.ids.on?.id] ? { color } : {})} className={clsx(clsGeneric.iconStyle, this.state[this.ids.on?.id] && clsGeneric.activeIconStyle)} src={this.state.settings.icon} alt="icon" />;
+                customIcon = <IconAdapter style={Object.assign({height: '100%'}, color && this.state[this.ids.on?.id] ? { color } : {})} className={Utils.clsx(clsGeneric.iconStyle, this.state[this.ids.on?.id] && clsGeneric.activeIconStyle)} src={this.state.settings.icon} alt="icon" />;
             } else {
                 customIcon = <Icon
                     style={color && this.state[this.ids.on?.id] ? { color } : null}
-                    className={clsx(clsGeneric.iconStyle, this.state[this.ids.on?.id] && clsGeneric.activeIconStyle)}
+                    className={Utils.clsx(clsGeneric.iconStyle, this.state[this.ids.on?.id] && clsGeneric.activeIconStyle)}
                 />;
             }
         }

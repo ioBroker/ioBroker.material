@@ -1,6 +1,5 @@
 import { createRef, Component } from 'react';
 import PropTypes from 'prop-types';
-import clsx from 'clsx';
 import { withStyles } from '@mui/styles';
 import cls from './style.module.scss';
 
@@ -31,7 +30,8 @@ import {
 } from 'echarts/components';
 import { SVGRenderer } from 'echarts/renderers';
 
-import DateFnsUtils from '@date-io/date-fns';
+import { Utils, withWidth } from '@iobroker/adapter-react-v5';
+
 import frLocale from 'date-fns/locale/fr';
 import ruLocale from 'date-fns/locale/ru';
 import enLocale from 'date-fns/locale/en-US';
@@ -55,9 +55,6 @@ import 'moment/locale/nl';
 import 'moment/locale/ru';
 import 'moment/locale/zh-cn';
 import 'moment/locale/de';
-
-import Utils from '@iobroker/adapter-react-v5/Components/Utils';
-import { withWidth } from '@iobroker/adapter-react-v5';
 
 // icons
 import { FaChartLine as SplitLineIcon } from 'react-icons/fa';
@@ -1423,7 +1420,7 @@ class ObjectChart extends Component {
                         this.setState({ historyInstance: e.target.value });
                     }}
                 >
-                    {this.state.historyInstances.map(it => <MenuItem key={it.id} value={it.id} className={clsx(!it.alive && classes.notAliveInstance)}>{it.id}</MenuItem>)}
+                    {this.state.historyInstances.map(it => <MenuItem key={it.id} value={it.id} className={Utils.clsx(!it.alive && classes.notAliveInstance)}>{it.id}</MenuItem>)}
                 </Select>
             </FormControl>}
             <CustomSelect
@@ -1541,7 +1538,7 @@ class ObjectChart extends Component {
 
         return <div className={this.props.classes.paper}>
             {this.renderToolbar()}
-            <div ref={this.divRef} className={clsx(this.props.classes.chart, this.props.noToolbar ? this.props.classes.chartWithoutToolbar : this.props.classes.chartWithToolbar)}>
+            <div ref={this.divRef} className={Utils.clsx(this.props.classes.chart, this.props.noToolbar ? this.props.classes.chartWithoutToolbar : this.props.classes.chartWithToolbar)}>
                 {this.renderChart()}
             </div>
         </div>;

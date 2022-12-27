@@ -17,7 +17,6 @@ import React from 'react';
 import { withStyles } from '@mui/styles';
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import 'typeface-roboto'
-import clsx from 'clsx';
 import { withSnackbar } from 'notistack';
 
 import './App.css';
@@ -50,9 +49,7 @@ import { MdRefresh as IconRefresh } from 'react-icons/md';
 import { FaSignOutAlt as IconLogout } from 'react-icons/fa';
 import { GiResize } from 'react-icons/gi';
 
-import IconAdapter from '@iobroker/adapter-react-v5/Components/Icon';
-import I18n from '@iobroker/adapter-react-v5/i18n';
-import Utils from '@iobroker/adapter-react-v5/Components/Utils';
+import { I18n, Utils, Icon as IconAdapter } from '@iobroker/adapter-react-v5';
 import GenericApp from '@iobroker/adapter-react-v5/GenericApp';
 
 import Theme from './theme';
@@ -116,6 +113,13 @@ class App extends GenericApp {
         }
 
         extendedProps.sentryDSN = window.sentryDSN;
+
+        if (window.location.port === '3000') {
+            extendedProps.socket = { port: '8082' };
+        }
+        if (window.socketUrl && window.socketUrl.startsWith(':')) {
+            window.socketUrl = `${window.location.protocol}//${window.location.hostname}${window.socketUrl}`;
+        }
 
         super(props, extendedProps);
 
@@ -266,7 +270,7 @@ class App extends GenericApp {
 
     readInstancesData(readInstances) {
         if (readInstances) {
-            return this.socket.getObjectView('system.adapter.', 'system.group.\u9999', 'instance')
+            return this.socket.getObjectViewSystem('instance', 'system.adapter.', 'system.group.\u9999')
                 .then(instances => {
                     if (window.debugInstances) {
                         const rows = window.debugInstances;
@@ -322,7 +326,7 @@ class App extends GenericApp {
                 enums = _enums;
 
                 // Read all adapters for images
-                return this.socket.getObjectView('system.adapter.', 'system.adapter.\u9999', 'instance');
+                return this.socket.getObjectViewSystem('instance', 'system.adapter.', 'system.adapter.\u9999', 'instance');
             })
             .then(instances => {
                 Object.keys(instances).forEach(id => data[id] = instances[id]);
@@ -334,7 +338,7 @@ class App extends GenericApp {
                     this._defaultMode = data['system.adapter.' + this.namespace].native.defaultFileMode;
                 }
                 // Read all channels for images
-                return this.socket.getObjectView('', '\u9999', 'channel');
+                return this.socket.getObjectViewSystem('channel', '', '\u9999');
             })
             .then(channels => {
                 Object.keys(channels).forEach(id => data[id] = channels[id]);
@@ -344,7 +348,7 @@ class App extends GenericApp {
                     .then(obj => {
                         if (obj && obj.views && obj.views.chart) {
                             // Read all echarts for dialog
-                            return this.socket.getObjectView('echarts.0', 'echarts.0.\u9999', 'chart');
+                            return this.socket.getObjectViewSystem('chart', 'echarts.0', 'echarts.0.\u9999');
                         }
                         return {};
                     })
@@ -354,7 +358,7 @@ class App extends GenericApp {
                 Object.keys(_charts).forEach(id => data[id] = _charts[id]);
 
                 // Read all adapters for images
-                return this.socket.getObjectView('', '\u9999', 'device');
+                return this.socket.getObjectViewSystem('device', '', '\u9999');
             })
             .then(devices => {
                 Object.keys(devices).forEach(id => data[id] = devices[id]);
@@ -435,7 +439,7 @@ class App extends GenericApp {
                             const myStorage = window.localStorage;
                             myStorage.setItem('data', JSON.stringify({ objects: result, appConfig }));
                         } catch (e) {
-                            console.error('cannot store information to localstorage: ' + e);
+                            console.error(`cannot store information to localstorage: ${e}`);
                         }
                     }
                     appConfig = appConfig || {};
@@ -1399,7 +1403,7 @@ class App extends GenericApp {
             <IconButton
                 onClick={this.toggleEditMode}
                 // style={style}
-                className={clsx(cls.iconSettings, this.state.editMode && cls.iconSettingsActive)}
+                className={Utils.clsx(cls.iconSettings, this.state.editMode && cls.iconSettingsActive)}
             >
                 <IconEdit width={Theme.iconSize} height={Theme.iconSize} />
             </IconButton>
@@ -1607,7 +1611,7 @@ class App extends GenericApp {
                     <IconButton color="inherit" aria-label="Menu" onClick={this.onToggleMenu} >
                         <IconMenu />
                     </IconButton>}
-                <IconAdapter style={Theme.appBarIcon} src={this.state?.settings?.icon} />
+                <IconAdapter style={Theme.appBarIcon} src={this.state?.settings?.icon || ''} />
                 <h3 color="inherit" style={{ flex: 1 }}>
                     {this.getTitle()}
                 </h3>
@@ -1626,7 +1630,7 @@ class App extends GenericApp {
                                         document.getElementsByTagName('HTML')[0].className = `${this.state.themeName} ${widthBlock ? 'double' : 'single'}`;
                                     })
                                 }}
-                                className={clsx(cls.iconSettings, this.state.widthBlock && cls.iconSettingsActive)}
+                                className={Utils.clsx(cls.iconSettings, this.state.widthBlock && cls.iconSettingsActive)}
                             >
                                 <GiResize width={Theme.iconSize} height={Theme.iconSize} />
                             </IconButton>

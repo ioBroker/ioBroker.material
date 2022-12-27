@@ -15,7 +15,6 @@
  **/
 import React from 'react';
 import PropTypes from 'prop-types';
-import clsx from 'clsx';
 import { withStyles } from '@mui/styles';
 
 import Fab from '@mui/material/Fab';
@@ -23,7 +22,7 @@ import Fab from '@mui/material/Fab';
 import { MdVolumeMute as IconVolume0 } from 'react-icons/md';
 import { MdVolumeUp as IconVolume100 } from 'react-icons/md';
 
-import I18n from '@iobroker/adapter-react-v5/i18n';
+import { Utils, I18n } from '@iobroker/adapter-react-v5';
 
 import SmartDialogGeneric from './SmartDialogGeneric';
 import KnobControl from '../basic-controls/react-knob/KnobControl';
@@ -137,7 +136,7 @@ class SmartDialogKnob extends SmartDialogGeneric {
             aria-label="mute"
             title={this.state.muteValue ? I18n.t('unmute') : I18n.t('mute')}
             onClick={this.onMute}
-            className={clsx(this.props.classes.buttonMuteStyle, this.state.muteValue && this.props.classes.buttonMuted)}>
+            className={Utils.clsx(this.props.classes.buttonMuteStyle, this.state.muteValue && this.props.classes.buttonMuted)}>
             {this.state.muteValue ? <IconVolume0 /> : <IconVolume100 />}
         </Fab>;
     }

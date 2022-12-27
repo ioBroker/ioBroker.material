@@ -16,17 +16,18 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import ReactDOMServer from 'react-dom/server';
-import clsx from 'clsx';
 
-import I18n from '@iobroker/adapter-react-v5/i18n';
+import { MapContainer, TileLayer, Marker, useMapEvents, Polyline, Circle } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+
 import { MdFilterCenterFocus } from 'react-icons/md';
+
+import { Utils } from '@iobroker/adapter-react-v5';
 
 import SmartDialogGeneric from './SmartDialogGeneric';
 import cls from './style.module.scss';
-import 'leaflet/dist/leaflet.css';
-import { MapContainer, TileLayer, Marker, useMapEvents, Polyline, Circle } from 'react-leaflet';
 import Pin from '../icons/Pin';
-import L from 'leaflet';
 import CustomFab from '../States/components/CustomFab';
 
 const MapUpdate = ({ position, setMap }) => {
@@ -45,7 +46,7 @@ const MapUpdate = ({ position, setMap }) => {
 const Location = ({ center, data, iconSetting, getReadHistoryData, radius, settings }) => {
     const icon = L.divIcon({
         className: 'custom-icon',
-        html: ReactDOMServer.renderToString(iconSetting ? <img className={clsx(cls.iconStyle, cls.iconRadius)} src={iconSetting} alt="icon" /> : <Pin className={cls.iconStyle} />)
+        html: ReactDOMServer.renderToString(iconSetting ? <img className={Utils.clsx(cls.iconStyle, cls.iconRadius)} src={iconSetting} alt="icon" /> : <Pin className={cls.iconStyle} />)
     });
 
     const [position, setPosition] = useState([0, 0]);

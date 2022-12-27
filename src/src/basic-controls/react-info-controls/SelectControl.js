@@ -15,10 +15,12 @@
  **/
 import React from 'react';
 import PropTypes from 'prop-types';
+import { withStyles } from '@mui/styles';
+
 import NativeSelect from '@mui/material/NativeSelect';
 import InputLabel from '@mui/material/InputLabel';
-import { withStyles } from '@mui/styles';
 import Input from '@mui/material/Input';
+
 import Theme from '../../theme';
 
 const styles = () => (Theme.dialog.info);

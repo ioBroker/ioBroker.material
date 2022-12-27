@@ -79,14 +79,16 @@ class Thermostat extends React.Component {
 
     rotatePoints(points, angle, origin) {
         const _self = this;
-        return points.map(
-            (point) => _self.rotatePoint(point, angle, origin)
-        );
+        return points.map(point => _self.rotatePoint(point, angle, origin));
     }
 
     restrictToRange(val, min, max) {
-        if (val < min) return min;
-        if (val > max) return max;
+        if (val < min) {
+            return min;
+        }
+        if (val > max) {
+            return max;
+        }
         return val;
     }
 

@@ -19,7 +19,7 @@ import IconWindowOpened from '../../icons/WindowOpened';
 import IconWindowClosed from '../../icons/WindowClosed';
 import IconWindowTilted from '../../icons/WindowTilted';
 import Theme from '../../theme';
-import I18n from '@iobroker/adapter-react-v5/i18n';
+import { I18n } from '@iobroker/adapter-react-v5';
 import IconAdapter from '@iobroker/adapter-react-v5/Components/Icon';
 import cls from './style.module.scss';
 import clsGeneric from '../style.module.scss';

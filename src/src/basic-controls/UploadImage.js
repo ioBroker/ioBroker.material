@@ -12,7 +12,7 @@ import CropIcon from '@mui/icons-material/Crop';
 
 import IconPicker from '@iobroker/adapter-react-v5/Components/IconPicker';
 
-const styles = theme => ({
+const styles = () => ({
     image: {
         objectFit: 'contain',
         margin: 'auto',
@@ -65,7 +65,8 @@ class UploadImage extends Component {
                             this.setState({ anchorEl: e.currentTarget });
                         }
                         e.stopPropagation();
-                    }}><CropIcon color={cropHandler ? 'primary' : 'inherit'} />
+                    }}>
+                        <CropIcon color={cropHandler ? 'primary' : 'inherit'} />
                     </IconButton>
                 </Tooltip>
                 <Menu

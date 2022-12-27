@@ -14,20 +14,19 @@
  * limitations under the License.
  **/
 import React from 'react';
+import PropTypes from 'prop-types';
+
+import { MdInfo as IconInfo } from 'react-icons/md';
+
+import { I18n, Utils, Icon as IconAdapter } from '@iobroker/adapter-react-v5';
+
 import SmartGeneric from '../SmartGeneric';
 import IconThermometer from '../../icons/ThermometerSimple';
 import IconHydro from '../../icons/Humidity';
-import { MdInfo as IconInfo } from 'react-icons/md';
-import Utils from '@iobroker/adapter-react-v5/Components/Utils';
-
 import Theme from '../../theme';
-import I18n from '@iobroker/adapter-react-v5/i18n';
 import Dialog from '../../Dialogs/SmartDialogInfo';
-import PropTypes from 'prop-types';
-import IconAdapter from '@iobroker/adapter-react-v5/Components/Icon';
 import cls from './style.module.scss';
 import clsGeneric from '../style.module.scss';
-import clsx from 'clsx/dist/clsx';
 import { dialogChartCallBack } from '../../Dialogs/DialogChart';
 import TypeIcon from '../components/TypeIcon';
 
@@ -187,7 +186,7 @@ class SmartInfo extends SmartGeneric {
 
     getStateText() {
         const state = this.state[this.id];
-        return <div className={clsx(state === undefined || state === null ? cls.textOff : cls.textOn)}>{state === undefined || state === null ? '?' : state + this.infos[0].unit}</div>;
+        return <div className={Utils.clsx(state === undefined || state === null ? cls.textOff : cls.textOn)}>{state === undefined || state === null ? '?' : state + this.infos[0].unit}</div>;
     }
 
     getSecondaryDiv() {

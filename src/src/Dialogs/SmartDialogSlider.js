@@ -15,7 +15,6 @@
  **/
 import React from 'react';
 import PropTypes from 'prop-types';
-import clsx from 'clsx';
 
 import { darken } from '@mui/material/styles';
 import { withStyles } from '@mui/styles';
@@ -25,7 +24,7 @@ import { FaAngleDoubleDown as IconDown } from 'react-icons/fa';
 import { TiLightbulb as IconLamp } from 'react-icons/ti';
 import { MdStop as IconStop } from 'react-icons/md'
 
-import I18n from '@iobroker/adapter-react-v5/i18n';
+import { Utils, I18n } from '@iobroker/adapter-react-v5';
 
 import Theme from '../theme';
 import SmartDialogGeneric from './SmartDialogGeneric';
@@ -344,7 +343,7 @@ class SmartDialogSlider extends SmartDialogGeneric {
             key={this.props.dialogKey + '-toggle-button'}
             active={this.props.startToggleValue}
             onClick={this.props.onToggle}
-            className={clsx('dimmer-button', cls.buttonToggleStyle)}
+            className={Utils.clsx('dimmer-button', cls.buttonToggleStyle)}
         >
             <IconLamp />
         </CustomFab>;
@@ -359,7 +358,7 @@ class SmartDialogSlider extends SmartDialogGeneric {
             key={this.props.dialogKey + '-stop-button'}
             color="secondary"
             onClick={this.props.onStop}
-            className={clsx('dimmer-button', cls.buttonStopStyle)}>
+            className={Utils.clsx('dimmer-button', cls.buttonStopStyle)}>
             <IconStop />
         </CustomFab>;
     }

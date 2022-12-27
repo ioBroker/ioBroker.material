@@ -1,10 +1,10 @@
-import { FormControl, FormHelperText, Input, InputLabel, MenuItem, Select } from '@mui/material';
 import React, { useState } from 'react';
-import I18n from '@iobroker/adapter-react-v5/i18n';
 import PropTypes from 'prop-types';
+import { FormControl, Input, InputLabel, MenuItem, Select } from '@mui/material';
+
+import { Utils, I18n } from '@iobroker/adapter-react-v5';
+
 import cls from './style.module.scss';
-import clsx from 'clsx';
-// import CustomCheckbox from '../CustomCheckbox';
 
 const CustomSelect = ({ customOptions, ref, multiple, optionsName, value, objs, customValue, title, attr, options, style, onChange, className, doNotTranslate, doNotTranslate2 }) => {
     const [inputText, setInputText] = useState(value === undefined ? options[0].value : value);
@@ -13,7 +13,7 @@ const CustomSelect = ({ customOptions, ref, multiple, optionsName, value, objs, 
     const text = v === '' || v === null || v === undefined ? '_' : v;
 
     return <FormControl
-        className={clsx(cls.root, className)}
+        className={Utils.clsx(cls.root, className)}
         fullWidth
         variant="outlined"
         style={style}

@@ -26,8 +26,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 
 import { MdClose as IconClose } from 'react-icons/md';
 
-import I18n from '@iobroker/adapter-react-v5/i18n';
-
+import { I18n } from '@iobroker/adapter-react-v5';
 
 import SmartDialogGeneric from './SmartDialogGeneric';
 

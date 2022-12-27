@@ -15,22 +15,8 @@
  **/
 import React, { Component, createRef } from 'react';
 import PropTypes from 'prop-types';
-import Utils from '@iobroker/adapter-react-v5/Components/Utils';
-import I18n from '@iobroker/adapter-react-v5/i18n';
-import Theme from '../theme';
 
-import { MdVisibility as IconCheck } from 'react-icons/md';
-import { MdVisibilityOff as IconUncheck } from 'react-icons/md';
-import { MdEdit as IconEdit } from 'react-icons/md';
-import { MdArrowUpward as IconDirectionUp } from 'react-icons/md';
-import { MdArrowDownward as IconDirectionDown } from 'react-icons/md';
-import { MdSwapVert as IconDirection } from 'react-icons/md';
-import cls from './style.module.scss';
-
-import Dialog from '../Dialogs/SmartDialogSettings';
-import clsx from 'clsx';
 import ReactEchartsCore from 'echarts-for-react/lib/core';
-
 import * as echarts from 'echarts/core';
 import { LineChart } from 'echarts/charts';
 import {
@@ -43,6 +29,18 @@ import {
     SingleAxisComponent,
 } from 'echarts/components';
 import { SVGRenderer } from 'echarts/renderers';
+
+import { Utils, I18n } from '@iobroker/adapter-react-v5';
+
+import { MdVisibility as IconCheck } from 'react-icons/md';
+import { MdVisibilityOff as IconUncheck } from 'react-icons/md';
+import { MdEdit as IconEdit } from 'react-icons/md';
+import { MdArrowUpward as IconDirectionUp } from 'react-icons/md';
+import { MdArrowDownward as IconDirectionDown } from 'react-icons/md';
+import { MdSwapVert as IconDirection } from 'react-icons/md';
+import cls from './style.module.scss';
+import Theme from '../theme';
+import Dialog from '../Dialogs/SmartDialogSettings';
 import { dialogChartCallBack } from '../Dialogs/DialogChart';
 
 //echarts.use([LineChart, SVGRenderer]);
@@ -903,7 +901,7 @@ class SmartGeneric extends Component {
     static renderIcon = (icon, loading, active, onClick = () => {}, color = '') => {
         return <div onClick={onClick} className={cls.iconWrapper}>
             {!!loading && <div className={cls.iconWrapperLoading} />}
-            <div className={clsx(cls.styleIcon, active && cls.styleIconActive)}>
+            <div className={Utils.clsx(cls.styleIcon, active && cls.styleIconActive)}>
                 {icon}
             </div>
         </div>;
@@ -1269,7 +1267,7 @@ class SmartGeneric extends Component {
 
         return <div className={cls.wrapperCharts}>
             <ReactEchartsCore
-                className={clsx(cls.styleCharts, className)}
+                className={Utils.clsx(cls.styleCharts, className)}
                 ref={this.echartsReact}
                 echarts={echarts}
                 option={option}

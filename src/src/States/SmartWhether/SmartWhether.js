@@ -17,12 +17,10 @@ import React from 'react';
 import { withStyles } from '@mui/styles';
 import PropTypes from 'prop-types';
 
-import { FaVideo as IconCam } from 'react-icons/fa';
+import { Utils } from '@iobroker/adapter-react-v5';
+
 import SmartGeneric from '../SmartGeneric';
 import Dialog from '../../Dialogs/SmartDialogURL';
-import Theme from '../../theme';
-import Utils from '@iobroker/adapter-react-v5/Components/Utils';
-import Clock from '../../basic-controls/react-clock/Clock';
 import cls from './style.module.scss';
 import Weather from '../../basic-controls/react-weather/Weather';
 
@@ -37,7 +35,7 @@ const styles = {
         background: 'rgba(255,255,255,0.45)',
         color: 'rgba(0, 0, 0, 0.6)',
         width: '100%',
-        textAlign: 'left'
+        textAlign: 'left',
     },
     'title-text': {
         paddingLeft: 16,
@@ -50,13 +48,13 @@ const styles = {
         left: 0,
         right: 0,
         bottom: 0,
-        border: 0
+        border: 0,
     }
 };
 
 class SmartWhether extends SmartGeneric {
     static propTypes = {
-        classes: PropTypes.object.isRequired
+        classes: PropTypes.object.isRequired,
     };
 
     constructor(props) {

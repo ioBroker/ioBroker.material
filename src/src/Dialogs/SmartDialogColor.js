@@ -16,15 +16,14 @@
 import React from 'react';
 import { decomposeColor } from '@mui/material/styles';
 import { withStyles } from '@mui/styles';
-import clsx from 'clsx';
-
 import PropTypes from 'prop-types';
+
+import { Utils, I18n } from '@iobroker/adapter-react-v5';
 
 import { TiLightbulb as IconLight } from 'react-icons/ti';
 import { TiThermometer as IconTemp } from 'react-icons/ti';
 import { MdColorLens as IconRGB } from 'react-icons/md';
 
-import I18n from '@iobroker/adapter-react-v5/i18n';
 
 import ColorsTempImg from '../assets/tempColor.png';
 import SmartDialogGeneric from './SmartDialogGeneric';
@@ -586,7 +585,7 @@ class SmartDialogColor extends SmartDialogGeneric {
                 <div className={cls.wrapperDiv}>
                     <div key="color-dialog"
                         ref={this.refColor}
-                        className={clsx(cls.div, this.state.tempMode && cls.displayNone)}
+                        className={Utils.clsx(cls.div, this.state.tempMode && cls.displayNone)}
                     >
                         <div
                             ref={this.refColorImage}
@@ -594,14 +593,14 @@ class SmartDialogColor extends SmartDialogGeneric {
                             id='color'
                             onMouseDown={this.onMouseDown}
                             onTouchStart={this.onMouseDown}
-                            className={clsx(cls.colorCircle, this.state.tempMode && cls.displayNone)}
+                            className={Utils.clsx(cls.colorCircle, this.state.tempMode && cls.displayNone)}
                         >
-                            <div className={clsx(cls.rotate, this.state.tempMode && cls.displayNone)}>
+                            <div className={Utils.clsx(cls.rotate, this.state.tempMode && cls.displayNone)}>
                                 <div className={cls.colorBackground} />
                             </div>
                         </div>
                         <div ref={this.refColorCursor}
-                            className={clsx(this.props.classes.cursor, cls.cursor, this.state.tempMode && cls.displayNone)}
+                            className={Utils.clsx(this.props.classes.cursor, cls.cursor, this.state.tempMode && cls.displayNone)}
                             style={{
                                 background: this.state.color,
                                 top: isNaN(pos.y) ? 0 : pos.y + (pos.y > 0 ? 0 : -HANDLER_SIZE),
@@ -610,7 +609,7 @@ class SmartDialogColor extends SmartDialogGeneric {
                             }}>
                         </div>
                     </div>
-                    {this.state.tempMode && <div className={clsx(cls.div, cls.wrapperTemperature)}>
+                    {this.state.tempMode && <div className={Utils.clsx(cls.div, cls.wrapperTemperature)}>
                         <div className={cls.wrapperSlider}>
                             <div className={cls.textSlider}>{I18n.t('Temperature')}</div>
                             <CustomSlider

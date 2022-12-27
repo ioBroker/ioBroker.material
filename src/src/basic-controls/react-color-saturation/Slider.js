@@ -2,10 +2,12 @@ import React from 'react';
 import { findDOMNode } from 'react-dom';
 import PropTypes from 'prop-types';
 import keycode from 'keycode';
-import clsx from 'clsx';
+
 import withStyles from '@mui/material/styles/withStyles';
 import ButtonBase from '@mui/material/ButtonBase';
 import { alpha } from '@mui/material/styles';
+
+import { Utils } from '@iobroker/adapter-react-v5';
 
 function clamp(value, min = 0, max = 100) {
     return Math.min(Math.max(value, min), max);
@@ -407,7 +409,7 @@ class Slider extends React.Component {
             [classes.activated]: !disabled && currentState === 'activated',
         };
 
-        const className = clsx(
+        const className = Utils.clsx(
             classes.root,
             vertical && classes.vertical,
             reverse && classes.reverse,
@@ -415,13 +417,13 @@ class Slider extends React.Component {
             classNameProp,
         );
 
-        const containerClasses = clsx(classes.container, vertical && classes.vertical);
+        const containerClasses = Utils.clsx(classes.container, vertical && classes.vertical);
 
-        const trackBeforeClasses = clsx(classes.track, classes.trackBefore, commonClasses, vertical && classes.vertical);
+        const trackBeforeClasses = Utils.clsx(classes.track, classes.trackBefore, commonClasses, vertical && classes.vertical);
 
-        const trackAfterClasses = clsx(classes.track, classes.trackAfter, commonClasses, vertical && classes.vertical);
+        const trackAfterClasses = Utils.clsx(classes.track, classes.trackAfter, commonClasses, vertical && classes.vertical);
 
-        const thumbClasses = clsx(classes.thumb, commonClasses);
+        const thumbClasses = Utils.clsx(classes.thumb, commonClasses);
 
         const trackProperty = vertical ? 'height' : 'width';
         const thumbProperty = vertical ? 'top' : 'left';

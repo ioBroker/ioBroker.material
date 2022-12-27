@@ -21,7 +21,7 @@ import { FaVideo as IconCam } from 'react-icons/fa';
 import SmartGeneric from '../SmartGeneric';
 import Dialog from '../../Dialogs/SmartDialogURL';
 import Theme from '../../theme';
-import Utils from '@iobroker/adapter-react-v5/Components/Utils';
+import { Utils } from '@iobroker/adapter-react-v5';
 import Clock from '../../basic-controls/react-clock/Clock';
 import cls from './style.module.scss';
 

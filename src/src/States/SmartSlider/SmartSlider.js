@@ -14,15 +14,13 @@
  * limitations under the License.
  **/
 import React from 'react';
-import CircularProgress from '@mui/material/CircularProgress';
-import SmartGeneric from '../SmartGeneric';
 import { TiLightbulb as Icon } from 'react-icons/ti';
-import Theme from '../../theme';
+
+import { Utils, Icon as IconAdapter } from '@iobroker/adapter-react-v5';
+
+import SmartGeneric from '../SmartGeneric';
 import Dialog from '../../Dialogs/SmartDialogSlider';
-import IconAdapter from '@iobroker/adapter-react-v5/Components/Icon';
-import cls from './style.module.scss';
 import clsGeneric from '../style.module.scss';
-import clsx from 'clsx';
 
 class SmartSlider extends SmartGeneric {
     constructor(props) {
@@ -116,7 +114,7 @@ class SmartSlider extends SmartGeneric {
             } else {
                 let IconCustom = this.icon;
                 if (IconCustom) {
-                    customIcon = <IconCustom className={clsx(clsGeneric.iconStyle,this.state[this.actualId] !== this.min && clsGeneric.activeIconStyle)} />;
+                    customIcon = <IconCustom className={Utils.clsx(clsGeneric.iconStyle,this.state[this.actualId] !== this.min && clsGeneric.activeIconStyle)} />;
                 }
             }
         }

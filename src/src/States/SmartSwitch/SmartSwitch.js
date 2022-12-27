@@ -14,20 +14,19 @@
  * limitations under the License.
  **/
 import React from 'react';
-import SmartGeneric from '../SmartGeneric';
+
+import { I18n, Utils, Icon as IconAdapter } from '@iobroker/adapter-react-v5';
 
 import { TiLightbulb as IconLight } from 'react-icons/ti';
 import { MdCheck as IconCheck } from 'react-icons/md';
 import { MdCancel as IconCancel } from 'react-icons/md';
-import IconSwitch from '../../icons/Socket';
 
+import SmartGeneric from '../SmartGeneric';
 import Types from '../SmartTypes';
 import Theme from '../../theme';
-import I18n from '@iobroker/adapter-react-v5/i18n';
-import IconAdapter from '@iobroker/adapter-react-v5/Components/Icon';
+import IconSwitch from '../../icons/Socket';
 import cls from './style.module.scss';
 import clsGeneric from '../style.module.scss';
-import clsx from 'clsx/dist/clsx';
 import CustomSwitch from '../../Components/CustomSwitch';
 import Dialog from '../../Dialogs/SmartDialogInfo';
 import SmartInfo from '../SmartInfo/SmartInfo';
@@ -165,13 +164,13 @@ class SmartSwitch extends SmartGeneric {
         let customIcon;
 
         if (this.state.settings.useDefaultIcon) {
-            customIcon = <IconAdapter className={clsx(clsGeneric.iconStyle, this.state[this.id] && clsGeneric.activeIconStyle)} alt="icon" src={this.getDefaultIcon()} style={{ height: '100%' }} />;
+            customIcon = <IconAdapter className={Utils.clsx(clsGeneric.iconStyle, this.state[this.id] && clsGeneric.activeIconStyle)} alt="icon" src={this.getDefaultIcon()} style={{ height: '100%' }} />;
         } else {
             if (this.state.settings.icon) {
-                customIcon = <IconAdapter alt="icon" className={clsx(clsGeneric.iconStyle, this.state[this.id] && clsGeneric.activeIconStyle)} src={state ? this.state.settings.icon : this.state.settings.iconOff || this.state.settings.icon} style={{ height: '100%' }} />;
+                customIcon = <IconAdapter alt="icon" className={Utils.clsx(clsGeneric.iconStyle, this.state[this.id] && clsGeneric.activeIconStyle)} src={state ? this.state.settings.icon : this.state.settings.iconOff || this.state.settings.icon} style={{ height: '100%' }} />;
             } else {
                 const Icon = this.state[this.actualId] ? this.iconOn : this.iconOff;
-                customIcon = <Icon className={clsx(clsGeneric.iconStyle, this.state[this.id] && clsGeneric.activeIconStyle)} />;
+                customIcon = <Icon className={Utils.clsx(clsGeneric.iconStyle, this.state[this.id] && clsGeneric.activeIconStyle)} />;
             }
         }
 
@@ -179,7 +178,7 @@ class SmartSwitch extends SmartGeneric {
     }
 
     getStateText() {
-        return <div className={clsx(clsGeneric.text, this.state[this.id] && clsGeneric.textOn)}>{this.state[this.id] ? I18n.t('On') : I18n.t('Off')}</div>
+        return <div className={Utils.clsx(clsGeneric.text, this.state[this.id] && clsGeneric.textOn)}>{this.state[this.id] ? I18n.t('On') : I18n.t('Off')}</div>
     }
 
     getSecondaryDiv() {

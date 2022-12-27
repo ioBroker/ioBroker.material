@@ -17,7 +17,7 @@ import React from 'react';
 import SmartGeneric from '../SmartGeneric';
 import Dialog from '../../Dialogs/SmartDialogEchartCustom';
 import EchartIframe from '../../basic-controls/react-echart/EchartIframe';
-import Utils from '@iobroker/adapter-react-v5/Components/Utils';
+import { Utils } from '@iobroker/adapter-react-v5';
 
 class SmartEchart extends SmartGeneric {
     constructor(props) {

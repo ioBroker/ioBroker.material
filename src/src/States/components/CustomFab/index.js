@@ -1,8 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Fab } from '@mui/material';
+
+import { Utils } from '@iobroker/adapter-react-v5';
+
 import cls from './style.module.scss';
-import clsx from 'clsx';
 
 const CustomFab = ({ fullWidth, size, onClick, style, className, children, active, title }) => {
     return <Fab
@@ -11,7 +13,7 @@ const CustomFab = ({ fullWidth, size, onClick, style, className, children, activ
         onClick={onClick}
         //fullWidth={fullWidth}
         style={style}
-        className={clsx(cls.root, className, active && cls.active)}
+        className={Utils.clsx(cls.root, className, active && cls.active)}
         margin="normal"
         size={size}
     >
