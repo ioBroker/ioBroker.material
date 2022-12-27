@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "material",
-    "version": "1.2.6",
+    "version": "1.3.0",
     "news": {
+      "1.3.0": {
+        "en": "Corrected URL widget",
+        "de": "Korrigierte URL Widget",
+        "ru": "Правильный виджет URL",
+        "pt": "Widget de URL corrigido",
+        "nl": "Vertaling:",
+        "fr": "Corrigé URL widget",
+        "it": "Widget URL corretto",
+        "es": "Widget URL corregido",
+        "pl": "Poprawka w URL",
+        "uk": "Виправлений віджет URL",
+        "zh-cn": "更正"
+      },
       "1.2.6": {
         "en": "Corrected color of blinds in light mode",
         "de": "Korrigierte Farbe von Blinds im Lichtmodus",
@@ -77,18 +90,6 @@
         "es": "Cambió el estilo ligero para que parezca estilo antiguo.",
         "pl": "Zmieniono styl światła, aby wyglądał jak stary styl",
         "zh-cn": "将灯光样式更改为看起来像旧样式"
-      },
-      "1.0.6": {
-        "en": "Added support of iobroker.material app",
-        "de": "Unterstützung der iobroker.material-App hinzugefügt",
-        "ru": "Добавлена поддержка приложения iobroker.material",
-        "pt": "Adicionado suporte para app iobroker.material",
-        "nl": "Ondersteuning toegevoegd voor de app iobroker.material",
-        "fr": "Ajout de la prise en charge de l'application iobroker.material",
-        "it": "Aggiunto il supporto dell'app iobroker.material",
-        "es": "Soporte agregado de la aplicación iobroker.material",
-        "pl": "Dodano obsługę aplikacji iobroker.material",
-        "zh-cn": "添加了对 iobroker.material 应用程序的支持"
       }
     },
     "title": "Material UI",

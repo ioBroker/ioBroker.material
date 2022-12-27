@@ -49,7 +49,7 @@ Better if every device belongs to both categories. Because every device has the 
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 1.3.0 (2022-12-27)
 * (bluefox) Corrected URL widget
 
 ### 1.2.6 (2022-12-07)
