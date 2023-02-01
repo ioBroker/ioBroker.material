@@ -14,7 +14,7 @@
     "@mui/material": "^5.11.2",
     "@mui/icons-material": "^5.11.0",
     "@mui/lab": "^5.0.0-alpha.114",
-    "@mui/styles": "^5.11.2",
+    "@mui/styles": "^5.11.7",
     "@mui/x-date-pickers": "^5.0.12",
     "@sentry/browser": "^7.28.1",
     "@sentry/integrations": "^7.28.1",
