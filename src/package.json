@@ -17,7 +17,7 @@
     "@mui/styles": "^5.11.7",
     "@mui/x-date-pickers": "^5.0.12",
     "@sentry/browser": "^7.28.1",
-    "@sentry/integrations": "^7.28.1",
+    "@sentry/integrations": "^7.34.0",
     "@svgr/cli": "^6.5.1",
     "babel-eslint": "^10.1.0",
     "date-fns": "^2.29.3",
