@@ -49,7 +49,7 @@ Better if every device belongs to both categories. Because every device has the 
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 1.3.1 (2023-02-10)
 * (bluefox) Corrected the error with socket.io connection
 
 ### 1.3.0 (2022-12-27)

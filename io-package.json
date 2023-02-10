@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "material",
-    "version": "1.3.0",
+    "version": "1.3.1",
     "news": {
+      "1.3.1": {
+        "en": "Corrected the error with socket.io connection",
+        "de": "Hat den Fehler mit Steckdose korrigiert. io-Verbindung",
+        "ru": "Исправлена ошибка с розеткой. io подключение",
+        "pt": "Corrigido o erro com o soquete. conexão io",
+        "nl": "De fout met soket gecorrigeerd. io connectie",
+        "fr": "Correction de l'erreur avec la socket. io connection",
+        "it": "Corretto l'errore con la presa. collegamento io",
+        "es": "Corregido el error con socket. io conexión",
+        "pl": "Poprawiono błąd z gniazdem. połączenie io",
+        "uk": "Виправлено помилку з розеткою. io підключення",
+        "zh-cn": "将错误与零分开来。 联系"
+      },
       "1.3.0": {
         "en": "Corrected URL widget",
         "de": "Korrigierte URL Widget",
@@ -78,18 +91,6 @@
         "es": "Se corrigió el doble envío en el control del interruptor.",
         "pl": "Naprawiono podwójne wysyłanie w sterowaniu przełącznikiem",
         "zh-cn": "修复开关控制中的双重发送"
-      },
-      "1.1.0": {
-        "en": "Changed the light style to be looks like old style",
-        "de": "Der Lichtstil wurde so geändert, dass er wie im alten Stil aussieht",
-        "ru": "Изменен стиль освещения, чтобы он выглядел как старый стиль",
-        "pt": "Alterou o estilo da luz para se parecer com o estilo antigo",
-        "nl": "De lichtstijl gewijzigd om eruit te zien als een oude stijl",
-        "fr": "Modification du style d'éclairage pour qu'il ressemble à l'ancien style",
-        "it": "Modificato lo stile della luce in modo che assomigli al vecchio stile",
-        "es": "Cambió el estilo ligero para que parezca estilo antiguo.",
-        "pl": "Zmieniono styl światła, aby wyglądał jak stary styl",
-        "zh-cn": "将灯光样式更改为看起来像旧样式"
       }
     },
     "title": "Material UI",
