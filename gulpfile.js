@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2021 bluefox <dogafox@gmail.com>
+ * Copyright 2018-2023 bluefox <dogafox@gmail.com>
  *
  * Licensed under the Creative Commons Attribution-NonCommercial License, Version 4.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,29 @@
 const gulp   = require('gulp');
 const exec   = require('gulp-exec');
 const fs     = require('fs');
-const del    = require('del');
 const crypto = require('crypto');
 
 const dest = 'www/';
+
+function deleteFoldersRecursive(path, exceptions) {
+    if (fs.existsSync(path)) {
+        const files = fs.readdirSync(path);
+        for (const file of files) {
+            const curPath = `${path}/${file}`;
+            if (exceptions && exceptions.find(e => curPath.endsWith(e))) {
+                continue;
+            }
+
+            const stat = fs.statSync(curPath);
+            if (stat.isDirectory()) {
+                deleteFoldersRecursive(curPath);
+                fs.rmdirSync(curPath);
+            } else {
+                fs.unlinkSync(curPath);
+            }
+        }
+    }
+}
 
 gulp.task('1-icons', done => {
     const dir = `${__dirname}/src/src/icons`;
@@ -36,21 +55,17 @@ gulp.task('1-icons', done => {
     done();
 });
 
-gulp.task('0-clean', () => {
-    return del([
-        'src/node_modules/**/*',
-        'src/build/**/*',
-        'src/package-lock.json'
-    ]).then(del([
-        'src/node_modules',
-        'src/build'
-    ]));
+gulp.task('0-clean', done => {
+    deleteFoldersRecursive(`${__dirname}/src/node_modules`);
+    deleteFoldersRecursive(`${__dirname}/src/build`);
+    fs.existsSync(`${__dirname}/rc/package-lock.json`) && fs.unlinkSync(`${__dirname}/src/package-lock.json`);
+    done();
 });
 
 function npmInstall() {
     return new Promise((resolve, reject) => {
         // Install node modules
-        const cwd = __dirname.replace(/\\/g, '/') + '/src/';
+        const cwd = `${__dirname.replace(/\\/g, '/')}/src/`;
 
         const cmd = `npm install -f`;
         console.log(`"${cmd} in ${cwd}`);
@@ -66,7 +81,7 @@ function npmInstall() {
         child.on('exit', (code /* , signal */) => {
             // code 1 is strange error that cannot be explained. Everything is installed but error :(
             if (code && code !== 1) {
-                reject('Cannot install: ' + code);
+                reject(`Cannot install: ${code}`);
             } else {
                 console.log(`"${cmd} in ${cwd} finished.`);
                 // command succeeded
@@ -97,7 +112,7 @@ function build() {
         continueOnError:        false, // default = false, true means don't emit error event
         pipeStdout:             false, // default = false, true means stdout is written to file.contents
         customTemplatingThing:  'build', // content passed to gutil.template()
-        cwd:                    __dirname + '/src/'
+        cwd:                    `${__dirname}/src/`
     };
     const reportOptions = {
         err:    true, // default = true, false means don't write err
@@ -109,16 +124,16 @@ function build() {
     const version = require('./package.json').version;
     const json = require('./src/package.json');
     json.version = version;
-    fs.writeFileSync(__dirname + '/src/package.json', JSON.stringify(json, null, 2));
+    fs.writeFileSync(`${__dirname}/src/package.json`, JSON.stringify(json, null, 2));
 
     console.log(options.cwd);
 
-    if (fs.existsSync(__dirname + '/src/node_modules/react-scripts/scripts/build.js')) {
-        return gulp.src(__dirname + '/src/node_modules/react-scripts/scripts/build.js')
+    if (fs.existsSync(`${__dirname}/src/node_modules/react-scripts/scripts/build.js`)) {
+        return gulp.src(`${__dirname}/src/node_modules/react-scripts/scripts/build.js`)
             .pipe(exec(file => `node  --max-old-space-size=4096 ${file.path}`, options))
             .pipe(exec.reporter(reportOptions));
     } else {
-        return gulp.src(__dirname + '/node_modules/react-scripts/scripts/build.js')
+        return gulp.src(`${__dirname}/node_modules/react-scripts/scripts/build.js`)
             .pipe(exec(file => `node  --max-old-space-size=4096 ${file.path}`, options))
             .pipe(exec.reporter(reportOptions));
     }
@@ -138,19 +153,16 @@ function getHash(data) {
 }
 
 function copyFiles() {
-    return del([
-        'www/**/*'
-    ]).then(() => {
-        gulp.src([
-            'src/build/*/**',
-            'src/build/*',
-            '!src/build/vendor/conn.js',
-            '!src/build/vendor/detector.js',
-            '!src/build/_socket',
-            '!src/build/_socket/info.js'
-        ])
-            .pipe(gulp.dest('www/'));
-    });
+    deleteFoldersRecursive(`${__dirname}/www`);
+    return gulp.src([
+        'src/build/*/**',
+        'src/build/*',
+        '!src/build/vendor/conn.js',
+        '!src/build/vendor/detector.js',
+        '!src/build/_socket',
+        '!src/build/_socket/info.js'
+    ])
+        .pipe(gulp.dest('www/'));
 }
 
 gulp.task('4-copy', gulp.series('3-build', () => {
@@ -163,8 +175,8 @@ gulp.task('4-copy-dep', gulp.series('3-build-dep', () => {
 
 function patchIndex() {
     return new Promise(resolve => {
-        if (fs.existsSync(dest + '/index.html')) {
-            let code = fs.readFileSync(dest + '/index.html').toString('utf8');
+        if (fs.existsSync(`${dest}/index.html`)) {
+            let code = fs.readFileSync(`${dest}/index.html`).toString('utf8');
             // replace code
             code = code.replace(/<script>const script=document[^<]+<\/script>/, `<script type="text/javascript" onerror="setTimeout(function(){window.location.reload()}, 5000)" src="./lib/js/socket.io.js"></script>`);
             code = code.replace(/<script>var script=document[^<]+<\/script>/, `<script type="text/javascript" onerror="setTimeout(function(){window.location.reload()}, 5000)" src="./lib/js/socket.io.js"></script>`);
@@ -173,8 +185,8 @@ function patchIndex() {
         } else {
             // wait till finished
             setTimeout(() => {
-                if (fs.existsSync(dest + '/index.html')) {
-                    let code = fs.readFileSync(dest + '/index.html').toString('utf8');
+                if (fs.existsSync(`${dest}/index.html`)) {
+                    let code = fs.readFileSync(`${dest}/index.html`).toString('utf8');
                     // replace code
                     code = code.replace(/<script>const script=document[^<]+<\/script>/, `<script type="text/javascript" onerror="setTimeout(function(){window.location.reload()}, 5000)" src="./lib/js/socket.io.js"></script>`);
                     code = code.replace(/<script>var script=document[^<]+<\/script>/, `<script type="text/javascript" onerror="setTimeout(function(){window.location.reload()}, 5000)" src="./lib/js/socket.io.js"></script>`);
