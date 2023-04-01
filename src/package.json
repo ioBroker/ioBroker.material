@@ -10,7 +10,7 @@
     "@ctrl/tinycolor": "^3.5.0",
     "@date-io/core": "^2.16.0",
     "@date-io/date-fns": "^2.16.0",
-    "@iobroker/adapter-react-v5": "^4.0.10",
+    "@iobroker/adapter-react-v5": "^4.0.23",
     "@mui/material": "^5.11.8",
     "@mui/icons-material": "^5.11.11",
     "@mui/lab": "^5.0.0-alpha.119",
