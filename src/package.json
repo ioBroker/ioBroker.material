@@ -7,7 +7,7 @@
     "@date-io/date-fns": "DO not update to version 2"
   },
   "dependencies": {
-    "@ctrl/tinycolor": "^3.5.0",
+    "@ctrl/tinycolor": "^3.6.0",
     "@date-io/core": "^2.16.0",
     "@date-io/date-fns": "^2.16.0",
     "@iobroker/adapter-react-v5": "^4.0.23",
