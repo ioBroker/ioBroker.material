@@ -23,7 +23,7 @@
     "date-fns": "^2.29.3",
     "echarts": "^5.4.1",
     "echarts-for-react": "^3.0.2",
-    "eslint": "^8.33.0",
+    "eslint": "^8.39.0",
     "iobroker.type-detector": "^1.1.1",
     "keycode": "^2.2.1",
     "leaflet": "^1.9.3",
