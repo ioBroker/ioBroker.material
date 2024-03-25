@@ -27,7 +27,7 @@
     "eslint": "^2.4.0",
     "eslint-config-airbnb": "^6.2.0",
     "eslint-plugin-react": "^4.2.3",
-    "express": "4.13.4",
+    "express": "4.19.2",
     "path": "0.12.7",
     "react": "0.14.7",
     "react-dom": "0.14.7"
