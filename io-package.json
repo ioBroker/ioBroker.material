@@ -112,6 +112,7 @@
     "platform": "Javascript/Node.js",
     "onlyWWW": true,
     "loglevel": "info",
+    "tier": 3,
     "icon": "material.png",
     "enabled": true,
     "extIcon": "https://raw.githubusercontent.com/ioBroker/ioBroker.material/master/admin/material.png",
