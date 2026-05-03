@@ -167,6 +167,8 @@ Better if every device belongs to both categories. Because every device has the 
 ### 0.5.1
 * (bluefox) edit of visibility
 
+[Older changelogs can be found there](CHANGELOG_OLD.md)
+
 ## License
 CC-BY-NC
 
