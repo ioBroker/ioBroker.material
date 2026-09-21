@@ -32,3 +32,6 @@ package-lock.json
 /src/public/_socket/info.js
 /src/src/i18n/flat
 /src/yarn.lock
+
+#ignore .commitinfo created by ioBroker release script
+.commitinfo
