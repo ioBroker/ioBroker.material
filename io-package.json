@@ -150,7 +150,6 @@
     "adminUI": {
       "config": "none"
     },
-    "noConfig": true,
     "eraseOnUpload": true,
     "webByVersion": true,
     "welcomeScreen": {
