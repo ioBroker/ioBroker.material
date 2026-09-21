@@ -144,7 +144,10 @@
       "_default": "%web_protocol%://%web_bind%:%web_port%/material/index.html"
     },
     "type": "visualization",
-    "license": "CC-BY-NC-4.0",
+    "licenseInformation": {
+      "type": "free",
+      "license": "CC-BY-NC-4.0"
+    },
     "adminUI": {
       "config": "none"
     },
