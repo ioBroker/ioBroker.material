@@ -30,7 +30,7 @@
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.43",
     "notistack": "^2.0.8",
-    "ol": "^7.2.2",
+    "ol": "^10.10.0",
     "react": "^18.2.0",
     "react-beautiful-dnd": "^13.1.1",
     "react-camera": "^0.1.3",
