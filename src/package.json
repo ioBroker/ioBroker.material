@@ -21,7 +21,7 @@
     "@svgr/cli": "^6.5.1",
     "babel-eslint": "^10.1.0",
     "date-fns": "^2.29.3",
-    "echarts": "^5.4.1",
+    "echarts": "^6.1.0",
     "echarts-for-react": "^3.0.2",
     "eslint": "^8.33.0",
     "iobroker.type-detector": "^1.1.1",
