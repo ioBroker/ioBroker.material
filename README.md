@@ -49,6 +49,9 @@ Better if every device belongs to both categories. Because every device has the 
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (bluefox) Node.js >= 22 is required; CI workflow updated (#204)
+
 ### 1.3.1 (2023-02-10)
 * (bluefox) Corrected the error with socket.io connection
 
