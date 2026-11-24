@@ -53,5 +53,8 @@
     "release-major": "release-script major --yes"
   },
   "license": "CC-BY-NC-4.0",
+  "engines": {
+    "node": ">=22"
+  },
   "dependencies": {}
 }
